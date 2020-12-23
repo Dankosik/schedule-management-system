@@ -14,6 +14,14 @@ public class Schedule {
         this.lectures = lectures;
     }
 
+    public void addLecture(Lecture lecture) {
+        this.lectures.add(lecture);
+    }
+
+    public void removeLecture(Lecture lecture) {
+        this.lectures.remove(lecture);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
