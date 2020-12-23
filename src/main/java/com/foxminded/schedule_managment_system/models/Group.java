@@ -7,14 +7,6 @@ public class Group {
     private List<Student> students;
     private String name;
 
-    public void addStudent(Student student) {
-        this.students.add(student);
-    }
-
-    public void removeStudent(Student student) {
-        this.students.remove(student);
-    }
-
     public List<Student> getStudents() {
         return students;
     }
@@ -29,6 +21,14 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void addStudent(Student student) {
+        this.students.add(student);
+    }
+
+    public void removeStudent(Student student) {
+        this.students.remove(student);
     }
 
     @Override
