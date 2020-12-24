@@ -1,4 +1,4 @@
-package com.foxminded.schedule_managment_system.models;
+package com.foxminded.university.management.schedule.models;
 
 import java.util.List;
 import java.util.Objects;
@@ -6,7 +6,6 @@ import java.util.Objects;
 public class Faculty {
     private String name;
     private List<Department> departments;
-    private Dean dean;
     private List<Group> groups;
 
     public String getName() {
@@ -25,14 +24,6 @@ public class Faculty {
         this.departments = departments;
     }
 
-    public Dean getDean() {
-        return dean;
-    }
-
-    public void setDean(Dean dean) {
-        this.dean = dean;
-    }
-
     public List<Group> getGroups() {
         return groups;
     }
@@ -46,12 +37,12 @@ public class Faculty {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Faculty faculty = (Faculty) o;
-        return Objects.equals(name, faculty.name) && Objects.equals(departments, faculty.departments) &&
-                Objects.equals(dean, faculty.dean) && Objects.equals(groups, faculty.groups);
+        return Objects.equals(name, faculty.name) && Objects.equals(departments, faculty.departments)
+                && Objects.equals(groups, faculty.groups);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, departments, dean, groups);
+        return Objects.hash(name, departments, groups);
     }
 }

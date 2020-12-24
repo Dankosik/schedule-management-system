@@ -1,4 +1,4 @@
-package com.foxminded.schedule_managment_system.models;
+package com.foxminded.university.management.schedule.models;
 
 import java.time.Duration;
 import java.time.LocalTime;
