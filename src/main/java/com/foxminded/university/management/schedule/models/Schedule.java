@@ -1,25 +1,16 @@
 package com.foxminded.university.management.schedule.models;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Schedule {
-    private List<Lecture> lectures;
+    private Long id;
 
-    public List<Lecture> getLectures() {
-        return lectures;
+    public Long getId() {
+        return id;
     }
 
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
-    }
-
-    public void addLecture(Lecture lecture) {
-        this.lectures.add(lecture);
-    }
-
-    public void removeLecture(Lecture lecture) {
-        this.lectures.remove(lecture);
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
@@ -27,11 +18,11 @@ public class Schedule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule = (Schedule) o;
-        return Objects.equals(lectures, schedule.lectures);
+        return Objects.equals(id, schedule.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lectures);
+        return Objects.hash(id);
     }
 }

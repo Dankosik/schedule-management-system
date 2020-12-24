@@ -1,18 +1,45 @@
 package com.foxminded.university.management.schedule.models;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Group {
-    private List<Student> students;
+    private Long id;
+    private Long lectureId;
+    private Long departmentId;
+    private Long facultyId;
     private String name;
+    private Long universityId;
 
-    public List<Student> getStudents() {
-        return students;
+    public Long getId() {
+        return id;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getLectureId() {
+        return lectureId;
+    }
+
+    public void setLectureId(Long lectureId) {
+        this.lectureId = lectureId;
+    }
+
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public Long getFacultyId() {
+        return facultyId;
+    }
+
+    public void setFacultyId(Long facultyId) {
+        this.facultyId = facultyId;
     }
 
     public String getName() {
@@ -23,12 +50,12 @@ public class Group {
         this.name = name;
     }
 
-    public void addStudent(Student student) {
-        this.students.add(student);
+    public Long getUniversityId() {
+        return universityId;
     }
 
-    public void removeStudent(Student student) {
-        this.students.remove(student);
+    public void setUniversityId(Long universityId) {
+        this.universityId = universityId;
     }
 
     @Override
@@ -36,11 +63,13 @@ public class Group {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
-        return Objects.equals(students, group.students) && Objects.equals(name, group.name);
+        return Objects.equals(id, group.id) && Objects.equals(lectureId, group.lectureId) &&
+                Objects.equals(departmentId, group.departmentId) && Objects.equals(facultyId, group.facultyId) &&
+                Objects.equals(name, group.name) && Objects.equals(universityId, group.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(students, name);
+        return Objects.hash(id, lectureId, departmentId, facultyId, name, universityId);
     }
 }

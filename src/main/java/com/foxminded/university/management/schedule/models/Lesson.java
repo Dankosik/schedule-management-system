@@ -5,10 +5,19 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public class Lesson {
+    private Long id;
     private Integer number;
     private LocalTime startTime;
     private Duration duration;
-    private Subject subject;
+    private Long subjectId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Integer getNumber() {
         return number;
@@ -34,12 +43,12 @@ public class Lesson {
         this.duration = duration;
     }
 
-    public Subject getSubject() {
-        return subject;
+    public Long getSubjectId() {
+        return subjectId;
     }
 
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+    public void setSubjectId(Long subjectId) {
+        this.subjectId = subjectId;
     }
 
     @Override
@@ -47,12 +56,12 @@ public class Lesson {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lesson lesson = (Lesson) o;
-        return Objects.equals(number, lesson.number) && Objects.equals(startTime, lesson.startTime) &&
-                Objects.equals(duration, lesson.duration) && Objects.equals(subject, lesson.subject);
+        return Objects.equals(id, lesson.id) && Objects.equals(number, lesson.number) &&
+                Objects.equals(startTime, lesson.startTime) && Objects.equals(duration, lesson.duration) && Objects.equals(subjectId, lesson.subjectId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, startTime, duration, subject);
+        return Objects.hash(id, number, startTime, duration, subjectId);
     }
 }

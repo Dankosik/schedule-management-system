@@ -1,16 +1,24 @@
 package com.foxminded.university.management.schedule.models;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 public class Lecture {
+    private Long id;
     private Integer number;
-    private Audience audience;
-    private List<Group> groups;
-    private Teacher teacher;
+    private Long audienceId;
+    private Long lessonId;
+    private Long teacherId;
+    private Long scheduleId;
     private LocalDate date;
-    private Lesson lesson;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Integer getNumber() {
         return number;
@@ -20,28 +28,36 @@ public class Lecture {
         this.number = number;
     }
 
-    public Audience getAudience() {
-        return audience;
+    public Long getAudienceId() {
+        return audienceId;
     }
 
-    public void setAudience(Audience audience) {
-        this.audience = audience;
+    public void setAudienceId(Long audienceId) {
+        this.audienceId = audienceId;
     }
 
-    public List<Group> getGroups() {
-        return groups;
+    public Long getLessonId() {
+        return lessonId;
     }
 
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
+    public void setLessonId(Long lessonId) {
+        this.lessonId = lessonId;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
+    public Long getTeacherId() {
+        return teacherId;
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public Long getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(Long scheduleId) {
+        this.scheduleId = scheduleId;
     }
 
     public LocalDate getDate() {
@@ -52,26 +68,18 @@ public class Lecture {
         this.date = date;
     }
 
-    public Lesson getLesson() {
-        return lesson;
-    }
-
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lecture lecture = (Lecture) o;
-        return Objects.equals(number, lecture.number) && Objects.equals(audience, lecture.audience) &&
-                Objects.equals(groups, lecture.groups) && Objects.equals(teacher, lecture.teacher) &&
-                Objects.equals(date, lecture.date) && Objects.equals(lesson, lecture.lesson);
+        return Objects.equals(id, lecture.id) && Objects.equals(number, lecture.number) &&
+                Objects.equals(audienceId, lecture.audienceId) && Objects.equals(lessonId, lecture.lessonId) &&
+                Objects.equals(teacherId, lecture.teacherId) && Objects.equals(scheduleId, lecture.scheduleId) && Objects.equals(date, lecture.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, audience, groups, teacher, date, lesson);
+        return Objects.hash(id, number, audienceId, lessonId, teacherId, scheduleId, date);
     }
 }

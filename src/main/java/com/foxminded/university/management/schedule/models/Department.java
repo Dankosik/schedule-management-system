@@ -1,11 +1,20 @@
 package com.foxminded.university.management.schedule.models;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Department {
+    private Long id;
     private String name;
-    private List<Group> groups;
+    private Long facultyId;
+    private Long universityId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -15,12 +24,20 @@ public class Department {
         this.name = name;
     }
 
-    public List<Group> getGroups() {
-        return groups;
+    public Long getFacultyId() {
+        return facultyId;
     }
 
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
+    public void setFacultyId(Long facultyId) {
+        this.facultyId = facultyId;
+    }
+
+    public Long getUniversityId() {
+        return universityId;
+    }
+
+    public void setUniversityId(Long universityId) {
+        this.universityId = universityId;
     }
 
     @Override
@@ -28,11 +45,12 @@ public class Department {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Department that = (Department) o;
-        return Objects.equals(name, that.name) && Objects.equals(groups, that.groups);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) &&
+                Objects.equals(facultyId, that.facultyId) && Objects.equals(universityId, that.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, groups);
+        return Objects.hash(id, name, facultyId, universityId);
     }
 }
