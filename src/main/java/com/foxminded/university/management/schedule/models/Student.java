@@ -41,16 +41,24 @@ public class Student extends Person {
         this.courseNumber = courseNumber;
     }
 
+    public Long getUniversityId() {
+        return universityId;
+    }
+
+    public void setUniversityId(Long universityId) {
+        this.universityId = universityId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Objects.equals(id, student.id) && Objects.equals(groupId, student.groupId) && Objects.equals(facultyId, student.facultyId) && Objects.equals(courseNumber, student.courseNumber) && Objects.equals(universityId, student.universityId);
+        return Objects.equals(id, student.id) && Objects.equals(courseNumber, student.courseNumber) && Objects.equals(groupId, student.groupId) && Objects.equals(facultyId, student.facultyId) && Objects.equals(universityId, student.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, groupId, facultyId, courseNumber, universityId);
+        return Objects.hash(id, courseNumber, groupId, facultyId, universityId);
     }
 }
