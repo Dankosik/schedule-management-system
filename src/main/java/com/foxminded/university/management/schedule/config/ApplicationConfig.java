@@ -1,4 +1,4 @@
-package com.foxminded.university.management.schedule;
+package com.foxminded.university.management.schedule.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
