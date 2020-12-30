@@ -6,11 +6,11 @@ import java.util.Objects;
 public class Lecture {
     private Long id;
     private Integer number;
+    private LocalDate date;
     private Long audienceId;
     private Long lessonId;
     private Long teacherId;
     private Long scheduleId;
-    private LocalDate date;
 
     public Long getId() {
         return id;

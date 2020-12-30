@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class Group {
     private Long id;
+    private String name;
     private Long lectureId;
     private Long departmentId;
     private Long facultyId;
-    private String name;
     private Long universityId;
 
     public Long getId() {
