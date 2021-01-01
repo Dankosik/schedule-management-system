@@ -1,7 +1,7 @@
 ALTER TABLE university
     ADD COLUMN schedule_id BIGINT NOT NULL REFERENCES schedule (id) ON DELETE CASCADE;
 
-ALTER TABLE audience
+ALTER TABLE audiences
     ADD COLUMN number        INT    NOT NULL,
     ADD COLUMN capacity      INT    NOT NULL,
     ADD COLUMN university_id BIGINT NOT NULL REFERENCES university (id) ON DELETE CASCADE;
@@ -18,7 +18,7 @@ ALTER TABLE departments
 ALTER TABLE lectures
     ADD COLUMN number      INT    NOT NULL,
     ADD COLUMN date        DATE   NOT NULL,
-    ADD COLUMN audience_id BIGINT NOT NULL REFERENCES audience (id) ON DELETE CASCADE,
+    ADD COLUMN audience_id BIGINT NOT NULL REFERENCES audiences (id) ON DELETE CASCADE,
     ADD COLUMN lesson_id   BIGINT NOT NULL REFERENCES lessons (id) ON DELETE CASCADE,
     ADD COLUMN teacher_id  BIGINT NOT NULL REFERENCES teachers (id) ON DELETE CASCADE,
     ADD COLUMN schedule_id BIGINT NOT NULL REFERENCES schedule (id) ON DELETE CASCADE;

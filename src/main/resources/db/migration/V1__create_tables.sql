@@ -8,7 +8,7 @@ create table university
 
 );
 
-create table audience
+create table audiences
 (
 
 );
