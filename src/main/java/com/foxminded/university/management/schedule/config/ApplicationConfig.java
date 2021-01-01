@@ -12,18 +12,17 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.foxminded.university.management.schedule")
-@PropertySource("classpath:database.properties")
+@PropertySource("classpath:application.properties")
 public class ApplicationConfig {
     @Autowired
     private Environment environment;
 
-    @Bean
+    @Bean(value = "dataSource")
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(environment.getProperty("url"));
-        dataSource.setUsername(environment.getProperty("dbuser"));
-        dataSource.setPassword(environment.getProperty("dbpassword"));
-        dataSource.setDriverClassName(environment.getProperty("driver"));
+        dataSource.setUrl(environment.getProperty("spring.datasource.url"));
+        dataSource.setUsername(environment.getProperty("spring.datasource.username"));
+        dataSource.setPassword(environment.getProperty("spring.datasource.password"));
         return dataSource;
     }
 }
