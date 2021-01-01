@@ -8,6 +8,22 @@ public class Audience {
     private Integer capacity;
     private Long universityId;
 
+    public Audience() {
+    }
+
+    public Audience(Long id, Integer number, Integer capacity, Long universityId) {
+        this.id = id;
+        this.number = number;
+        this.capacity = capacity;
+        this.universityId = universityId;
+    }
+
+    public Audience(Integer number, Integer capacity, Long universityId) {
+        this.number = number;
+        this.capacity = capacity;
+        this.universityId = universityId;
+    }
+
     public Long getId() {
         return id;
     }
