@@ -1,9 +1,9 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.dao.row_mappers.AudienceRowMapper;
 import com.foxminded.university.management.schedule.models.Audience;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
@@ -12,16 +12,7 @@ import java.util.*;
 
 @Component
 public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience> {
-     JdbcTemplate jdbcTemplate;
-
-    private final RowMapper<Audience> audienceRowMapper = (resultSet, rowColumn) -> {
-        Audience audience = new Audience();
-        audience.setId(resultSet.getLong("id"));
-        audience.setNumber(resultSet.getInt("number"));
-        audience.setCapacity(resultSet.getInt("capacity"));
-        audience.setUniversityId(resultSet.getLong("university_id"));
-        return audience;
-    };
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public AudienceDao(DataSource dataSource) {
@@ -43,19 +34,19 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience> 
     @Override
     protected Audience update(Audience audience) {
         this.jdbcTemplate.update("UPDATE audiences SET number = ?, capacity = ?,  university_id = ? WHERE id = ?",
-                audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
+                audience.getNumber(), audience.getCapacity(), audience.getUniversityId(), audience.getId());
         return new Audience(audience.getId(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
     }
 
     @Override
     public Optional<Audience> getById(Long id) {
-        return this.jdbcTemplate.query("SELECT * FROM audiences WHERE id = ?", audienceRowMapper, new Object[]{id})
+        return this.jdbcTemplate.query("SELECT * FROM audiences WHERE id = ?", new AudienceRowMapper(), new Object[]{id})
                 .stream().findAny();
     }
 
     @Override
     public List<Audience> getAll() {
-        return this.jdbcTemplate.query("SELECT * FROM audiences", audienceRowMapper);
+        return this.jdbcTemplate.query("SELECT * FROM audiences", new AudienceRowMapper());
     }
 
     @Override

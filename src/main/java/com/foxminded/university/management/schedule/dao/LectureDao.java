@@ -5,10 +5,12 @@ import com.foxminded.university.management.schedule.models.Lecture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.*;
 
+@Component
 public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture> {
     private final JdbcTemplate jdbcTemplate;
 

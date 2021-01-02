@@ -7,10 +7,12 @@ import com.foxminded.university.management.schedule.models.University;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.*;
 
+@Component
 public class UniversityDao extends AbstractDao<University> implements Dao<University>{
     private final JdbcTemplate jdbcTemplate;
 
