@@ -8,6 +8,23 @@ public class Department {
     private Long facultyId;
     private Long universityId;
 
+    public Department() {
+
+    }
+
+    public Department(Long id, String name, Long facultyId, Long universityId) {
+        this.id = id;
+        this.name = name;
+        this.facultyId = facultyId;
+        this.universityId = universityId;
+    }
+
+    public Department(String name, Long facultyId, Long universityId) {
+        this.name = name;
+        this.facultyId = facultyId;
+        this.universityId = universityId;
+    }
+
     public Long getId() {
         return id;
     }

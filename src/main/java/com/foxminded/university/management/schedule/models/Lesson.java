@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.models;
 
+import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -7,9 +8,28 @@ import java.util.Objects;
 public class Lesson {
     private Long id;
     private Integer number;
-    private LocalTime startTime;
+    private Time startTime;
     private Duration duration;
     private Long subjectId;
+
+    public Lesson() {
+
+    }
+
+    public Lesson(Long id, Integer number, Time startTime, Duration duration, Long subjectId) {
+        this.id = id;
+        this.number = number;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.subjectId = subjectId;
+    }
+
+    public Lesson(Integer number, Time startTime, Duration duration, Long subjectId) {
+        this.number = number;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.subjectId = subjectId;
+    }
 
     public Long getId() {
         return id;
@@ -27,11 +47,11 @@ public class Lesson {
         this.number = number;
     }
 
-    public LocalTime getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 

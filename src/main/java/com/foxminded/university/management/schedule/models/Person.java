@@ -6,6 +6,15 @@ public class Person {
     private String lastName;
     private String middleName;
 
+    public Person() {
+    }
+
+    public Person(String firstName, String lastName, String middleName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
+    }
+
     public String getFirstName() {
         return firstName;
     }

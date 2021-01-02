@@ -9,6 +9,26 @@ public class Student extends Person {
     private Long facultyId;
     private Long universityId;
 
+    public Student() {
+    }
+
+    public Student(Long id, String firstName, String lastName, String middleName, Integer courseNumber, Long groupId, Long facultyId, Long universityId) {
+        super(firstName, lastName, middleName);
+        this.id = id;
+        this.courseNumber = courseNumber;
+        this.groupId = groupId;
+        this.facultyId = facultyId;
+        this.universityId = universityId;
+    }
+
+    public Student(String firstName, String lastName, String middleName, Integer courseNumber, Long groupId, Long facultyId, Long universityId) {
+        super(firstName, lastName, middleName);
+        this.courseNumber = courseNumber;
+        this.groupId = groupId;
+        this.facultyId = facultyId;
+        this.universityId = universityId;
+    }
+
     public Long getId() {
         return id;
     }

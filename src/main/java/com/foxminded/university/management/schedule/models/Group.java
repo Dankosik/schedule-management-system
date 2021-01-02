@@ -10,6 +10,26 @@ public class Group {
     private Long facultyId;
     private Long universityId;
 
+    public Group() {
+    }
+
+    public Group(Long id, String name, Long lectureId, Long departmentId, Long facultyId, Long universityId) {
+        this.id = id;
+        this.name = name;
+        this.lectureId = lectureId;
+        this.departmentId = departmentId;
+        this.facultyId = facultyId;
+        this.universityId = universityId;
+    }
+
+    public Group(String name, Long lectureId, Long departmentId, Long facultyId, Long universityId) {
+        this.name = name;
+        this.lectureId = lectureId;
+        this.departmentId = departmentId;
+        this.facultyId = facultyId;
+        this.universityId = universityId;
+    }
+
     public Long getId() {
         return id;
     }

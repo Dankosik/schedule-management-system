@@ -5,6 +5,13 @@ import java.util.Objects;
 public class Schedule {
     private Long id;
 
+    public Schedule() {
+    }
+
+    public Schedule(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

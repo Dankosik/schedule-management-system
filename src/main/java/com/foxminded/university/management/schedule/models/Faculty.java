@@ -7,6 +7,21 @@ public class Faculty {
     private String name;
     private Long universityId;
 
+    public Faculty() {
+
+    }
+
+    public Faculty(Long id, String name, Long universityId) {
+        this.id = id;
+        this.name = name;
+        this.universityId = universityId;
+    }
+
+    public Faculty(String name, Long universityId) {
+        this.name = name;
+        this.universityId = universityId;
+    }
+
     public Long getId() {
         return id;
     }

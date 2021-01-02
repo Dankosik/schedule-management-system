@@ -6,6 +6,18 @@ public class University {
     private Long id;
     private Long scheduleId;
 
+    public University() {
+    }
+
+    public University( Long scheduleId) {
+        this.scheduleId = scheduleId;
+    }
+
+    public University(Long id, Long scheduleId) {
+        this.id = id;
+        this.scheduleId = scheduleId;
+    }
+
     public Long getId() {
         return id;
     }

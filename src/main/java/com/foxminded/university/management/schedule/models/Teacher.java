@@ -7,6 +7,23 @@ public class Teacher extends Person {
     private Long studentId;
     private Long universityId;
 
+    public Teacher() {
+
+    }
+
+    public Teacher(Long id, String firstName, String lastName, String middleName, Long studentId, Long universityId) {
+        super(firstName, lastName, middleName);
+        this.id = id;
+        this.studentId = studentId;
+        this.universityId = universityId;
+    }
+
+    public Teacher(String firstName, String lastName, String middleName, Long studentId, Long universityId) {
+        super(firstName, lastName, middleName);
+        this.studentId = studentId;
+        this.universityId = universityId;
+    }
+
     public Long getId() {
         return id;
     }

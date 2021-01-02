@@ -12,6 +12,29 @@ public class Lecture {
     private Long teacherId;
     private Long scheduleId;
 
+    public Lecture() {
+
+    }
+
+    public Lecture(Long id, Integer number, LocalDate date, Long audienceId, Long lessonId, Long teacherId, Long scheduleId) {
+        this.id = id;
+        this.number = number;
+        this.date = date;
+        this.audienceId = audienceId;
+        this.lessonId = lessonId;
+        this.teacherId = teacherId;
+        this.scheduleId = scheduleId;
+    }
+
+    public Lecture(Integer number, LocalDate date, Long audienceId, Long lessonId, Long teacherId, Long scheduleId) {
+        this.number = number;
+        this.date = date;
+        this.audienceId = audienceId;
+        this.lessonId = lessonId;
+        this.teacherId = teacherId;
+        this.scheduleId = scheduleId;
+    }
+
     public Long getId() {
         return id;
     }

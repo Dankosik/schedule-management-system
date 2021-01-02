@@ -9,6 +9,25 @@ public class Subject {
     private Long teacherId;
     private Long universityId;
 
+    public Subject() {
+
+    }
+
+    public Subject(Long id, String name, Long studentId, Long teacherId, Long universityId) {
+        this.id = id;
+        this.name = name;
+        this.studentId = studentId;
+        this.teacherId = teacherId;
+        this.universityId = universityId;
+    }
+
+    public Subject(String name, Long studentId, Long teacherId, Long universityId) {
+        this.name = name;
+        this.studentId = studentId;
+        this.teacherId = teacherId;
+        this.universityId = universityId;
+    }
+
     public Long getId() {
         return id;
     }
