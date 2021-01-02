@@ -1,8 +1,5 @@
 package com.foxminded.university.management.schedule.dao;
 
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 

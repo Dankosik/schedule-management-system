@@ -9,7 +9,7 @@ public class University {
     public University() {
     }
 
-    public University( Long scheduleId) {
+    public University(Long scheduleId) {
         this.scheduleId = scheduleId;
     }
 

@@ -1,8 +1,5 @@
 package com.foxminded.university.management.schedule.dao;
 
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-
 import java.lang.reflect.InvocationTargetException;
 
 public abstract class AbstractDao<T> implements Dao<T> {

@@ -55,7 +55,7 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group> {
 
     @Override
     public boolean delete(Group group) {
-       return this.jdbcTemplate.update("DELETE FROM groups WHERE id = ?", group.getId()) == 1;
+        return this.jdbcTemplate.update("DELETE FROM groups WHERE id = ?", group.getId()) == 1;
     }
 
     @Override

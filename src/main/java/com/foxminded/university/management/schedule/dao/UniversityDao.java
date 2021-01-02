@@ -1,8 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.StudentRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.UniversityRowMapper;
-import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.models.University;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +11,7 @@ import javax.sql.DataSource;
 import java.util.*;
 
 @Component
-public class UniversityDao extends AbstractDao<University> implements Dao<University>{
+public class UniversityDao extends AbstractDao<University> implements Dao<University> {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired

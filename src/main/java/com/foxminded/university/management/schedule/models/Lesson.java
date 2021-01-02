@@ -2,7 +2,6 @@ package com.foxminded.university.management.schedule.models;
 
 import java.sql.Time;
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Objects;
 
 public class Lesson {
