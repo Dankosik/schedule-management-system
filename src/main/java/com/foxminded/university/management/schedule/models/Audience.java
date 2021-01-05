@@ -69,4 +69,14 @@ public class Audience {
     public int hashCode() {
         return Objects.hash(id, number, capacity, universityId);
     }
+
+    @Override
+    public String toString() {
+        return "Audience{" +
+                "id=" + id +
+                ", number=" + number +
+                ", capacity=" + capacity +
+                ", universityId=" + universityId +
+                '}';
+    }
 }

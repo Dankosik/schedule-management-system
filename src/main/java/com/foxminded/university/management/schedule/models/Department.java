@@ -70,4 +70,14 @@ public class Department {
     public int hashCode() {
         return Objects.hash(id, name, facultyId, universityId);
     }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", facultyId=" + facultyId +
+                ", universityId=" + universityId +
+                '}';
+    }
 }
