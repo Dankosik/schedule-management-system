@@ -92,4 +92,16 @@ public class Group {
     public int hashCode() {
         return Objects.hash(id, lectureId, departmentId, facultyId, name, universityId);
     }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lectureId=" + lectureId +
+                ", departmentId=" + departmentId +
+                ", facultyId=" + facultyId +
+                ", universityId=" + universityId +
+                '}';
+    }
 }
