@@ -1,12 +1,12 @@
 package com.foxminded.university.management.schedule.models;
 
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.Objects;
 
 public class Lecture {
     private Long id;
     private Integer number;
-    private LocalDate date;
+    private Date date;
     private Long audienceId;
     private Long lessonId;
     private Long teacherId;
@@ -16,7 +16,7 @@ public class Lecture {
 
     }
 
-    public Lecture(Long id, Integer number, LocalDate date, Long audienceId, Long lessonId, Long teacherId, Long scheduleId) {
+    public Lecture(Long id, Integer number, Date date, Long audienceId, Long lessonId, Long teacherId, Long scheduleId) {
         this.id = id;
         this.number = number;
         this.date = date;
@@ -26,7 +26,7 @@ public class Lecture {
         this.scheduleId = scheduleId;
     }
 
-    public Lecture(Integer number, LocalDate date, Long audienceId, Long lessonId, Long teacherId, Long scheduleId) {
+    public Lecture(Integer number, Date date, Long audienceId, Long lessonId, Long teacherId, Long scheduleId) {
         this.number = number;
         this.date = date;
         this.audienceId = audienceId;
@@ -83,11 +83,11 @@ public class Lecture {
         this.scheduleId = scheduleId;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -104,5 +104,18 @@ public class Lecture {
     @Override
     public int hashCode() {
         return Objects.hash(id, number, audienceId, lessonId, teacherId, scheduleId, date);
+    }
+
+    @Override
+    public String toString() {
+        return "Lecture{" +
+                "id=" + id +
+                ", number=" + number +
+                ", date=" + date +
+                ", audienceId=" + audienceId +
+                ", lessonId=" + lessonId +
+                ", teacherId=" + teacherId +
+                ", scheduleId=" + scheduleId +
+                '}';
     }
 }
