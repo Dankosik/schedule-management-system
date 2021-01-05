@@ -96,11 +96,10 @@ class AudienceDaoTest {
                 new Audience(5L, 305, 55, 1L),
                 new Audience(1L, 400, 15, 1L),
                 new Audience(2L, 401, 60, 1L));
-
         audienceDao.delete(new Audience(1L, 301, 50, 1L));
         audienceDao.delete(new Audience(2L, 302, 75, 1L));
         audienceDao.saveAll(audiences);
-        assertEquals(expected, audienceDao.getAll());
 
+        assertEquals(expected, audienceDao.getAll());
     }
 }
