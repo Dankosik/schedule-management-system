@@ -109,15 +109,15 @@ ALTER TABLE departments
 ALTER TABLE lectures
     ADD COLUMN number      INT   ,
     ADD COLUMN date        DATE   ,
-    ADD COLUMN audience_id BIGINT  REFERENCES audiences (id) ON DELETE CASCADE,
-    ADD COLUMN lesson_id   BIGINT  REFERENCES lessons (id) ON DELETE CASCADE,
-    ADD COLUMN teacher_id  BIGINT  REFERENCES teachers (id) ON DELETE CASCADE,
+    ADD COLUMN audience_id BIGINT  REFERENCES audiences (id) ON DELETE SET NULL,
+    ADD COLUMN lesson_id   BIGINT  REFERENCES lessons (id) ON DELETE SET NULL,
+    ADD COLUMN teacher_id  BIGINT  REFERENCES teachers (id) ON DELETE SET NULL,
     ADD COLUMN schedule_id BIGINT  REFERENCES schedule (id) ON DELETE CASCADE;
 
 ALTER TABLE groups
     ADD COLUMN name          varchar(256) ,
-    ADD COLUMN lecture_id    BIGINT        REFERENCES lectures (id) ON DELETE CASCADE,
-    ADD COLUMN department_id BIGINT        REFERENCES departments (id) ON DELETE CASCADE,
+    ADD COLUMN lecture_id    BIGINT        REFERENCES lectures (id) ON DELETE SET NULL,
+    ADD COLUMN department_id BIGINT        REFERENCES departments (id) ON DELETE SET NULL,
     ADD COLUMN faculty_id    BIGINT        REFERENCES faculties (id) ON DELETE CASCADE,
     ADD COLUMN university_id BIGINT        REFERENCES university (id) ON DELETE CASCADE;
 
@@ -126,27 +126,27 @@ ALTER TABLE students
     ADD COLUMN last_name     varchar(50),
     ADD COLUMN middle_name   varchar(50),
     ADD COLUMN course_number INT         ,
-    ADD COLUMN group_id      BIGINT      REFERENCES groups (id) ON DELETE CASCADE,
-    ADD COLUMN faculty_id    BIGINT      REFERENCES faculties (id) ON DELETE CASCADE,
+    ADD COLUMN group_id      BIGINT      REFERENCES groups (id) ON DELETE SET NULL,
+    ADD COLUMN faculty_id    BIGINT      REFERENCES faculties (id) ON DELETE SET NULL,
     ADD COLUMN university_id BIGINT       REFERENCES university (id) ON DELETE CASCADE;
 
 ALTER TABLE lessons
     ADD COLUMN number     INT      ,
     ADD COLUMN start_time TIME     ,
     ADD COLUMN duration   INTERVAL,
-    ADD COLUMN subject_id BIGINT    REFERENCES subjects (id) ON DELETE CASCADE;
+    ADD COLUMN subject_id BIGINT    REFERENCES subjects (id) ON DELETE SET NULL;
 
 ALTER TABLE subjects
     ADD COLUMN name          varchar(256) ,
-    ADD COLUMN student_id    BIGINT        REFERENCES students (id) ON DELETE CASCADE,
-    ADD COLUMN teacher_id    BIGINT        REFERENCES teachers (id) ON DELETE CASCADE,
+    ADD COLUMN student_id    BIGINT        REFERENCES students (id) ON DELETE SET NULL,
+    ADD COLUMN teacher_id    BIGINT        REFERENCES teachers (id) ON DELETE SET NULL,
     ADD COLUMN university_id BIGINT        REFERENCES university (id) ON DELETE CASCADE;
 
 ALTER TABLE teachers
     ADD COLUMN first_name    varchar(50) ,
     ADD COLUMN last_name     varchar(50) ,
     ADD COLUMN middle_name   varchar(50) ,
-    ADD COLUMN student_id    BIGINT       REFERENCES students (id) ON DELETE CASCADE,
+    ADD COLUMN student_id    BIGINT       REFERENCES students (id) ON DELETE SET NULL,
     ADD COLUMN university_id BIGINT       REFERENCES university (id) ON DELETE CASCADE;
 
 -- insert test id to tables
@@ -218,6 +218,7 @@ update students set first_name = 'Earl', last_name = 'Djekic', middle_name = 'Tr
 update lessons set number = 1, start_time = '8:30:00', duration = '1 hour 30 minute', subject_id = 1 where id = 1;
 update lessons set number = 2, start_time = '10:10:00', duration = '1 hour 30 minute', subject_id = 2 where id = 2;
 update lessons set number = 3, start_time = '11:50:00', duration = '1 hour 30 minute', subject_id = 3 where id = 3;
+update lessons set number = 3, start_time = '13:20:00', duration = '1 hour 30 minute', subject_id = 3 where id = 4;
 
 update lectures set number = 1, date = '1/1/2021', audience_id = 1, lesson_id = 1, teacher_id = 1, schedule_id = 1 where id = 1;
 update lectures set number = 2, date = '1/1/2021', audience_id = 2, lesson_id = 2, teacher_id = 2, schedule_id = 2 where id = 2;
