@@ -30,7 +30,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void shouldCreateNewAudience() {
+    void shouldCreateNewStudent() {
         Student student = new Student("John", "Jackson", "Jackson", 1, 2L, 1L, 1L);
         studentDao.delete(studentDao.getById(1L).get());
         studentDao.save(student);
@@ -40,7 +40,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void shouldUpdateAudience() {
+    void shouldUpdateStudent() {
         Student student = new Student(1L, "John", "Jackson", "Jackson", 1, 2L, 1L, 1L);
         assertNotEquals(student, studentDao.getById(1L).get());
         studentDao.save(student);
@@ -49,7 +49,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void shouldReturnAudienceWithIdOne() {
+    void shouldReturnStudentWithIdOne() {
         Student expected = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L);
         Student actual = studentDao.getById(1L).get();
 
@@ -57,7 +57,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void shouldReturnListOfAudiences() {
+    void shouldReturnListOfStudents() {
         List<Student> expected = List.of(
                 new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
                 new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
@@ -70,7 +70,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void shouldDeleteAudience() {
+    void shouldDeleteStudent() {
         Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L);
         List<Student> expected = List.of(
                 new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
@@ -83,7 +83,7 @@ class StudentDaoTest {
         assertEquals(expected, actual);
     }
     @Test
-    void shouldSaveListOfAudiences() {
+    void shouldSaveListOfStudents() {
         List<Student> audiences = List.of(
                 new Student("John", "Jackson", "Jackson", 1, 2L, 1L, 1L),
                 new Student("Mike", "Conor", "Conor", 2, 2L, 1L, 1L));

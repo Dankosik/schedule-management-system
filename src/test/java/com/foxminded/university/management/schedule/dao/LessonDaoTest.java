@@ -73,7 +73,7 @@ class LessonDaoTest {
     }
 
     @Test
-    void shouldDeleteAudience() {
+    void shouldDeleteLesson() {
         Lesson lesson = new Lesson(1L,1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
         List<Lesson> expected = List.of(
                 new Lesson(2L,2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
@@ -86,7 +86,7 @@ class LessonDaoTest {
     }
 
     @Test
-    void shouldSaveListOfAudiences() {
+    void shouldSaveListOfLessons() {
         List<Lesson> lessons = List.of(
                 new Lesson(4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1L),
                 new Lesson(5, Time.valueOf(LocalTime.of(15, 30, 0)), Duration.ofMinutes(90), 2L));
