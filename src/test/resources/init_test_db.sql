@@ -218,7 +218,7 @@ update students set first_name = 'Earl', last_name = 'Djekic', middle_name = 'Tr
 update lessons set number = 1, start_time = '8:30:00', duration = '1 hour 30 minute', subject_id = 1 where id = 1;
 update lessons set number = 2, start_time = '10:10:00', duration = '1 hour 30 minute', subject_id = 2 where id = 2;
 update lessons set number = 3, start_time = '11:50:00', duration = '1 hour 30 minute', subject_id = 3 where id = 3;
-update lessons set number = 3, start_time = '13:20:00', duration = '1 hour 30 minute', subject_id = 3 where id = 4;
+update lessons set number = 4, start_time = '13:20:00', duration = '1 hour 30 minute', subject_id = 3 where id = 4;
 
 update lectures set number = 1, date = '1/1/2021', audience_id = 1, lesson_id = 1, teacher_id = 1, schedule_id = 1 where id = 1;
 update lectures set number = 2, date = '1/1/2021', audience_id = 2, lesson_id = 2, teacher_id = 2, schedule_id = 2 where id = 2;
