@@ -2,12 +2,14 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.LessonRowMapper;
 import com.foxminded.university.management.schedule.models.Lesson;
+import org.postgresql.util.PGInterval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.*;
 
 @Component
@@ -35,9 +37,10 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson> {
     @Override
     protected Lesson update(Lesson lesson) {
         this.jdbcTemplate.update("UPDATE lessons SET number = ?, start_time = ?,  duration = ?, subject_id = ? WHERE id = ?",
-                lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(), lesson.getSubjectId(), lesson.getId());
+                lesson.getNumber(), lesson.getStartTime(), convertDurationToHourAndMinutePgInterval(lesson), lesson.getSubjectId(), lesson.getId());
         return new Lesson(lesson.getId(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(), lesson.getSubjectId());
     }
+
 
     @Override
     public Optional<Lesson> getById(Long id) {
@@ -62,5 +65,17 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson> {
             result.add(save(lesson));
         }
         return result;
+    }
+
+    private PGInterval convertDurationToHourAndMinutePgInterval(Lesson lesson) {
+        long minutes = lesson.getDuration().toMinutes();
+        PGInterval pgInterval;
+        try {
+            pgInterval = new PGInterval(minutes / 60 + " hour " + minutes % 60 + " minute");
+            return pgInterval;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("Cant cast duration of lesson to PGInterval");
     }
 }
