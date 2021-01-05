@@ -12,6 +12,7 @@ public class LectureRowMapper implements RowMapper<Lecture> {
         Lecture lecture = new Lecture();
         lecture.setId(resultSet.getLong("id"));
         lecture.setNumber(resultSet.getInt("number"));
+        lecture.setDate(resultSet.getDate("date"));
         lecture.setAudienceId(resultSet.getLong("audience_id"));
         lecture.setLessonId(resultSet.getLong("lesson_id"));
         lecture.setTeacherId(resultSet.getLong("teacher_id"));
