@@ -28,7 +28,7 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience> 
         params.put("capacity", audience.getCapacity());
         params.put("university_id", audience.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Audience((long) newId.intValue(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
+        return new Audience(newId.longValue(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
     }
 
     @Override
