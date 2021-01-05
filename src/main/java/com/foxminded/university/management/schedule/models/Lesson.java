@@ -83,4 +83,16 @@ public class Lesson {
     public int hashCode() {
         return Objects.hash(id, number, startTime, duration, subjectId);
     }
+
+    @Override
+    public String
+    toString() {
+        return "Lesson{" +
+                "id=" + id +
+                ", number=" + number +
+                ", startTime=" + startTime +
+                ", duration=" + duration +
+                ", subjectId=" + subjectId +
+                '}';
+    }
 }
