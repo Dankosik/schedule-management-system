@@ -1,6 +1,8 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.dao.row_mappers.StudentRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.TeacherRowMapper;
+import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.models.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -71,5 +73,13 @@ public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher> {
             result.add(save(teacher));
         }
         return result;
+    }
+
+    public List<Teacher> getTeachersByUniversityId(Long id){
+        return this.jdbcTemplate.query("SELECT * FROM teachers WHERE university_id = ?", new TeacherRowMapper(), id);
+    }
+
+    public List<Teacher> getTeachersByStudentId(Long id){
+        return this.jdbcTemplate.query("SELECT * FROM teachers WHERE student_id = ?", new TeacherRowMapper(), id);
     }
 }
