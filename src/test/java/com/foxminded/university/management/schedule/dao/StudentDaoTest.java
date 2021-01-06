@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.models.Schedule;
 import com.foxminded.university.management.schedule.models.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -142,11 +141,11 @@ class StudentDaoTest {
 
     @Test
     void shouldThrowExceptionIfStudentNotExist() {
-        assertThrows(NoSuchElementException.class, ()->studentDao.getById(21L).get());
+        assertThrows(NoSuchElementException.class, () -> studentDao.getById(21L).get());
     }
 
     @Test
     void shouldReturnFalseIfStudentNotExist() {
-        assertFalse(()->studentDao.delete( new Student(21L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L)));
+        assertFalse(() -> studentDao.delete(new Student(21L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L)));
     }
 }

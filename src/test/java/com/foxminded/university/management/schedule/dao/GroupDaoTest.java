@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -134,11 +133,11 @@ class GroupDaoTest {
 
     @Test
     void shouldThrowExceptionIfGroupNotExist() {
-        assertThrows(NoSuchElementException.class, ()->groupDao.getById(21L).get());
+        assertThrows(NoSuchElementException.class, () -> groupDao.getById(21L).get());
     }
 
     @Test
     void shouldReturnFalseIfGroupNotExist() {
-        assertFalse(()->groupDao.delete(new Group(21L, "AB-91", 1L, 1L, 1L, 1L)));
+        assertFalse(() -> groupDao.delete(new Group(21L, "AB-91", 1L, 1L, 1L, 1L)));
     }
 }
