@@ -1,6 +1,8 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.dao.row_mappers.StudentRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.SubjectRowMapper;
+import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.models.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -64,5 +66,21 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject> {
             result.add(save(subject));
         }
         return result;
+    }
+
+    public List<Subject> getSubjectsByTeacherId(Long id){
+        return this.jdbcTemplate.query("SELECT * FROM subjects " +
+                "JOIN subjects_teachers ON subjects_teachers.subject_id = subjects.id " +
+                "WHERE subjects_teachers.teacher_id = ?", new SubjectRowMapper(), id);
+    }
+
+    public List<Subject> getSubjectsByStudentId(Long id){
+        return this.jdbcTemplate.query("SELECT * FROM subjects " +
+                "JOIN subjects_students ON subjects_students.subject_id = subjects.id " +
+                "WHERE subjects_students.student_id = ?", new SubjectRowMapper(), id);
+    }
+
+    public List<Subject> getSubjectsByUniversityId(Long id){
+        return this.jdbcTemplate.query("SELECT * FROM subjects WHERE university_id = ?", new SubjectRowMapper(), id);
     }
 }
