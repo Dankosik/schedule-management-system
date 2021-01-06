@@ -32,17 +32,17 @@ class SubjectDaoTest {
 
     @Test
     void shouldCreateNewSubject() {
-        Subject subject = new Subject("Art",  1L);
+        Subject subject = new Subject("Art", 1L);
         subjectDao.delete(subjectDao.getById(1L).get());
         subjectDao.save(subject);
-        Subject expected = new Subject(1L, "Art",  1L);
+        Subject expected = new Subject(1L, "Art", 1L);
 
         assertEquals(expected, subjectDao.getById(1L).get());
     }
 
     @Test
     void shouldUpdateSubject() {
-        Subject subject = new Subject(1L,"Art",  1L);
+        Subject subject = new Subject(1L, "Art", 1L);
         assertNotEquals(subject, subjectDao.getById(1L).get());
         subjectDao.save(subject);
 
@@ -51,7 +51,7 @@ class SubjectDaoTest {
 
     @Test
     void shouldReturnSubjectWithIdOne() {
-        Subject expected = new Subject(1L,"Math",  1L);
+        Subject expected = new Subject(1L, "Math", 1L);
         Subject actual = subjectDao.getById(1L).get();
 
         assertEquals(expected, actual);
@@ -60,9 +60,9 @@ class SubjectDaoTest {
     @Test
     void shouldReturnListOfSubjects() {
         List<Subject> expected = List.of(
-                new Subject(1L,"Math",  1L),
-                new Subject(2L,"Physics",  1L),
-                new Subject(3L,"Programming",  1L));
+                new Subject(1L, "Math", 1L),
+                new Subject(2L, "Physics", 1L),
+                new Subject(3L, "Programming", 1L));
         List<Subject> actual = subjectDao.getAll();
 
         assertEquals(expected, actual);
@@ -70,10 +70,10 @@ class SubjectDaoTest {
 
     @Test
     void shouldDeleteSubject() {
-        Subject subject =  new Subject(1L,"Math",  1L);
+        Subject subject = new Subject(1L, "Math", 1L);
         List<Subject> expected = List.of(
-                new Subject(2L,"Physics",  1L),
-                new Subject(3L,"Programming",  1L));
+                new Subject(2L, "Physics", 1L),
+                new Subject(3L, "Programming", 1L));
         assertTrue(subjectDao.delete(subject));
         List<Subject> actual = subjectDao.getAll();
 
@@ -83,46 +83,46 @@ class SubjectDaoTest {
     @Test
     void shouldSaveListOfAudiences() {
         List<Subject> subjects = List.of(
-                new Subject("Art",  1L),
-                new Subject("Music",  1L));
+                new Subject("Art", 1L),
+                new Subject("Music", 1L));
 
         List<Subject> expected = List.of(
-                new Subject(3L,"Programming",  1L),
-                new Subject(1L,"Art",  1L),
-                new Subject(2L,"Music",  1L));
-        subjectDao.delete( new Subject(1L,"Math",  1L));
-        subjectDao.delete( new Subject(2L,"Physics",  1L));
+                new Subject(3L, "Programming", 1L),
+                new Subject(1L, "Art", 1L),
+                new Subject(2L, "Music", 1L));
+        subjectDao.delete(new Subject(1L, "Math", 1L));
+        subjectDao.delete(new Subject(2L, "Physics", 1L));
         subjectDao.saveAll(subjects);
 
         assertEquals(expected, subjectDao.getAll());
     }
 
     @Test
-    void shouldReturnListOfSubjectsWithUniversityIdOne(){
+    void shouldReturnListOfSubjectsWithUniversityIdOne() {
         List<Subject> expected = List.of(
-                new Subject(1L,"Math",  1L),
-                new Subject(2L,"Physics",  1L),
-                new Subject(3L,"Programming",  1L));
+                new Subject(1L, "Math", 1L),
+                new Subject(2L, "Physics", 1L),
+                new Subject(3L, "Programming", 1L));
         List<Subject> actual = subjectDao.getSubjectsByUniversityId(1L);
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void shouldReturnListOfSubjectsWithStudentIdOne(){
+    void shouldReturnListOfSubjectsWithStudentIdOne() {
         List<Subject> expected = List.of(
-                new Subject(1L,"Math",  1L),
-                new Subject(3L,"Programming",  1L));
+                new Subject(1L, "Math", 1L),
+                new Subject(3L, "Programming", 1L));
         List<Subject> actual = subjectDao.getSubjectsByStudentId(1L);
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void shouldReturnListOfSubjectsWithTeacherIdOne(){
+    void shouldReturnListOfSubjectsWithTeacherIdOne() {
         List<Subject> expected = List.of(
-                new Subject(1L,"Math",  1L),
-                new Subject(2L,"Physics",  1L));
+                new Subject(1L, "Math", 1L),
+                new Subject(2L, "Physics", 1L));
         List<Subject> actual = subjectDao.getSubjectsByTeacherId(1L);
 
         assertEquals(expected, actual);

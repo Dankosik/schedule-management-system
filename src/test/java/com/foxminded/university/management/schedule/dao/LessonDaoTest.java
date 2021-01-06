@@ -45,7 +45,7 @@ class LessonDaoTest {
 
     @Test
     void shouldUpdateLesson() {
-        Lesson lesson = new Lesson(1L,1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 2L);
+        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 2L);
         assertNotEquals(lesson, lessonDao.getById(1L).get());
         lessonDao.save(lesson);
 
@@ -54,7 +54,7 @@ class LessonDaoTest {
 
     @Test
     void shouldReturnLessonWithIdOne() {
-        Lesson expected = new Lesson(1L,1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
+        Lesson expected = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
         Lesson actual = lessonDao.getById(1L).get();
 
         assertEquals(expected, actual);
@@ -63,10 +63,10 @@ class LessonDaoTest {
     @Test
     void shouldReturnListOfLessons() {
         List<Lesson> expected = List.of(
-                new Lesson(1L,1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L,2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
-                new Lesson(3L,3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 3L),
-                new Lesson(4L,4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 3L));
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
+                new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 3L),
+                new Lesson(4L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 3L));
         List<Lesson> actual = lessonDao.getAll();
 
         assertEquals(expected, actual);
@@ -74,10 +74,10 @@ class LessonDaoTest {
 
     @Test
     void shouldDeleteLesson() {
-        Lesson lesson = new Lesson(1L,1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
+        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
         List<Lesson> expected = List.of(
-                new Lesson(2L,2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
-                new Lesson(3L,3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 3L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
+                new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 3L),
                 new Lesson(4L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 3L));
         assertTrue(lessonDao.delete(lesson));
         List<Lesson> actual = lessonDao.getAll();
@@ -104,9 +104,9 @@ class LessonDaoTest {
     }
 
     @Test
-    void shouldReturnListOfLessonsWithSubjectIdOne(){
+    void shouldReturnListOfLessonsWithSubjectIdOne() {
         List<Lesson> expected = List.of(
-                new Lesson(1L,1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
         List<Lesson> actual = lessonDao.getLessonsBySubjectId(1L);
 
         assertEquals(expected, actual);

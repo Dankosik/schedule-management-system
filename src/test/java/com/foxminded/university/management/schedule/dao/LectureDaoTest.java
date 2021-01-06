@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,14 +87,14 @@ class LectureDaoTest {
     @Test
     void shouldSaveListOfLectures() {
         List<Lecture> audiences = List.of(
-                new Lecture( 222, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
-                new Lecture( 223, Date.valueOf(LocalDate.of(2021, 1, 2)), 2L, 2L, 2L, 2L));
+                new Lecture(222, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(223, Date.valueOf(LocalDate.of(2021, 1, 2)), 2L, 2L, 2L, 2L));
 
         List<Lecture> expected = List.of(
                 new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 3L, 1L, 1L),
                 new Lecture(4L, 4, Date.valueOf(LocalDate.of(2021, 2, 1)), 4L, 4L, 2L, 2L),
-                new Lecture( 1L,222, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
-                new Lecture( 2L, 223, Date.valueOf(LocalDate.of(2021, 1, 2)), 2L, 2L, 2L, 2L));
+                new Lecture(1L, 222, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 223, Date.valueOf(LocalDate.of(2021, 1, 2)), 2L, 2L, 2L, 2L));
         lectureDao.delete(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L));
         lectureDao.delete(new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 2L, 2L));
         lectureDao.saveAll(audiences);
@@ -104,7 +103,7 @@ class LectureDaoTest {
     }
 
     @Test
-    void shouldReturnListOfLecturesWithAudienceIdOne(){
+    void shouldReturnListOfLecturesWithAudienceIdOne() {
         List<Lecture> expected = List.of(
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L));
         List<Lecture> actual = lectureDao.getLecturesByAudienceId(1L);
@@ -113,7 +112,7 @@ class LectureDaoTest {
     }
 
     @Test
-    void shouldReturnListOfLecturesWithLessonIdOne(){
+    void shouldReturnListOfLecturesWithLessonIdOne() {
         List<Lecture> expected = List.of(
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L));
         List<Lecture> actual = lectureDao.getLecturesByLessonId(1L);
@@ -122,7 +121,7 @@ class LectureDaoTest {
     }
 
     @Test
-    void shouldReturnListOfLecturesWithTeacherIdOne(){
+    void shouldReturnListOfLecturesWithTeacherIdOne() {
         List<Lecture> expected = List.of(
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
                 new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 3L, 1L, 1L));
@@ -132,7 +131,7 @@ class LectureDaoTest {
     }
 
     @Test
-    void shouldReturnListOfLecturesWithScheduleIdOne(){
+    void shouldReturnListOfLecturesWithScheduleIdOne() {
         List<Lecture> expected = List.of(
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
                 new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 3L, 1L, 1L));

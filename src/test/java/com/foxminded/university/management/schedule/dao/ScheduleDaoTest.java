@@ -42,7 +42,7 @@ class ScheduleDaoTest {
 
     @Test
     void shouldUpdateSchedule() {
-        Schedule schedule = new Schedule(1L,2L);
+        Schedule schedule = new Schedule(1L, 2L);
         assertNotEquals(schedule, scheduleDao.getById(1L).get());
         scheduleDao.save(schedule);
 
@@ -81,7 +81,7 @@ class ScheduleDaoTest {
     @Test
     void shouldSaveListOfSchedules() {
         List<Schedule> audiences = List.of(
-                new Schedule( 1L),
+                new Schedule(1L),
                 new Schedule(2L));
 
         List<Schedule> expected = List.of(
@@ -95,7 +95,7 @@ class ScheduleDaoTest {
     }
 
     @Test
-    void shouldReturnListOfSchedulesWithUniversityIdOne(){
+    void shouldReturnListOfSchedulesWithUniversityIdOne() {
         List<Schedule> expected = List.of(
                 new Schedule(1L, 1L),
                 new Schedule(2L, 1L));

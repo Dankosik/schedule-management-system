@@ -104,7 +104,7 @@ class AudienceDaoTest {
     }
 
     @Test
-    void shouldReturnListAudiencesWithUniversityIdOne(){
+    void shouldReturnListAudiencesWithUniversityIdOne() {
         List<Audience> expected = List.of(
                 new Audience(1L, 301, 50, 1L),
                 new Audience(2L, 302, 75, 1L),

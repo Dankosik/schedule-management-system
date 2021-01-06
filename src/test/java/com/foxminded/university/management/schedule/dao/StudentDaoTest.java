@@ -11,6 +11,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @Testcontainers
 class StudentDaoTest {
     @Container
@@ -82,6 +83,7 @@ class StudentDaoTest {
 
         assertEquals(expected, actual);
     }
+
     @Test
     void shouldSaveListOfStudents() {
         List<Student> audiences = List.of(
@@ -92,17 +94,17 @@ class StudentDaoTest {
                 new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
                 new Student(4L, "Jessa", "Costin", "Heeron", 2, 2L, 2L, 1L),
                 new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L),
-                new Student(1L,"John", "Jackson", "Jackson", 1, 2L, 1L, 1L),
+                new Student(1L, "John", "Jackson", "Jackson", 1, 2L, 1L, 1L),
                 new Student(2L, "Mike", "Conor", "Conor", 2, 2L, 1L, 1L));
         studentDao.delete(new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L));
-        studentDao.delete( new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L));
+        studentDao.delete(new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L));
         studentDao.saveAll(audiences);
 
         assertEquals(expected, studentDao.getAll());
     }
 
     @Test
-    void shouldReturnListOfStudentsWithUniversityIdOne(){
+    void shouldReturnListOfStudentsWithUniversityIdOne() {
         List<Student> expected = List.of(
                 new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
                 new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
@@ -115,7 +117,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void shouldReturnListOfStudentsWithGroupIdOne(){
+    void shouldReturnListOfStudentsWithGroupIdOne() {
         List<Student> expected = List.of(
                 new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
                 new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
@@ -126,7 +128,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void shouldReturnListOfStudentsWithFacultyIdOne(){
+    void shouldReturnListOfStudentsWithFacultyIdOne() {
         List<Student> expected = List.of(
                 new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
                 new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),

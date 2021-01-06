@@ -69,7 +69,7 @@ class GroupDaoTest {
 
     @Test
     void shouldDeleteGroup() {
-        Group group =  new Group(1L, "AB-91", 1L, 1L, 1L, 1L);
+        Group group = new Group(1L, "AB-91", 1L, 1L, 1L, 1L);
         List<Group> expected = List.of(new Group(2L, "BC-01", 2L, 2L, 2L, 1L));
         assertTrue(groupDao.delete(group));
         List<Group> actual = groupDao.getAll();
@@ -94,7 +94,7 @@ class GroupDaoTest {
     }
 
     @Test
-    void shouldReturnListOfGroupsWithUniversityIdOne(){
+    void shouldReturnListOfGroupsWithUniversityIdOne() {
         List<Group> expected = List.of(
                 new Group(1L, "AB-91", 1L, 1L, 1L, 1L),
                 new Group(2L, "BC-01", 2L, 2L, 2L, 1L));
@@ -104,7 +104,7 @@ class GroupDaoTest {
     }
 
     @Test
-    void shouldReturnListOfGroupsWithFacultyIdOne(){
+    void shouldReturnListOfGroupsWithFacultyIdOne() {
         List<Group> expected = List.of(
                 new Group(1L, "AB-91", 1L, 1L, 1L, 1L));
         List<Group> actual = groupDao.getGroupsByFacultyId(1L);
@@ -113,7 +113,7 @@ class GroupDaoTest {
     }
 
     @Test
-    void shouldReturnListOfGroupsWithDepartmentIdTwo(){
+    void shouldReturnListOfGroupsWithDepartmentIdTwo() {
         List<Group> expected = List.of(
                 new Group(2L, "BC-01", 2L, 2L, 2L, 1L));
         List<Group> actual = groupDao.getGroupsByDepartmentId(2L);
@@ -122,7 +122,7 @@ class GroupDaoTest {
     }
 
     @Test
-    void shouldReturnListOfGroupsWithLectureIdOne(){
+    void shouldReturnListOfGroupsWithLectureIdOne() {
         List<Group> expected = List.of(
                 new Group(1L, "AB-91", 1L, 1L, 1L, 1L));
         List<Group> actual = groupDao.getGroupsByLectureId(1L);

@@ -87,14 +87,15 @@ class FacultyDaoTest {
                 new Faculty(1L, "ABCD", 1L),
                 new Faculty(2L, "IFGH", 1L));
 
-        facultyDao.delete( new Faculty(1L, "FAIT", 1L));
-        facultyDao.delete( new Faculty(2L, "FKFN", 1L));
+        facultyDao.delete(new Faculty(1L, "FAIT", 1L));
+        facultyDao.delete(new Faculty(2L, "FKFN", 1L));
         facultyDao.saveAll(faculties);
         assertEquals(expected, facultyDao.getAll());
 
     }
+
     @Test
-    void shouldReturnListOfFacultiesWithUniversityIdOne(){
+    void shouldReturnListOfFacultiesWithUniversityIdOne() {
         List<Faculty> expected = List.of(
                 new Faculty(1L, "FAIT", 1L),
                 new Faculty(2L, "FKFN", 1L));
