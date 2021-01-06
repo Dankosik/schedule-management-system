@@ -139,8 +139,6 @@ ALTER TABLE lessons
 
 ALTER TABLE subjects
     ADD COLUMN name          varchar(256) UNIQUE,
-    ADD COLUMN student_id    BIGINT        REFERENCES students (id) ON DELETE SET NULL,
-    ADD COLUMN teacher_id    BIGINT        REFERENCES teachers (id) ON DELETE SET NULL,
     ADD COLUMN university_id BIGINT        REFERENCES university (id) ON DELETE CASCADE;
 
 ALTER TABLE teachers
