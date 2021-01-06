@@ -14,9 +14,13 @@ import java.util.*;
 public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher> {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public TeacherDao(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Autowired
+    public TeacherDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

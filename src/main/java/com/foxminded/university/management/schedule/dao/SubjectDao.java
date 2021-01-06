@@ -14,9 +14,13 @@ import java.util.*;
 public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject> {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public SubjectDao(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Autowired
+    public SubjectDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

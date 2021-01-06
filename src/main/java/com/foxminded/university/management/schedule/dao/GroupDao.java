@@ -14,9 +14,13 @@ import java.util.*;
 public class GroupDao extends AbstractDao<Group> implements Dao<Group> {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public GroupDao(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Autowired
+    public GroupDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

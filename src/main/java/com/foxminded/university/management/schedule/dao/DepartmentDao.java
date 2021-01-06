@@ -14,9 +14,13 @@ import java.util.*;
 public class DepartmentDao extends AbstractDao<Department> implements Dao<Department> {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public DepartmentDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Autowired
+    public DepartmentDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

@@ -18,9 +18,13 @@ import java.util.Optional;
 public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule> {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public ScheduleDao(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Autowired
+    public ScheduleDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
