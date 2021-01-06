@@ -1,8 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.LectureRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.ScheduleRowMapper;
-import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,7 +30,7 @@ public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule> 
         Map<String, Object> params = new HashMap<>();
         params.put("university_id", schedule.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Schedule((long) newId.intValue(), schedule.getUniversityId());
+        return new Schedule(newId.longValue(), schedule.getUniversityId());
     }
 
     @Override
@@ -66,7 +64,7 @@ public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule> 
         return result;
     }
 
-    public List<Schedule> getSchedulesByUniversityId(Long id){
+    public List<Schedule> getSchedulesByUniversityId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM schedule WHERE university_id = ?", new ScheduleRowMapper(), id);
     }
 }

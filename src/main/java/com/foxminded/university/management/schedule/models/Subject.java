@@ -17,7 +17,7 @@ public class Subject {
         this.universityId = universityId;
     }
 
-    public Subject( String name, Long universityId) {
+    public Subject(String name, Long universityId) {
         this.name = name;
         this.universityId = universityId;
     }

@@ -32,7 +32,7 @@ public class DepartmentDao extends AbstractDao<Department> implements Dao<Depart
         params.put("faculty_id", department.getFacultyId());
         params.put("university_id", department.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Department((long) newId.intValue(), department.getName(), department.getFacultyId(), department.getUniversityId());
+        return new Department(newId.longValue(), department.getName(), department.getFacultyId(), department.getUniversityId());
     }
 
     @Override
@@ -66,11 +66,12 @@ public class DepartmentDao extends AbstractDao<Department> implements Dao<Depart
         }
         return result;
     }
-    public List<Department> getDepartmentsByFacultyId(Long id){
+
+    public List<Department> getDepartmentsByFacultyId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM departments WHERE faculty_id = ?", new DepartmentRowMapper(), id);
     }
 
-    public List<Department> getDepartmentsByUniversityId(Long id){
+    public List<Department> getDepartmentsByUniversityId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM departments WHERE university_id = ?", new DepartmentRowMapper(), id);
     }
 }

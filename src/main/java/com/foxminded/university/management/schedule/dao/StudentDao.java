@@ -1,8 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.ScheduleRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.StudentRowMapper;
-import com.foxminded.university.management.schedule.models.Schedule;
 import com.foxminded.university.management.schedule.models.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,7 +36,7 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student> {
         params.put("faculty_id", student.getFacultyId());
         params.put("university_id", student.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Student((long) newId.intValue(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
+        return new Student(newId.longValue(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
                 student.getCourseNumber(), student.getGroupId(), student.getFacultyId(), student.getUniversityId());
     }
 
@@ -77,15 +75,15 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student> {
         return result;
     }
 
-    public List<Student> getStudentsByUniversityId(Long id){
+    public List<Student> getStudentsByUniversityId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM students WHERE university_id = ?", new StudentRowMapper(), id);
     }
 
-    public List<Student> getStudentsByGroupId(Long id){
+    public List<Student> getStudentsByGroupId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM students WHERE group_id = ?", new StudentRowMapper(), id);
     }
 
-    public List<Student> getStudentsByFacultyId(Long id){
+    public List<Student> getStudentsByFacultyId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM students WHERE faculty_id = ?", new StudentRowMapper(), id);
     }
 }

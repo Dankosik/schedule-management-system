@@ -1,8 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.DepartmentRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.FacultyRowMapper;
-import com.foxminded.university.management.schedule.models.Department;
 import com.foxminded.university.management.schedule.models.Faculty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,7 +31,7 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty> {
         params.put("name", faculty.getName());
         params.put("university_id", faculty.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Faculty((long) newId.intValue(), faculty.getName(), faculty.getUniversityId());
+        return new Faculty(newId.longValue(), faculty.getName(), faculty.getUniversityId());
     }
 
     @Override
@@ -68,7 +66,7 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty> {
         return result;
     }
 
-    public List<Faculty> getFacultiesByUniversityId(Long id){
+    public List<Faculty> getFacultiesByUniversityId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM faculties WHERE university_id = ?", new FacultyRowMapper(), id);
     }
 }

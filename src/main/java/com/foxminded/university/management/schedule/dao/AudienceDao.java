@@ -67,7 +67,7 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience> 
         return result;
     }
 
-    public List<Audience> getAudiencesByUniversityId(Long id){
+    public List<Audience> getAudiencesByUniversityId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM audiences WHERE university_id = ?", new AudienceRowMapper(), id);
     }
 }

@@ -1,8 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.GroupRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.LectureRowMapper;
-import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,7 +35,7 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture> {
         params.put("teacher_id", lecture.getTeacherId());
         params.put("schedule_id", lecture.getScheduleId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Lecture((long) newId.intValue(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
+        return new Lecture(newId.longValue(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
                 lecture.getLessonId(), lecture.getTeacherId(), lecture.getScheduleId());
     }
 
@@ -76,19 +74,19 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture> {
         return result;
     }
 
-    public List<Lecture> getLecturesByAudienceId(Long id){
+    public List<Lecture> getLecturesByAudienceId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM lectures WHERE audience_id = ?", new LectureRowMapper(), id);
     }
 
-    public List<Lecture> getLecturesByLessonId(Long id){
+    public List<Lecture> getLecturesByLessonId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM lectures WHERE lesson_id = ?", new LectureRowMapper(), id);
     }
 
-    public List<Lecture> getLecturesByTeacherId(Long id){
+    public List<Lecture> getLecturesByTeacherId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM lectures WHERE teacher_id = ?", new LectureRowMapper(), id);
     }
 
-    public List<Lecture> getLecturesByScheduleId(Long id){
+    public List<Lecture> getLecturesByScheduleId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM lectures WHERE schedule_id = ?", new LectureRowMapper(), id);
     }
 }

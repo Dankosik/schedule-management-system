@@ -1,8 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.LectureRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.LessonRowMapper;
-import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import org.postgresql.util.PGInterval;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +35,7 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson> {
         params.put("duration", lesson.getDuration());
         params.put("subject_id", lesson.getSubjectId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Lesson((long) newId.intValue(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(), lesson.getSubjectId());
+        return new Lesson(newId.longValue(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(), lesson.getSubjectId());
     }
 
     @Override
@@ -85,7 +83,7 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson> {
         throw new RuntimeException("Cant cast duration of lesson to PGInterval");
     }
 
-    public List<Lesson> getLessonsBySubjectId(Long id){
+    public List<Lesson> getLessonsBySubjectId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM lessons WHERE subject_id = ?", new LessonRowMapper(), id);
     }
 }

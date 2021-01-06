@@ -1,8 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.DepartmentRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.GroupRowMapper;
-import com.foxminded.university.management.schedule.models.Department;
 import com.foxminded.university.management.schedule.models.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,7 +34,7 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group> {
         params.put("faculty_id", group.getFacultyId());
         params.put("university_id", group.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Group((long) newId.intValue(), group.getName(), group.getLectureId(), group.getDepartmentId(),
+        return new Group(newId.longValue(), group.getName(), group.getLectureId(), group.getDepartmentId(),
                 group.getFacultyId(), group.getUniversityId());
     }
 
@@ -73,19 +71,19 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group> {
         return result;
     }
 
-    public List<Group> getGroupsByLectureId(Long id){
+    public List<Group> getGroupsByLectureId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM groups WHERE lecture_id = ?", new GroupRowMapper(), id);
     }
 
-    public List<Group> getGroupsByDepartmentId(Long id){
+    public List<Group> getGroupsByDepartmentId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM groups WHERE department_id = ?", new GroupRowMapper(), id);
     }
 
-    public List<Group> getGroupsByFacultyId(Long id){
+    public List<Group> getGroupsByFacultyId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM groups WHERE faculty_id = ?", new GroupRowMapper(), id);
     }
 
-    public List<Group> getGroupsByUniversityId(Long id){
+    public List<Group> getGroupsByUniversityId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM groups WHERE university_id = ?", new GroupRowMapper(), id);
     }
 }
