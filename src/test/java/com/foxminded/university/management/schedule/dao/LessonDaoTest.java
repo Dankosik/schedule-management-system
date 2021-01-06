@@ -102,4 +102,13 @@ class LessonDaoTest {
 
         assertEquals(expected, lessonDao.getAll());
     }
+
+    @Test
+    void shouldReturnListOfLessonsWithSubjectIdOne(){
+        List<Lesson> expected = List.of(
+                new Lesson(1L,1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
+        List<Lesson> actual = lessonDao.getLessonsBySubjectId(1L);
+
+        assertEquals(expected, actual);
+    }
 }

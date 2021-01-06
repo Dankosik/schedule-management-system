@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -100,5 +101,43 @@ class LectureDaoTest {
         lectureDao.saveAll(audiences);
 
         assertEquals(expected, lectureDao.getAll());
+    }
+
+    @Test
+    void shouldReturnListOfLecturesWithAudienceIdOne(){
+        List<Lecture> expected = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L));
+        List<Lecture> actual = lectureDao.getLecturesByAudienceId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfLecturesWithLessonIdOne(){
+        List<Lecture> expected = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L));
+        List<Lecture> actual = lectureDao.getLecturesByLessonId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfLecturesWithTeacherIdOne(){
+        List<Lecture> expected = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 3L, 1L, 1L));
+        List<Lecture> actual = lectureDao.getLecturesByTeacherId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfLecturesWithScheduleIdOne(){
+        List<Lecture> expected = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 3L, 1L, 1L));
+        List<Lecture> actual = lectureDao.getLecturesByScheduleId(1L);
+
+        assertEquals(expected, actual);
     }
 }

@@ -100,4 +100,39 @@ class StudentDaoTest {
 
         assertEquals(expected, studentDao.getAll());
     }
+
+    @Test
+    void shouldReturnListOfStudentsWithUniversityIdOne(){
+        List<Student> expected = List.of(
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
+                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
+                new Student(4L, "Jessa", "Costin", "Heeron", 2, 2L, 2L, 1L),
+                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L));
+        List<Student> actual = studentDao.getStudentsByUniversityId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfStudentsWithGroupIdOne(){
+        List<Student> expected = List.of(
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
+                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
+                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L));
+        List<Student> actual = studentDao.getStudentsByGroupId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfStudentsWithFacultyIdOne(){
+        List<Student> expected = List.of(
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
+                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L));
+        List<Student> actual = studentDao.getStudentsByFacultyId(1L);
+
+        assertEquals(expected, actual);
+    }
 }

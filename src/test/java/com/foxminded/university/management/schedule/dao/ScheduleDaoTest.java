@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Schedule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,5 +92,15 @@ class ScheduleDaoTest {
         scheduleDao.saveAll(audiences);
 
         assertEquals(expected, scheduleDao.getAll());
+    }
+
+    @Test
+    void shouldReturnListOfSchedulesWithUniversityIdOne(){
+        List<Schedule> expected = List.of(
+                new Schedule(1L, 1L),
+                new Schedule(2L, 1L));
+        List<Schedule> actual = scheduleDao.getSchedulesByUniversityId(1L);
+
+        assertEquals(expected, actual);
     }
 }

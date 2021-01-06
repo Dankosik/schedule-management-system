@@ -85,12 +85,31 @@ class TeacherDaoTest {
                 new Teacher("Mike", "Conor", "Conor", 2L, 1L));
 
         List<Teacher> expected = List.of(
-                new Teacher(1L,"John", "Jackson", "Jackson", 1L, 1L),
-                new Teacher(2L,"Mike", "Conor", "Conor", 2L, 1L));
-        teacherDao.delete(  new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+        teacherDao.delete(new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L));
         teacherDao.delete(new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L, 1L));
         teacherDao.saveAll(teachers);
 
         assertEquals(expected, teacherDao.getAll());
+    }
+
+    @Test
+    void shouldReturnListOfTeachersWithUniversityIdOne() {
+        List<Teacher> expected = List.of(
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L, 1L));
+        List<Teacher> actual = teacherDao.getTeachersByUniversityId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfTeachersWithStudentIdOne() {
+        List<Teacher> expected = List.of(
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L));
+        List<Teacher> actual = teacherDao.getTeachersByStudentId(1L);
+
+        assertEquals(expected, actual);
     }
 }

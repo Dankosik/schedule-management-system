@@ -79,14 +79,33 @@ class DepartmentDaoTest {
     @Test
     void shouldSaveListOfDepartments() {
         List<Department> departments = List.of(
-                new Department( "Department of Computer Science", 1L, 1L),
-                new Department( "Department of Informatics", 2L, 1L));
+                new Department("Department of Computer Science", 1L, 1L),
+                new Department("Department of Informatics", 2L, 1L));
         List<Department> expected = List.of(
                 new Department(1L, "Department of Computer Science", 1L, 1L),
                 new Department(2L, "Department of Informatics", 2L, 1L));
-        departmentDao.delete( new Department(1L, "Department of Automation and System Engineering", 1L, 1L));
-        departmentDao.delete( new Department(2L, "Department of Higher Mathematics", 2L, 1L));
+        departmentDao.delete(new Department(1L, "Department of Automation and System Engineering", 1L, 1L));
+        departmentDao.delete(new Department(2L, "Department of Higher Mathematics", 2L, 1L));
         departmentDao.saveAll(departments);
         assertEquals(expected, departmentDao.getAll());
+    }
+
+    @Test
+    void shouldReturnListOfDepartmentsWithUniversityIdOne() {
+        List<Department> expected = List.of(
+                new Department(1L, "Department of Automation and System Engineering", 1L, 1L),
+                new Department(2L, "Department of Higher Mathematics", 2L, 1L));
+        List<Department> actual = departmentDao.getDepartmentsByUniversityId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfDepartmentsWithFacultyIdOne() {
+        List<Department> expected = List.of(
+                new Department(1L, "Department of Automation and System Engineering", 1L, 1L));
+        List<Department> actual = departmentDao.getDepartmentsByFacultyId(1L);
+
+        assertEquals(expected, actual);
     }
 }

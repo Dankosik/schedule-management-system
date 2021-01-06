@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Subject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,5 +95,36 @@ class SubjectDaoTest {
         subjectDao.saveAll(subjects);
 
         assertEquals(expected, subjectDao.getAll());
+    }
+
+    @Test
+    void shouldReturnListOfSubjectsWithUniversityIdOne(){
+        List<Subject> expected = List.of(
+                new Subject(1L,"Math",  1L),
+                new Subject(2L,"Physics",  1L),
+                new Subject(3L,"Programming",  1L));
+        List<Subject> actual = subjectDao.getSubjectsByUniversityId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfSubjectsWithStudentIdOne(){
+        List<Subject> expected = List.of(
+                new Subject(1L,"Math",  1L),
+                new Subject(3L,"Programming",  1L));
+        List<Subject> actual = subjectDao.getSubjectsByStudentId(1L);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldReturnListOfSubjectsWithTeacherIdOne(){
+        List<Subject> expected = List.of(
+                new Subject(1L,"Math",  1L),
+                new Subject(2L,"Physics",  1L));
+        List<Subject> actual = subjectDao.getSubjectsByTeacherId(1L);
+
+        assertEquals(expected, actual);
     }
 }

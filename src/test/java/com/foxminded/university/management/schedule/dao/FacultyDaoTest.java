@@ -93,4 +93,14 @@ class FacultyDaoTest {
         assertEquals(expected, facultyDao.getAll());
 
     }
+    @Test
+    void shouldReturnListOfFacultiesWithUniversityIdOne(){
+        List<Faculty> expected = List.of(
+                new Faculty(1L, "FAIT", 1L),
+                new Faculty(2L, "FKFN", 1L));
+        List<Faculty> actual = facultyDao.getFacultiesByUniversityId(1L);
+
+        assertEquals(expected, actual);
+    }
+
 }
