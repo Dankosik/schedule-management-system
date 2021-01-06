@@ -29,18 +29,15 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject> {
         simpleJdbcInsert.withTableName("subjects").usingGeneratedKeyColumns("id");
         Map<String, Object> params = new HashMap<>();
         params.put("name", subject.getName());
-        params.put("student_id", subject.getStudentId());
-        params.put("teacher_id", subject.getTeacherId());
-        params.put("university_id", subject.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Subject((long) newId.intValue(), subject.getName(), subject.getStudentId(), subject.getTeacherId(), subject.getUniversityId());
+        return new Subject((long) newId.intValue(), subject.getName(), subject.getUniversityId());
     }
 
     @Override
     protected Subject update(Subject subject) {
-        this.jdbcTemplate.update("UPDATE subjects SET name = ?, student_id = ?, teacher_id = ?,  university_id = ? WHERE id = ?",
-                subject.getName(), subject.getStudentId(), subject.getTeacherId(), subject.getUniversityId(), subject.getId());
-        return new Subject(subject.getId(), subject.getName(), subject.getStudentId(), subject.getTeacherId(), subject.getUniversityId());
+        this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
+                subject.getName(), subject.getUniversityId(), subject.getId());
+        return new Subject(subject.getId(), subject.getName(), subject.getUniversityId());
     }
 
     @Override
@@ -56,7 +53,7 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject> {
 
     @Override
     public boolean delete(Subject subject) {
-        return this.jdbcTemplate.update("DELETE FROM audiences WHERE id = ?", subject.getId()) == 1;
+        return this.jdbcTemplate.update("DELETE FROM subjects WHERE id = ?", subject.getId()) == 1;
     }
 
     @Override
