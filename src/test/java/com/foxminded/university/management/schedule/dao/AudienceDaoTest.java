@@ -8,7 +8,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -114,5 +116,15 @@ class AudienceDaoTest {
         List<Audience> actual = audienceDao.getAudiencesByUniversityId(1L);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldThrowExceptionIfAudienceNotExist() {
+       assertThrows(NoSuchElementException.class, ()->audienceDao.getById(21L).get());
+    }
+
+    @Test
+    void shouldReturnFalseIfAudienceNotExist() {
+        assertFalse(()->audienceDao.delete(new Audience(21L, 301, 50, 1L)));
     }
 }

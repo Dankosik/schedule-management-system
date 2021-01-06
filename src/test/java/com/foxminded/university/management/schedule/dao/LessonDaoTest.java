@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,10 +9,13 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -110,5 +114,15 @@ class LessonDaoTest {
         List<Lesson> actual = lessonDao.getLessonsBySubjectId(1L);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void shouldThrowExceptionIfLessonNotExist() {
+        assertThrows(NoSuchElementException.class, ()->lessonDao.getById(21L).get());
+    }
+
+    @Test
+    void shouldReturnFalseIfLessonNotExist() {
+        assertFalse(()->lessonDao.delete(  new Lesson(21L, 4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1L)));
     }
 }

@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.models.Department;
 import com.foxminded.university.management.schedule.models.Faculty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -104,4 +106,13 @@ class FacultyDaoTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    void shouldThrowExceptionIfFacultyNotExist() {
+        assertThrows(NoSuchElementException.class, ()->facultyDao.getById(21L).get());
+    }
+
+    @Test
+    void shouldReturnFalseIfFacultyNotExist() {
+        assertFalse(()->facultyDao.delete(new Faculty(21L, "ABCD", 1L)));
+    }
 }
