@@ -29,6 +29,7 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject> {
         simpleJdbcInsert.withTableName("subjects").usingGeneratedKeyColumns("id");
         Map<String, Object> params = new HashMap<>();
         params.put("name", subject.getName());
+        params.put("university_id", subject.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         return new Subject((long) newId.intValue(), subject.getName(), subject.getUniversityId());
     }
