@@ -54,19 +54,6 @@ create table teachers
 
 );
 
-create table subjects_teachers
-(
-     subject_id BIGINT REFERENCES subjects (id) ON DELETE CASCADE,
-     teacher_id BIGINT REFERENCES teachers (id) ON DELETE CASCADE,
-     PRIMARY KEY (subject_id, teacher_id)
-);
-
-create table subjects_students
-(
-    subject_id BIGINT REFERENCES subjects (id) ON DELETE CASCADE,
-    student_id BIGINT REFERENCES teachers (id) ON DELETE CASCADE,
-    PRIMARY KEY (subject_id, student_id)
-);
 
 -- adding id to tables
 ALTER TABLE schedule
@@ -103,8 +90,8 @@ ALTER TABLE teachers
     ADD COLUMN id BIGSERIAL NOT NULL PRIMARY KEY;
 
 -- adding other columns to tables
-ALTER TABLE university
-    ADD COLUMN schedule_id BIGINT  REFERENCES schedule (id) ON DELETE CASCADE;
+ALTER TABLE schedule
+    ADD COLUMN university_id BIGINT  REFERENCES university (id) ON DELETE CASCADE;
 
 ALTER TABLE audiences
     ADD COLUMN number        INT   UNIQUE,
@@ -163,14 +150,26 @@ ALTER TABLE teachers
     ADD COLUMN student_id    BIGINT       REFERENCES students (id) ON DELETE SET NULL,
     ADD COLUMN university_id BIGINT       REFERENCES university (id) ON DELETE CASCADE;
 
+create table subjects_teachers
+(
+    subject_id BIGINT REFERENCES subjects (id) ON DELETE CASCADE,
+    teacher_id BIGINT REFERENCES teachers (id) ON DELETE CASCADE,
+    PRIMARY KEY (subject_id, teacher_id)
+);
+
+create table subjects_students
+(
+    subject_id BIGINT REFERENCES subjects (id) ON DELETE CASCADE,
+    student_id BIGINT REFERENCES students (id) ON DELETE CASCADE,
+    PRIMARY KEY (subject_id, student_id)
+);
+
 -- insert test id to tables
 INSERT INTO schedule (id) VALUES (1);
 INSERT INTO schedule (id) VALUES (2);
-INSERT INTO schedule (id) VALUES (3);
-INSERT INTO schedule (id) VALUES (4);
-INSERT INTO schedule (id) VALUES (5);
 
 INSERT INTO university (id) VALUES (1);
+INSERT INTO university (id) VALUES (2);
 
 INSERT INTO audiences (id) VALUES (1);
 INSERT INTO audiences (id) VALUES (2);
@@ -211,8 +210,8 @@ INSERT INTO teachers (id) VALUES (1);
 INSERT INTO teachers (id) VALUES (2);
 
 -- insert test data to other columns
-update university set schedule_id = 1 where id = 1;
-update university set schedule_id = 2 where id = 1;
+update schedule set university_id = 1 where id =1;
+update schedule set university_id = 1 where id =2;
 
 update audiences set number = 301, capacity = 50, university_id = 1 where id = 1;
 update audiences set number = 302, capacity = 75, university_id = 1 where id = 2;
