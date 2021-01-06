@@ -102,4 +102,17 @@ class AudienceDaoTest {
 
         assertEquals(expected, audienceDao.getAll());
     }
+
+    @Test
+    void shouldReturnListAudiencesWithUniversityIdOne(){
+        List<Audience> expected = List.of(
+                new Audience(1L, 301, 50, 1L),
+                new Audience(2L, 302, 75, 1L),
+                new Audience(3L, 303, 100, 1L),
+                new Audience(4L, 304, 30, 1L),
+                new Audience(5L, 305, 55, 1L));
+        List<Audience> actual = audienceDao.getAudiencesByUniversityId(1L);
+
+        assertEquals(expected, actual);
+    }
 }
