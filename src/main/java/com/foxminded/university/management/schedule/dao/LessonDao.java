@@ -1,6 +1,8 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.dao.row_mappers.LectureRowMapper;
 import com.foxminded.university.management.schedule.dao.row_mappers.LessonRowMapper;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import org.postgresql.util.PGInterval;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,5 +83,9 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson> {
             e.printStackTrace();
         }
         throw new RuntimeException("Cant cast duration of lesson to PGInterval");
+    }
+
+    public List<Lesson> getLessonsBySubjectId(Long id){
+        return this.jdbcTemplate.query("SELECT * FROM lessons WHERE subject_id = ?", new LessonRowMapper(), id);
     }
 }
