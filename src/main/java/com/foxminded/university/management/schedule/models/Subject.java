@@ -82,4 +82,15 @@ public class Subject {
     public int hashCode() {
         return Objects.hash(id, name, studentId, teacherId, universityId);
     }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", studentId=" + studentId +
+                ", teacherId=" + teacherId +
+                ", universityId=" + universityId +
+                '}';
+    }
 }
