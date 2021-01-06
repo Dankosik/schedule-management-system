@@ -4,15 +4,11 @@ import com.foxminded.university.management.schedule.dao.row_mappers.ScheduleRowM
 import com.foxminded.university.management.schedule.models.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule> {
@@ -29,19 +25,18 @@ public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule> 
 
     @Override
     protected Schedule create(Schedule schedule) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO schedule (id) values(?)");
-            preparedStatement.setLong(1, schedule.getId());
-            return preparedStatement;
-        }, keyHolder);
-        return new Schedule((Long) keyHolder.getKey());
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate);
+        simpleJdbcInsert.withTableName("schedule").usingGeneratedKeyColumns("id");
+        Map<String, Object> params = new HashMap<>();
+        params.put("university_id", schedule.getUniversityId());
+        Number newId = simpleJdbcInsert.executeAndReturnKey(params);
+        return new Schedule((long) newId.intValue(), schedule.getUniversityId());
     }
 
     @Override
     protected Schedule update(Schedule schedule) {
-        //TODO
-        return null;
+        this.jdbcTemplate.update("UPDATE schedule SET university_id = ? WHERE id = ?", schedule.getUniversityId(), schedule.getId());
+        return new Schedule(schedule.getId(), schedule.getUniversityId());
     }
 
     @Override
