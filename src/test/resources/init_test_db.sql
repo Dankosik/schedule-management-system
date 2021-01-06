@@ -54,6 +54,20 @@ create table teachers
 
 );
 
+create table subjects_teachers
+(
+     subject_id BIGINT REFERENCES subjects (id) ON DELETE CASCADE,
+     teacher_id BIGINT REFERENCES teachers (id) ON DELETE CASCADE,
+     PRIMARY KEY (subject_id, teacher_id)
+);
+
+create table subjects_students
+(
+    subject_id BIGINT REFERENCES subjects (id) ON DELETE CASCADE,
+    student_id BIGINT REFERENCES teachers (id) ON DELETE CASCADE,
+    PRIMARY KEY (subject_id, student_id)
+);
+
 -- adding id to tables
 ALTER TABLE schedule
     ADD COLUMN id BIGSERIAL NOT NULL PRIMARY KEY;
@@ -93,16 +107,16 @@ ALTER TABLE university
     ADD COLUMN schedule_id BIGINT  REFERENCES schedule (id) ON DELETE CASCADE;
 
 ALTER TABLE audiences
-    ADD COLUMN number        INT   ,
+    ADD COLUMN number        INT   UNIQUE,
     ADD COLUMN capacity      INT    ,
     ADD COLUMN university_id BIGINT  REFERENCES university (id) ON DELETE CASCADE;
 
 ALTER TABLE faculties
-    ADD COLUMN name          varchar(256) ,
+    ADD COLUMN name          varchar(256) UNIQUE,
     ADD COLUMN university_id BIGINT        REFERENCES university (id) ON DELETE CASCADE;
 
 ALTER TABLE departments
-    ADD COLUMN name          varchar(256) ,
+    ADD COLUMN name          varchar(256) UNIQUE,
     ADD COLUMN faculty_id    BIGINT        REFERENCES faculties (id) ON DELETE CASCADE,
     ADD COLUMN university_id BIGINT        REFERENCES university (id) ON DELETE CASCADE;
 
@@ -115,7 +129,7 @@ ALTER TABLE lectures
     ADD COLUMN schedule_id BIGINT  REFERENCES schedule (id) ON DELETE CASCADE;
 
 ALTER TABLE groups
-    ADD COLUMN name          varchar(256) ,
+    ADD COLUMN name          varchar(256) UNIQUE,
     ADD COLUMN lecture_id    BIGINT        REFERENCES lectures (id) ON DELETE SET NULL,
     ADD COLUMN department_id BIGINT        REFERENCES departments (id) ON DELETE SET NULL,
     ADD COLUMN faculty_id    BIGINT        REFERENCES faculties (id) ON DELETE CASCADE,
@@ -137,7 +151,7 @@ ALTER TABLE lessons
     ADD COLUMN subject_id BIGINT    REFERENCES subjects (id) ON DELETE SET NULL;
 
 ALTER TABLE subjects
-    ADD COLUMN name          varchar(256) ,
+    ADD COLUMN name          varchar(256) UNIQUE,
     ADD COLUMN student_id    BIGINT        REFERENCES students (id) ON DELETE SET NULL,
     ADD COLUMN teacher_id    BIGINT        REFERENCES teachers (id) ON DELETE SET NULL,
     ADD COLUMN university_id BIGINT        REFERENCES university (id) ON DELETE CASCADE;
@@ -230,22 +244,24 @@ update groups set name = 'BC-01', lecture_id = 2, department_id = 2, faculty_id 
 
 update teachers set first_name = 'Hillel', last_name = 'St. Leger', middle_name = 'Lugard', student_id = 1, university_id = 1 where id = 1;
 update teachers set first_name = 'Lynsey', last_name = 'Grzeszczak', middle_name = 'McPhillimey', student_id = 2, university_id = 1 where id = 2;
-update teachers set student_id = 3 WHERE id = 1;
-update teachers set student_id = 4 WHERE id = 2;
-update teachers set student_id = 5 WHERE id = 3;
 
-update subjects set name = 'Math', student_id = 1, teacher_id = 1, university_id = 1 WHERE id = 1;
-update subjects set student_id  = 2 WHERE id = 1;
-update subjects set student_id  = 3 WHERE id = 1;
-update subjects set student_id  = 4 WHERE id = 1;
-update subjects set name = 'Physics', student_id = 1, teacher_id = 1, university_id = 1 WHERE id = 2;
-update subjects set student_id = 1 WHERE id = 2;
-update subjects set student_id = 2 WHERE id = 2;
-update subjects set student_id = 5 WHERE id = 2;
-update subjects set name = 'Programming', student_id = 2, teacher_id = 2 , university_id = 1 WHERE id = 3;
-update subjects set student_id = 1 WHERE id = 3;
-update subjects set student_id = 2 WHERE id = 3;
-update subjects set student_id = 4 WHERE id = 3;
+update subjects set name = 'Math', university_id = 1 WHERE id = 1;
+update subjects set name = 'Physics', university_id = 1 WHERE id = 2;
+update subjects set name = 'Programming', university_id = 1 WHERE id = 3;
+
+insert into subjects_students (subject_id, student_id) values (1, 1);
+insert into subjects_students (subject_id, student_id) values (1, 2);
+insert into subjects_students (subject_id, student_id) values (1, 3);
+insert into subjects_students (subject_id, student_id) values (2, 4);
+insert into subjects_students (subject_id, student_id) values (2, 5);
+insert into subjects_students (subject_id, student_id) values (3, 1);
+insert into subjects_students (subject_id, student_id) values (3, 3);
+insert into subjects_students (subject_id, student_id) values (3, 5);
+
+insert into subjects_teachers (subject_id, teacher_id) values (1, 1);
+insert into subjects_teachers (subject_id, teacher_id) values (2, 1);
+insert into subjects_teachers (subject_id, teacher_id) values (3, 2);
+
 
 update departments set name = 'Department of Automation and System Engineering', faculty_id = 1, university_id = 1 WHERE id = 1;
 update departments set name = 'Department of Higher Mathematics', faculty_id = 2, university_id = 1  WHERE id = 2;
