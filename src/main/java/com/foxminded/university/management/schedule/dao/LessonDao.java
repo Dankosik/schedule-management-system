@@ -6,13 +6,13 @@ import org.postgresql.util.PGInterval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
-@Component
+@Repository
 public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson> {
     private final JdbcTemplate jdbcTemplate;
 

@@ -5,12 +5,12 @@ import com.foxminded.university.management.schedule.models.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.*;
 
-@Component
+@Repository
 public class GroupDao extends AbstractDao<Group> implements Dao<Group> {
     private final JdbcTemplate jdbcTemplate;
 
