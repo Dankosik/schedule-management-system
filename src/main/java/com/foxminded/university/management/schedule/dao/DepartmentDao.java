@@ -66,4 +66,11 @@ public class DepartmentDao extends AbstractDao<Department> implements Dao<Depart
         }
         return result;
     }
+    public List<Department> getDepartmentsByFacultyId(Long id){
+        return this.jdbcTemplate.query("SELECT * FROM departments WHERE faculty_id = ?", new DepartmentRowMapper(), id);
+    }
+
+    public List<Department> getDepartmentsByUniversityId(Long id){
+        return this.jdbcTemplate.query("SELECT * FROM departments WHERE university_id = ?", new DepartmentRowMapper(), id);
+    }
 }
