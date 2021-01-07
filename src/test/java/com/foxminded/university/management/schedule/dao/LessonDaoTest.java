@@ -3,15 +3,18 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Lesson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.postgresql.util.PGInterval;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +27,7 @@ class LessonDaoTest {
                     .withInitScript("init_test_db.sql");
 
     private LessonDao lessonDao;
+    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
@@ -32,31 +36,50 @@ class LessonDaoTest {
         dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
         dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
         lessonDao = new LessonDao(dataSource);
+        testUtils = new TestUtils(dataSource);
     }
 
     @Test
     void shouldCreateNewLesson() {
-        Lesson lesson = new Lesson(1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 2L);
-        lessonDao.delete(lessonDao.getById(1L).get());
-        lessonDao.save(lesson);
-        Lesson expected = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 2L);
+        Lesson lesson = new Lesson(1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L);
+        Long lessonId = lessonDao.save(lesson).getId();
+        assertTrue(testUtils.existsById("lessons", lessonId));
 
-        assertEquals(expected, lessonDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("lessons", lessonId);
+        PGInterval pgInterval = (PGInterval) map.get("duration");
+        int minutes = pgInterval.getMinutes();
+        int hours = pgInterval.getHours();
+        Duration duration = Duration.ofMinutes(hours * 60L + minutes);
+        Lesson actual = new Lesson((Integer) map.get("number"), (Time) map.get("start_time"), duration, (Long) map.get("subject_id"));
+        assertEquals(lesson, actual);
     }
 
     @Test
     void shouldUpdateLesson() {
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 2L);
-        assertNotEquals(lesson, lessonDao.getById(1L).get());
-        lessonDao.save(lesson);
+        Lesson lesson = new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L);
+        Long lessonId = lessonDao.save(lesson).getId();
+        assertTrue(testUtils.existsById("lessons", lessonId));
 
-        assertEquals(lesson, lessonDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("lessons", lessonId);
+        PGInterval pgInterval = (PGInterval) map.get("duration");
+        int minutes = pgInterval.getMinutes();
+        int hours = pgInterval.getHours();
+        Duration duration = Duration.ofMinutes(hours * 60L + minutes);
+        Lesson actual = new Lesson((Long) map.get("id"), (Integer) map.get("number"), (Time) map.get("start_time"),
+                duration, (Long) map.get("subject_id"));
+        assertEquals(lesson, actual);
     }
 
     @Test
     void shouldReturnLessonWithIdOne() {
-        Lesson expected = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
-        Lesson actual = lessonDao.getById(1L).get();
+        Map<String, Object> map = testUtils.getEntry("lessons", 1000L);
+        PGInterval pgInterval = (PGInterval) map.get("duration");
+        int minutes = pgInterval.getMinutes();
+        int hours = pgInterval.getHours();
+        Duration duration = Duration.ofMinutes(hours * 60L + minutes);
+        Lesson expected = new Lesson((Long) map.get("id"), (Integer) map.get("number"), (Time) map.get("start_time"),
+                duration, (Long) map.get("subject_id"));
+        Lesson actual = lessonDao.getById(1000L).get();
 
         assertEquals(expected, actual);
     }
@@ -64,53 +87,45 @@ class LessonDaoTest {
     @Test
     void shouldReturnListOfLessons() {
         List<Lesson> expected = List.of(
-                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
-                new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 3L),
-                new Lesson(4L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 3L));
+                new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L),
+                new Lesson(1001L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1001L),
+                new Lesson(1002L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 1002L),
+                new Lesson(1003L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 1002L));
         List<Lesson> actual = lessonDao.getAll();
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldDeleteLesson() {
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
-        List<Lesson> expected = List.of(
-                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
-                new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 3L),
-                new Lesson(4L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 3L));
-        assertTrue(lessonDao.delete(lesson));
-        List<Lesson> actual = lessonDao.getAll();
-
-        assertEquals(expected, actual);
+        assertTrue(lessonDao.deleteById(1000L));
+        assertFalse(testUtils.existsById("lessons", 1000L));
     }
 
     @Test
     void shouldSaveListOfLessons() {
         List<Lesson> lessons = List.of(
-                new Lesson(4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(5, Time.valueOf(LocalTime.of(15, 30, 0)), Duration.ofMinutes(90), 2L));
+                new Lesson(4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1000L),
+                new Lesson(5, Time.valueOf(LocalTime.of(15, 30, 0)), Duration.ofMinutes(90), 1001L));
 
         List<Lesson> expected = List.of(
-                new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 3L),
-                new Lesson(4L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 3L),
-                new Lesson(1L, 4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L, 5, Time.valueOf(LocalTime.of(15, 30, 0)), Duration.ofMinutes(90), 2L));
-        lessonDao.delete(new Lesson(1L, 1, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
-        lessonDao.delete(new Lesson(2L, 2, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 3L));
+                new Lesson(1L, 4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1000L),
+                new Lesson(2L, 5, Time.valueOf(LocalTime.of(15, 30, 0)), Duration.ofMinutes(90), 1001L),
+                new Lesson(1002L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 1002L),
+                new Lesson(1003L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 1002L));
         lessonDao.saveAll(lessons);
+        List<Lesson> actual = lessonDao.getAll();
 
-        assertEquals(expected, lessonDao.getAll());
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfLessonsWithSubjectIdOne() {
         List<Lesson> expected = List.of(
-                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
-        List<Lesson> actual = lessonDao.getLessonsBySubjectId(1L);
+                new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L));
+        List<Lesson> actual = lessonDao.getLessonsBySubjectId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
@@ -120,6 +135,6 @@ class LessonDaoTest {
 
     @Test
     void shouldReturnFalseIfLessonNotExist() {
-        assertFalse(() -> lessonDao.delete(new Lesson(21L, 4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1L)));
+        assertFalse(() -> lessonDao.deleteById(21L));
     }
 }

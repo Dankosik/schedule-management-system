@@ -7,8 +7,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +23,7 @@ class SubjectDaoTest {
                     .withInitScript("init_test_db.sql");
 
     private SubjectDao subjectDao;
+    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
@@ -29,31 +32,36 @@ class SubjectDaoTest {
         dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
         dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
         subjectDao = new SubjectDao(dataSource);
+        testUtils = new TestUtils(dataSource);
     }
 
     @Test
     void shouldCreateNewSubject() {
-        Subject subject = new Subject("Art", 1L);
-        subjectDao.delete(subjectDao.getById(1L).get());
-        subjectDao.save(subject);
-        Subject expected = new Subject(1L, "Art", 1L);
+        Subject subject = new Subject("Art", 1000L);
+        Long subjectId = subjectDao.save(subject).getId();
+        assertTrue(testUtils.existsById("subjects", subjectId));
 
-        assertEquals(expected, subjectDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("subjects", subjectId);
+        Subject actual = new Subject((String) map.get("name"), (Long) map.get("university_id"));
+        assertEquals(subject, actual);
     }
 
     @Test
     void shouldUpdateSubject() {
-        Subject subject = new Subject(1L, "Art", 1L);
-        assertNotEquals(subject, subjectDao.getById(1L).get());
-        subjectDao.save(subject);
+        Subject subject = new Subject(1000L, "Art", 1000L);
+        Long subjectId = subjectDao.save(subject).getId();
+        assertTrue(testUtils.existsById("subjects", subjectId));
 
-        assertEquals(subject, subjectDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("subjects", subjectId);
+        Subject actual = new Subject((Long) map.get("id"), (String) map.get("name"), (Long) map.get("university_id"));
+        assertEquals(subject, actual);
     }
 
     @Test
     void shouldReturnSubjectWithIdOne() {
-        Subject expected = new Subject(1L, "Math", 1L);
-        Subject actual = subjectDao.getById(1L).get();
+        Map<String, Object> map = testUtils.getEntry("subjects", 1000L);
+        Subject expected = new Subject((Long) map.get("id"), (String) map.get("name"), (Long) map.get("university_id"));
+        Subject actual = subjectDao.getById(1000L).get();
 
         assertEquals(expected, actual);
     }
@@ -61,72 +69,65 @@ class SubjectDaoTest {
     @Test
     void shouldReturnListOfSubjects() {
         List<Subject> expected = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Physics", 1L),
-                new Subject(3L, "Programming", 1L));
+                new Subject(1000L, "Math", 1000L),
+                new Subject(1001L, "Physics", 1000L),
+                new Subject(1002L, "Programming", 1000L));
         List<Subject> actual = subjectDao.getAll();
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldDeleteSubject() {
-        Subject subject = new Subject(1L, "Math", 1L);
-        List<Subject> expected = List.of(
-                new Subject(2L, "Physics", 1L),
-                new Subject(3L, "Programming", 1L));
-        assertTrue(subjectDao.delete(subject));
-        List<Subject> actual = subjectDao.getAll();
-
-        assertEquals(expected, actual);
+        assertTrue(subjectDao.deleteById(1000L));
+        assertFalse(testUtils.existsById("subjects", 1000L));
     }
 
     @Test
     void shouldSaveListOfAudiences() {
         List<Subject> subjects = List.of(
-                new Subject("Art", 1L),
-                new Subject("Music", 1L));
+                new Subject("Art", 1000L),
+                new Subject("Music", 1000L));
 
         List<Subject> expected = List.of(
-                new Subject(3L, "Programming", 1L),
-                new Subject(1L, "Art", 1L),
-                new Subject(2L, "Music", 1L));
-        subjectDao.delete(new Subject(1L, "Math", 1L));
-        subjectDao.delete(new Subject(2L, "Physics", 1L));
+                new Subject(1L, "Art", 1000L),
+                new Subject(2L, "Music", 1000L),
+                new Subject(1002L, "Programming", 1000L));
         subjectDao.saveAll(subjects);
+        List<Subject> actual = subjectDao.getAll();
 
-        assertEquals(expected, subjectDao.getAll());
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfSubjectsWithUniversityIdOne() {
         List<Subject> expected = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Physics", 1L),
-                new Subject(3L, "Programming", 1L));
-        List<Subject> actual = subjectDao.getSubjectsByUniversityId(1L);
+                new Subject(1000L, "Math", 1000L),
+                new Subject(1001L, "Physics", 1000L),
+                new Subject(1002L, "Programming", 1000L));
+        List<Subject> actual = subjectDao.getSubjectsByUniversityId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfSubjectsWithStudentIdOne() {
         List<Subject> expected = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(3L, "Programming", 1L));
-        List<Subject> actual = subjectDao.getSubjectsByStudentId(1L);
+                new Subject(1000L, "Math", 1000L),
+                new Subject(1002L, "Programming", 1000L));
+        List<Subject> actual = subjectDao.getSubjectsByStudentId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfSubjectsWithTeacherIdOne() {
         List<Subject> expected = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Physics", 1L));
-        List<Subject> actual = subjectDao.getSubjectsByTeacherId(1L);
+                new Subject(1000L, "Math", 1000L),
+                new Subject(1001L, "Physics", 1000L));
+        List<Subject> actual = subjectDao.getSubjectsByTeacherId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
@@ -136,6 +137,6 @@ class SubjectDaoTest {
 
     @Test
     void shouldReturnFalseIfSubjectNotExist() {
-        assertFalse(() -> subjectDao.delete(new Subject(21L, "Math", 1L)));
+        assertFalse(() -> subjectDao.deleteById(21L));
     }
 }

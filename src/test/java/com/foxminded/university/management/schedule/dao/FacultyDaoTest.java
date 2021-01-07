@@ -7,8 +7,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +23,7 @@ class FacultyDaoTest {
                     .withInitScript("init_test_db.sql");
 
     private FacultyDao facultyDao;
+    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
@@ -29,31 +32,36 @@ class FacultyDaoTest {
         dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
         dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
         facultyDao = new FacultyDao(dataSource);
+        testUtils = new TestUtils(dataSource);
     }
 
     @Test
     void shouldCreateNewFaculty() {
-        Faculty faculty = new Faculty("QWPS", 1L);
-        facultyDao.delete(facultyDao.getById(1L).get());
-        facultyDao.save(faculty);
-        Faculty expected = new Faculty(1L, "QWPS", 1L);
+        Faculty faculty = new Faculty("QWPS", 1000L);
+        Long facultyId = facultyDao.save(faculty).getId();
+        assertTrue(testUtils.existsById("faculties", facultyId));
 
-        assertEquals(expected, facultyDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("faculties", facultyId);
+        Faculty actual = new Faculty((String) map.get("name"), (Long) map.get("university_id"));
+        assertEquals(faculty, actual);
     }
 
     @Test
     void shouldUpdateFaculty() {
-        Faculty faculty = new Faculty(1L, "WQE", 1L);
-        assertNotEquals(faculty, facultyDao.getById(1L).get());
-        facultyDao.save(faculty);
+        Faculty faculty = new Faculty(1000L, "QWPS", 1000L);
+        Long facultyId = facultyDao.save(faculty).getId();
+        assertTrue(testUtils.existsById("faculties", facultyId));
 
-        assertEquals(faculty, facultyDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("faculties", facultyId);
+        Faculty actual = new Faculty((Long) map.get("id"), (String) map.get("name"), (Long) map.get("university_id"));
+        assertEquals(faculty, actual);
     }
 
     @Test
     void shouldReturnFacultyWithIdOne() {
-        Faculty expected = new Faculty(1L, "FAIT", 1L);
-        Faculty actual = facultyDao.getById(1L).get();
+        Map<String, Object> map = testUtils.getEntry("faculties", 1000L);
+        Faculty expected = new Faculty((Long) map.get("id"), (String) map.get("name"), (Long) map.get("university_id"));
+        Faculty actual = facultyDao.getById(1000L).get();
 
         assertEquals(expected, actual);
     }
@@ -61,48 +69,43 @@ class FacultyDaoTest {
     @Test
     void shouldReturnListOfFaculties() {
         List<Faculty> expected = List.of(
-                new Faculty(1L, "FAIT", 1L),
-                new Faculty(2L, "FKFN", 1L));
+                new Faculty(1000L, "FAIT", 1000L),
+                new Faculty(1001L, "FKFN", 1000L));
         List<Faculty> actual = facultyDao.getAll();
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldDeleteFaculty() {
-        Faculty faculty = new Faculty(1L, "FAIT", 1L);
-        List<Faculty> expected = List.of(new Faculty(2L, "FKFN", 1L));
-        assertTrue(facultyDao.delete(faculty));
-        List<Faculty> actual = facultyDao.getAll();
-
-        assertEquals(expected, actual);
+        assertTrue(facultyDao.deleteById(1000L));
+        assertFalse(testUtils.existsById("faculties", 1000L));
     }
 
     @Test
     void shouldSaveListOfFaculties() {
         List<Faculty> faculties = List.of(
-                new Faculty("ABCD", 1L),
-                new Faculty("IFGH", 1L));
+                new Faculty("ABCD", 1000L),
+                new Faculty("IFGH", 1000L));
 
         List<Faculty> expected = List.of(
-                new Faculty(1L, "ABCD", 1L),
-                new Faculty(2L, "IFGH", 1L));
+                new Faculty(1L, "ABCD", 1000L),
+                new Faculty(2L, "IFGH", 1000L));
 
-        facultyDao.delete(new Faculty(1L, "FAIT", 1L));
-        facultyDao.delete(new Faculty(2L, "FKFN", 1L));
         facultyDao.saveAll(faculties);
-        assertEquals(expected, facultyDao.getAll());
+        List<Faculty> actual = facultyDao.getAll();
 
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfFacultiesWithUniversityIdOne() {
         List<Faculty> expected = List.of(
-                new Faculty(1L, "FAIT", 1L),
-                new Faculty(2L, "FKFN", 1L));
-        List<Faculty> actual = facultyDao.getFacultiesByUniversityId(1L);
+                new Faculty(1000L, "FAIT", 1000L),
+                new Faculty(1001L, "FKFN", 1000L));
+        List<Faculty> actual = facultyDao.getFacultiesByUniversityId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
@@ -112,6 +115,6 @@ class FacultyDaoTest {
 
     @Test
     void shouldReturnFalseIfFacultyNotExist() {
-        assertFalse(() -> facultyDao.delete(new Faculty(21L, "ABCD", 1L)));
+        assertFalse(() -> facultyDao.deleteById(21L));
     }
 }

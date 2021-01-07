@@ -7,8 +7,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 class AudienceDaoTest {
     @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withInitScript("init_test_db.sql");
+    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
+            .withInitScript("init_test_db.sql");
 
     private AudienceDao audienceDao;
+    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
@@ -29,31 +31,36 @@ class AudienceDaoTest {
         dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
         dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
         audienceDao = new AudienceDao(dataSource);
+        testUtils = new TestUtils(dataSource);
     }
 
     @Test
     void shouldCreateNewAudience() {
-        Audience audience = new Audience(310, 25, 1L);
-        audienceDao.delete(audienceDao.getById(1L).get());
-        audienceDao.save(audience);
-        Audience expected = new Audience(1L, 310, 25, 1L);
+        Audience audience = new Audience(310, 25, 1000L);
+        Long audienceId = audienceDao.save(audience).getId();
+        assertTrue(testUtils.existsById("audiences", audienceId));
 
-        assertEquals(expected, audienceDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("audiences", audienceId);
+        Audience actual = new Audience((Integer) map.get("number"), (Integer) map.get("capacity"), (Long) map.get("university_id"));
+        assertEquals(audience, actual);
     }
 
     @Test
     void shouldUpdateAudience() {
-        Audience audience = new Audience(1L, 310, 25, 1L);
-        assertNotEquals(audience, audienceDao.getById(1L).get());
-        audienceDao.save(audience);
+        Audience audience = new Audience(1000L, 310, 25, 1000L);
+        Long audienceId = audienceDao.save(audience).getId();
+        assertTrue(testUtils.existsById("audiences", audienceId));
 
-        assertEquals(audience, audienceDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("audiences", audienceId);
+        Audience actual = new Audience((Long) map.get("id"), (Integer) map.get("number"), (Integer) map.get("capacity"), (Long) map.get("university_id"));
+        assertEquals(audience, actual);
     }
 
     @Test
     void shouldReturnAudienceWithIdOne() {
-        Audience expected = new Audience(1L, 301, 50, 1L);
-        Audience actual = audienceDao.getById(1L).get();
+        Map<String, Object> map = testUtils.getEntry("audiences", 1000L);
+        Audience expected = new Audience((Long) map.get("id"), (Integer) map.get("number"), (Integer) map.get("capacity"), (Long) map.get("university_id"));
+        Audience actual = audienceDao.getById(1000L).get();
 
         assertEquals(expected, actual);
     }
@@ -61,60 +68,51 @@ class AudienceDaoTest {
     @Test
     void shouldReturnListOfAudiences() {
         List<Audience> expected = List.of(
-                new Audience(1L, 301, 50, 1L),
-                new Audience(2L, 302, 75, 1L),
-                new Audience(3L, 303, 100, 1L),
-                new Audience(4L, 304, 30, 1L),
-                new Audience(5L, 305, 55, 1L));
+                new Audience(1000L, 301, 50, 1000L),
+                new Audience(1001L, 302, 75, 1000L),
+                new Audience(1002L, 303, 100, 1000L),
+                new Audience(1003L, 304, 30, 1000L),
+                new Audience(1004L, 305, 55, 1000L));
         List<Audience> actual = audienceDao.getAll();
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldDeleteAudience() {
-        Audience audience = new Audience(1L, 301, 50, 1L);
-        List<Audience> expected = List.of(
-                new Audience(2L, 302, 75, 1L),
-                new Audience(3L, 303, 100, 1L),
-                new Audience(4L, 304, 30, 1L),
-                new Audience(5L, 305, 55, 1L));
-        assertTrue(audienceDao.delete(audience));
-        List<Audience> actual = audienceDao.getAll();
-
-        assertEquals(expected, actual);
+        assertTrue(audienceDao.deleteById(1000L));
+        assertFalse(testUtils.existsById("audiences", 1000L));
     }
 
     @Test
     void shouldSaveListOfAudiences() {
         List<Audience> audiences = List.of(
-                new Audience(400, 15, 1L),
-                new Audience(401, 60, 1L));
+                new Audience(400, 15, 1000L),
+                new Audience(401, 60, 1000L));
 
         List<Audience> expected = List.of(
-                new Audience(3L, 303, 100, 1L),
-                new Audience(4L, 304, 30, 1L),
-                new Audience(5L, 305, 55, 1L),
-                new Audience(1L, 400, 15, 1L),
-                new Audience(2L, 401, 60, 1L));
-        audienceDao.delete(new Audience(1L, 301, 50, 1L));
-        audienceDao.delete(new Audience(2L, 302, 75, 1L));
+                new Audience(1L, 400, 15, 1000L),
+                new Audience(2L, 401, 60, 1000L),
+                new Audience(1002L, 303, 100, 1000L),
+                new Audience(1003L, 304, 30, 1000L),
+                new Audience(1004L, 305, 55, 1000L));
         audienceDao.saveAll(audiences);
+        List<Audience> actual = audienceDao.getAll();
 
-        assertEquals(expected, audienceDao.getAll());
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListAudiencesWithUniversityIdOne() {
         List<Audience> expected = List.of(
-                new Audience(1L, 301, 50, 1L),
-                new Audience(2L, 302, 75, 1L),
-                new Audience(3L, 303, 100, 1L),
-                new Audience(4L, 304, 30, 1L),
-                new Audience(5L, 305, 55, 1L));
-        List<Audience> actual = audienceDao.getAudiencesByUniversityId(1L);
+                new Audience(1000L, 301, 50, 1000L),
+                new Audience(1001L, 302, 75, 1000L),
+                new Audience(1002L, 303, 100, 1000L),
+                new Audience(1003L, 304, 30, 1000L),
+                new Audience(1004L, 305, 55, 1000L));
+        List<Audience> actual = audienceDao.getAudiencesByUniversityId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
@@ -124,6 +122,6 @@ class AudienceDaoTest {
 
     @Test
     void shouldReturnFalseIfAudienceNotExist() {
-        assertFalse(() -> audienceDao.delete(new Audience(21L, 301, 50, 1L)));
+        assertFalse(() -> audienceDao.deleteById(21L));
     }
 }

@@ -7,8 +7,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +23,7 @@ class StudentDaoTest {
                     .withInitScript("init_test_db.sql");
 
     private StudentDao studentDao;
+    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
@@ -29,31 +32,41 @@ class StudentDaoTest {
         dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
         dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
         studentDao = new StudentDao(dataSource);
+        testUtils = new TestUtils(dataSource);
     }
 
     @Test
     void shouldCreateNewStudent() {
-        Student student = new Student("John", "Jackson", "Jackson", 1, 2L, 1L, 1L);
-        studentDao.delete(studentDao.getById(1L).get());
-        studentDao.save(student);
-        Student expected = new Student(1L, "John", "Jackson", "Jackson", 1, 2L, 1L, 1L);
+        Student student = new Student("John", "Jackson", "Jackson", 1, 1001L, 1000L, 1000L);
+        Long studentId = studentDao.save(student).getId();
+        assertTrue(testUtils.existsById("students", studentId));
 
-        assertEquals(expected, studentDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("students", studentId);
+        Student actual = new Student((String) map.get("first_name"), (String) map.get("last_name"), (String) map.get("middle_name"),
+                (Integer) map.get("course_number"), (Long) map.get("group_id"), (Long) map.get("faculty_id"), (Long) map.get("university_id"));
+        assertEquals(student, actual);
     }
 
     @Test
     void shouldUpdateStudent() {
-        Student student = new Student(1L, "John", "Jackson", "Jackson", 1, 2L, 1L, 1L);
-        assertNotEquals(student, studentDao.getById(1L).get());
-        studentDao.save(student);
+        Student student = new Student(1000L, "John", "Jackson", "Jackson", 1, 1001L, 1000L, 1000L);
+        Long studentId = studentDao.save(student).getId();
+        assertTrue(testUtils.existsById("students", studentId));
 
-        assertEquals(student, studentDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("students", studentId);
+        Student actual = new Student((Long) map.get("id"), (String) map.get("first_name"), (String) map.get("last_name"),
+                (String) map.get("middle_name"), (Integer) map.get("course_number"), (Long) map.get("group_id"),
+                (Long) map.get("faculty_id"), (Long) map.get("university_id"));
+        assertEquals(student, actual);
     }
 
     @Test
     void shouldReturnStudentWithIdOne() {
-        Student expected = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L);
-        Student actual = studentDao.getById(1L).get();
+        Map<String, Object> map = testUtils.getEntry("students", 1000L);
+        Student expected = new Student((Long) map.get("id"), (String) map.get("first_name"), (String) map.get("last_name"),
+                (String) map.get("middle_name"), (Integer) map.get("course_number"), (Long) map.get("group_id"),
+                (Long) map.get("faculty_id"), (Long) map.get("university_id"));
+        Student actual = studentDao.getById(1000L).get();
 
         assertEquals(expected, actual);
     }
@@ -61,82 +74,73 @@ class StudentDaoTest {
     @Test
     void shouldReturnListOfStudents() {
         List<Student> expected = List.of(
-                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
-                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
-                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
-                new Student(4L, "Jessa", "Costin", "Heeron", 2, 2L, 2L, 1L),
-                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L));
+                new Student(1000L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1000L, 1000L, 1000L),
+                new Student(1001L, "Lindsey", "Syplus", "Slocket", 1, 1001L, 1000L, 1000L),
+                new Student(1002L, "Minetta", "Funcheon", "Sayle", 2, 1000L, 1001L, 1000L),
+                new Student(1003L, "Jessa", "Costin", "Heeron", 2, 1001L, 1001L, 1000L),
+                new Student(1004L, "Earl", "Djekic", "Tremble", 3, 1000L, 1000L, 1000L));
         List<Student> actual = studentDao.getAll();
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldDeleteStudent() {
-        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L);
-        List<Student> expected = List.of(
-                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
-                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
-                new Student(4L, "Jessa", "Costin", "Heeron", 2, 2L, 2L, 1L),
-                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L));
-        assertTrue(studentDao.delete(student));
-        List<Student> actual = studentDao.getAll();
-
-        assertEquals(expected, actual);
+        assertTrue(studentDao.deleteById(1000L));
+        assertFalse(testUtils.existsById("students", 1000L));
     }
 
     @Test
     void shouldSaveListOfStudents() {
         List<Student> audiences = List.of(
-                new Student("John", "Jackson", "Jackson", 1, 2L, 1L, 1L),
-                new Student("Mike", "Conor", "Conor", 2, 2L, 1L, 1L));
+                new Student("John", "Jackson", "Jackson", 1, 1001L, 1000L, 1000L),
+                new Student("Mike", "Conor", "Conor", 2, 1001L, 1000L, 1000L));
 
         List<Student> expected = List.of(
-                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
-                new Student(4L, "Jessa", "Costin", "Heeron", 2, 2L, 2L, 1L),
-                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L),
-                new Student(1L, "John", "Jackson", "Jackson", 1, 2L, 1L, 1L),
-                new Student(2L, "Mike", "Conor", "Conor", 2, 2L, 1L, 1L));
-        studentDao.delete(new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L));
-        studentDao.delete(new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L));
+                new Student(1L, "John", "Jackson", "Jackson", 1, 1001L, 1000L, 1000L),
+                new Student(2L, "Mike", "Conor", "Conor", 2, 1001L, 1000L, 1000L),
+                new Student(1002L, "Minetta", "Funcheon", "Sayle", 2, 1000L, 1001L, 1000L),
+                new Student(1003L, "Jessa", "Costin", "Heeron", 2, 1001L, 1001L, 1000L),
+                new Student(1004L, "Earl", "Djekic", "Tremble", 3, 1000L, 1000L, 1000L));
         studentDao.saveAll(audiences);
+        List<Student> actual = studentDao.getAll();
 
-        assertEquals(expected, studentDao.getAll());
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfStudentsWithUniversityIdOne() {
         List<Student> expected = List.of(
-                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
-                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
-                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
-                new Student(4L, "Jessa", "Costin", "Heeron", 2, 2L, 2L, 1L),
-                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L));
-        List<Student> actual = studentDao.getStudentsByUniversityId(1L);
+                new Student(1000L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1000L, 1000L, 1000L),
+                new Student(1001L, "Lindsey", "Syplus", "Slocket", 1, 1001L, 1000L, 1000L),
+                new Student(1002L, "Minetta", "Funcheon", "Sayle", 2, 1000L, 1001L, 1000L),
+                new Student(1003L, "Jessa", "Costin", "Heeron", 2, 1001L, 1001L, 1000L),
+                new Student(1004L, "Earl", "Djekic", "Tremble", 3, 1000L, 1000L, 1000L));
+        List<Student> actual = studentDao.getStudentsByUniversityId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfStudentsWithGroupIdOne() {
         List<Student> expected = List.of(
-                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
-                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 1L, 2L, 1L),
-                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L));
-        List<Student> actual = studentDao.getStudentsByGroupId(1L);
+                new Student(1000L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1000L, 1000L, 1000L),
+                new Student(1002L, "Minetta", "Funcheon", "Sayle", 2, 1000L, 1001L, 1000L),
+                new Student(1004L, "Earl", "Djekic", "Tremble", 3, 1000L, 1000L, 1000L));
+        List<Student> actual = studentDao.getStudentsByGroupId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfStudentsWithFacultyIdOne() {
         List<Student> expected = List.of(
-                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L),
-                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L, 1L),
-                new Student(5L, "Earl", "Djekic", "Tremble", 3, 1L, 1L, 1L));
-        List<Student> actual = studentDao.getStudentsByFacultyId(1L);
+                new Student(1000L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1000L, 1000L, 1000L),
+                new Student(1001L, "Lindsey", "Syplus", "Slocket", 1, 1001L, 1000L, 1000L),
+                new Student(1004L, "Earl", "Djekic", "Tremble", 3, 1000L, 1000L, 1000L));
+        List<Student> actual = studentDao.getStudentsByFacultyId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
@@ -146,6 +150,6 @@ class StudentDaoTest {
 
     @Test
     void shouldReturnFalseIfStudentNotExist() {
-        assertFalse(() -> studentDao.delete(new Student(21L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L, 1L)));
+        assertFalse(() -> studentDao.deleteById(21L));
     }
 }

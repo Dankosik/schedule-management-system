@@ -7,8 +7,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +23,7 @@ class GroupDaoTest {
                     .withInitScript("init_test_db.sql");
 
     private GroupDao groupDao;
+    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
@@ -29,31 +32,39 @@ class GroupDaoTest {
         dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
         dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
         groupDao = new GroupDao(dataSource);
+        testUtils = new TestUtils(dataSource);
     }
 
     @Test
     void shouldCreateNewGroup() {
-        Group group = new Group("AB-81", 1L, 1L, 2L, 1L);
-        groupDao.delete(groupDao.getById(1L).get());
-        groupDao.save(group);
-        Group expected = new Group(1L, "AB-81", 1L, 1L, 2L, 1L);
+        Group group = new Group("AB-81", 1000L, 1000L, 1001L, 1000L);
+        Long groupId = groupDao.save(group).getId();
+        assertTrue(testUtils.existsById("groups", groupId));
 
-        assertEquals(expected, groupDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("groups", groupId);
+        Group actual = new Group((String) map.get("name"), (Long) map.get("lecture_id"), (Long) map.get("department_id"),
+                (Long) map.get("faculty_id"), (Long) map.get("university_id"));
+        assertEquals(group, actual);
     }
 
     @Test
     void shouldUpdateGroup() {
-        Group group = new Group(1L, "AB-81", 1L, 1L, 2L, 1L);
-        assertNotEquals(group, groupDao.getById(1L).get());
-        groupDao.save(group);
+        Group group = new Group(1000L, "AB-81", 1000L, 1000L, 1001L, 1000L);
+        Long groupId = groupDao.save(group).getId();
+        assertTrue(testUtils.existsById("groups", groupId));
 
-        assertEquals(group, groupDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("groups", groupId);
+        Group actual = new Group((Long) map.get("id"), (String) map.get("name"), (Long) map.get("lecture_id"),
+                (Long) map.get("department_id"), (Long) map.get("faculty_id"), (Long) map.get("university_id"));
+        assertEquals(group, actual);
     }
 
     @Test
     void shouldReturnGroupWithIdOne() {
-        Group expected = new Group(1L, "AB-91", 1L, 1L, 1L, 1L);
-        Group actual = groupDao.getById(1L).get();
+        Map<String, Object> map = testUtils.getEntry("groups", 1000L);
+        Group expected = new Group((Long) map.get("id"), (String) map.get("name"), (Long) map.get("lecture_id"),
+                (Long) map.get("department_id"), (Long) map.get("faculty_id"), (Long) map.get("university_id"));
+        Group actual = groupDao.getById(1000L).get();
 
         assertEquals(expected, actual);
     }
@@ -61,74 +72,69 @@ class GroupDaoTest {
     @Test
     void shouldReturnListOfGroups() {
         List<Group> expected = List.of(
-                new Group(1L, "AB-91", 1L, 1L, 1L, 1L),
-                new Group(2L, "BC-01", 2L, 2L, 2L, 1L));
+                new Group(1000L, "AB-91", 1000L, 1000L, 1000L, 1000L),
+                new Group(1001L, "BC-01", 1001L, 1001L, 1001L, 1000L));
         List<Group> actual = groupDao.getAll();
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldDeleteGroup() {
-        Group group = new Group(1L, "AB-91", 1L, 1L, 1L, 1L);
-        List<Group> expected = List.of(new Group(2L, "BC-01", 2L, 2L, 2L, 1L));
-        assertTrue(groupDao.delete(group));
-        List<Group> actual = groupDao.getAll();
-
-        assertEquals(expected, actual);
+        assertTrue(groupDao.deleteById(1000L));
+        assertFalse(testUtils.existsById("groups", 1000L));
     }
 
     @Test
     void shouldSaveListOfGroups() {
-        List<Group> audiences = List.of(
-                new Group("CD-71", 1L, 1L, 2L, 1L),
-                new Group("IF-61", 2L, 2L, 2L, 1L));
+        List<Group> groups = List.of(
+                new Group("CD-71", 1000L, 1000L, 1001L, 1000L),
+                new Group("IF-61", 1001L, 1001L, 1001L, 1000L));
 
         List<Group> expected = List.of(
-                new Group(1L, "CD-71", 1L, 1L, 2L, 1L),
-                new Group(2L, "IF-61", 2L, 2L, 2L, 1L));
-        groupDao.delete(new Group(1L, "AB-91", 1L, 1L, 1L, 1L));
-        groupDao.delete(new Group(2L, "BC-01", 2L, 2L, 2L, 1L));
-        groupDao.saveAll(audiences);
+                new Group(1L, "CD-71", 1000L, 1000L, 1001L, 1000L),
+                new Group(2L, "IF-61", 1001L, 1001L, 1001L, 1000L));
+        groupDao.saveAll(groups);
+        List<Group> actual = groupDao.getAll();
 
-        assertEquals(expected, groupDao.getAll());
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfGroupsWithUniversityIdOne() {
         List<Group> expected = List.of(
-                new Group(1L, "AB-91", 1L, 1L, 1L, 1L),
-                new Group(2L, "BC-01", 2L, 2L, 2L, 1L));
-        List<Group> actual = groupDao.getGroupsByUniversityId(1L);
+                new Group(1000L, "AB-91", 1000L, 1000L, 1000L, 1000L),
+                new Group(1001L, "BC-01", 1001L, 1001L, 1001L, 1001L));
+        List<Group> actual = groupDao.getGroupsByUniversityId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfGroupsWithFacultyIdOne() {
         List<Group> expected = List.of(
-                new Group(1L, "AB-91", 1L, 1L, 1L, 1L));
-        List<Group> actual = groupDao.getGroupsByFacultyId(1L);
+                new Group(1000L, "AB-91", 1000L, 1000L, 1000L, 1000L));
+        List<Group> actual = groupDao.getGroupsByFacultyId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfGroupsWithDepartmentIdTwo() {
         List<Group> expected = List.of(
-                new Group(2L, "BC-01", 2L, 2L, 2L, 1L));
-        List<Group> actual = groupDao.getGroupsByDepartmentId(2L);
+                new Group(1001L, "BC-01", 1001L, 1001L, 1001L, 1000L));
+        List<Group> actual = groupDao.getGroupsByDepartmentId(1001L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfGroupsWithLectureIdOne() {
         List<Group> expected = List.of(
-                new Group(1L, "AB-91", 1L, 1L, 1L, 1L));
-        List<Group> actual = groupDao.getGroupsByLectureId(1L);
+                new Group(1000L, "AB-91", 1000L, 1000L, 1000L, 1000L));
+        List<Group> actual = groupDao.getGroupsByLectureId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
@@ -138,6 +144,6 @@ class GroupDaoTest {
 
     @Test
     void shouldReturnFalseIfGroupNotExist() {
-        assertFalse(() -> groupDao.delete(new Group(21L, "AB-91", 1L, 1L, 1L, 1L)));
+        assertFalse(() -> groupDao.deleteById(21L));
     }
 }

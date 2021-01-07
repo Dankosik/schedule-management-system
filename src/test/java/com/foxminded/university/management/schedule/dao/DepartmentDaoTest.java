@@ -7,8 +7,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import utils.TestUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +22,7 @@ class DepartmentDaoTest {
             new PostgreSQLContainer<>("postgres:12")
                     .withInitScript("init_test_db.sql");
     private DepartmentDao departmentDao;
+    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
@@ -28,31 +31,38 @@ class DepartmentDaoTest {
         dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
         dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
         departmentDao = new DepartmentDao(dataSource);
+        testUtils = new TestUtils(dataSource);
     }
 
     @Test
     void shouldCreateNewDepartment() {
-        Department department = new Department("ABC", 1L, 1L);
-        departmentDao.delete(departmentDao.getById(1L).get());
-        departmentDao.save(department);
-        Department expected = new Department(1L, "ABC", 1L, 1L);
+        Department department = new Department("ABC", 1000L, 1000L);
+        Long departmentId = departmentDao.save(department).getId();
+        assertTrue(testUtils.existsById("departments", departmentId));
 
-        assertEquals(expected, departmentDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("departments", departmentId);
+        Department actual = new Department((String) map.get("name"), (Long) map.get("faculty_id"), (Long) map.get("university_id"));
+        assertEquals(department, actual);
     }
 
     @Test
     void shouldUpdateDepartment() {
-        Department department = new Department(1L, "ABCD", 2L, 1L);
-        assertNotEquals(department, departmentDao.getById(1L).get());
-        departmentDao.save(department);
+        Department department = new Department(1000L, "ABC", 1000L, 1000L);
+        Long departmentId = departmentDao.save(department).getId();
+        assertTrue(testUtils.existsById("departments", departmentId));
 
-        assertEquals(department, departmentDao.getById(1L).get());
+        Map<String, Object> map = testUtils.getEntry("departments", departmentId);
+        Department actual = new Department((Long) map.get("id"), (String) map.get("name"), (Long) map.get("faculty_id"),
+                (Long) map.get("university_id"));
+        assertEquals(department, actual);
     }
 
     @Test
     void shouldReturnDepartmentWithIdOne() {
-        Department expected = new Department(1L, "Department of Automation and System Engineering", 1L, 1L);
-        Department actual = departmentDao.getById(1L).get();
+        Map<String, Object> map = testUtils.getEntry("departments", 1000L);
+        Department expected = new Department((Long) map.get("id"), (String) map.get("name"), (Long) map.get("faculty_id"),
+                (Long) map.get("university_id"));
+        Department actual = departmentDao.getById(1000L).get();
 
         assertEquals(expected, actual);
     }
@@ -60,54 +70,50 @@ class DepartmentDaoTest {
     @Test
     void shouldReturnLIstOfDepartments() {
         List<Department> expected = List.of(
-                new Department(1L, "Department of Automation and System Engineering", 1L, 1L),
-                new Department(2L, "Department of Higher Mathematics", 2L, 1L));
+                new Department(1000L, "Department of Automation and System Engineering", 1000L, 1000L),
+                new Department(1001L, "Department of Higher Mathematics", 1001L, 1000L));
         List<Department> actual = departmentDao.getAll();
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldDeleteDepartment() {
-        Department department = new Department(1L, "Department of Automation and System Engineering", 1L, 1L);
-        List<Department> expected = List.of(new Department(2L, "Department of Higher Mathematics", 2L, 1L));
-        assertTrue(departmentDao.delete(department));
-        List<Department> actual = departmentDao.getAll();
-
-        assertEquals(expected, actual);
+        assertTrue(departmentDao.deleteById(1000L));
+        assertFalse(testUtils.existsById("departments", 1000L));
     }
 
     @Test
     void shouldSaveListOfDepartments() {
         List<Department> departments = List.of(
-                new Department("Department of Computer Science", 1L, 1L),
-                new Department("Department of Informatics", 2L, 1L));
+                new Department("Department of Computer Science", 1000L, 1000L),
+                new Department("Department of Informatics", 1001L, 1000L));
         List<Department> expected = List.of(
-                new Department(1L, "Department of Computer Science", 1L, 1L),
-                new Department(2L, "Department of Informatics", 2L, 1L));
-        departmentDao.delete(new Department(1L, "Department of Automation and System Engineering", 1L, 1L));
-        departmentDao.delete(new Department(2L, "Department of Higher Mathematics", 2L, 1L));
+                new Department(1L, "Department of Computer Science", 1000L, 1000L),
+                new Department(2L, "Department of Informatics", 1001L, 1000L));
         departmentDao.saveAll(departments);
-        assertEquals(expected, departmentDao.getAll());
+        List<Department> actual = departmentDao.getAll();
+
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfDepartmentsWithUniversityIdOne() {
         List<Department> expected = List.of(
-                new Department(1L, "Department of Automation and System Engineering", 1L, 1L),
-                new Department(2L, "Department of Higher Mathematics", 2L, 1L));
-        List<Department> actual = departmentDao.getDepartmentsByUniversityId(1L);
+                new Department(1000L, "Department of Automation and System Engineering", 1000L, 1000L),
+                new Department(1001L, "Department of Higher Mathematics", 1001L, 1000L));
+        List<Department> actual = departmentDao.getDepartmentsByUniversityId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
     void shouldReturnListOfDepartmentsWithFacultyIdOne() {
         List<Department> expected = List.of(
-                new Department(1L, "Department of Automation and System Engineering", 1L, 1L));
-        List<Department> actual = departmentDao.getDepartmentsByFacultyId(1L);
+                new Department(1000L, "Department of Automation and System Engineering", 1000L, 1000L));
+        List<Department> actual = departmentDao.getDepartmentsByFacultyId(1000L);
 
-        assertEquals(expected, actual);
+        assertTrue(actual.containsAll(expected));
     }
 
     @Test
@@ -117,6 +123,6 @@ class DepartmentDaoTest {
 
     @Test
     void shouldReturnFalseIfDepartmentNotExist() {
-        assertFalse(() -> departmentDao.delete(new Department(21L, "Department of Automation and System Engineering", 1L, 1L)));
+        assertFalse(() -> departmentDao.deleteById(21L));
     }
 }
