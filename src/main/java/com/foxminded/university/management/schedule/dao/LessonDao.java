@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Repository
-public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson> {
+public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson, Long> {
     private final JdbcTemplate jdbcTemplate;
 
     public LessonDao(DataSource dataSource) {
@@ -58,8 +58,8 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson> {
     }
 
     @Override
-    public boolean delete(Lesson lesson) {
-        return this.jdbcTemplate.update("DELETE FROM lessons WHERE id = ?", lesson.getId()) == 1;
+    public boolean deleteById(Long id) {
+        return this.jdbcTemplate.update("DELETE FROM lessons WHERE id = ?", id) == 1;
     }
 
     @Override

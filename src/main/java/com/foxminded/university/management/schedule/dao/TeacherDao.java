@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
-public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher> {
+public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher, Long> {
     private final JdbcTemplate jdbcTemplate;
 
     public TeacherDao(DataSource dataSource) {
@@ -60,8 +60,8 @@ public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher> {
     }
 
     @Override
-    public boolean delete(Teacher teacher) {
-        return this.jdbcTemplate.update("DELETE FROM teachers WHERE id = ?", teacher.getId()) == 1;
+    public boolean deleteById(Long id) {
+        return this.jdbcTemplate.update("DELETE FROM teachers WHERE id = ?", id) == 1;
     }
 
     @Override

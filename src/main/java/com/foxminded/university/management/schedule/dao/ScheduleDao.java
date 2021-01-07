@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
-public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule> {
+public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule, Long> {
     private final JdbcTemplate jdbcTemplate;
 
     public ScheduleDao(DataSource dataSource) {
@@ -51,8 +51,8 @@ public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule> 
     }
 
     @Override
-    public boolean delete(Schedule schedule) {
-        return this.jdbcTemplate.update("DELETE FROM schedule WHERE id = ?", schedule.getId()) == 1;
+    public boolean deleteById(Long id) {
+        return this.jdbcTemplate.update("DELETE FROM schedule WHERE id = ?", id) == 1;
     }
 
     @Override

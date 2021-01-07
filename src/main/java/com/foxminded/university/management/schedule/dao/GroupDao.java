@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
-public class GroupDao extends AbstractDao<Group> implements Dao<Group> {
+public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
     private final JdbcTemplate jdbcTemplate;
 
     public GroupDao(DataSource dataSource) {
@@ -58,8 +58,8 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group> {
     }
 
     @Override
-    public boolean delete(Group group) {
-        return this.jdbcTemplate.update("DELETE FROM groups WHERE id = ?", group.getId()) == 1;
+    public boolean deleteById(Long id) {
+        return this.jdbcTemplate.update("DELETE FROM groups WHERE id = ?", id) == 1;
     }
 
     @Override
