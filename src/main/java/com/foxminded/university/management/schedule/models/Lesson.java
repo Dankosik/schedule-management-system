@@ -1,10 +1,12 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.dao.BaseEntity;
+
 import java.sql.Time;
 import java.time.Duration;
 import java.util.Objects;
 
-public class Lesson {
+public class Lesson implements BaseEntity<Long> {
     private Long id;
     private Integer number;
     private Time startTime;

@@ -1,9 +1,11 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.dao.BaseEntity;
+
 import java.sql.Date;
 import java.util.Objects;
 
-public class Lecture {
+public class Lecture implements BaseEntity<Long> {
     private Long id;
     private Integer number;
     private Date date;

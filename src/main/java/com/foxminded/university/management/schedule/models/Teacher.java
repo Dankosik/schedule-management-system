@@ -1,8 +1,10 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.dao.BaseEntity;
+
 import java.util.Objects;
 
-public class Teacher extends Person {
+public class Teacher extends Person implements BaseEntity<Long> {
     private Long id;
     private Long studentId;
     private Long universityId;
