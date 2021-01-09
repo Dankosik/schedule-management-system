@@ -16,7 +16,6 @@ public class StudentRowMapper implements RowMapper<Student> {
         student.setMiddleName(resultSet.getString("middle_name"));
         student.setCourseNumber(resultSet.getInt("course_number"));
         student.setGroupId(resultSet.getLong("group_id"));
-        student.setFacultyId(resultSet.getLong("faculty_id"));
         student.setUniversityId(resultSet.getLong("university_id"));
         return student;
     }

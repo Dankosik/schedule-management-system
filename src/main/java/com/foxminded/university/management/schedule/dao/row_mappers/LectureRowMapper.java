@@ -16,7 +16,6 @@ public class LectureRowMapper implements RowMapper<Lecture> {
         lecture.setAudienceId(resultSet.getLong("audience_id"));
         lecture.setLessonId(resultSet.getLong("lesson_id"));
         lecture.setTeacherId(resultSet.getLong("teacher_id"));
-        lecture.setScheduleId(resultSet.getLong("schedule_id"));
         return lecture;
     }
 }
