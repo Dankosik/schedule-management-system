@@ -51,10 +51,10 @@ VALUES (1002, 3, '11:50:00', '1 hour 30 minute', 1002);
 INSERT INTO lessons (id, number, start_time, duration, subject_id)
 VALUES (1003, 4, '13:20:00', '1 hour 30 minute', 1002);
 
-INSERT INTO teachers (id, first_name, last_name, middle_name, university_id)
-VALUES (1000, 'Hillel', 'St. Leger', 'Lugard', 1000);
-INSERT INTO teachers (id, first_name, last_name, middle_name, university_id)
-VALUES (1001, 'Lynsey', 'Grzeszczak', 'McPhillimey', 1000);
+INSERT INTO teachers (id, first_name, last_name, middle_name, faculty_id, university_id)
+VALUES (1000, 'Hillel', 'St. Leger', 'Lugard', 1000, 1000);
+INSERT INTO teachers (id, first_name, last_name, middle_name, faculty_id, university_id)
+VALUES (1001, 'Lynsey', 'Grzeszczak', 'McPhillimey',1001, 1000);
 
 
 INSERT INTO lectures (id, number, date, audience_id, lesson_id, teacher_id)
