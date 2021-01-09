@@ -39,7 +39,7 @@ class StudentDaoTest extends BaseDaoTest {
 
         Map<String, Object> map = testUtils.getEntry("students", studentId);
         Student actual = new Student((Long) map.get("id"), (String) map.get("first_name"), (String) map.get("last_name"),
-                (String) map.get("middle_name"), (Integer) map.get("course_number"), (Long) map.get("group_id"),(Long) map.get("university_id"));
+                (String) map.get("middle_name"), (Integer) map.get("course_number"), (Long) map.get("group_id"), (Long) map.get("university_id"));
         assertEquals(student, actual);
     }
 

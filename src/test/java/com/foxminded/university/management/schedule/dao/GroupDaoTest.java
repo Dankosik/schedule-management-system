@@ -71,13 +71,13 @@ class GroupDaoTest extends BaseDaoTest {
     @Test
     void shouldSaveListOfGroups() {
         List<Group> groups = List.of(
-                new Group("CD-71",  1000L,  1000L),
-                new Group("IF-61", 1001L,  1000L));
+                new Group("CD-71", 1000L, 1000L),
+                new Group("IF-61", 1001L, 1000L));
 
         List<Group> expected = List.of(
                 new Group(1000L, "AB-91", 1000L, 1000L),
-                new Group(1001L, "BC-01", 1001L,  1000L),
-                new Group(1L, "CD-71", 1000L,  1000L),
+                new Group(1001L, "BC-01", 1001L, 1000L),
+                new Group(1L, "CD-71", 1000L, 1000L),
                 new Group(2L, "IF-61", 1001L, 1000L));
         groupDao.saveAll(groups);
         List<Group> actual = groupDao.getAll();
@@ -88,8 +88,8 @@ class GroupDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfGroupsWithUniversityIdOne() {
         List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L,  1000L),
-                new Group(1001L, "BC-01", 1001L,  1000L));
+                new Group(1000L, "AB-91", 1000L, 1000L),
+                new Group(1001L, "BC-01", 1001L, 1000L));
         List<Group> actual = groupDao.getGroupsByUniversityId(1000L);
 
         assertTrue(actual.containsAll(expected));
@@ -98,7 +98,7 @@ class GroupDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfGroupsWithFacultyIdOne() {
         List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L,  1000L));
+                new Group(1000L, "AB-91", 1000L, 1000L));
         List<Group> actual = groupDao.getGroupsByFacultyId(1000L);
 
         assertTrue(actual.containsAll(expected));

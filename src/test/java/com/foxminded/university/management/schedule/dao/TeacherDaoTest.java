@@ -27,7 +27,7 @@ class TeacherDaoTest extends BaseDaoTest {
 
         Map<String, Object> map = testUtils.getEntry("teachers", teacherId);
         Teacher actual = new Teacher((String) map.get("first_name"), (String) map.get("last_name"), (String) map.get("middle_name"),
-               (Long) map.get("university_id"));
+                (Long) map.get("university_id"));
         assertEquals(teacher, actual);
     }
 
@@ -47,7 +47,7 @@ class TeacherDaoTest extends BaseDaoTest {
     void shouldReturnTeacherWithIdOne() {
         Map<String, Object> map = testUtils.getEntry("teachers", 1000L);
         Teacher expected = new Teacher((Long) map.get("id"), (String) map.get("first_name"), (String) map.get("last_name"),
-                (String) map.get("middle_name"),(Long) map.get("university_id"));
+                (String) map.get("middle_name"), (Long) map.get("university_id"));
         Teacher actual = teacherDao.getById(1000L).get();
 
         assertEquals(expected, actual);
@@ -73,13 +73,13 @@ class TeacherDaoTest extends BaseDaoTest {
     void shouldSaveListOfTeachers() {
         List<Teacher> teachers = List.of(
                 new Teacher("John", "Jackson", "Jackson", 1000L),
-                new Teacher("Mike", "Conor", "Conor",  1000L));
+                new Teacher("Mike", "Conor", "Conor", 1000L));
 
         List<Teacher> expected = List.of(
-                new Teacher(1000L, "Hillel", "St. Leger", "Lugard",  1000L),
-                new Teacher(1001L, "Lynsey", "Grzeszczak", "McPhillimey",  1000L),
-                new Teacher(1L, "John", "Jackson", "Jackson",  1000L),
-                new Teacher(2L, "Mike", "Conor", "Conor",  1000L));
+                new Teacher(1000L, "Hillel", "St. Leger", "Lugard", 1000L),
+                new Teacher(1001L, "Lynsey", "Grzeszczak", "McPhillimey", 1000L),
+                new Teacher(1L, "John", "Jackson", "Jackson", 1000L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 1000L));
         teacherDao.saveAll(teachers);
         List<Teacher> actual = teacherDao.getAll();
 
@@ -89,8 +89,8 @@ class TeacherDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfTeachersWithUniversityIdOne() {
         List<Teacher> expected = List.of(
-                new Teacher(1000L, "Hillel", "St. Leger", "Lugard",  1000L),
-                new Teacher(1001L, "Lynsey", "Grzeszczak", "McPhillimey",  1000L));
+                new Teacher(1000L, "Hillel", "St. Leger", "Lugard", 1000L),
+                new Teacher(1001L, "Lynsey", "Grzeszczak", "McPhillimey", 1000L));
         List<Teacher> actual = teacherDao.getTeachersByUniversityId(1000L);
 
         assertTrue(actual.containsAll(expected));
