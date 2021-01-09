@@ -26,21 +26,20 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student, Lon
         params.put("middle_name", student.getMiddleName());
         params.put("course_number", student.getCourseNumber());
         params.put("group_id", student.getGroupId());
-        params.put("faculty_id", student.getFacultyId());
         params.put("university_id", student.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         return new Student(newId.longValue(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getCourseNumber(), student.getGroupId(), student.getFacultyId(), student.getUniversityId());
+                student.getCourseNumber(), student.getGroupId(), student.getUniversityId());
     }
 
     @Override
     protected Student update(Student student) {
         this.jdbcTemplate.update("UPDATE students SET first_name = ?, last_name = ?, middle_name = ?, " +
-                        "course_number = ?, group_id = ?, faculty_id = ?,  university_id = ? WHERE id = ?",
+                        "course_number = ?, group_id = ?,  university_id = ? WHERE id = ?",
                 student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getCourseNumber(), student.getGroupId(), student.getFacultyId(), student.getUniversityId(), student.getId());
+                student.getCourseNumber(), student.getGroupId(), student.getUniversityId(), student.getId());
         return new Student(student.getId(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getCourseNumber(), student.getGroupId(), student.getFacultyId(), student.getUniversityId());
+                student.getCourseNumber(), student.getGroupId(), student.getUniversityId());
     }
 
     @Override
@@ -74,9 +73,5 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student, Lon
 
     public List<Student> getStudentsByGroupId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM students WHERE group_id = ?", new StudentRowMapper(), id);
-    }
-
-    public List<Student> getStudentsByFacultyId(Long id) {
-        return this.jdbcTemplate.query("SELECT * FROM students WHERE faculty_id = ?", new StudentRowMapper(), id);
     }
 }

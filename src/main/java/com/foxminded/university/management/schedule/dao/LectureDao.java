@@ -26,20 +26,19 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
         params.put("audience_id", lecture.getAudienceId());
         params.put("lesson_id", lecture.getLessonId());
         params.put("teacher_id", lecture.getTeacherId());
-        params.put("schedule_id", lecture.getScheduleId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         return new Lecture(newId.longValue(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getLessonId(), lecture.getTeacherId(), lecture.getScheduleId());
+                lecture.getLessonId(), lecture.getTeacherId());
     }
 
     @Override
     protected Lecture update(Lecture lecture) {
         this.jdbcTemplate.update("UPDATE lectures SET number = ?, date = ?,  audience_id = ?, lesson_id = ?, " +
-                        "teacher_id = ?, schedule_id = ? WHERE id = ?",
+                        "teacher_id = ? WHERE id = ?",
                 lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(), lecture.getLessonId(), lecture.getTeacherId(),
-                lecture.getScheduleId(), lecture.getId());
+                lecture.getId());
         return new Lecture(lecture.getId(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getLessonId(), lecture.getTeacherId(), lecture.getScheduleId());
+                lecture.getLessonId(), lecture.getTeacherId());
     }
 
     @Override
@@ -77,9 +76,5 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
 
     public List<Lecture> getLecturesByTeacherId(Long id) {
         return this.jdbcTemplate.query("SELECT * FROM lectures WHERE teacher_id = ?", new LectureRowMapper(), id);
-    }
-
-    public List<Lecture> getLecturesByScheduleId(Long id) {
-        return this.jdbcTemplate.query("SELECT * FROM lectures WHERE schedule_id = ?", new LectureRowMapper(), id);
     }
 }

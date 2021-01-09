@@ -22,21 +22,17 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
         simpleJdbcInsert.withTableName("groups").usingGeneratedKeyColumns("id");
         Map<String, Object> params = new HashMap<>();
         params.put("name", group.getName());
-        params.put("lecture_id", group.getLectureId());
-        params.put("department_id", group.getDepartmentId());
         params.put("faculty_id", group.getFacultyId());
         params.put("university_id", group.getUniversityId());
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        return new Group(newId.longValue(), group.getName(), group.getLectureId(), group.getDepartmentId(),
-                group.getFacultyId(), group.getUniversityId());
+        return new Group(newId.longValue(), group.getName(), group.getFacultyId(), group.getUniversityId());
     }
 
     @Override
     protected Group update(Group group) {
-        this.jdbcTemplate.update("UPDATE groups SET name = ?, lecture_id = ?, department_id = ?, faculty_id = ?, university_id = ? WHERE id = ?",
-                group.getName(), group.getLectureId(), group.getDepartmentId(), group.getFacultyId(), group.getUniversityId(), group.getId());
-        return new Group(group.getId(), group.getName(), group.getLectureId(), group.getDepartmentId(),
-                group.getFacultyId(), group.getUniversityId());
+        this.jdbcTemplate.update("UPDATE groups SET name = ?,  faculty_id = ?, university_id = ? WHERE id = ?",
+                group.getName(), group.getFacultyId(), group.getUniversityId(), group.getId());
+        return new Group(group.getId(), group.getName(), group.getFacultyId(), group.getUniversityId());
     }
 
     @Override
@@ -62,14 +58,6 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
             result.add(save(group));
         }
         return result;
-    }
-
-    public List<Group> getGroupsByLectureId(Long id) {
-        return this.jdbcTemplate.query("SELECT * FROM groups WHERE lecture_id = ?", new GroupRowMapper(), id);
-    }
-
-    public List<Group> getGroupsByDepartmentId(Long id) {
-        return this.jdbcTemplate.query("SELECT * FROM groups WHERE department_id = ?", new GroupRowMapper(), id);
     }
 
     public List<Group> getGroupsByFacultyId(Long id) {
