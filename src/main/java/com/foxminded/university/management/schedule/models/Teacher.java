@@ -38,16 +38,16 @@ public class Teacher extends Person implements BaseEntity<Long> {
         return universityId;
     }
 
+    public void setUniversityId(Long universityId) {
+        this.universityId = universityId;
+    }
+
     public Long getFacultyId() {
         return facultyId;
     }
 
     public void setFacultyId(Long facultyId) {
         this.facultyId = facultyId;
-    }
-
-    public void setUniversityId(Long universityId) {
-        this.universityId = universityId;
     }
 
     @Override

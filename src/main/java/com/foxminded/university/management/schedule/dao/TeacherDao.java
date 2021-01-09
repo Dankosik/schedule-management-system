@@ -34,9 +34,9 @@ public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher, Lon
     @Override
     protected Teacher update(Teacher teacher) {
         this.jdbcTemplate.update("UPDATE teachers SET first_name = ?, last_name = ?, middle_name = ?, faculty_id = ?, university_id = ? WHERE id = ?",
-                teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),  teacher.getFacultyId(), teacher.getUniversityId(), teacher.getId());
+                teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(), teacher.getFacultyId(), teacher.getUniversityId(), teacher.getId());
         return new Teacher(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
-                teacher.getFacultyId(),  teacher.getUniversityId());
+                teacher.getFacultyId(), teacher.getUniversityId());
     }
 
     @Override
