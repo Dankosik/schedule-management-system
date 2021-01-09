@@ -63,13 +63,12 @@ public class Audience implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Audience audience = (Audience) o;
-        return Objects.equals(id, audience.id) && Objects.equals(number, audience.number) &&
-                Objects.equals(capacity, audience.capacity) && Objects.equals(universityId, audience.universityId);
+        return Objects.equals(number, audience.number) && Objects.equals(capacity, audience.capacity) && Objects.equals(universityId, audience.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number, capacity, universityId);
+        return Objects.hash(number, capacity, universityId);
     }
 
     @Override

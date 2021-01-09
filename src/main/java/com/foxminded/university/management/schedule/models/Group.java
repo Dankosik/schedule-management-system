@@ -85,14 +85,12 @@ public class Group implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
-        return Objects.equals(id, group.id) && Objects.equals(lectureId, group.lectureId) &&
-                Objects.equals(departmentId, group.departmentId) && Objects.equals(facultyId, group.facultyId) &&
-                Objects.equals(name, group.name) && Objects.equals(universityId, group.universityId);
+        return Objects.equals(name, group.name) && Objects.equals(lectureId, group.lectureId) && Objects.equals(departmentId, group.departmentId) && Objects.equals(facultyId, group.facultyId) && Objects.equals(universityId, group.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lectureId, departmentId, facultyId, name, universityId);
+        return Objects.hash(name, lectureId, departmentId, facultyId, universityId);
     }
 
     @Override

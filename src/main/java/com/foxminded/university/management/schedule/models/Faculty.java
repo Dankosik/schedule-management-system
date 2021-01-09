@@ -53,13 +53,12 @@ public class Faculty implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Faculty faculty = (Faculty) o;
-        return Objects.equals(id, faculty.id) && Objects.equals(name, faculty.name) &&
-                Objects.equals(universityId, faculty.universityId);
+        return Objects.equals(name, faculty.name) && Objects.equals(universityId, faculty.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, universityId);
+        return Objects.hash(name, universityId);
     }
 
     @Override

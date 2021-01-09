@@ -53,12 +53,12 @@ public class Subject implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Subject subject = (Subject) o;
-        return Objects.equals(id, subject.id) && Objects.equals(name, subject.name) && Objects.equals(universityId, subject.universityId);
+        return Objects.equals(name, subject.name) && Objects.equals(universityId, subject.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, universityId);
+        return Objects.hash(name, universityId);
     }
 
     @Override

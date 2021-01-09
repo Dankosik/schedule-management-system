@@ -77,13 +77,12 @@ public class Lesson implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lesson lesson = (Lesson) o;
-        return Objects.equals(id, lesson.id) && Objects.equals(number, lesson.number) &&
-                Objects.equals(startTime, lesson.startTime) && Objects.equals(duration, lesson.duration) && Objects.equals(subjectId, lesson.subjectId);
+        return Objects.equals(number, lesson.number) && Objects.equals(startTime, lesson.startTime) && Objects.equals(duration, lesson.duration) && Objects.equals(subjectId, lesson.subjectId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number, startTime, duration, subjectId);
+        return Objects.hash(number, startTime, duration, subjectId);
     }
 
     @Override

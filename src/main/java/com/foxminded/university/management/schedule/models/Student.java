@@ -75,13 +75,14 @@ public class Student extends Person implements BaseEntity<Long> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Student student = (Student) o;
-        return Objects.equals(id, student.id) && Objects.equals(courseNumber, student.courseNumber) && Objects.equals(groupId, student.groupId) && Objects.equals(facultyId, student.facultyId) && Objects.equals(universityId, student.universityId);
+        return Objects.equals(courseNumber, student.courseNumber) && Objects.equals(groupId, student.groupId) && Objects.equals(facultyId, student.facultyId) && Objects.equals(universityId, student.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, courseNumber, groupId, facultyId, universityId);
+        return Objects.hash(super.hashCode(), courseNumber, groupId, facultyId, universityId);
     }
 
     @Override

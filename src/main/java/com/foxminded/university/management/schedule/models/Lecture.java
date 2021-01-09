@@ -98,14 +98,12 @@ public class Lecture implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lecture lecture = (Lecture) o;
-        return Objects.equals(id, lecture.id) && Objects.equals(number, lecture.number) &&
-                Objects.equals(audienceId, lecture.audienceId) && Objects.equals(lessonId, lecture.lessonId) &&
-                Objects.equals(teacherId, lecture.teacherId) && Objects.equals(scheduleId, lecture.scheduleId) && Objects.equals(date, lecture.date);
+        return Objects.equals(number, lecture.number) && Objects.equals(date, lecture.date) && Objects.equals(audienceId, lecture.audienceId) && Objects.equals(lessonId, lecture.lessonId) && Objects.equals(teacherId, lecture.teacherId) && Objects.equals(scheduleId, lecture.scheduleId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number, audienceId, lessonId, teacherId, scheduleId, date);
+        return Objects.hash(number, date, audienceId, lessonId, teacherId, scheduleId);
     }
 
     @Override

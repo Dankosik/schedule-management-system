@@ -64,13 +64,12 @@ public class Department implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Department that = (Department) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) &&
-                Objects.equals(facultyId, that.facultyId) && Objects.equals(universityId, that.universityId);
+        return Objects.equals(name, that.name) && Objects.equals(facultyId, that.facultyId) && Objects.equals(universityId, that.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, facultyId, universityId);
+        return Objects.hash(name, facultyId, universityId);
     }
 
     @Override

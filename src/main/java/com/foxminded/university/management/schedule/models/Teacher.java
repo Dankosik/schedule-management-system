@@ -56,13 +56,12 @@ public class Teacher extends Person implements BaseEntity<Long> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Teacher teacher = (Teacher) o;
-        return Objects.equals(id, teacher.id) && Objects.equals(studentId, teacher.studentId) &&
-                Objects.equals(universityId, teacher.universityId);
+        return Objects.equals(studentId, teacher.studentId) && Objects.equals(universityId, teacher.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, studentId, universityId);
+        return Objects.hash(super.hashCode(), studentId, universityId);
     }
 
     @Override
