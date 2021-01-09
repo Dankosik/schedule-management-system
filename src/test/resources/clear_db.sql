@@ -1,8 +1,6 @@
 delete
 from university;
 delete
-from schedule;
-delete
 from audiences;
 delete
 from faculties;
@@ -22,5 +20,3 @@ delete
 from subjects_teachers;
 delete
 from subjects_students;
-delete
-from departments;
