@@ -2,23 +2,15 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.GroupRowMapper;
 import com.foxminded.university.management.schedule.models.Group;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
 public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
     private final JdbcTemplate jdbcTemplate;
-
-    public GroupDao(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    @Autowired
     public GroupDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

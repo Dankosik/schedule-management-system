@@ -14,11 +14,6 @@ import java.util.*;
 public class ScheduleDao extends AbstractDao<Schedule> implements Dao<Schedule, Long> {
     private final JdbcTemplate jdbcTemplate;
 
-    public ScheduleDao(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    @Autowired
     public ScheduleDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

@@ -3,24 +3,16 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.dao.row_mappers.LessonRowMapper;
 import com.foxminded.university.management.schedule.models.Lesson;
 import org.postgresql.util.PGInterval;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
 @Repository
 public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson, Long> {
     private final JdbcTemplate jdbcTemplate;
-
-    public LessonDao(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    @Autowired
     public LessonDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

@@ -2,23 +2,16 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.LectureRowMapper;
 import com.foxminded.university.management.schedule.models.Lecture;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
 public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Long> {
     private final JdbcTemplate jdbcTemplate;
 
-    public LectureDao(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    @Autowired
     public LectureDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

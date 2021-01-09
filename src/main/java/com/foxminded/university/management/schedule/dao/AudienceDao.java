@@ -2,23 +2,16 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.AudienceRowMapper;
 import com.foxminded.university.management.schedule.models.Audience;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
 public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, Long> {
     private final JdbcTemplate jdbcTemplate;
 
-    public AudienceDao(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    @Autowired
     public AudienceDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

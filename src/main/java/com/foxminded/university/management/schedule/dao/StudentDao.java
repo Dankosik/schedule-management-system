@@ -13,12 +13,6 @@ import java.util.*;
 @Repository
 public class StudentDao extends AbstractDao<Student> implements Dao<Student, Long> {
     private final JdbcTemplate jdbcTemplate;
-
-    public StudentDao(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
-    @Autowired
     public StudentDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
