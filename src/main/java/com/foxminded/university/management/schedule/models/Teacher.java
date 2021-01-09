@@ -6,23 +6,20 @@ import java.util.Objects;
 
 public class Teacher extends Person implements BaseEntity<Long> {
     private Long id;
-    private Long studentId;
     private Long universityId;
 
     public Teacher() {
 
     }
 
-    public Teacher(Long id, String firstName, String lastName, String middleName, Long studentId, Long universityId) {
+    public Teacher(Long id, String firstName, String lastName, String middleName, Long universityId) {
         super(firstName, lastName, middleName);
         this.id = id;
-        this.studentId = studentId;
         this.universityId = universityId;
     }
 
-    public Teacher(String firstName, String lastName, String middleName, Long studentId, Long universityId) {
+    public Teacher(String firstName, String lastName, String middleName, Long universityId) {
         super(firstName, lastName, middleName);
-        this.studentId = studentId;
         this.universityId = universityId;
     }
 
@@ -32,14 +29,6 @@ public class Teacher extends Person implements BaseEntity<Long> {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
     }
 
     public Long getUniversityId() {
@@ -56,12 +45,12 @@ public class Teacher extends Person implements BaseEntity<Long> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Teacher teacher = (Teacher) o;
-        return Objects.equals(studentId, teacher.studentId) && Objects.equals(universityId, teacher.universityId);
+        return Objects.equals(universityId, teacher.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), studentId, universityId);
+        return Objects.hash(super.hashCode(), universityId);
     }
 
     @Override
@@ -71,7 +60,6 @@ public class Teacher extends Person implements BaseEntity<Long> {
                 ", firstName=" + super.getFirstName() +
                 ", lastName=" + super.getLastName() +
                 ", middleName=" + super.getMiddleName() +
-                ", studentId=" + studentId +
                 ", universityId=" + universityId +
                 '}';
     }

@@ -7,27 +7,21 @@ import java.util.Objects;
 public class Group implements BaseEntity<Long> {
     private Long id;
     private String name;
-    private Long lectureId;
-    private Long departmentId;
     private Long facultyId;
     private Long universityId;
 
     public Group() {
     }
 
-    public Group(Long id, String name, Long lectureId, Long departmentId, Long facultyId, Long universityId) {
+    public Group(Long id, String name, Long facultyId, Long universityId) {
         this.id = id;
         this.name = name;
-        this.lectureId = lectureId;
-        this.departmentId = departmentId;
         this.facultyId = facultyId;
         this.universityId = universityId;
     }
 
-    public Group(String name, Long lectureId, Long departmentId, Long facultyId, Long universityId) {
+    public Group(String name, Long facultyId, Long universityId) {
         this.name = name;
-        this.lectureId = lectureId;
-        this.departmentId = departmentId;
         this.facultyId = facultyId;
         this.universityId = universityId;
     }
@@ -38,22 +32,6 @@ public class Group implements BaseEntity<Long> {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getLectureId() {
-        return lectureId;
-    }
-
-    public void setLectureId(Long lectureId) {
-        this.lectureId = lectureId;
-    }
-
-    public Long getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
     }
 
     public Long getFacultyId() {
@@ -85,21 +63,20 @@ public class Group implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
-        return Objects.equals(name, group.name) && Objects.equals(lectureId, group.lectureId) && Objects.equals(departmentId, group.departmentId) && Objects.equals(facultyId, group.facultyId) && Objects.equals(universityId, group.universityId);
+        return Objects.equals(name, group.name) && Objects.equals(facultyId, group.facultyId)
+                && Objects.equals(universityId, group.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, lectureId, departmentId, facultyId, universityId);
+        return Objects.hash(name, facultyId, universityId);
     }
 
     @Override
     public String toString() {
         return "Group{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", lectureId=" + lectureId +
-                ", departmentId=" + departmentId +
+                ", name='" + name +
                 ", facultyId=" + facultyId +
                 ", universityId=" + universityId +
                 '}';

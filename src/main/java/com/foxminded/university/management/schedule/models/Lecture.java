@@ -12,29 +12,26 @@ public class Lecture implements BaseEntity<Long> {
     private Long audienceId;
     private Long lessonId;
     private Long teacherId;
-    private Long scheduleId;
 
     public Lecture() {
 
     }
 
-    public Lecture(Long id, Integer number, Date date, Long audienceId, Long lessonId, Long teacherId, Long scheduleId) {
+    public Lecture(Long id, Integer number, Date date, Long audienceId, Long lessonId, Long teacherId) {
         this.id = id;
         this.number = number;
         this.date = date;
         this.audienceId = audienceId;
         this.lessonId = lessonId;
         this.teacherId = teacherId;
-        this.scheduleId = scheduleId;
     }
 
-    public Lecture(Integer number, Date date, Long audienceId, Long lessonId, Long teacherId, Long scheduleId) {
+    public Lecture(Integer number, Date date, Long audienceId, Long lessonId, Long teacherId) {
         this.number = number;
         this.date = date;
         this.audienceId = audienceId;
         this.lessonId = lessonId;
         this.teacherId = teacherId;
-        this.scheduleId = scheduleId;
     }
 
     public Long getId() {
@@ -77,14 +74,6 @@ public class Lecture implements BaseEntity<Long> {
         this.teacherId = teacherId;
     }
 
-    public Long getScheduleId() {
-        return scheduleId;
-    }
-
-    public void setScheduleId(Long scheduleId) {
-        this.scheduleId = scheduleId;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -98,12 +87,14 @@ public class Lecture implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lecture lecture = (Lecture) o;
-        return Objects.equals(number, lecture.number) && Objects.equals(date, lecture.date) && Objects.equals(audienceId, lecture.audienceId) && Objects.equals(lessonId, lecture.lessonId) && Objects.equals(teacherId, lecture.teacherId) && Objects.equals(scheduleId, lecture.scheduleId);
+        return Objects.equals(number, lecture.number) && Objects.equals(date, lecture.date) &&
+                Objects.equals(audienceId, lecture.audienceId) && Objects.equals(lessonId, lecture.lessonId)
+                && Objects.equals(teacherId, lecture.teacherId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, date, audienceId, lessonId, teacherId, scheduleId);
+        return Objects.hash(number, date, audienceId, lessonId, teacherId);
     }
 
     @Override
@@ -115,7 +106,6 @@ public class Lecture implements BaseEntity<Long> {
                 ", audienceId=" + audienceId +
                 ", lessonId=" + lessonId +
                 ", teacherId=" + teacherId +
-                ", scheduleId=" + scheduleId +
                 '}';
     }
 }
