@@ -3,38 +3,22 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Lecture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.TestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class LectureDaoTest {
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withInitScript("init_test_db.sql");
-
+@SpringBootTest
+class LectureDaoTest extends BaseDaoTest{
     private LectureDao lectureDao;
-    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
-        lectureDao = new LectureDao(dataSource);
-        testUtils = new TestUtils(dataSource);
+        lectureDao = new LectureDao(jdbcTemplate);
     }
 
     @Test
@@ -94,10 +78,12 @@ class LectureDaoTest {
                 new Lecture(223, Date.valueOf(LocalDate.of(2021, 1, 2)), 1001L, 1001L, 1001L, 1001L));
 
         List<Lecture> expected = List.of(
-                new Lecture(1L, 222, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
-                new Lecture(2L, 223, Date.valueOf(LocalDate.of(2021, 1, 2)), 1001L, 1001L, 1001L, 1001L),
+                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
+                new Lecture(1001L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1001L, 1001L, 1001L, 1001L),
                 new Lecture(1002L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 1002L, 1002L, 1000L, 1000L),
-                new Lecture(1003L, 4, Date.valueOf(LocalDate.of(2021, 2, 1)), 1003L, 1003L, 1001L, 1001L));
+                new Lecture(1003L, 4, Date.valueOf(LocalDate.of(2021, 2, 1)), 1003L, 1003L, 1001L, 1001L),
+                new Lecture(1L, 222, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
+                new Lecture(2L, 223, Date.valueOf(LocalDate.of(2021, 1, 2)), 1001L, 1001L, 1001L, 1001L));
         lectureDao.saveAll(lectures);
         List<Lecture> actual = lectureDao.getAll();
 
@@ -143,9 +129,10 @@ class LectureDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfLectureNotExist() {
-        assertThrows(NoSuchElementException.class, () -> lectureDao.getById(21L).get());
+    void shouldNotFindLectureNotExist() {
+        assertFalse(lectureDao.getById(21L).isPresent());
     }
+
 
     @Test
     void shouldReturnFalseIfLectureNotExist() {

@@ -3,36 +3,20 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Group;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.TestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class GroupDaoTest {
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withInitScript("init_test_db.sql");
-
+@SpringBootTest
+class GroupDaoTest extends BaseDaoTest {
     private GroupDao groupDao;
-    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
-        groupDao = new GroupDao(dataSource);
-        testUtils = new TestUtils(dataSource);
+        groupDao = new GroupDao(jdbcTemplate);
     }
 
     @Test
@@ -92,6 +76,8 @@ class GroupDaoTest {
                 new Group("IF-61", 1001L, 1001L, 1001L, 1000L));
 
         List<Group> expected = List.of(
+                new Group(1000L, "AB-91", 1000L, 1000L, 1000L, 1000L),
+                new Group(1001L, "BC-01", 1001L, 1001L, 1001L, 1000L),
                 new Group(1L, "CD-71", 1000L, 1000L, 1001L, 1000L),
                 new Group(2L, "IF-61", 1001L, 1001L, 1001L, 1000L));
         groupDao.saveAll(groups);
@@ -138,8 +124,8 @@ class GroupDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfGroupNotExist() {
-        assertThrows(NoSuchElementException.class, () -> groupDao.getById(21L).get());
+    void shouldNotFindGroupNotExist() {
+        assertFalse(groupDao.getById(21L).isPresent());
     }
 
     @Test

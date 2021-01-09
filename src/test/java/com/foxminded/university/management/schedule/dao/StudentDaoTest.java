@@ -3,36 +3,20 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.TestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class StudentDaoTest {
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withInitScript("init_test_db.sql");
-
+@SpringBootTest
+class StudentDaoTest extends BaseDaoTest {
     private StudentDao studentDao;
-    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
-        studentDao = new StudentDao(dataSource);
-        testUtils = new TestUtils(dataSource);
+        studentDao = new StudentDao(jdbcTemplate);
     }
 
     @Test
@@ -97,11 +81,13 @@ class StudentDaoTest {
                 new Student("Mike", "Conor", "Conor", 2, 1001L, 1000L, 1000L));
 
         List<Student> expected = List.of(
-                new Student(1L, "John", "Jackson", "Jackson", 1, 1001L, 1000L, 1000L),
-                new Student(2L, "Mike", "Conor", "Conor", 2, 1001L, 1000L, 1000L),
+                new Student(1000L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1000L, 1000L, 1000L),
+                new Student(1001L, "Lindsey", "Syplus", "Slocket", 1, 1001L, 1000L, 1000L),
                 new Student(1002L, "Minetta", "Funcheon", "Sayle", 2, 1000L, 1001L, 1000L),
                 new Student(1003L, "Jessa", "Costin", "Heeron", 2, 1001L, 1001L, 1000L),
-                new Student(1004L, "Earl", "Djekic", "Tremble", 3, 1000L, 1000L, 1000L));
+                new Student(1004L, "Earl", "Djekic", "Tremble", 3, 1000L, 1000L, 1000L),
+                new Student(1L,"John", "Jackson", "Jackson", 1, 1001L, 1000L, 1000L),
+                new Student(2L,"Mike", "Conor", "Conor", 2, 1001L, 1000L, 1000L));
         studentDao.saveAll(audiences);
         List<Student> actual = studentDao.getAll();
 
@@ -144,8 +130,8 @@ class StudentDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfStudentNotExist() {
-        assertThrows(NoSuchElementException.class, () -> studentDao.getById(21L).get());
+    void shouldNotFindStudentNotExist() {
+        assertFalse(studentDao.getById(21L).isPresent());
     }
 
     @Test

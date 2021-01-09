@@ -3,35 +3,20 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Audience;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.TestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class AudienceDaoTest {
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
-            .withInitScript("init_test_db.sql");
-
+@SpringBootTest
+class AudienceDaoTest extends BaseDaoTest{
     private AudienceDao audienceDao;
-    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
-        audienceDao = new AudienceDao(dataSource);
-        testUtils = new TestUtils(dataSource);
+       audienceDao = new AudienceDao(jdbcTemplate);
     }
 
     @Test
@@ -91,11 +76,13 @@ class AudienceDaoTest {
                 new Audience(401, 60, 1000L));
 
         List<Audience> expected = List.of(
-                new Audience(1L, 400, 15, 1000L),
-                new Audience(2L, 401, 60, 1000L),
+                new Audience(1000L, 301, 50, 1000L),
+                new Audience(1001L, 302, 75, 1000L),
                 new Audience(1002L, 303, 100, 1000L),
                 new Audience(1003L, 304, 30, 1000L),
-                new Audience(1004L, 305, 55, 1000L));
+                new Audience(1004L, 305, 55, 1000L),
+                new Audience(1L, 400, 15, 1000L),
+                new Audience(2L, 401, 60, 1000L));
         audienceDao.saveAll(audiences);
         List<Audience> actual = audienceDao.getAll();
 
@@ -116,8 +103,8 @@ class AudienceDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfAudienceNotExist() {
-        assertThrows(NoSuchElementException.class, () -> audienceDao.getById(21L).get());
+    void shouldNotFindAudienceNotExist() {
+        assertFalse(audienceDao.getById(21L).isPresent());
     }
 
     @Test

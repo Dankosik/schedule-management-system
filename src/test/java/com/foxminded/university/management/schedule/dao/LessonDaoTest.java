@@ -4,39 +4,23 @@ import com.foxminded.university.management.schedule.models.Lesson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.postgresql.util.PGInterval;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.TestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class LessonDaoTest {
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withInitScript("init_test_db.sql");
-
+@SpringBootTest
+class LessonDaoTest extends BaseDaoTest{
     private LessonDao lessonDao;
-    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
-        lessonDao = new LessonDao(dataSource);
-        testUtils = new TestUtils(dataSource);
+        lessonDao = new LessonDao(jdbcTemplate);
     }
 
     @Test
@@ -109,10 +93,12 @@ class LessonDaoTest {
                 new Lesson(5, Time.valueOf(LocalTime.of(15, 30, 0)), Duration.ofMinutes(90), 1001L));
 
         List<Lesson> expected = List.of(
-                new Lesson(1L, 4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1000L),
-                new Lesson(2L, 5, Time.valueOf(LocalTime.of(15, 30, 0)), Duration.ofMinutes(90), 1001L),
+                new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L),
+                new Lesson(1001L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1001L),
                 new Lesson(1002L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), 1002L),
-                new Lesson(1003L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 1002L));
+                new Lesson(1003L, 4, Time.valueOf(LocalTime.of(13, 20, 0)), Duration.ofMinutes(90), 1002L),
+                new Lesson(1L, 4, Time.valueOf(LocalTime.of(13, 50, 0)), Duration.ofMinutes(90), 1000L),
+                new Lesson(2L, 5, Time.valueOf(LocalTime.of(15, 30, 0)), Duration.ofMinutes(90), 1001L));
         lessonDao.saveAll(lessons);
         List<Lesson> actual = lessonDao.getAll();
 
@@ -129,8 +115,8 @@ class LessonDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfLessonNotExist() {
-        assertThrows(NoSuchElementException.class, () -> lessonDao.getById(21L).get());
+    void shouldNotFindLessonNotExist() {
+        assertFalse(lessonDao.getById(21L).isPresent());
     }
 
     @Test

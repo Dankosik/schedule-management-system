@@ -3,35 +3,20 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Department;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.TestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class DepartmentDaoTest {
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withInitScript("init_test_db.sql");
+@SpringBootTest
+class DepartmentDaoTest extends BaseDaoTest {
     private DepartmentDao departmentDao;
-    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
-        departmentDao = new DepartmentDao(dataSource);
-        testUtils = new TestUtils(dataSource);
+        departmentDao = new DepartmentDao(jdbcTemplate);
     }
 
     @Test
@@ -87,10 +72,12 @@ class DepartmentDaoTest {
     void shouldSaveListOfDepartments() {
         List<Department> departments = List.of(
                 new Department("Department of Computer Science", 1000L, 1000L),
-                new Department("Department of Informatics", 1001L, 1000L));
+                new Department("Department of Physics", 1001L, 1000L));
         List<Department> expected = List.of(
+                new Department(1000L, "Department of Automation and System Engineering", 1000L, 1000L),
+                new Department(1001L, "Department of Higher Mathematics", 1001L, 1000L),
                 new Department(1L, "Department of Computer Science", 1000L, 1000L),
-                new Department(2L, "Department of Informatics", 1001L, 1000L));
+                new Department(2L, "Department of Physics", 1001L, 1000L));
         departmentDao.saveAll(departments);
         List<Department> actual = departmentDao.getAll();
 
@@ -117,9 +104,10 @@ class DepartmentDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfDepartmentNotExist() {
-        assertThrows(NoSuchElementException.class, () -> departmentDao.getById(21L).get());
+    void shouldNotFindDepartmentNotExist() {
+        assertFalse(departmentDao.getById(21L).isPresent());
     }
+
 
     @Test
     void shouldReturnFalseIfDepartmentNotExist() {

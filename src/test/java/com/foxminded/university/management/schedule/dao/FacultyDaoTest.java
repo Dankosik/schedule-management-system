@@ -3,36 +3,20 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Faculty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.TestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class FacultyDaoTest {
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withInitScript("init_test_db.sql");
-
+@SpringBootTest
+class FacultyDaoTest extends BaseDaoTest {
     private FacultyDao facultyDao;
-    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
-        facultyDao = new FacultyDao(dataSource);
-        testUtils = new TestUtils(dataSource);
+        facultyDao = new FacultyDao(jdbcTemplate);
     }
 
     @Test
@@ -89,6 +73,8 @@ class FacultyDaoTest {
                 new Faculty("IFGH", 1000L));
 
         List<Faculty> expected = List.of(
+                new Faculty(1000L, "FAIT", 1000L),
+                new Faculty(1001L, "FKFN", 1000L),
                 new Faculty(1L, "ABCD", 1000L),
                 new Faculty(2L, "IFGH", 1000L));
 
@@ -109,9 +95,10 @@ class FacultyDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfFacultyNotExist() {
-        assertThrows(NoSuchElementException.class, () -> facultyDao.getById(21L).get());
+    void shouldNotFindFacultyNotExist() {
+        assertFalse(facultyDao.getById(21L).isPresent());
     }
+
 
     @Test
     void shouldReturnFalseIfFacultyNotExist() {

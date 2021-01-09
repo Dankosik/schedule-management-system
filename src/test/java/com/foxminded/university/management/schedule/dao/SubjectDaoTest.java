@@ -3,36 +3,20 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Subject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import utils.TestUtils;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-class SubjectDaoTest {
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:12")
-                    .withInitScript("init_test_db.sql");
-
+@SpringBootTest
+class SubjectDaoTest extends BaseDaoTest {
     private SubjectDao subjectDao;
-    private TestUtils testUtils;
 
     @BeforeEach
     void setUp() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(POSTGRESQL_CONTAINER.getJdbcUrl());
-        dataSource.setUsername(POSTGRESQL_CONTAINER.getUsername());
-        dataSource.setPassword(POSTGRESQL_CONTAINER.getPassword());
-        subjectDao = new SubjectDao(dataSource);
-        testUtils = new TestUtils(dataSource);
+        subjectDao = new SubjectDao(jdbcTemplate);
     }
 
     @Test
@@ -90,9 +74,11 @@ class SubjectDaoTest {
                 new Subject("Music", 1000L));
 
         List<Subject> expected = List.of(
+                new Subject(1000L, "Math", 1000L),
+                new Subject(1001L, "Physics", 1000L),
+                new Subject(1002L, "Programming", 1000L),
                 new Subject(1L, "Art", 1000L),
-                new Subject(2L, "Music", 1000L),
-                new Subject(1002L, "Programming", 1000L));
+                new Subject(2L, "Music", 1000L));
         subjectDao.saveAll(subjects);
         List<Subject> actual = subjectDao.getAll();
 
@@ -131,8 +117,8 @@ class SubjectDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfSubjectNotExist() {
-        assertThrows(NoSuchElementException.class, () -> subjectDao.getById(21L).get());
+    void shouldNotFindSubjectNotExist() {
+        assertFalse(subjectDao.getById(21L).isPresent());
     }
 
     @Test
