@@ -41,6 +41,7 @@ create table teachers
     first_name    varchar(50),
     last_name     varchar(50),
     middle_name   varchar(50),
+    faculty_id    BIGINT REFERENCES faculties (id) ON DELETE CASCADE,
     university_id BIGINT REFERENCES university (id) ON DELETE CASCADE
 );
 
