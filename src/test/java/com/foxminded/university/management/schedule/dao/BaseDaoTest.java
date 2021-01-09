@@ -37,8 +37,6 @@ class BaseDaoTest {
     }
 
 
-
-
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             POSTGRESQL_CONTAINER.start();

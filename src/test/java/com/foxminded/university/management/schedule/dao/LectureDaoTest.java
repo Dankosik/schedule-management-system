@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class LectureDaoTest extends BaseDaoTest{
+class LectureDaoTest extends BaseDaoTest {
     private LectureDao lectureDao;
 
     @BeforeEach

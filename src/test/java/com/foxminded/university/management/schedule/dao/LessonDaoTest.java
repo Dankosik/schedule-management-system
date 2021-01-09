@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class LessonDaoTest extends BaseDaoTest{
+class LessonDaoTest extends BaseDaoTest {
     private LessonDao lessonDao;
 
     @BeforeEach

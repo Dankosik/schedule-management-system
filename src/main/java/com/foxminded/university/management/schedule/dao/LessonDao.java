@@ -13,6 +13,7 @@ import java.util.*;
 @Repository
 public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson, Long> {
     private final JdbcTemplate jdbcTemplate;
+
     public LessonDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

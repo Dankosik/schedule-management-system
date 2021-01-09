@@ -11,12 +11,12 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class AudienceDaoTest extends BaseDaoTest{
+class AudienceDaoTest extends BaseDaoTest {
     private AudienceDao audienceDao;
 
     @BeforeEach
     void setUp() {
-       audienceDao = new AudienceDao(jdbcTemplate);
+        audienceDao = new AudienceDao(jdbcTemplate);
     }
 
     @Test

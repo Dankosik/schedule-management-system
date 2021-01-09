@@ -11,6 +11,7 @@ import java.util.*;
 @Repository
 public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
     private final JdbcTemplate jdbcTemplate;
+
     public GroupDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

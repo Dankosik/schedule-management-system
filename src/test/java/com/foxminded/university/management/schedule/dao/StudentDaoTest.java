@@ -86,8 +86,8 @@ class StudentDaoTest extends BaseDaoTest {
                 new Student(1002L, "Minetta", "Funcheon", "Sayle", 2, 1000L, 1001L, 1000L),
                 new Student(1003L, "Jessa", "Costin", "Heeron", 2, 1001L, 1001L, 1000L),
                 new Student(1004L, "Earl", "Djekic", "Tremble", 3, 1000L, 1000L, 1000L),
-                new Student(1L,"John", "Jackson", "Jackson", 1, 1001L, 1000L, 1000L),
-                new Student(2L,"Mike", "Conor", "Conor", 2, 1001L, 1000L, 1000L));
+                new Student(1L, "John", "Jackson", "Jackson", 1, 1001L, 1000L, 1000L),
+                new Student(2L, "Mike", "Conor", "Conor", 2, 1001L, 1000L, 1000L));
         studentDao.saveAll(audiences);
         List<Student> actual = studentDao.getAll();
 
