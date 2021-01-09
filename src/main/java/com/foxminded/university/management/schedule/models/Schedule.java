@@ -41,12 +41,12 @@ public class Schedule implements BaseEntity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule = (Schedule) o;
-        return Objects.equals(id, schedule.id) && Objects.equals(universityId, schedule.universityId);
+        return Objects.equals(universityId, schedule.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, universityId);
+        return Objects.hash(universityId);
     }
 
     @Override
