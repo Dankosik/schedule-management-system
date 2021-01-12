@@ -1,6 +1,7 @@
-package utils;
+package com.foxminded.university.management.schedule.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
+@Component
 public class TestUtils {
     private final DataSource dataSource;
     private final JdbcTemplate jdbcTemplate;
