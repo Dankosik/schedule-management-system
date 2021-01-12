@@ -1,18 +1,45 @@
 package com.foxminded.university.management.schedule.models;
 
-import java.util.List;
+import com.foxminded.university.management.schedule.dao.BaseEntity;
+
 import java.util.Objects;
 
-public class Group {
-    private List<Student> students;
+public class Group implements BaseEntity<Long> {
+    private Long id;
     private String name;
+    private Long facultyId;
+    private Long universityId;
 
-    public List<Student> getStudents() {
-        return students;
+    public Group() {
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public Group(Long id, String name, Long facultyId, Long universityId) {
+        this.id = id;
+        this.name = name;
+        this.facultyId = facultyId;
+        this.universityId = universityId;
+    }
+
+    public Group(String name, Long facultyId, Long universityId) {
+        this.name = name;
+        this.facultyId = facultyId;
+        this.universityId = universityId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getFacultyId() {
+        return facultyId;
+    }
+
+    public void setFacultyId(Long facultyId) {
+        this.facultyId = facultyId;
     }
 
     public String getName() {
@@ -23,12 +50,12 @@ public class Group {
         this.name = name;
     }
 
-    public void addStudent(Student student) {
-        this.students.add(student);
+    public Long getUniversityId() {
+        return universityId;
     }
 
-    public void removeStudent(Student student) {
-        this.students.remove(student);
+    public void setUniversityId(Long universityId) {
+        this.universityId = universityId;
     }
 
     @Override
@@ -36,11 +63,22 @@ public class Group {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
-        return Objects.equals(students, group.students) && Objects.equals(name, group.name);
+        return Objects.equals(name, group.name) && Objects.equals(facultyId, group.facultyId)
+                && Objects.equals(universityId, group.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(students, name);
+        return Objects.hash(name, facultyId, universityId);
+    }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", name='" + name +
+                ", facultyId=" + facultyId +
+                ", universityId=" + universityId +
+                '}';
     }
 }

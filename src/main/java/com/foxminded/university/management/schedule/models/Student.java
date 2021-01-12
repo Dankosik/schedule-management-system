@@ -1,29 +1,47 @@
 package com.foxminded.university.management.schedule.models;
 
-import java.util.List;
+import com.foxminded.university.management.schedule.dao.BaseEntity;
+
 import java.util.Objects;
 
-public class Student extends Person {
-    private Group group;
-    private Faculty faculty;
+public class Student extends Person implements BaseEntity<Long> {
+    private Long id;
     private Integer courseNumber;
-    private List<Teacher> teachers;
-    private List<Subject> subjects;
+    private Long groupId;
+    private Long universityId;
 
-    public Group getGroup() {
-        return group;
+    public Student() {
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public Student(Long id, String firstName, String lastName, String middleName, Integer courseNumber, Long groupId, Long universityId) {
+        super(firstName, lastName, middleName);
+        this.id = id;
+        this.courseNumber = courseNumber;
+        this.groupId = groupId;
+        this.universityId = universityId;
     }
 
-    public Faculty getFaculty() {
-        return faculty;
+    public Student(String firstName, String lastName, String middleName, Integer courseNumber, Long groupId, Long universityId) {
+        super(firstName, lastName, middleName);
+        this.courseNumber = courseNumber;
+        this.groupId = groupId;
+        this.universityId = universityId;
     }
 
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 
     public Integer getCourseNumber() {
@@ -34,20 +52,12 @@ public class Student extends Person {
         this.courseNumber = courseNumber;
     }
 
-    public List<Teacher> getTeachers() {
-        return teachers;
+    public Long getUniversityId() {
+        return universityId;
     }
 
-    public void setTeachers(List<Teacher> teachers) {
-        this.teachers = teachers;
-    }
-
-    public List<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(List<Subject> subjects) {
-        this.subjects = subjects;
+    public void setUniversityId(Long universityId) {
+        this.universityId = universityId;
     }
 
     @Override
@@ -56,13 +66,22 @@ public class Student extends Person {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Student student = (Student) o;
-        return Objects.equals(group, student.group) && Objects.equals(faculty, student.faculty) &&
-                Objects.equals(courseNumber, student.courseNumber) &&
-                Objects.equals(teachers, student.teachers) && Objects.equals(subjects, student.subjects);
+        return Objects.equals(courseNumber, student.courseNumber) && Objects.equals(groupId, student.groupId) &&
+                Objects.equals(universityId, student.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), group, faculty, courseNumber, teachers, subjects);
+        return Objects.hash(super.hashCode(), courseNumber, groupId, universityId);
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", courseNumber=" + courseNumber +
+                ", groupId=" + groupId +
+                ", universityId=" + universityId +
+                '}';
     }
 }

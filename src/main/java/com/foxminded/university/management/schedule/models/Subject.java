@@ -1,9 +1,36 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.dao.BaseEntity;
+
 import java.util.Objects;
 
-public class Subject {
+public class Subject implements BaseEntity<Long> {
+    private Long id;
     private String name;
+    private Long universityId;
+
+    public Subject() {
+
+    }
+
+    public Subject(Long id, String name, Long universityId) {
+        this.id = id;
+        this.name = name;
+        this.universityId = universityId;
+    }
+
+    public Subject(String name, Long universityId) {
+        this.name = name;
+        this.universityId = universityId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -13,16 +40,33 @@ public class Subject {
         this.name = name;
     }
 
+    public Long getUniversityId() {
+        return universityId;
+    }
+
+    public void setUniversityId(Long universityId) {
+        this.universityId = universityId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Subject subject = (Subject) o;
-        return Objects.equals(name, subject.name);
+        return Objects.equals(name, subject.name) && Objects.equals(universityId, subject.universityId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, universityId);
+    }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", universityId=" + universityId +
+                '}';
     }
 }

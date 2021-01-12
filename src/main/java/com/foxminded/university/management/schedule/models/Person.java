@@ -1,11 +1,21 @@
 package com.foxminded.university.management.schedule.models;
 
+
 import java.util.Objects;
 
-public class Person {
+public abstract class Person {
     private String firstName;
     private String lastName;
     private String middleName;
+
+    public Person() {
+    }
+
+    public Person(String firstName, String lastName, String middleName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -36,8 +46,7 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) &&
-                Objects.equals(middleName, person.middleName);
+        return Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(middleName, person.middleName);
     }
 
     @Override

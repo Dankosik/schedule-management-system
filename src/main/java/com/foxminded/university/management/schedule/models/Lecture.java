@@ -1,16 +1,46 @@
 package com.foxminded.university.management.schedule.models;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.foxminded.university.management.schedule.dao.BaseEntity;
+
+import java.sql.Date;
 import java.util.Objects;
 
-public class Lecture {
+public class Lecture implements BaseEntity<Long> {
+    private Long id;
     private Integer number;
-    private Audience audience;
-    private List<Group> groups;
-    private Teacher teacher;
-    private LocalDate date;
-    private Lesson lesson;
+    private Date date;
+    private Long audienceId;
+    private Long lessonId;
+    private Long teacherId;
+
+    public Lecture() {
+
+    }
+
+    public Lecture(Long id, Integer number, Date date, Long audienceId, Long lessonId, Long teacherId) {
+        this.id = id;
+        this.number = number;
+        this.date = date;
+        this.audienceId = audienceId;
+        this.lessonId = lessonId;
+        this.teacherId = teacherId;
+    }
+
+    public Lecture(Integer number, Date date, Long audienceId, Long lessonId, Long teacherId) {
+        this.number = number;
+        this.date = date;
+        this.audienceId = audienceId;
+        this.lessonId = lessonId;
+        this.teacherId = teacherId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Integer getNumber() {
         return number;
@@ -20,44 +50,36 @@ public class Lecture {
         this.number = number;
     }
 
-    public Audience getAudience() {
-        return audience;
+    public Long getAudienceId() {
+        return audienceId;
     }
 
-    public void setAudience(Audience audience) {
-        this.audience = audience;
+    public void setAudienceId(Long audienceId) {
+        this.audienceId = audienceId;
     }
 
-    public List<Group> getGroups() {
-        return groups;
+    public Long getLessonId() {
+        return lessonId;
     }
 
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
+    public void setLessonId(Long lessonId) {
+        this.lessonId = lessonId;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
+    public Long getTeacherId() {
+        return teacherId;
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Lesson getLesson() {
-        return lesson;
-    }
-
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
     }
 
     @Override
@@ -65,13 +87,25 @@ public class Lecture {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lecture lecture = (Lecture) o;
-        return Objects.equals(number, lecture.number) && Objects.equals(audience, lecture.audience) &&
-                Objects.equals(groups, lecture.groups) && Objects.equals(teacher, lecture.teacher) &&
-                Objects.equals(date, lecture.date) && Objects.equals(lesson, lecture.lesson);
+        return Objects.equals(number, lecture.number) && Objects.equals(date, lecture.date) &&
+                Objects.equals(audienceId, lecture.audienceId) && Objects.equals(lessonId, lecture.lessonId)
+                && Objects.equals(teacherId, lecture.teacherId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, audience, groups, teacher, date, lesson);
+        return Objects.hash(number, date, audienceId, lessonId, teacherId);
+    }
+
+    @Override
+    public String toString() {
+        return "Lecture{" +
+                "id=" + id +
+                ", number=" + number +
+                ", date=" + date +
+                ", audienceId=" + audienceId +
+                ", lessonId=" + lessonId +
+                ", teacherId=" + teacherId +
+                '}';
     }
 }
