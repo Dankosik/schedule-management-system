@@ -13,9 +13,9 @@ public class TestUtils {
     private final DataSource dataSource;
     private final JdbcTemplate jdbcTemplate;
 
-    public TestUtils(DataSource dataSource) {
+    public TestUtils(DataSource dataSource, JdbcTemplate jdbcTemplate) {
         this.dataSource = dataSource;
-        jdbcTemplate = new JdbcTemplate(dataSource);
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public boolean existsById(String tableName, Long id) {
