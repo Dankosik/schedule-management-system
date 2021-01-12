@@ -74,6 +74,7 @@ insert into subjects_students (subject_id, student_id)
 values (1000, 1002);
 insert into subjects_students (subject_id, student_id)
 values (1002, 1003);
+
 insert into subjects_students (subject_id, student_id)
 values (1001, 1004);
 insert into subjects_students (subject_id, student_id)
