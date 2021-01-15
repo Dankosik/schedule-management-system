@@ -5,24 +5,23 @@ import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FacultyService {
     Faculty saveFaculty(Faculty faculty);
 
-    Optional<Faculty> getFacultyById(Long id);
+    Faculty getFacultyById(Long id);
 
     List<Faculty> getAllFaculties();
 
-    boolean deleteFacultyById(Long id);
+    void deleteFacultyById(Long id);
 
     List<Faculty> saveAllFaculties(List<Faculty> faculties);
 
-    boolean addGroupToFaculty(Group group, Faculty faculty);
+    Group addGroupToFaculty(Group group, Faculty faculty);
 
-    boolean removeGroupFromFaculty(Group group, Faculty faculty);
+    Group removeGroupFromFaculty(Group group, Faculty faculty);
 
-    boolean addTeacherToFaculty(Teacher teacher, Faculty faculty);
+    Teacher addTeacherToFaculty(Teacher teacher, Faculty faculty);
 
-    boolean removeTeacherFromFaculty(Teacher teacher, Faculty faculty);
+    Teacher removeTeacherFromFaculty(Teacher teacher, Faculty faculty);
 }
