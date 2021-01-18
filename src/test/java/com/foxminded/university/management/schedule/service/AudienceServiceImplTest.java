@@ -102,20 +102,20 @@ class AudienceServiceImplTest {
 
     @Test
     void shouldAddLectureToAudience() {
+        Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                1L, 2L, 3L);
+
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureService.saveLecture(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 2L, 3L)))
-                .thenReturn(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                        1L, 2L, 3L));
+                1L, 2L, 3L))).thenReturn(expected);
 
         Lecture actual = audienceService.addLectureToAudience(lecture, audience);
-        assertEquals(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 2L, 3L), actual);
+        assertEquals(expected, actual);
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
-        verify(lectureService, times(1)).saveLecture(lecture);
+        verify(lectureService, times(1)).saveLecture(expected);
     }
 
     @Test
@@ -163,7 +163,7 @@ class AudienceServiceImplTest {
         assertThrows(AudienceServiceException.class, ()->audienceService.addLectureToAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
-        verify(lectureDao, times(1)).getById(1L);
+        verify(lectureDao, never()).getById(1L);
         verify(lectureService, never()).saveLecture(lecture);
     }
 
@@ -187,7 +187,7 @@ class AudienceServiceImplTest {
         assertThrows(AudienceServiceException.class, ()->audienceService.removeLectureFromAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
-        verify(lectureDao, times(1)).getById(1L);
+        verify(lectureDao, never()).getById(1L);
         verify(lectureService, never()).saveLecture(lecture);
     }
 
@@ -201,5 +201,35 @@ class AudienceServiceImplTest {
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
         verify(lectureService, never()).saveLecture(lecture);
+    }
+
+    @Test
+    void shouldThrowExceptionIfLectureIsAlreadyAddedToAudience() {
+        Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                1L, 2L, 3L);
+
+        when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
+        when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
+
+        assertThrows(AudienceServiceException.class, ()->audienceService.addLectureToAudience(expected, audience));
+
+        verify(audienceDao, times(1)).getById(1L);
+        verify(lectureDao, times(1)).getById(1L);
+        verify(lectureService, never()).saveLecture(expected);
+    }
+
+    @Test
+    void shouldThrowExceptionIfLectureIsAlreadyRemovedFromAudience() {
+        Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                null, 2L, 3L);
+
+        when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
+        when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
+
+        assertThrows(AudienceServiceException.class, ()->audienceService.removeLectureFromAudience(expected, audience));
+
+        verify(audienceDao, times(1)).getById(1L);
+        verify(lectureDao, times(1)).getById(1L);
+        verify(lectureService, never()).saveLecture(expected);
     }
 }
