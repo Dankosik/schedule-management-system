@@ -29,7 +29,7 @@ public class GroupServiceImpl implements GroupService {
                 .findAny();
         boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
         if (groupWithSameName.isPresent() && !isGroupPresent)
-            throw new GroupServiceException("Group with name: " + group.getName() + "is already exist");
+            throw new GroupServiceException("Group with name: " + group.getName() + " is already exist");
         return groupDao.save(group);
     }
 
@@ -38,7 +38,7 @@ public class GroupServiceImpl implements GroupService {
         if (groupDao.getById(id).isPresent()) {
             return groupDao.getById(id).get();
         }
-        throw new GroupServiceException("Group with id: " + id + "is not found");
+        throw new GroupServiceException("Group with id: " + id + " is not found");
     }
 
     @Override
@@ -61,26 +61,33 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Student addStudentToGroup(Student student, Group group) {
         boolean isStudentPresent = studentDao.getById(student.getId()).isPresent();
-        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
-        if (isStudentPresent && isGroupPresent) {
-            student.setGroupId(group.getId());
-            return studentService.saveStudent(student);
-        }
         if (!isStudentPresent)
-            throw new GroupServiceException("Impossible to add student to group. Student with id: " + student.getId() + "is not exist");
-        throw new GroupServiceException("Impossible to add student to group. Group with id: " + group.getId() + "is not exist");
+            throw new GroupServiceException("Impossible to add student to group. Student with id: " + student.getId() + " is not exist");
+
+        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
+        if (!isGroupPresent)
+            throw new GroupServiceException("Impossible to add student to group. Group with id: " + group.getId() + " is not exist");
+
+        if (student.getGroupId() != null && student.getGroupId().equals(group.getId()))
+            throw new GroupServiceException("Student with id: " + student.getId() + " is already added to group with id: " + group.getId());
+
+        student.setGroupId(group.getId());
+        return studentService.saveStudent(student);
     }
 
     @Override
     public Student removeStudentFromGroup(Student student, Group group) {
         boolean isStudentPresent = studentDao.getById(student.getId()).isPresent();
-        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
-        if (isStudentPresent && isGroupPresent) {
-            student.setGroupId(null);
-            return studentService.saveStudent(student);
-        }
         if (!isStudentPresent)
-            throw new GroupServiceException("Impossible to remove student from group. Student with id: " + student.getId() + "is not exist");
-        throw new GroupServiceException("Impossible to remove student from group. Group with id: " + group.getId() + "is not exist");
+            throw new GroupServiceException("Impossible to remove student from group. Student with id: " + student.getId() + " is not exist");
+        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
+        if (!isGroupPresent)
+            throw new GroupServiceException("Impossible to remove student from group. Group with id: " + group.getId() + " is not exist");
+
+        if (student.getGroupId() == null)
+            throw new GroupServiceException("Student with id: " + student.getId() + "is already removed from group with id: " + group.getId());
+
+        student.setGroupId(null);
+        return studentService.saveStudent(student);
     }
 }

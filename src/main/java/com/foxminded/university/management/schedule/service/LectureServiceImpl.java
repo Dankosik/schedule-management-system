@@ -32,7 +32,7 @@ public class LectureServiceImpl implements LectureService {
         if (lectureDao.getById(id).isPresent()) {
             return lectureDao.getById(id).get();
         }
-        throw new LectureServiceException("Lecture with id: " + id + "is not found");
+        throw new LectureServiceException("Lecture with id: " + id + " is not found");
     }
 
     @Override
@@ -55,52 +55,68 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public Lecture addLessonToLecture(Lesson lesson, Lecture lecture) {
         boolean isLessonPresent = lessonDao.getById(lesson.getId()).isPresent();
-        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
-        if (isLessonPresent && isLecturePresent) {
-            lecture.setLessonId(lesson.getId());
-            return saveLecture(lecture);
-        }
         if (!isLessonPresent)
-            throw new LectureServiceException("Impossible to add lesson to lecture. Lesson with id: " + lesson.getId() + "is not exist");
-        throw new LectureServiceException("Impossible to add lesson to lecture. Lecture with id: " + lecture.getId() + "is not exist");
+            throw new LectureServiceException("Impossible to add lesson to lecture. Lesson with id: " + lesson.getId() + " is not exist");
+
+        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
+        if (!isLecturePresent)
+            throw new LectureServiceException("Impossible to add lesson to lecture. Lecture with id: " + lecture.getId() + " is not exist");
+
+        if (lecture.getLessonId() != null && lecture.getLessonId().equals(lesson.getId()))
+            throw new LectureServiceException("Lesson with id: " + lesson.getId() + " is already added to lecture with id: " + lecture.getId());
+
+        lecture.setLessonId(lesson.getId());
+        return saveLecture(lecture);
     }
 
     @Override
     public Lecture removeLessonFromLecture(Lesson lesson, Lecture lecture) {
         boolean isLessonPresent = lessonDao.getById(lesson.getId()).isPresent();
-        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
-        if (isLessonPresent && isLecturePresent) {
-            lecture.setLessonId(null);
-            return saveLecture(lecture);
-        }
         if (!isLessonPresent)
-            throw new LectureServiceException("Impossible to remove lesson from lecture. Lesson with id: " + lesson.getId() + "is not exist");
-        throw new LectureServiceException("Impossible to remove lesson from lecture. Lecture with id: " + lecture.getId() + "is not exist");
+            throw new LectureServiceException("Impossible to remove lesson from lecture. Lesson with id: " + lesson.getId() + " is not exist");
+
+        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
+        if (!isLecturePresent)
+            throw new LectureServiceException("Impossible to remove lesson from lecture. Lecture with id: " + lecture.getId() + " is not exist");
+
+        if (lecture.getLessonId() == null)
+            throw new LectureServiceException("Lesson with id: " + lesson.getId() + " is already removed from lecture with id: " + lecture.getId());
+
+        lecture.setLessonId(null);
+        return saveLecture(lecture);
     }
 
     @Override
     public Lecture addTeacherToLecture(Teacher teacher, Lecture lecture) {
         boolean isTeacherPresent = teacherDao.getById(teacher.getId()).isPresent();
-        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
-        if (isTeacherPresent && isLecturePresent) {
-            lecture.setTeacherId(teacher.getId());
-            return saveLecture(lecture);
-        }
         if (!isTeacherPresent)
-            throw new LectureServiceException("Cant add teacher to lecture. Teacher with id: " + teacher.getId() + " not exist");
-        throw new LectureServiceException("Cant add teacher to lecture. Lecture with id: " + lecture.getId() + " not exist");
+            throw new LectureServiceException("Impossible to add teacher to lecture. Teacher with id: " + teacher.getId() + " not exist");
+
+        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
+        if (!isLecturePresent)
+            throw new LectureServiceException("Impossible to add teacher to lecture. Lecture with id: " + lecture.getId() + " not exist");
+
+        if (lecture.getTeacherId() != null && lecture.getTeacherId().equals(teacher.getId()))
+            throw new LectureServiceException("Teacher with id: " + teacher.getId() + " is already added to lecture with id: " + lecture.getId());
+
+        lecture.setTeacherId(teacher.getId());
+        return saveLecture(lecture);
     }
 
     @Override
     public Lecture removeTeacherFromLecture(Teacher teacher, Lecture lecture) {
         boolean isTeacherPresent = teacherDao.getById(teacher.getId()).isPresent();
-        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
-        if (isTeacherPresent && isLecturePresent) {
-            lecture.setTeacherId(null);
-            return saveLecture(lecture);
-        }
         if (!isTeacherPresent)
-            throw new LectureServiceException("Cant remove teacher from lecture. Teacher with id: " + teacher.getId() + " not exist");
-        throw new LectureServiceException("Cant remove teacher from lecture. Lecture with id: " + lecture.getId() + " not exist");
+            throw new LectureServiceException("Impossible to remove teacher from lecture. Teacher with id: " + teacher.getId() + " not exist");
+
+        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
+        if (!isLecturePresent)
+            throw new LectureServiceException("Impossible to remove teacher from lecture. Lecture with id: " + lecture.getId() + " not exist");
+
+        if (lecture.getTeacherId() == null)
+            throw new LectureServiceException("Teacher with id: " + teacher.getId() + " is already removed from lecture with id: " + lecture.getId());
+
+        lecture.setTeacherId(null);
+        return saveLecture(lecture);
     }
 }
