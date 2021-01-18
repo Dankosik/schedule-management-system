@@ -31,7 +31,7 @@ public class StudentServiceImpl implements StudentService {
         if (studentDao.getById(id).isPresent()) {
             return studentDao.getById(id).get();
         }
-        throw new StudentServiceException("Student with id: " + id + "is not found");
+        throw new StudentServiceException("Student with id: " + id + " is not found");
     }
 
     @Override

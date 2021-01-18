@@ -32,7 +32,7 @@ public class SubjectServiceImpl implements SubjectService {
         if (subjectDao.getById(id).isPresent()) {
             return subjectDao.getById(id).get();
         }
-        throw new SubjectServiceException("Subject with id: " + id + "is not found");
+        throw new SubjectServiceException("Subject with id: " + id + " is not found");
     }
 
     @Override
