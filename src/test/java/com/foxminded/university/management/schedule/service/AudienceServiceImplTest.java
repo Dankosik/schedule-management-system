@@ -136,7 +136,7 @@ class AudienceServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfAudienceWithNumberAlreadyExist() {
+    void shouldThrowExceptionIfAudienceWithInputNumberIsAlreadyExist() {
         when(audienceDao.getAll()).thenReturn(List.of(audience));
 
         assertThrows(AudienceServiceException.class, ()->audienceService.saveAudience(audience));
@@ -146,7 +146,7 @@ class AudienceServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfAudienceWithIdNotFound() {
+    void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
 
         assertThrows(AudienceServiceException.class, ()->audienceService.getAudienceById(1L));
@@ -164,7 +164,7 @@ class AudienceServiceImplTest {
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
-        verify(lectureService, times(0)).saveLecture(lecture);
+        verify(lectureService, never()).saveLecture(lecture);
     }
 
     @Test
@@ -176,7 +176,7 @@ class AudienceServiceImplTest {
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
-        verify(lectureService, times(0)).saveLecture(lecture);
+        verify(lectureService, never()).saveLecture(lecture);
     }
 
     @Test
@@ -188,7 +188,7 @@ class AudienceServiceImplTest {
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
-        verify(lectureService, times(0)).saveLecture(lecture);
+        verify(lectureService, never()).saveLecture(lecture);
     }
 
     @Test
@@ -200,6 +200,6 @@ class AudienceServiceImplTest {
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
-        verify(lectureService, times(0)).saveLecture(lecture);
+        verify(lectureService, never()).saveLecture(lecture);
     }
 }
