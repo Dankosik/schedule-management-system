@@ -67,8 +67,8 @@ public class AudienceServiceImpl implements AudienceService {
             return lectureService.saveLecture(lecture);
         }
         if (!isAudiencePresent)
-            throw new LectureServiceException("Cant add lecture to audience cause audience with id: " + audience.getId() + " not exist");
-        throw new LectureServiceException("Cant add lecture to audience cause lecture with id: " + lecture.getId() + " not exist");
+            throw new AudienceServiceException("Cant add lecture to audience cause audience with id: " + audience.getId() + " not exist");
+        throw new AudienceServiceException("Cant add lecture to audience cause lecture with id: " + lecture.getId() + " not exist");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class AudienceServiceImpl implements AudienceService {
             return lectureService.saveLecture(lecture);
         }
         if (!isAudiencePresent)
-            throw new LectureServiceException("Cant remove lecture from audience cause audience with id: " + audience.getId() + " not exist");
-        throw new LectureServiceException("Cant remove lecture from audience cause lecture with id: " + lecture.getId() + " not exist");
+            throw new AudienceServiceException("Cant remove lecture from audience cause audience with id: " + audience.getId() + " not exist");
+        throw new AudienceServiceException("Cant remove lecture from audience cause lecture with id: " + lecture.getId() + " not exist");
     }
 }
