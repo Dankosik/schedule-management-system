@@ -35,7 +35,7 @@ public class FacultyServiceImpl implements FacultyService {
                 .findAny();
         boolean isFacultyPresent = facultyDao.getById(faculty.getId()).isPresent();
         if (facultyWithSameName.isPresent() && !isFacultyPresent)
-            throw new FacultyServiceException("Faculty with name: " + faculty.getName() + " already exist");
+            throw new FacultyServiceException("Faculty with name: " + faculty.getName() + "is already exist");
         return facultyDao.save(faculty);
     }
 
@@ -44,7 +44,7 @@ public class FacultyServiceImpl implements FacultyService {
         if (facultyDao.getById(id).isPresent()) {
             return facultyDao.getById(id).get();
         }
-        throw new FacultyServiceException("Faculty with id: " + id + " not found");
+        throw new FacultyServiceException("Faculty with id: " + id + "is not found");
     }
 
     @Override
@@ -73,8 +73,8 @@ public class FacultyServiceImpl implements FacultyService {
             return groupService.saveGroup(group);
         }
         if (!isGroupPresent)
-            throw new FacultyServiceException("Cant add group to faculty cause group with id: " + group.getId() + " not exist");
-        throw new FacultyServiceException("Cant add group to faculty cause faculty with id: " + faculty.getId() + " not exist");
+            throw new FacultyServiceException("Impossible to add group to faculty. Group with id: " + group.getId() + "is not exist");
+        throw new FacultyServiceException("Impossible to add group to faculty. Faculty with id: " + faculty.getId() + "is not exist");
     }
 
     @Override
@@ -86,8 +86,8 @@ public class FacultyServiceImpl implements FacultyService {
             return groupService.saveGroup(group);
         }
         if (!isGroupPresent)
-            throw new FacultyServiceException("Cant remove group from faculty cause group with id: " + group.getId() + " not exist");
-        throw new FacultyServiceException("Cant remove group from faculty cause faculty with id: " + faculty.getId() + " not exist");
+            throw new FacultyServiceException("Impossible to remove group from faculty. Group with id: " + group.getId() + "is not exist");
+        throw new FacultyServiceException("Impossible to remove group from faculty. Faculty with id: " + faculty.getId() + "is not exist");
     }
 
     @Override
@@ -99,8 +99,8 @@ public class FacultyServiceImpl implements FacultyService {
             return teacherService.saveTeacher(teacher);
         }
         if (!isTeacherPresent)
-            throw new FacultyServiceException("Cant add teacher to faculty cause teacher with id: " + teacher.getId() + " not exist");
-        throw new FacultyServiceException("Cant add teacher to faculty cause faculty with id: " + faculty.getId() + " not exist");
+            throw new FacultyServiceException("Impossible to add teacher to faculty. Teacher with id: " + teacher.getId() + "is not exist");
+        throw new FacultyServiceException("Impossible to add teacher to faculty. Faculty with id: " + faculty.getId() + "is not exist");
     }
 
     @Override
@@ -112,7 +112,7 @@ public class FacultyServiceImpl implements FacultyService {
             return teacherService.saveTeacher(teacher);
         }
         if (!isTeacherPresent)
-            throw new FacultyServiceException("Cant remove teacher from faculty cause teacher with id: " + teacher.getId() + " not exist");
-        throw new FacultyServiceException("Cant remove teacher from faculty cause faculty with id: " + faculty.getId() + " not exist");
+            throw new FacultyServiceException("Impossible to remove teacher from faculty cause teacher with id: " + teacher.getId() + "is not exist");
+        throw new FacultyServiceException("Impossible to remove teacher from faculty cause faculty with id: " + faculty.getId() + "is not exist");
     }
 }

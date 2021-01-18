@@ -29,7 +29,7 @@ public class LessonServiceImpl implements LessonService {
         if (lessonDao.getById(id).isPresent()) {
             return lessonDao.getById(id).get();
         }
-        throw new LessonServiceException("Lesson with id: " + id + " not found");
+        throw new LessonServiceException("Lesson with id: " + id + "is not found");
     }
 
     @Override
@@ -58,8 +58,8 @@ public class LessonServiceImpl implements LessonService {
             return saveLesson(lesson);
         }
         if (!isSubjectPresent)
-            throw new FacultyServiceException("Cant add subject to lesson cause subject with id: " + subject.getId() + " not exist");
-        throw new FacultyServiceException("Cant add subject to lesson cause lesson with id: " + lesson.getId() + " not exist");
+            throw new FacultyServiceException("Cant add subject to lesson. Subject with id: " + subject.getId() + "is not exist");
+        throw new FacultyServiceException("Cant add subject to lesson. Lesson with id: " + lesson.getId() + "is not exist");
     }
 
     @Override
@@ -71,7 +71,7 @@ public class LessonServiceImpl implements LessonService {
             return saveLesson(lesson);
         }
         if (!isSubjectPresent)
-            throw new FacultyServiceException("Cant remove subject from lesson cause subject with id: " + subject.getId() + " not exist");
-        throw new FacultyServiceException("Cant remove subject from lesson cause lesson with id: " + lesson.getId() + " not exist");
+            throw new FacultyServiceException("Cant remove subject from lesson. Subject with id: " + subject.getId() + "is not exist");
+        throw new FacultyServiceException("Cant remove subject from lesson. Lesson with id: " + lesson.getId() + "is not exist");
     }
 }

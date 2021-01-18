@@ -32,7 +32,7 @@ public class LectureServiceImpl implements LectureService {
         if (lectureDao.getById(id).isPresent()) {
             return lectureDao.getById(id).get();
         }
-        throw new LectureServiceException("Lecture with id: " + id + " not found");
+        throw new LectureServiceException("Lecture with id: " + id + "is not found");
     }
 
     @Override
@@ -61,8 +61,8 @@ public class LectureServiceImpl implements LectureService {
             return saveLecture(lecture);
         }
         if (!isLessonPresent)
-            throw new LectureServiceException("Cant add lesson to lecture cause lesson with id: " + lesson.getId() + " not exist");
-        throw new LectureServiceException("Cant add lesson to lecture cause lecture with id: " + lecture.getId() + " not exist");
+            throw new LectureServiceException("Impossible to add lesson to lecture. Lesson with id: " + lesson.getId() + "is not exist");
+        throw new LectureServiceException("Impossible to add lesson to lecture. Lecture with id: " + lecture.getId() + "is not exist");
     }
 
     @Override
@@ -74,8 +74,8 @@ public class LectureServiceImpl implements LectureService {
             return saveLecture(lecture);
         }
         if (!isLessonPresent)
-            throw new LectureServiceException("Cant remove lesson from lecture cause lesson with id: " + lesson.getId() + " not exist");
-        throw new LectureServiceException("Cant remove lesson from lecture cause lecture with id: " + lecture.getId() + " not exist");
+            throw new LectureServiceException("Impossible to remove lesson from lecture. Lesson with id: " + lesson.getId() + "is not exist");
+        throw new LectureServiceException("Impossible to remove lesson from lecture. Lecture with id: " + lecture.getId() + "is not exist");
     }
 
     @Override
@@ -87,8 +87,8 @@ public class LectureServiceImpl implements LectureService {
             return saveLecture(lecture);
         }
         if (!isTeacherPresent)
-            throw new LectureServiceException("Cant add teacher to lecture cause teacher with id: " + teacher.getId() + " not exist");
-        throw new LectureServiceException("Cant add teacher to lecture cause lecture with id: " + lecture.getId() + " not exist");
+            throw new LectureServiceException("Cant add teacher to lecture. Teacher with id: " + teacher.getId() + " not exist");
+        throw new LectureServiceException("Cant add teacher to lecture. Lecture with id: " + lecture.getId() + " not exist");
     }
 
     @Override
@@ -100,7 +100,7 @@ public class LectureServiceImpl implements LectureService {
             return saveLecture(lecture);
         }
         if (!isTeacherPresent)
-            throw new LectureServiceException("Cant remove teacher from lecture cause teacher with id: " + teacher.getId() + " not exist");
-        throw new LectureServiceException("Cant remove teacher from lecture cause lecture with id: " + lecture.getId() + " not exist");
+            throw new LectureServiceException("Cant remove teacher from lecture. Teacher with id: " + teacher.getId() + " not exist");
+        throw new LectureServiceException("Cant remove teacher from lecture. Lecture with id: " + lecture.getId() + " not exist");
     }
 }

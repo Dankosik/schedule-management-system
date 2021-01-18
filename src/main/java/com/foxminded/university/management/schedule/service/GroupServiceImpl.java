@@ -29,7 +29,7 @@ public class GroupServiceImpl implements GroupService {
                 .findAny();
         boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
         if (groupWithSameName.isPresent() && !isGroupPresent)
-            throw new GroupServiceException("Group with name: " + group.getName() + " already exist");
+            throw new GroupServiceException("Group with name: " + group.getName() + "is already exist");
         return groupDao.save(group);
     }
 
@@ -38,7 +38,7 @@ public class GroupServiceImpl implements GroupService {
         if (groupDao.getById(id).isPresent()) {
             return groupDao.getById(id).get();
         }
-        throw new GroupServiceException("Group with id: " + id + " not found");
+        throw new GroupServiceException("Group with id: " + id + "is not found");
     }
 
     @Override
@@ -67,8 +67,8 @@ public class GroupServiceImpl implements GroupService {
             return studentService.saveStudent(student);
         }
         if (!isStudentPresent)
-            throw new GroupServiceException("Cant add student to group cause student with id: " + student.getId() + " not exist");
-        throw new GroupServiceException("Cant add student to group cause group with id: " + group.getId() + " not exist");
+            throw new GroupServiceException("Impossible to add student to group. Student with id: " + student.getId() + "is not exist");
+        throw new GroupServiceException("Impossible to add student to group. Group with id: " + group.getId() + "is not exist");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class GroupServiceImpl implements GroupService {
             return studentService.saveStudent(student);
         }
         if (!isStudentPresent)
-            throw new GroupServiceException("Cant remove student from group cause student with id: " + student.getId() + " not exist");
-        throw new GroupServiceException("Cant remove student from group cause group with id: " + group.getId() + " not exist");
+            throw new GroupServiceException("Impossible to remove student from group. Student with id: " + student.getId() + "is not exist");
+        throw new GroupServiceException("Impossible to remove student from group. Group with id: " + group.getId() + "is not exist");
     }
 }

@@ -23,7 +23,7 @@ public class SubjectServiceImpl implements SubjectService {
                 .findAny();
         boolean isSubjectPresent = subjectDao.getById(subject.getId()).isPresent();
         if (groupWithSameName.isPresent() && !isSubjectPresent)
-            throw new SubjectServiceException("Subject with  name: " + subject.getName() + " already exist");
+            throw new SubjectServiceException("Subject with name: " + subject.getName() + "is already exist");
         return subjectDao.save(subject);
     }
 
@@ -32,7 +32,7 @@ public class SubjectServiceImpl implements SubjectService {
         if (subjectDao.getById(id).isPresent()) {
             return subjectDao.getById(id).get();
         }
-        throw new SubjectServiceException("Subject with id: " + id + " not found");
+        throw new SubjectServiceException("Subject with id: " + id + "is not found");
     }
 
     @Override

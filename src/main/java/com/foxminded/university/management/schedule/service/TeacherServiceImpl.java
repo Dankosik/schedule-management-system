@@ -23,7 +23,7 @@ public class TeacherServiceImpl implements TeacherService {
         if (isFacultyPresent || teacher.getFacultyId() == null) {
             return teacherDao.save(teacher);
         }
-        throw new TeacherServiceException("Teacher faculty with id: " + teacher.getFacultyId() + " not exist");
+        throw new TeacherServiceException("Teacher's faculty with id: " + teacher.getFacultyId() + "is not exists");
     }
 
     @Override
@@ -31,7 +31,7 @@ public class TeacherServiceImpl implements TeacherService {
         if (teacherDao.getById(id).isPresent()) {
             return teacherDao.getById(id).get();
         }
-        throw new TeacherServiceException("Teacher with id: " + id + " not found");
+        throw new TeacherServiceException("Teacher with id: " + id + "is not found");
     }
 
     @Override

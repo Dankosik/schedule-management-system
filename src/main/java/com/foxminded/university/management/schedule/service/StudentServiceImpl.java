@@ -23,7 +23,7 @@ public class StudentServiceImpl implements StudentService {
         if (isGroupPresent || student.getGroupId() == null) {
             return studentDao.save(student);
         }
-        throw new StudentServiceException("Student group with id: " + student.getGroupId() + " not exist");
+        throw new StudentServiceException("Student's group with id: " + student.getGroupId() + "is not exist");
     }
 
     @Override
@@ -31,7 +31,7 @@ public class StudentServiceImpl implements StudentService {
         if (studentDao.getById(id).isPresent()) {
             return studentDao.getById(id).get();
         }
-        throw new StudentServiceException("Student with id: " + id + " not found");
+        throw new StudentServiceException("Student with id: " + id + "is not found");
     }
 
     @Override
