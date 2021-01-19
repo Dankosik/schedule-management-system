@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.exceptions.LectureServiceException;
 import com.foxminded.university.management.schedule.service.exceptions.LessonServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public Lesson saveLesson(Lesson lesson) {
+        boolean isSubjectPresent = subjectDao.getById(lesson.getSubjectId()).isPresent();
+        if (!isSubjectPresent)
+            throw new LessonServiceException("Lesson subject with id: " + lesson.getSubjectId() + " is not exist");
         return lessonDao.save(lesson);
     }
 
