@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.service;
 
+import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.models.Group;
@@ -19,6 +20,8 @@ public class GroupServiceImpl implements GroupService {
     @Autowired
     private StudentDao studentDao;
     @Autowired
+    private FacultyDao facultyDao;
+    @Autowired
     private StudentServiceImpl studentService;
 
     @Override
@@ -27,9 +30,15 @@ public class GroupServiceImpl implements GroupService {
                 .stream()
                 .filter(g -> g.getName().equals(group.getName()))
                 .findAny();
+
         boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
         if (groupWithSameName.isPresent() && !isGroupPresent)
             throw new GroupServiceException("Group with name: " + group.getName() + " is already exist");
+
+        boolean isFacultyPresent = facultyDao.getById(group.getFacultyId()).isPresent();
+        if (!isFacultyPresent)
+            throw new GroupServiceException("Group's faculty with id: " + group.getFacultyId() + " is not exist");
+
         return groupDao.save(group);
     }
 
