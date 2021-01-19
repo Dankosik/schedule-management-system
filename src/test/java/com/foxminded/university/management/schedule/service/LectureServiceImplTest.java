@@ -4,10 +4,11 @@ import com.foxminded.university.management.schedule.dao.AudienceDao;
 import com.foxminded.university.management.schedule.dao.LectureDao;
 import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
-import com.foxminded.university.management.schedule.models.*;
-import com.foxminded.university.management.schedule.service.exceptions.AudienceServiceException;
+import com.foxminded.university.management.schedule.models.Audience;
+import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.models.Lesson;
+import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.exceptions.LectureServiceException;
-import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ class LectureServiceImplTest {
                     null, null, null),
             new Lecture(3L, 3, Date.valueOf(LocalDate.of(2020, 1, 1)),
                     null, null, null));
-    private final Teacher teacher = new Teacher(1L,"John", "Jackson", "Jackson", null, 1L);
+    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, 1L);
     private final Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
     @Autowired
     private LectureServiceImpl lectureService;
@@ -165,7 +166,7 @@ class LectureServiceImplTest {
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureService.saveLecture(expected)).thenReturn(expected);
 
-        Lecture actual = lectureService.removeLessonFromLecture(lesson, new Lecture(1L,1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        Lecture actual = lectureService.removeLessonFromLecture(lesson, new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 null, 1L, null));
         assertEquals(expected, actual);
 
@@ -215,7 +216,7 @@ class LectureServiceImplTest {
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureService.saveLecture(expected)).thenReturn(expected);
 
-        Lecture actual = lectureService.removeTeacherFromLecture(teacher, new Lecture(1L,1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        Lecture actual = lectureService.removeTeacherFromLecture(teacher, new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 null, null, 1L));
         assertEquals(expected, actual);
 
@@ -230,7 +231,7 @@ class LectureServiceImplTest {
     void shouldThrowExceptionIfLectureWithInputIdNotFound() {
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LectureServiceException.class, ()->lectureService.getLectureById(1L));
+        assertThrows(LectureServiceException.class, () -> lectureService.getLectureById(1L));
 
         verify(lectureDao, times(1)).getById(1L);
         verify(lectureDao, never()).save(lecture);
@@ -241,7 +242,7 @@ class LectureServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.empty());
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
 
-        assertThrows(LectureServiceException.class, ()->lectureService.addLessonToLecture(lesson, lecture));
+        assertThrows(LectureServiceException.class, () -> lectureService.addLessonToLecture(lesson, lecture));
 
         verify(lessonDao, times(1)).getById(1L);
         verify(lectureDao, never()).getById(1L);
@@ -253,7 +254,7 @@ class LectureServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LectureServiceException.class, ()->lectureService.addLessonToLecture(lesson, lecture));
+        assertThrows(LectureServiceException.class, () -> lectureService.addLessonToLecture(lesson, lecture));
 
         verify(lessonDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -265,7 +266,7 @@ class LectureServiceImplTest {
         when(teacherDao.getById(1L)).thenReturn(Optional.empty());
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
 
-        assertThrows(LectureServiceException.class, ()->lectureService.addTeacherToLecture(teacher, lecture));
+        assertThrows(LectureServiceException.class, () -> lectureService.addTeacherToLecture(teacher, lecture));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(lectureDao, never()).getById(1L);
@@ -277,7 +278,7 @@ class LectureServiceImplTest {
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LectureServiceException.class, ()->lectureService.addTeacherToLecture(teacher, lecture));
+        assertThrows(LectureServiceException.class, () -> lectureService.addTeacherToLecture(teacher, lecture));
 
 
         verify(teacherDao, times(1)).getById(1L);
@@ -290,7 +291,7 @@ class LectureServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.empty());
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
 
-        assertThrows(LectureServiceException.class, ()->lectureService.removeLessonFromLecture(lesson, lecture));
+        assertThrows(LectureServiceException.class, () -> lectureService.removeLessonFromLecture(lesson, lecture));
 
         verify(lessonDao, times(1)).getById(1L);
         verify(lectureDao, never()).getById(1L);
@@ -302,7 +303,7 @@ class LectureServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LectureServiceException.class, ()->lectureService.removeLessonFromLecture(lesson, lecture));
+        assertThrows(LectureServiceException.class, () -> lectureService.removeLessonFromLecture(lesson, lecture));
 
         verify(lessonDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -314,7 +315,7 @@ class LectureServiceImplTest {
         when(teacherDao.getById(1L)).thenReturn(Optional.empty());
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
 
-        assertThrows(LectureServiceException.class, ()->lectureService.removeTeacherFromLecture(teacher, lecture));
+        assertThrows(LectureServiceException.class, () -> lectureService.removeTeacherFromLecture(teacher, lecture));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(lectureDao, never()).getById(1L);
@@ -326,7 +327,7 @@ class LectureServiceImplTest {
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LectureServiceException.class, ()->lectureService.removeTeacherFromLecture(teacher, lecture));
+        assertThrows(LectureServiceException.class, () -> lectureService.removeTeacherFromLecture(teacher, lecture));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -341,12 +342,13 @@ class LectureServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(LectureServiceException.class, ()->lectureService.addLessonToLecture(lesson, expected));
+        assertThrows(LectureServiceException.class, () -> lectureService.addLessonToLecture(lesson, expected));
 
         verify(lessonDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
         verify(lectureDao, never()).save(expected);
     }
+
     @Test
     void shouldThrowExceptionIfTeacherIsAlreadyAddedToLecture() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
@@ -355,7 +357,7 @@ class LectureServiceImplTest {
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(LectureServiceException.class, ()->lectureService.addTeacherToLecture(teacher, expected));
+        assertThrows(LectureServiceException.class, () -> lectureService.addTeacherToLecture(teacher, expected));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -370,12 +372,13 @@ class LectureServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(LectureServiceException.class, ()->lectureService.removeLessonFromLecture(lesson, expected));
+        assertThrows(LectureServiceException.class, () -> lectureService.removeLessonFromLecture(lesson, expected));
 
         verify(lessonDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
         verify(lectureDao, never()).save(expected);
     }
+
     @Test
     void shouldThrowExceptionIfTeacherIsAlreadyRemovedFromLecture() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
@@ -384,7 +387,7 @@ class LectureServiceImplTest {
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(LectureServiceException.class, ()->lectureService.removeTeacherFromLecture(teacher, expected));
+        assertThrows(LectureServiceException.class, () -> lectureService.removeTeacherFromLecture(teacher, expected));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -399,11 +402,12 @@ class LectureServiceImplTest {
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
         when(teacherDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LectureServiceException.class, ()->lectureService.saveLecture(expected));
+        assertThrows(LectureServiceException.class, () -> lectureService.saveLecture(expected));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(lectureDao, never()).save(expected);
     }
+
     @Test
     void shouldThrowExceptionIfLectureLessonNotFound() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
@@ -416,7 +420,7 @@ class LectureServiceImplTest {
                 .thenReturn(Optional.of(new Audience(1L, 202, 45, 1L)));
         when(lessonDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LectureServiceException.class, ()->lectureService.saveLecture(expected));
+        assertThrows(LectureServiceException.class, () -> lectureService.saveLecture(expected));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(audienceDao, times(1)).getById(1L);
@@ -434,7 +438,7 @@ class LectureServiceImplTest {
                 .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", null, 1L)));
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LectureServiceException.class, ()->lectureService.saveLecture(expected));
+        assertThrows(LectureServiceException.class, () -> lectureService.saveLecture(expected));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(audienceDao, times(1)).getById(1L);

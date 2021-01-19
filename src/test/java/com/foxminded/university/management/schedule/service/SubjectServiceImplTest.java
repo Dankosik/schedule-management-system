@@ -2,7 +2,6 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.exceptions.GroupServiceException;
 import com.foxminded.university.management.schedule.service.exceptions.SubjectServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

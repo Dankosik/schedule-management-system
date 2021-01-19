@@ -201,7 +201,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(expected));
         when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
 
-        assertThrows(LessonServiceException.class, ()->lessonService.addSubjectToLesson(subject, expected));
+        assertThrows(LessonServiceException.class, () -> lessonService.addSubjectToLesson(subject, expected));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, times(1)).getById(1L);
@@ -215,7 +215,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(expected));
         when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
 
-        assertThrows(LessonServiceException.class, ()->lessonService.removeSubjectFromLesson(subject, expected));
+        assertThrows(LessonServiceException.class, () -> lessonService.removeSubjectFromLesson(subject, expected));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, times(1)).getById(1L);

@@ -3,11 +3,7 @@ package com.foxminded.university.management.schedule.service;
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.models.Faculty;
-import com.foxminded.university.management.schedule.models.Group;
-import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.service.exceptions.GroupServiceException;
-import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
 import com.foxminded.university.management.schedule.service.exceptions.TeacherServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +35,7 @@ class TeacherServiceImplTest {
 
     @Test
     void shouldSaveTeacher() {
-        when(teacherDao.save(new Teacher( "John", "Jackson", "Jackson", null, 1L)))
+        when(teacherDao.save(new Teacher("John", "Jackson", "Jackson", null, 1L)))
                 .thenReturn(teacher);
         Teacher actual = teacherService.saveTeacher(teacher);
 
@@ -100,7 +96,7 @@ class TeacherServiceImplTest {
     void shouldThrowExceptionIfStudentWithInputIdNotFound() {
         when(teacherDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(TeacherServiceException.class, ()->teacherService.getTeacherById(1L));
+        assertThrows(TeacherServiceException.class, () -> teacherService.getTeacherById(1L));
 
         verify(teacherDao, times(1)).getById(1L);
         verify(teacherDao, never()).save(teacher);
@@ -113,7 +109,7 @@ class TeacherServiceImplTest {
         when(teacherDao.getById(1L)).thenReturn(Optional.of(expected));
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(TeacherServiceException.class, ()->teacherService.saveTeacher(expected));
+        assertThrows(TeacherServiceException.class, () -> teacherService.saveTeacher(expected));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(teacherDao, never()).save(expected);

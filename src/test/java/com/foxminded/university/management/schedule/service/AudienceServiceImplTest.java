@@ -139,7 +139,7 @@ class AudienceServiceImplTest {
     void shouldThrowExceptionIfAudienceWithInputNumberIsAlreadyExist() {
         when(audienceDao.getAll()).thenReturn(List.of(audience));
 
-        assertThrows(AudienceServiceException.class, ()->audienceService.saveAudience(audience));
+        assertThrows(AudienceServiceException.class, () -> audienceService.saveAudience(audience));
 
         verify(audienceDao, times(1)).getAll();
         verify(audienceDao, never()).save(audience);
@@ -149,7 +149,7 @@ class AudienceServiceImplTest {
     void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(AudienceServiceException.class, ()->audienceService.getAudienceById(1L));
+        assertThrows(AudienceServiceException.class, () -> audienceService.getAudienceById(1L));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(audienceDao, never()).save(audience);
@@ -160,7 +160,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
 
-        assertThrows(AudienceServiceException.class, ()->audienceService.addLectureToAudience(lecture, audience));
+        assertThrows(AudienceServiceException.class, () -> audienceService.addLectureToAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, never()).getById(1L);
@@ -172,7 +172,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(AudienceServiceException.class, ()->audienceService.addLectureToAudience(lecture, audience));
+        assertThrows(AudienceServiceException.class, () -> audienceService.addLectureToAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -184,7 +184,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
 
-        assertThrows(AudienceServiceException.class, ()->audienceService.removeLectureFromAudience(lecture, audience));
+        assertThrows(AudienceServiceException.class, () -> audienceService.removeLectureFromAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, never()).getById(1L);
@@ -196,7 +196,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(AudienceServiceException.class, ()->audienceService.removeLectureFromAudience(lecture, audience));
+        assertThrows(AudienceServiceException.class, () -> audienceService.removeLectureFromAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -211,7 +211,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(AudienceServiceException.class, ()->audienceService.addLectureToAudience(expected, audience));
+        assertThrows(AudienceServiceException.class, () -> audienceService.addLectureToAudience(expected, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -226,7 +226,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(AudienceServiceException.class, ()->audienceService.removeLectureFromAudience(expected, audience));
+        assertThrows(AudienceServiceException.class, () -> audienceService.removeLectureFromAudience(expected, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);

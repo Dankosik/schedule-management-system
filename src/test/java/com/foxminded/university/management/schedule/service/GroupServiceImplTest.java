@@ -7,7 +7,6 @@ import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.exceptions.GroupServiceException;
-import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -232,6 +231,7 @@ class GroupServiceImplTest {
         verify(studentDao, times(1)).getById(1L);
         verify(studentService, never()).saveStudent(expected);
     }
+
     @Test
     void shouldThrowExceptionIfGroupFacultyNotFound() {
         Group expected = new Group(1L, "AB-01", 1L, 1L);
@@ -239,7 +239,7 @@ class GroupServiceImplTest {
         when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(GroupServiceException.class, ()->groupService.saveGroup(expected));
+        assertThrows(GroupServiceException.class, () -> groupService.saveGroup(expected));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(groupDao, never()).save(expected);

@@ -2,9 +2,7 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
-import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
-import com.foxminded.university.management.schedule.service.exceptions.AudienceServiceException;
 import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -98,7 +96,7 @@ class StudentServiceImplTest {
     void shouldThrowExceptionIfStudentWithInputIdNotFound() {
         when(studentDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(StudentServiceException.class, ()->studentService.getStudentById(1L));
+        assertThrows(StudentServiceException.class, () -> studentService.getStudentById(1L));
 
         verify(studentDao, times(1)).getById(1L);
         verify(studentDao, never()).save(student);
@@ -111,7 +109,7 @@ class StudentServiceImplTest {
         when(studentDao.getById(1L)).thenReturn(Optional.of(expected));
         when(groupDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(StudentServiceException.class, ()->studentService.saveStudent(expected));
+        assertThrows(StudentServiceException.class, () -> studentService.saveStudent(expected));
 
         verify(groupDao, times(1)).getById(1L);
         verify(studentDao, never()).save(expected);
