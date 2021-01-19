@@ -1,10 +1,13 @@
 package com.foxminded.university.management.schedule.service;
 
+import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
+import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.exceptions.GroupServiceException;
+import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +27,8 @@ import static org.mockito.Mockito.*;
 class GroupServiceImplTest {
     private final Group group = new Group(1L, "AB-01", 1L, 1L);
     private final List<Group> groups = List.of(group,
-            new Group(2L, "BC-02", 2L, 1L),
-            new Group(3L, "CD-03", 3L, 1L));
+            new Group(2L, "BC-02", 1L, 1L),
+            new Group(3L, "CD-03", 1L, 1L));
     private final Student student = new Student(1L, "John", "Jackson", "Jackson", 1, null, 1L);
     @Autowired
     private GroupServiceImpl groupService;
@@ -35,11 +38,15 @@ class GroupServiceImplTest {
     @MockBean
     private StudentDao studentDao;
     @MockBean
+    private FacultyDao facultyDao;
+    @MockBean
     private StudentServiceImpl studentService;
 
     @Test
     void shouldSaveGroup() {
         when(groupDao.save(new Group("AB-01", 1L, 1L))).thenReturn(group);
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
+
         Group actual = groupService.saveGroup(group);
 
         assertEquals(group, actual);
@@ -51,6 +58,7 @@ class GroupServiceImplTest {
     @Test
     void shouldReturnGroupWithIdOne() {
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
+
         Group actual = groupService.getGroupById(1L);
 
         assertEquals(group, actual);
@@ -81,9 +89,9 @@ class GroupServiceImplTest {
     @Test
     void shouldSaveListOfGroups() {
         when(groupDao.save(new Group("AB-01", 1L, 1L))).thenReturn(group);
-        when(groupDao.save(new Group("BC-02", 2L, 1L))).thenReturn(groups.get(1));
-        when(groupDao.save(new Group("CD-03", 3L, 1L))).thenReturn(groups.get(2));
-
+        when(groupDao.save(new Group("BC-02", 1L, 1L))).thenReturn(groups.get(1));
+        when(groupDao.save(new Group("CD-03", 1L, 1L))).thenReturn(groups.get(2));
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
 
         List<Group> actual = groupService.saveAllGroups(groups);
 
@@ -214,7 +222,6 @@ class GroupServiceImplTest {
     @Test
     void shouldThrowExceptionIfStudentIsAlreadyRemovedFromGroup() {
         Student expected = new Student(1L, "John", "Jackson", "Jackson", 1, null, 1L);
-        
 
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
         when(studentDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -225,4 +232,17 @@ class GroupServiceImplTest {
         verify(studentDao, times(1)).getById(1L);
         verify(studentService, never()).saveStudent(expected);
     }
+    @Test
+    void shouldThrowExceptionIfGroupFacultyNotFound() {
+        Group expected = new Group(1L, "AB-01", 1L, 1L);
+
+        when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
+        when(facultyDao.getById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(GroupServiceException.class, ()->groupService.saveGroup(expected));
+
+        verify(facultyDao, times(1)).getById(1L);
+        verify(groupDao, never()).save(expected);
+    }
+
 }
