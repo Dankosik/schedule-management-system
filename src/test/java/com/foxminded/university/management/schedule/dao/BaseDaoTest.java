@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 @ContextConfiguration(initializers = {BaseDaoTest.Initializer.class})
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:init_test_db.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:clear_db.sql")
-//@Import({TestConfig.class})
 class BaseDaoTest {
 
     private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:12")
