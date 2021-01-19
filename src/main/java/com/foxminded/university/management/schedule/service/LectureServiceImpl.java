@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.service;
 
+import com.foxminded.university.management.schedule.dao.AudienceDao;
 import com.foxminded.university.management.schedule.dao.LectureDao;
 import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
@@ -21,9 +22,23 @@ public class LectureServiceImpl implements LectureService {
     private LessonDao lessonDao;
     @Autowired
     private TeacherDao teacherDao;
+    @Autowired
+    private AudienceDao audienceDao;
 
     @Override
     public Lecture saveLecture(Lecture lecture) {
+        boolean isTeacherPresent = teacherDao.getById(lecture.getTeacherId()).isPresent();
+        if (!isTeacherPresent)
+            throw new LectureServiceException("Lecture teacher with id: " + lecture.getTeacherId() + " is not exist");
+
+        boolean isAudiencePresent = audienceDao.getById(lecture.getAudienceId()).isPresent();
+        if (!isAudiencePresent)
+            throw new LectureServiceException("Lecture audience with id: " + lecture.getAudienceId() + " is not exist");
+
+        boolean isLessonPresent = lessonDao.getById(lecture.getLessonId()).isPresent();
+        if (!isLessonPresent)
+            throw new LectureServiceException("Lecture lesson with id: " + lecture.getLessonId() + " is not exist");
+
         return lectureDao.save(lecture);
     }
 
