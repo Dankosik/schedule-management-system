@@ -7,12 +7,14 @@ import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.service.exceptions.AudienceServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class AudienceServiceImpl implements AudienceService {
     @Autowired
     private AudienceDao audienceDao;

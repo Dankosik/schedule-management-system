@@ -5,12 +5,14 @@ import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.exceptions.SubjectServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class SubjectServiceImpl implements SubjectService {
     @Autowired
     private SubjectDao subjectDao;

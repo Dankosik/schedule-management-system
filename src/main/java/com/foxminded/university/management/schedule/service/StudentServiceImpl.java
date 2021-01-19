@@ -6,11 +6,13 @@ import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentDao studentDao;
