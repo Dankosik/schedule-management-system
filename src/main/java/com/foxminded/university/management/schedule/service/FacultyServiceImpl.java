@@ -6,7 +6,6 @@ import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.service.exceptions.AudienceServiceException;
 import com.foxminded.university.management.schedule.service.exceptions.FacultyServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
