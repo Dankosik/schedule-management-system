@@ -1,11 +1,11 @@
-package com.foxminded.university.management.schedule.service;
+package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.AudienceDao;
 import com.foxminded.university.management.schedule.dao.LectureDao;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.service.AudienceService;
 import com.foxminded.university.management.schedule.service.exceptions.AudienceServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +16,15 @@ import java.util.Optional;
 @Service
 @Transactional
 public class AudienceServiceImpl implements AudienceService {
-    @Autowired
-    private AudienceDao audienceDao;
-    @Autowired
-    private LectureDao lectureDao;
-    @Autowired
-    private LectureServiceImpl lectureService;
+    private final AudienceDao audienceDao;
+    private final LectureDao lectureDao;
+    private final LectureServiceImpl lectureService;
+
+    public AudienceServiceImpl(AudienceDao audienceDao, LectureDao lectureDao, LectureServiceImpl lectureService) {
+        this.audienceDao = audienceDao;
+        this.lectureDao = lectureDao;
+        this.lectureService = lectureService;
+    }
 
     @Override
     public Audience saveAudience(Audience audience) {

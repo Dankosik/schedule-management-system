@@ -1,12 +1,12 @@
-package com.foxminded.university.management.schedule.service;
+package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
+import com.foxminded.university.management.schedule.service.GroupService;
 import com.foxminded.university.management.schedule.service.exceptions.GroupServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +17,17 @@ import java.util.Optional;
 @Service
 @Transactional
 public class GroupServiceImpl implements GroupService {
-    @Autowired
-    private GroupDao groupDao;
-    @Autowired
-    private StudentDao studentDao;
-    @Autowired
-    private FacultyDao facultyDao;
-    @Autowired
-    private StudentServiceImpl studentService;
+    private final GroupDao groupDao;
+    private final StudentDao studentDao;
+    private final FacultyDao facultyDao;
+    private final StudentServiceImpl studentService;
+
+    public GroupServiceImpl(GroupDao groupDao, StudentDao studentDao, FacultyDao facultyDao, StudentServiceImpl studentService) {
+        this.groupDao = groupDao;
+        this.studentDao = studentDao;
+        this.facultyDao = facultyDao;
+        this.studentService = studentService;
+    }
 
     @Override
     public Group saveGroup(Group group) {

@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
+import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

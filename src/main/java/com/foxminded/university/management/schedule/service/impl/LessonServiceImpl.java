@@ -1,11 +1,11 @@
-package com.foxminded.university.management.schedule.service;
+package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.LessonService;
 import com.foxminded.university.management.schedule.service.exceptions.LessonServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +15,13 @@ import java.util.List;
 @Service
 @Transactional
 public class LessonServiceImpl implements LessonService {
-    @Autowired
-    private LessonDao lessonDao;
-    @Autowired
-    private SubjectDao subjectDao;
+    private final LessonDao lessonDao;
+    private final SubjectDao subjectDao;
+
+    public LessonServiceImpl(LessonDao lessonDao, SubjectDao subjectDao) {
+        this.lessonDao = lessonDao;
+        this.subjectDao = subjectDao;
+    }
 
     @Override
     public Lesson saveLesson(Lesson lesson) {

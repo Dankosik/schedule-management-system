@@ -1,10 +1,10 @@
-package com.foxminded.university.management.schedule.service;
+package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.models.Student;
+import com.foxminded.university.management.schedule.service.StudentService;
 import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +14,13 @@ import java.util.List;
 @Service
 @Transactional
 public class StudentServiceImpl implements StudentService {
-    @Autowired
-    private StudentDao studentDao;
-    @Autowired
-    private GroupDao groupDao;
+    private final StudentDao studentDao;
+    private final GroupDao groupDao;
+
+    public StudentServiceImpl(StudentDao studentDao, GroupDao groupDao) {
+        this.studentDao = studentDao;
+        this.groupDao = groupDao;
+    }
 
     @Override
     public Student saveStudent(Student student) {

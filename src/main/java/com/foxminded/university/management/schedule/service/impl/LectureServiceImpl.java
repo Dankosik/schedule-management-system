@@ -1,4 +1,4 @@
-package com.foxminded.university.management.schedule.service;
+package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.AudienceDao;
 import com.foxminded.university.management.schedule.dao.LectureDao;
@@ -7,8 +7,8 @@ import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.service.LectureService;
 import com.foxminded.university.management.schedule.service.exceptions.LectureServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +18,17 @@ import java.util.List;
 @Service
 @Transactional
 public class LectureServiceImpl implements LectureService {
-    @Autowired
-    private LectureDao lectureDao;
-    @Autowired
-    private LessonDao lessonDao;
-    @Autowired
-    private TeacherDao teacherDao;
-    @Autowired
-    private AudienceDao audienceDao;
+    private final LectureDao lectureDao;
+    private final LessonDao lessonDao;
+    private final TeacherDao teacherDao;
+    private final AudienceDao audienceDao;
+
+    public LectureServiceImpl(LectureDao lectureDao, LessonDao lessonDao, TeacherDao teacherDao, AudienceDao audienceDao) {
+        this.lectureDao = lectureDao;
+        this.lessonDao = lessonDao;
+        this.teacherDao = teacherDao;
+        this.audienceDao = audienceDao;
+    }
 
     @Override
     public Lecture saveLecture(Lecture lecture) {

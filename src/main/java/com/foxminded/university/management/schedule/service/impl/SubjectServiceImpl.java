@@ -1,9 +1,9 @@
-package com.foxminded.university.management.schedule.service;
+package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import com.foxminded.university.management.schedule.service.exceptions.SubjectServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,8 +14,11 @@ import java.util.Optional;
 @Service
 @Transactional
 public class SubjectServiceImpl implements SubjectService {
-    @Autowired
-    private SubjectDao subjectDao;
+    private final SubjectDao subjectDao;
+
+    public SubjectServiceImpl(SubjectDao subjectDao) {
+        this.subjectDao = subjectDao;
+    }
 
     @Override
     public Subject saveSubject(Subject subject) {
