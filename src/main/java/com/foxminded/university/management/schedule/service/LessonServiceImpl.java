@@ -24,7 +24,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public Lesson getAudienceById(Long id) {
+    public Lesson getLessonById(Long id) {
         if (lessonDao.getById(id).isPresent()) {
             return lessonDao.getById(id).get();
         }
@@ -38,7 +38,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public void deleteLessonById(Long id) {
-        lessonDao.deleteById(getAudienceById(id).getId());
+        lessonDao.deleteById(getLessonById(id).getId());
     }
 
     @Override
