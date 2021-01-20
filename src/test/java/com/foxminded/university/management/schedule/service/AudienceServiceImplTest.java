@@ -137,8 +137,20 @@ class AudienceServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfAudienceWithInputNumberIsAlreadyExist() {
+    void shouldThrowExceptionIfCreatedAudienceWithInputNumberIsAlreadyExist() {
         Audience expected = new Audience(202, 45, 1L);
+
+        when(audienceDao.save(expected)).thenThrow(DuplicateKeyException.class);
+
+        assertThrows(ServiceException.class, () -> audienceService.saveAudience(expected));
+
+        verify(audienceDao, times(1)).save(expected);
+    }
+
+    @Test
+    void shouldThrowExceptionIfUpdatedAudienceWithInputNumberIsAlreadyExist() {
+        Audience expected = new Audience(1L, 202, 45, 1L);
+
         when(audienceDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
         assertThrows(ServiceException.class, () -> audienceService.saveAudience(expected));

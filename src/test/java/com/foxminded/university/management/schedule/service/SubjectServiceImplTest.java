@@ -94,8 +94,18 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfSubjectWithInputNameIsAlreadyExist() {
+    void shouldThrowExceptionIfCreatedSubjectWithInputNameIsAlreadyExist() {
         Subject expected = new Subject("Math", 1L);
+        when(subjectDao.save(expected)).thenThrow(DuplicateKeyException.class);
+
+        assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
+
+        verify(subjectDao, times(1)).save(expected);
+    }
+
+    @Test
+    void shouldThrowExceptionIfUpdatedSubjectWithInputNameIsAlreadyExist() {
+        Subject expected = new Subject(1L,"Math", 1L);
         when(subjectDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
         assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));

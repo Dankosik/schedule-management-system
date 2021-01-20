@@ -138,10 +138,22 @@ class GroupServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfGroupWithInputNameIsAlreadyExist() {
+    void shouldThrowExceptionIfUpdatedGroupWithInputNameIsAlreadyExist() {
         Group expected = new Group("AB-01", 1L, 1L);
 
         when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
+        when(groupDao.save(expected)).thenThrow(DuplicateKeyException.class);
+
+        assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
+
+        verify(groupDao, times(1)).save(expected);
+    }
+
+    @Test
+    void shouldThrowExceptionIfCreatedGroupWithInputNameIsAlreadyExist() {
+        Group expected = new Group("AB-01", 1L, 1L);
+
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty("FAIT", 1L)));
         when(groupDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
         assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));

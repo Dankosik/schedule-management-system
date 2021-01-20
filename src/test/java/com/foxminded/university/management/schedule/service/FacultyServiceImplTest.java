@@ -164,8 +164,20 @@ class FacultyServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfFacultyWithInputNameIsAlreadyExist() {
+    void shouldThrowExceptionIfCreatedFacultyWithInputNameIsAlreadyExist() {
         Faculty expected = new Faculty("FAIT", 1L);
+
+        when(facultyDao.save(expected)).thenThrow(DuplicateKeyException.class);
+
+        assertThrows(ServiceException.class, () -> facultyService.saveFaculty(expected));
+
+        verify(facultyDao, times(1)).save(expected);
+    }
+
+    @Test
+    void shouldThrowExceptionIfUpdatedFacultyWithInputNameIsAlreadyExist() {
+        Faculty expected = new Faculty(1L,"FAIT", 1L);
+
         when(facultyDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
         assertThrows(ServiceException.class, () -> facultyService.saveFaculty(expected));
