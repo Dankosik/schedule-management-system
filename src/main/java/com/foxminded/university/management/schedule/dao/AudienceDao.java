@@ -29,7 +29,7 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
         try {
             newId = simpleJdbcInsert.executeAndReturnKey(params);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateKeyException("Impossible to update audience with id: " + audience.getId() +
+            throw new DuplicateKeyException("Impossible to create audience with id: " + audience.getId() +
                     ". Audience with number: " + audience.getNumber() + " is already exist");
 
         }
@@ -38,9 +38,14 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
 
     @Override
     protected Audience update(Audience audience) {
-        this.jdbcTemplate.update("UPDATE audiences SET number = ?, capacity = ?,  university_id = ? WHERE id = ?",
-                audience.getNumber(), audience.getCapacity(), audience.getUniversityId(), audience.getId());
-        return new Audience(audience.getId(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
+        try {
+            this.jdbcTemplate.update("UPDATE audiences SET number = ?, capacity = ?,  university_id = ? WHERE id = ?",
+                    audience.getNumber(), audience.getCapacity(), audience.getUniversityId(), audience.getId());
+            return new Audience(audience.getId(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to update audience with id: " + audience.getId() +
+                    ". Audience with number: " + audience.getNumber() + " is already exist");
+        }
     }
 
     @Override

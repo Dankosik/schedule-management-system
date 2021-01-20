@@ -28,7 +28,7 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
         try {
             newId = simpleJdbcInsert.executeAndReturnKey(params);
         } catch (DuplicateKeyException e) {
-            throw new DuplicateKeyException("Impossible to update subject with id: " + subject.getId() +
+            throw new DuplicateKeyException("Impossible to create subject with id: " + subject.getId() +
                     ". Subject with name: " + subject.getName() + " is already exist");
         }
         return new Subject(newId.longValue(), subject.getName(), subject.getUniversityId());
@@ -36,9 +36,14 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
 
     @Override
     protected Subject update(Subject subject) {
-        this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
-                subject.getName(), subject.getUniversityId(), subject.getId());
-        return new Subject(subject.getId(), subject.getName(), subject.getUniversityId());
+        try {
+            this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
+                    subject.getName(), subject.getUniversityId(), subject.getId());
+            return new Subject(subject.getId(), subject.getName(), subject.getUniversityId());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to update subject with id: " + subject.getId() +
+                    ". Subject with name: " + subject.getName() + " is already exist");
+        }
     }
 
     @Override
