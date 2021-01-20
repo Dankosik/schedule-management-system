@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.AudienceRowMapper;
 import com.foxminded.university.management.schedule.models.Audience;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -29,9 +30,14 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
     }
 
     @Override
-    protected Audience update(Audience audience) {
-        this.jdbcTemplate.update("UPDATE audiences SET number = ?, capacity = ?,  university_id = ? WHERE id = ?",
-                audience.getNumber(), audience.getCapacity(), audience.getUniversityId(), audience.getId());
+    protected Audience update(Audience audience) throws DuplicateKeyException {
+        try {
+            this.jdbcTemplate.update("UPDATE audiences SET number = ?, capacity = ?,  university_id = ? WHERE id = ?",
+                    audience.getNumber(), audience.getCapacity(), audience.getUniversityId(), audience.getId());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to update audience with id: " + audience.getId() +
+                    ". Audience with number: " + audience.getNumber() + " is already exist");
+        }
         return new Audience(audience.getId(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
     }
 

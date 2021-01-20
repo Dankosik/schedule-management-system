@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.GroupRowMapper;
 import com.foxminded.university.management.schedule.models.Group;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -29,9 +30,14 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
     }
 
     @Override
-    protected Group update(Group group) {
-        this.jdbcTemplate.update("UPDATE groups SET name = ?,  faculty_id = ?, university_id = ? WHERE id = ?",
-                group.getName(), group.getFacultyId(), group.getUniversityId(), group.getId());
+    protected Group update(Group group) throws DuplicateKeyException {
+        try {
+            this.jdbcTemplate.update("UPDATE groups SET name = ?,  faculty_id = ?, university_id = ? WHERE id = ?",
+                    group.getName(), group.getFacultyId(), group.getUniversityId(), group.getId());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to update group with id: " + group.getId() +
+                    ". Group with name: " + group.getName() + " is already exist");
+        }
         return new Group(group.getId(), group.getName(), group.getFacultyId(), group.getUniversityId());
     }
 

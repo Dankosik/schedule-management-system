@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.SubjectRowMapper;
 import com.foxminded.university.management.schedule.models.Subject;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -28,9 +29,14 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
     }
 
     @Override
-    protected Subject update(Subject subject) {
-        this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
-                subject.getName(), subject.getUniversityId(), subject.getId());
+    protected Subject update(Subject subject) throws DuplicateKeyException {
+        try {
+            this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
+                    subject.getName(), subject.getUniversityId(), subject.getId());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to update subject with id: " + subject.getId() +
+                    ". Subject with name: " + subject.getName() + " is already exist");
+        }
         return new Subject(subject.getId(), subject.getName(), subject.getUniversityId());
     }
 

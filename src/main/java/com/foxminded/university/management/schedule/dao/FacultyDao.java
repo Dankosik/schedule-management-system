@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.FacultyRowMapper;
 import com.foxminded.university.management.schedule.models.Faculty;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -28,9 +29,14 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
     }
 
     @Override
-    protected Faculty update(Faculty faculty) {
-        this.jdbcTemplate.update("UPDATE faculties SET name = ?, university_id = ? WHERE id = ?",
-                faculty.getName(), faculty.getUniversityId(), faculty.getId());
+    protected Faculty update(Faculty faculty) throws DuplicateKeyException {
+        try {
+            this.jdbcTemplate.update("UPDATE faculties SET name = ?, university_id = ? WHERE id = ?",
+                    faculty.getName(), faculty.getUniversityId(), faculty.getId());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to update faculty with id: " + faculty.getId() +
+                    ". Faculty with name: " + faculty.getName() + " is already exist");
+        }
         return new Faculty(faculty.getId(), faculty.getName(), faculty.getUniversityId());
     }
 
