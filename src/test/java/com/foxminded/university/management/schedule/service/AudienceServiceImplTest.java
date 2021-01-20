@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.Date;
@@ -51,7 +52,6 @@ class AudienceServiceImplTest {
         assertEquals(audience, actual);
 
         verify(audienceDao, times(1)).save(audience);
-        verify(audienceDao, times(1)).getAll();
     }
 
     @Test
@@ -99,7 +99,6 @@ class AudienceServiceImplTest {
         verify(audienceDao, times(1)).save(audiences.get(1));
         verify(audienceDao, times(1)).save(audiences.get(2));
         verify(audienceDao, times(1)).save(audiences.get(3));
-        verify(audienceDao, times(4)).getAll();
     }
 
     @Test
@@ -139,12 +138,12 @@ class AudienceServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfAudienceWithInputNumberIsAlreadyExist() {
-        when(audienceDao.getAll()).thenReturn(List.of(audience));
+        Audience expected = new Audience(202, 45, 1L);
+        when(audienceDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
-        assertThrows(ServiceException.class, () -> audienceService.saveAudience(audience));
+        assertThrows(ServiceException.class, () -> audienceService.saveAudience(expected));
 
-        verify(audienceDao, times(1)).getAll();
-        verify(audienceDao, never()).save(audience);
+        verify(audienceDao, times(1)).save(expected);
     }
 
     @Test

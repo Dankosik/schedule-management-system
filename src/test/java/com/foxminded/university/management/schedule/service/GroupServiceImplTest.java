@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -53,7 +54,6 @@ class GroupServiceImplTest {
         assertEquals(group, actual);
 
         verify(groupDao, times(1)).save(group);
-        verify(groupDao, times(1)).getAll();
     }
 
     @Test
@@ -101,7 +101,6 @@ class GroupServiceImplTest {
         verify(groupDao, times(1)).save(groups.get(0));
         verify(groupDao, times(1)).save(groups.get(1));
         verify(groupDao, times(1)).save(groups.get(2));
-        verify(groupDao, times(3)).getAll();
     }
 
     @Test
@@ -140,12 +139,14 @@ class GroupServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfGroupWithInputNameIsAlreadyExist() {
-        when(groupDao.getAll()).thenReturn(List.of(group));
+        Group expected = new Group("AB-01", 1L, 1L);
 
-        assertThrows(ServiceException.class, () -> groupService.saveGroup(group));
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
+        when(groupDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
-        verify(groupDao, times(1)).getAll();
-        verify(groupDao, never()).save(group);
+        assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
+
+        verify(groupDao, times(1)).save(expected);
     }
 
     @Test

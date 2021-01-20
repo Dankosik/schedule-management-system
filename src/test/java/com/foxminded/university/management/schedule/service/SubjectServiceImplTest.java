@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -92,13 +94,13 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfGroupWithInputNameIsAlreadyExist() {
-        when(subjectDao.getAll()).thenReturn(List.of(subject));
+    void shouldThrowExceptionIfSubjectWithInputNameIsAlreadyExist() {
+        Subject expected = new Subject("Math", 1L);
+        when(subjectDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
-        assertThrows(ServiceException.class, () -> subjectService.saveSubject(subject));
+        assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
 
-        verify(subjectDao, times(1)).getAll();
-        verify(subjectDao, never()).save(subject);
+        verify(subjectDao, times(1)).save(expected);
     }
 
     @Test

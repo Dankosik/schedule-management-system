@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -52,7 +53,6 @@ class FacultyServiceImplTest {
         assertEquals(faculty, actual);
 
         verify(facultyDao, times(1)).save(faculty);
-        verify(facultyDao, times(1)).getAll();
     }
 
     @Test
@@ -97,7 +97,6 @@ class FacultyServiceImplTest {
 
         verify(facultyDao, times(1)).save(faculties.get(0));
         verify(facultyDao, times(1)).save(faculties.get(1));
-        verify(facultyDao, times(2)).getAll();
     }
 
     @Test
@@ -166,12 +165,12 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfFacultyWithInputNameIsAlreadyExist() {
-        when(facultyDao.getAll()).thenReturn(List.of(faculty));
+        Faculty expected = new Faculty("FAIT", 1L);
+        when(facultyDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
-        assertThrows(ServiceException.class, () -> facultyService.saveFaculty(faculty));
+        assertThrows(ServiceException.class, () -> facultyService.saveFaculty(expected));
 
-        verify(facultyDao, times(1)).getAll();
-        verify(facultyDao, never()).save(faculty);
+        verify(facultyDao, times(1)).save(expected);
     }
 
     @Test
