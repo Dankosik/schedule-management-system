@@ -116,7 +116,12 @@ class GroupDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfUniquenessConstraintViolated() {
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
         assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group("AB-91", 1000L, 1000L)));
+    }
+
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
+        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group(1001L, "AB-91", 1000L, 1000L)));
     }
 }

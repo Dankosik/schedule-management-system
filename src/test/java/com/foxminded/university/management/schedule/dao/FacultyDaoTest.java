@@ -108,7 +108,12 @@ class FacultyDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfUniquenessConstraintViolated() {
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
         assertThrows(DuplicateKeyException.class, ()-> facultyDao.save( new Faculty( "FAIT", 1000L)));
+    }
+
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnCUpdate() {
+        assertThrows(DuplicateKeyException.class, ()-> facultyDao.save( new Faculty( 1000L, "FKFN", 1000L)));
     }
 }

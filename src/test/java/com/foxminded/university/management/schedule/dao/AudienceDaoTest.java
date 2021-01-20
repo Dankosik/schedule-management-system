@@ -114,7 +114,11 @@ class AudienceDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfUniquenessConstraintViolated() {
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
         assertThrows(DuplicateKeyException.class, ()-> audienceDao.save( new Audience( 301, 12, 1000L)));
+    }
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
+        assertThrows(DuplicateKeyException.class, ()-> audienceDao.save( new Audience( 1000L,303, 12, 1000L)));
     }
 }

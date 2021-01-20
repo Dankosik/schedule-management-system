@@ -129,7 +129,12 @@ class SubjectDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void shouldThrowExceptionIfUniquenessConstraintViolated() {
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
         assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject("Math", 1000L)));
+    }
+
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
+        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject(1001L,"Math", 1000L)));
     }
 }
