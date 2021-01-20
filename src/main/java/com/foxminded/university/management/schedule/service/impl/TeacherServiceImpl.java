@@ -2,9 +2,9 @@ package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.TeacherService;
-import com.foxminded.university.management.schedule.service.exceptions.TeacherServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
         if (isFacultyPresent || teacher.getFacultyId() == null) {
             return teacherDao.save(teacher);
         }
-        throw new TeacherServiceException("Teacher's faculty with id: " + teacher.getFacultyId() + " is not exists");
+        throw new ServiceException("Teacher's faculty with id: " + teacher.getFacultyId() + " is not exists");
     }
 
     @Override
@@ -36,7 +36,7 @@ public class TeacherServiceImpl implements TeacherService {
         if (teacherDao.getById(id).isPresent()) {
             return teacherDao.getById(id).get();
         }
-        throw new TeacherServiceException("Teacher with id: " + id + " is not found");
+        throw new ServiceException("Teacher with id: " + id + " is not found");
     }
 
     @Override

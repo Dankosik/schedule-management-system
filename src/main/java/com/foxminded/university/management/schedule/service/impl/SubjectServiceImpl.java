@@ -1,9 +1,9 @@
 package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.SubjectDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.SubjectService;
-import com.foxminded.university.management.schedule.service.exceptions.SubjectServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ public class SubjectServiceImpl implements SubjectService {
                 .findAny();
         boolean isSubjectPresent = subjectDao.getById(subject.getId()).isPresent();
         if (groupWithSameName.isPresent() && !isSubjectPresent)
-            throw new SubjectServiceException("Subject with name: " + subject.getName() + "is already exist");
+            throw new ServiceException("Subject with name: " + subject.getName() + "is already exist");
         return subjectDao.save(subject);
     }
 
@@ -37,7 +37,7 @@ public class SubjectServiceImpl implements SubjectService {
         if (subjectDao.getById(id).isPresent()) {
             return subjectDao.getById(id).get();
         }
-        throw new SubjectServiceException("Subject with id: " + id + " is not found");
+        throw new ServiceException("Subject with id: " + id + " is not found");
     }
 
     @Override

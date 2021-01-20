@@ -2,9 +2,9 @@ package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.StudentService;
-import com.foxminded.university.management.schedule.service.exceptions.StudentServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ public class StudentServiceImpl implements StudentService {
         if (isGroupPresent || student.getGroupId() == null) {
             return studentDao.save(student);
         }
-        throw new StudentServiceException("Student's group with id: " + student.getGroupId() + "is not exist");
+        throw new ServiceException("Student's group with id: " + student.getGroupId() + "is not exist");
     }
 
     @Override
@@ -36,7 +36,7 @@ public class StudentServiceImpl implements StudentService {
         if (studentDao.getById(id).isPresent()) {
             return studentDao.getById(id).get();
         }
-        throw new StudentServiceException("Student with id: " + id + " is not found");
+        throw new ServiceException("Student with id: " + id + " is not found");
     }
 
     @Override

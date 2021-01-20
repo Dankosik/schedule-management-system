@@ -2,10 +2,10 @@ package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.SubjectDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.LessonService;
-import com.foxminded.university.management.schedule.service.exceptions.LessonServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,7 @@ public class LessonServiceImpl implements LessonService {
     public Lesson saveLesson(Lesson lesson) {
         boolean isSubjectPresent = subjectDao.getById(lesson.getSubjectId()).isPresent();
         if (!isSubjectPresent)
-            throw new LessonServiceException("Lesson subject with id: " + lesson.getSubjectId() + " is not exist");
+            throw new ServiceException("Lesson subject with id: " + lesson.getSubjectId() + " is not exist");
         return lessonDao.save(lesson);
     }
 
@@ -36,7 +36,7 @@ public class LessonServiceImpl implements LessonService {
         if (lessonDao.getById(id).isPresent()) {
             return lessonDao.getById(id).get();
         }
-        throw new LessonServiceException("Lesson with id: " + id + " is not found");
+        throw new ServiceException("Lesson with id: " + id + " is not found");
     }
 
     @Override
@@ -60,14 +60,14 @@ public class LessonServiceImpl implements LessonService {
     public Lesson addSubjectToLesson(Subject subject, Lesson lesson) {
         boolean isSubjectPresent = subjectDao.getById(subject.getId()).isPresent();
         if (!isSubjectPresent)
-            throw new LessonServiceException("Impossible to add subject to lesson. Subject with id: " + subject.getId() + " is not exist");
+            throw new ServiceException("Impossible to add subject to lesson. Subject with id: " + subject.getId() + " is not exist");
 
         boolean isLessonPresent = lessonDao.getById(lesson.getId()).isPresent();
         if (!isLessonPresent)
-            throw new LessonServiceException("Impossible to add subject to lesson. Lesson with id: " + lesson.getId() + " is not exist");
+            throw new ServiceException("Impossible to add subject to lesson. Lesson with id: " + lesson.getId() + " is not exist");
 
         if (lesson.getSubjectId() != null && lesson.getSubjectId().equals(subject.getId()))
-            throw new LessonServiceException("Subject with id: " + subject.getId() + " is already added to lesson with id: " + lesson.getId());
+            throw new ServiceException("Subject with id: " + subject.getId() + " is already added to lesson with id: " + lesson.getId());
 
         lesson.setSubjectId(subject.getId());
         return saveLesson(lesson);
@@ -77,14 +77,14 @@ public class LessonServiceImpl implements LessonService {
     public Lesson removeSubjectFromLesson(Subject subject, Lesson lesson) {
         boolean isSubjectPresent = subjectDao.getById(subject.getId()).isPresent();
         if (!isSubjectPresent)
-            throw new LessonServiceException("Impossible to remove subject from lesson. Subject with id: " + subject.getId() + " is not exist");
+            throw new ServiceException("Impossible to remove subject from lesson. Subject with id: " + subject.getId() + " is not exist");
 
         boolean isLessonPresent = lessonDao.getById(lesson.getId()).isPresent();
         if (!isLessonPresent)
-            throw new LessonServiceException("Impossible to remove subject from lesson. Lesson with id: " + lesson.getId() + " is not exist");
+            throw new ServiceException("Impossible to remove subject from lesson. Lesson with id: " + lesson.getId() + " is not exist");
 
         if (lesson.getSubjectId() == null)
-            throw new LessonServiceException("Subject with id: " + subject.getId() + " is already removed from lesson with id: " + lesson.getId());
+            throw new ServiceException("Subject with id: " + subject.getId() + " is already removed from lesson with id: " + lesson.getId());
 
         lesson.setSubjectId(null);
         return saveLesson(lesson);

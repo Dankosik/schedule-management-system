@@ -2,10 +2,10 @@ package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.AudienceDao;
 import com.foxminded.university.management.schedule.dao.LectureDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.service.AudienceService;
-import com.foxminded.university.management.schedule.service.exceptions.AudienceServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +33,7 @@ public class AudienceServiceImpl implements AudienceService {
                 .filter(a -> a.getNumber() == audience.getNumber())
                 .findAny();
         if (audienceWithSameNumber.isPresent())
-            throw new AudienceServiceException("Audience with number: " + audience.getNumber() + " is already exists");
+            throw new ServiceException("Audience with number: " + audience.getNumber() + " is already exists");
         return audienceDao.save(audience);
     }
 
@@ -42,7 +42,7 @@ public class AudienceServiceImpl implements AudienceService {
         if (audienceDao.getById(id).isPresent()) {
             return audienceDao.getById(id).get();
         }
-        throw new AudienceServiceException("Audience with id: " + id + " is not found");
+        throw new ServiceException("Audience with id: " + id + " is not found");
     }
 
     @Override
@@ -66,14 +66,14 @@ public class AudienceServiceImpl implements AudienceService {
     public Lecture addLectureToAudience(Lecture lecture, Audience audience) {
         boolean isAudiencePresent = audienceDao.getById(audience.getId()).isPresent();
         if (!isAudiencePresent)
-            throw new AudienceServiceException("Impossible to add lecture to audience. Audience with id: " + audience.getId() + " is not exists");
+            throw new ServiceException("Impossible to add lecture to audience. Audience with id: " + audience.getId() + " is not exists");
 
         boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
         if (!isLecturePresent)
-            throw new AudienceServiceException("Impossible to add lecture to audience. Lecture with id: " + lecture.getId() + " is not exists");
+            throw new ServiceException("Impossible to add lecture to audience. Lecture with id: " + lecture.getId() + " is not exists");
 
         if (lecture.getAudienceId() != null && lecture.getAudienceId().equals(audience.getId()))
-            throw new AudienceServiceException("Lecture with id: " + lecture.getId() + " is already added to audience with id: " + audience.getId());
+            throw new ServiceException("Lecture with id: " + lecture.getId() + " is already added to audience with id: " + audience.getId());
 
         lecture.setAudienceId(audience.getId());
         return lectureService.saveLecture(lecture);
@@ -83,14 +83,14 @@ public class AudienceServiceImpl implements AudienceService {
     public Lecture removeLectureFromAudience(Lecture lecture, Audience audience) {
         boolean isAudiencePresent = audienceDao.getById(audience.getId()).isPresent();
         if (!isAudiencePresent)
-            throw new AudienceServiceException("Impossible to remove lecture from audience. Audience with id: " + audience.getId() + " is not exists");
+            throw new ServiceException("Impossible to remove lecture from audience. Audience with id: " + audience.getId() + " is not exists");
 
         boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
         if (!isLecturePresent)
-            throw new AudienceServiceException("Impossible to remove lecture from audience. Lecture with id: " + lecture.getId() + " is not exists");
+            throw new ServiceException("Impossible to remove lecture from audience. Lecture with id: " + lecture.getId() + " is not exists");
 
         if (lecture.getAudienceId() == null)
-            throw new AudienceServiceException("Lecture with id: " + lecture.getId() + " is already removed from audience with id: " + audience.getId());
+            throw new ServiceException("Lecture with id: " + lecture.getId() + " is already removed from audience with id: " + audience.getId());
 
         lecture.setAudienceId(null);
         return lectureService.saveLecture(lecture);
