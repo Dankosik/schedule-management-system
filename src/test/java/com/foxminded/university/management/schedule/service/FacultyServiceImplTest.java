@@ -3,10 +3,10 @@ package com.foxminded.university.management.schedule.service;
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.service.exceptions.FacultyServiceException;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
@@ -168,7 +168,7 @@ class FacultyServiceImplTest {
     void shouldThrowExceptionIfFacultyWithInputNameIsAlreadyExist() {
         when(facultyDao.getAll()).thenReturn(List.of(faculty));
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.saveFaculty(faculty));
+        assertThrows(ServiceException.class, () -> facultyService.saveFaculty(faculty));
 
         verify(facultyDao, times(1)).getAll();
         verify(facultyDao, never()).save(faculty);
@@ -178,7 +178,7 @@ class FacultyServiceImplTest {
     void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.getFacultyById(1L));
+        assertThrows(ServiceException.class, () -> facultyService.getFacultyById(1L));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(facultyDao, never()).save(faculty);
@@ -189,7 +189,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.addGroupToFaculty(group, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.addGroupToFaculty(group, faculty));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(groupDao, times(1)).getById(1L);
@@ -201,7 +201,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(groupDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.addGroupToFaculty(group, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.addGroupToFaculty(group, faculty));
 
         verify(facultyDao, never()).getById(1L);
         verify(groupDao, times(1)).getById(1L);
@@ -213,7 +213,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.removeGroupFromFaculty(group, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.removeGroupFromFaculty(group, faculty));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(groupDao, times(1)).getById(1L);
@@ -225,7 +225,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(groupDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.removeGroupFromFaculty(group, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.removeGroupFromFaculty(group, faculty));
 
         verify(facultyDao, never()).getById(1L);
         verify(groupDao, times(1)).getById(1L);
@@ -237,7 +237,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.addTeacherToFaculty(teacher, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.addTeacherToFaculty(teacher, faculty));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(teacherDao, times(1)).getById(1L);
@@ -249,7 +249,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.addTeacherToFaculty(teacher, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.addTeacherToFaculty(teacher, faculty));
 
         verify(facultyDao, never()).getById(1L);
         verify(teacherDao, times(1)).getById(1L);
@@ -261,7 +261,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.removeTeacherFromFaculty(teacher, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.removeTeacherFromFaculty(teacher, faculty));
         verify(facultyDao, times(1)).getById(1L);
         verify(teacherDao, times(1)).getById(1L);
         verify(teacherService, never()).saveTeacher(teacher);
@@ -272,7 +272,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.removeTeacherFromFaculty(teacher, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.removeTeacherFromFaculty(teacher, faculty));
 
         verify(facultyDao, never()).getById(1L);
         verify(teacherDao, times(1)).getById(1L);
@@ -286,7 +286,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.addGroupToFaculty(expected, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.addGroupToFaculty(expected, faculty));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(groupDao, times(1)).getById(1L);
@@ -300,7 +300,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.removeGroupFromFaculty(expected, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.removeGroupFromFaculty(expected, faculty));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(groupDao, times(1)).getById(1L);
@@ -314,7 +314,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(FacultyServiceException.class,
+        assertThrows(ServiceException.class,
                 () -> facultyService.addTeacherToFaculty(expected, faculty));
 
         verify(facultyDao, times(1)).getById(1L);
@@ -329,7 +329,7 @@ class FacultyServiceImplTest {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(FacultyServiceException.class, () -> facultyService.removeTeacherFromFaculty(expected, faculty));
+        assertThrows(ServiceException.class, () -> facultyService.removeTeacherFromFaculty(expected, faculty));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(teacherDao, times(1)).getById(1L);

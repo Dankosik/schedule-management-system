@@ -3,10 +3,10 @@ package com.foxminded.university.management.schedule.service;
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
-import com.foxminded.university.management.schedule.service.exceptions.GroupServiceException;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -142,7 +142,7 @@ class GroupServiceImplTest {
     void shouldThrowExceptionIfGroupWithInputNameIsAlreadyExist() {
         when(groupDao.getAll()).thenReturn(List.of(group));
 
-        assertThrows(GroupServiceException.class, () -> groupService.saveGroup(group));
+        assertThrows(ServiceException.class, () -> groupService.saveGroup(group));
 
         verify(groupDao, times(1)).getAll();
         verify(groupDao, never()).save(group);
@@ -152,7 +152,7 @@ class GroupServiceImplTest {
     void shouldThrowExceptionIfGroupWithInputIdNotFound() {
         when(groupDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(GroupServiceException.class, () -> groupService.getGroupById(1L));
+        assertThrows(ServiceException.class, () -> groupService.getGroupById(1L));
 
         verify(groupDao, times(1)).getById(1L);
         verify(groupDao, never()).save(group);
@@ -163,7 +163,7 @@ class GroupServiceImplTest {
         when(groupDao.getById(1L)).thenReturn(Optional.empty());
         when(studentDao.getById(1L)).thenReturn(Optional.of(student));
 
-        assertThrows(GroupServiceException.class, () -> groupService.addStudentToGroup(student, group));
+        assertThrows(ServiceException.class, () -> groupService.addStudentToGroup(student, group));
 
         verify(groupDao, times(1)).getById(1L);
         verify(studentDao, times(1)).getById(1L);
@@ -175,7 +175,7 @@ class GroupServiceImplTest {
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
         when(studentDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(GroupServiceException.class, () -> groupService.addStudentToGroup(student, group));
+        assertThrows(ServiceException.class, () -> groupService.addStudentToGroup(student, group));
 
         verify(groupDao, never()).getById(1L);
         verify(studentDao, times(1)).getById(1L);
@@ -187,7 +187,7 @@ class GroupServiceImplTest {
         when(groupDao.getById(1L)).thenReturn(Optional.empty());
         when(studentDao.getById(1L)).thenReturn(Optional.of(student));
 
-        assertThrows(GroupServiceException.class, () -> groupService.removeStudentFromGroup(student, group));
+        assertThrows(ServiceException.class, () -> groupService.removeStudentFromGroup(student, group));
 
         verify(groupDao, times(1)).getById(1L);
         verify(studentDao, times(1)).getById(1L);
@@ -199,7 +199,7 @@ class GroupServiceImplTest {
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
         when(studentDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(GroupServiceException.class, () -> groupService.removeStudentFromGroup(student, group));
+        assertThrows(ServiceException.class, () -> groupService.removeStudentFromGroup(student, group));
 
         verify(groupDao, never()).getById(1L);
         verify(studentDao, times(1)).getById(1L);
@@ -213,7 +213,7 @@ class GroupServiceImplTest {
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
         when(studentDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(GroupServiceException.class, () -> groupService.addStudentToGroup(expected, group));
+        assertThrows(ServiceException.class, () -> groupService.addStudentToGroup(expected, group));
 
         verify(groupDao, times(1)).getById(1L);
         verify(studentDao, times(1)).getById(1L);
@@ -227,7 +227,7 @@ class GroupServiceImplTest {
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
         when(studentDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(GroupServiceException.class, () -> groupService.removeStudentFromGroup(expected, group));
+        assertThrows(ServiceException.class, () -> groupService.removeStudentFromGroup(expected, group));
 
         verify(groupDao, times(1)).getById(1L);
         verify(studentDao, times(1)).getById(1L);
@@ -241,10 +241,9 @@ class GroupServiceImplTest {
         when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(GroupServiceException.class, () -> groupService.saveGroup(expected));
+        assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
 
         verify(facultyDao, times(1)).getById(1L);
         verify(groupDao, never()).save(expected);
     }
-
 }

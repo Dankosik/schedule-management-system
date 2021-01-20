@@ -1,8 +1,8 @@
 package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.dao.SubjectDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.exceptions.SubjectServiceException;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,7 +95,7 @@ class SubjectServiceImplTest {
     void shouldThrowExceptionIfGroupWithInputNameIsAlreadyExist() {
         when(subjectDao.getAll()).thenReturn(List.of(subject));
 
-        assertThrows(SubjectServiceException.class, () -> subjectService.saveSubject(subject));
+        assertThrows(ServiceException.class, () -> subjectService.saveSubject(subject));
 
         verify(subjectDao, times(1)).getAll();
         verify(subjectDao, never()).save(subject);
@@ -105,7 +105,7 @@ class SubjectServiceImplTest {
     void shouldThrowExceptionIfSubjectWithInputIdNotFound() {
         when(subjectDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(SubjectServiceException.class, () -> subjectService.getSubjectById(1L));
+        assertThrows(ServiceException.class, () -> subjectService.getSubjectById(1L));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(subjectDao, never()).save(subject);

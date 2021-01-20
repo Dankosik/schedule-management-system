@@ -2,9 +2,9 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.SubjectDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.exceptions.LessonServiceException;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -141,7 +141,7 @@ class LessonServiceImplTest {
     void shouldThrowExceptionIfLessonWithInputIdNotFound() {
         when(lessonDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LessonServiceException.class, () -> lessonService.getLessonById(1L));
+        assertThrows(ServiceException.class, () -> lessonService.getLessonById(1L));
 
         verify(lessonDao, times(1)).getById(1L);
         verify(lessonDao, never()).save(lesson);
@@ -152,7 +152,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(subjectDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LessonServiceException.class, () -> lessonService.addSubjectToLesson(subject, lesson));
+        assertThrows(ServiceException.class, () -> lessonService.addSubjectToLesson(subject, lesson));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, never()).getById(1L);
@@ -164,7 +164,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.empty());
         when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
 
-        assertThrows(LessonServiceException.class, () -> lessonService.addSubjectToLesson(subject, lesson));
+        assertThrows(ServiceException.class, () -> lessonService.addSubjectToLesson(subject, lesson));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, times(1)).getById(1L);
@@ -176,7 +176,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(subjectDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(LessonServiceException.class, () -> lessonService.removeSubjectFromLesson(subject, lesson));
+        assertThrows(ServiceException.class, () -> lessonService.removeSubjectFromLesson(subject, lesson));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, never()).getById(1L);
@@ -188,7 +188,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.empty());
         when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
 
-        assertThrows(LessonServiceException.class, () -> lessonService.removeSubjectFromLesson(subject, lesson));
+        assertThrows(ServiceException.class, () -> lessonService.removeSubjectFromLesson(subject, lesson));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, times(1)).getById(1L);
@@ -202,7 +202,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(expected));
         when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
 
-        assertThrows(LessonServiceException.class, () -> lessonService.addSubjectToLesson(subject, expected));
+        assertThrows(ServiceException.class, () -> lessonService.addSubjectToLesson(subject, expected));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, times(1)).getById(1L);
@@ -216,7 +216,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L)).thenReturn(Optional.of(expected));
         when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
 
-        assertThrows(LessonServiceException.class, () -> lessonService.removeSubjectFromLesson(subject, expected));
+        assertThrows(ServiceException.class, () -> lessonService.removeSubjectFromLesson(subject, expected));
 
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, times(1)).getById(1L);

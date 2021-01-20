@@ -2,9 +2,9 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.dao.AudienceDao;
 import com.foxminded.university.management.schedule.dao.LectureDao;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
-import com.foxminded.university.management.schedule.service.exceptions.AudienceServiceException;
 import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.LectureServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -141,7 +141,7 @@ class AudienceServiceImplTest {
     void shouldThrowExceptionIfAudienceWithInputNumberIsAlreadyExist() {
         when(audienceDao.getAll()).thenReturn(List.of(audience));
 
-        assertThrows(AudienceServiceException.class, () -> audienceService.saveAudience(audience));
+        assertThrows(ServiceException.class, () -> audienceService.saveAudience(audience));
 
         verify(audienceDao, times(1)).getAll();
         verify(audienceDao, never()).save(audience);
@@ -151,7 +151,7 @@ class AudienceServiceImplTest {
     void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(AudienceServiceException.class, () -> audienceService.getAudienceById(1L));
+        assertThrows(ServiceException.class, () -> audienceService.getAudienceById(1L));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(audienceDao, never()).save(audience);
@@ -162,7 +162,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
 
-        assertThrows(AudienceServiceException.class, () -> audienceService.addLectureToAudience(lecture, audience));
+        assertThrows(ServiceException.class, () -> audienceService.addLectureToAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, never()).getById(1L);
@@ -174,7 +174,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(AudienceServiceException.class, () -> audienceService.addLectureToAudience(lecture, audience));
+        assertThrows(ServiceException.class, () -> audienceService.addLectureToAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -186,7 +186,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
 
-        assertThrows(AudienceServiceException.class, () -> audienceService.removeLectureFromAudience(lecture, audience));
+        assertThrows(ServiceException.class, () -> audienceService.removeLectureFromAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, never()).getById(1L);
@@ -198,7 +198,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(AudienceServiceException.class, () -> audienceService.removeLectureFromAudience(lecture, audience));
+        assertThrows(ServiceException.class, () -> audienceService.removeLectureFromAudience(lecture, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -213,7 +213,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(AudienceServiceException.class, () -> audienceService.addLectureToAudience(expected, audience));
+        assertThrows(ServiceException.class, () -> audienceService.addLectureToAudience(expected, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
@@ -228,7 +228,7 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
 
-        assertThrows(AudienceServiceException.class, () -> audienceService.removeLectureFromAudience(expected, audience));
+        assertThrows(ServiceException.class, () -> audienceService.removeLectureFromAudience(expected, audience));
 
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, times(1)).getById(1L);
