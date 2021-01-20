@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.FacultyRowMapper;
 import com.foxminded.university.management.schedule.models.Faculty;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -23,15 +24,26 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
         Map<String, Object> params = new HashMap<>();
         params.put("name", faculty.getName());
         params.put("university_id", faculty.getUniversityId());
-        Number newId = simpleJdbcInsert.executeAndReturnKey(params);
+        Number newId;
+        try {
+            newId = simpleJdbcInsert.executeAndReturnKey(params);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to create faculty with id: " + faculty.getId() +
+                    ". Faculty with name: " + faculty.getName() + " is already exist");
+        }
         return new Faculty(newId.longValue(), faculty.getName(), faculty.getUniversityId());
     }
 
     @Override
     protected Faculty update(Faculty faculty) {
-        this.jdbcTemplate.update("UPDATE faculties SET name = ?, university_id = ? WHERE id = ?",
-                faculty.getName(), faculty.getUniversityId(), faculty.getId());
-        return new Faculty(faculty.getId(), faculty.getName(), faculty.getUniversityId());
+        try {
+            this.jdbcTemplate.update("UPDATE faculties SET name = ?, university_id = ? WHERE id = ?",
+                    faculty.getName(), faculty.getUniversityId(), faculty.getId());
+            return new Faculty(faculty.getId(), faculty.getName(), faculty.getUniversityId());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to update faculty with id: " + faculty.getId() +
+                    ". Faculty with name: " + faculty.getName() + " is already exist");
+        }
     }
 
     @Override

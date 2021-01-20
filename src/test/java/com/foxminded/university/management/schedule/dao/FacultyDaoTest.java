@@ -1,9 +1,11 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Faculty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 import java.util.Map;
@@ -103,5 +105,15 @@ class FacultyDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnFalseIfFacultyNotExist() {
         assertFalse(() -> facultyDao.deleteById(21L));
+    }
+
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
+        assertThrows(DuplicateKeyException.class, ()-> facultyDao.save( new Faculty( "FAIT", 1000L)));
+    }
+
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnCUpdate() {
+        assertThrows(DuplicateKeyException.class, ()-> facultyDao.save( new Faculty( 1000L, "FKFN", 1000L)));
     }
 }

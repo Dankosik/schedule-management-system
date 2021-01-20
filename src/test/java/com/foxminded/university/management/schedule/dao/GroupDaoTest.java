@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.models.Group;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 import java.util.Map;
@@ -112,5 +113,15 @@ class GroupDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnFalseIfGroupNotExist() {
         assertFalse(() -> groupDao.deleteById(21L));
+    }
+
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
+        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group("AB-91", 1000L, 1000L)));
+    }
+
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
+        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group(1001L, "AB-91", 1000L, 1000L)));
     }
 }

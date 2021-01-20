@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.dao.row_mappers.SubjectRowMapper;
 import com.foxminded.university.management.schedule.models.Subject;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -23,15 +24,26 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
         Map<String, Object> params = new HashMap<>();
         params.put("name", subject.getName());
         params.put("university_id", subject.getUniversityId());
-        Number newId = simpleJdbcInsert.executeAndReturnKey(params);
+        Number newId;
+        try {
+            newId = simpleJdbcInsert.executeAndReturnKey(params);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to create subject with id: " + subject.getId() +
+                    ". Subject with name: " + subject.getName() + " is already exist");
+        }
         return new Subject(newId.longValue(), subject.getName(), subject.getUniversityId());
     }
 
     @Override
     protected Subject update(Subject subject) {
-        this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
-                subject.getName(), subject.getUniversityId(), subject.getId());
-        return new Subject(subject.getId(), subject.getName(), subject.getUniversityId());
+        try {
+            this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
+                    subject.getName(), subject.getUniversityId(), subject.getId());
+            return new Subject(subject.getId(), subject.getName(), subject.getUniversityId());
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Impossible to update subject with id: " + subject.getId() +
+                    ". Subject with name: " + subject.getName() + " is already exist");
+        }
     }
 
     @Override
