@@ -4,12 +4,12 @@ import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.SubjectService;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,14 +22,11 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject saveSubject(Subject subject) {
-        Optional<Subject> groupWithSameName = subjectDao.getAll()
-                .stream()
-                .filter(g -> g.getName().equals(subject.getName()))
-                .findAny();
-        boolean isSubjectPresent = subjectDao.getById(subject.getId()).isPresent();
-        if (groupWithSameName.isPresent() && !isSubjectPresent)
+        try {
+            return subjectDao.save(subject);
+        } catch (DuplicateKeyException e) {
             throw new ServiceException("Subject with name: " + subject.getName() + "is already exist");
-        return subjectDao.save(subject);
+        }
     }
 
     @Override

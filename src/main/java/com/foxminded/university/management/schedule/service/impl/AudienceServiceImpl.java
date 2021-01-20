@@ -6,12 +6,12 @@ import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.service.AudienceService;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,13 +28,11 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public Audience saveAudience(Audience audience) {
-        Optional<Audience> audienceWithSameNumber = audienceDao.getAll()
-                .stream()
-                .filter(a -> a.getNumber() == audience.getNumber())
-                .findAny();
-        if (audienceWithSameNumber.isPresent())
+        try {
+            return audienceDao.save(audience);
+        } catch (DuplicateKeyException e) {
             throw new ServiceException("Audience with number: " + audience.getNumber() + " is already exists");
-        return audienceDao.save(audience);
+        }
     }
 
     @Override

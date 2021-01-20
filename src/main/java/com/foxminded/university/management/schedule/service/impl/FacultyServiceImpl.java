@@ -8,12 +8,12 @@ import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.FacultyService;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -34,14 +34,11 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public Faculty saveFaculty(Faculty faculty) {
-        Optional<Faculty> facultyWithSameName = facultyDao.getAll()
-                .stream()
-                .filter(f -> f.getName().equals(faculty.getName()))
-                .findAny();
-        boolean isFacultyPresent = facultyDao.getById(faculty.getId()).isPresent();
-        if (facultyWithSameName.isPresent() && !isFacultyPresent)
+        try {
+            return facultyDao.save(faculty);
+        } catch (DuplicateKeyException e) {
             throw new ServiceException("Faculty with name: " + faculty.getName() + " is already exist");
-        return facultyDao.save(faculty);
+        }
     }
 
     @Override

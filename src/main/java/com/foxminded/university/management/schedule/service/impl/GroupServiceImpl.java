@@ -7,12 +7,12 @@ import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.GroupService;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,20 +31,14 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group saveGroup(Group group) {
-        Optional<Group> groupWithSameName = groupDao.getAll()
-                .stream()
-                .filter(g -> g.getName().equals(group.getName()))
-                .findAny();
-
-        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
-        if (groupWithSameName.isPresent() && !isGroupPresent)
-            throw new ServiceException("Group with name: " + group.getName() + " is already exist");
-
         boolean isFacultyPresent = facultyDao.getById(group.getFacultyId()).isPresent();
         if (!isFacultyPresent)
             throw new ServiceException("Group's faculty with id: " + group.getFacultyId() + " is not exist");
-
-        return groupDao.save(group);
+        try {
+            return groupDao.save(group);
+        } catch (DuplicateKeyException e) {
+            throw new ServiceException("Group with name: " + group.getName() + " is already exist");
+        }
     }
 
     @Override
