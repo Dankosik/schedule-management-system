@@ -1,4 +1,4 @@
-package com.foxminded.university.management.schedule.service.exceptions;
+package com.foxminded.university.management.schedule.exceptions;
 
 public class ServiceException extends RuntimeException {
     public ServiceException(Throwable cause) {
