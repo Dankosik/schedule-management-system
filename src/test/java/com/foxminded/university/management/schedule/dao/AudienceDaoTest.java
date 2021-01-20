@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.models.Audience;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 import java.util.Map;
@@ -110,5 +111,10 @@ class AudienceDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnFalseIfAudienceNotExist() {
         assertFalse(() -> audienceDao.deleteById(21L));
+    }
+
+    @Test
+    void shouldThrowExceptionIfUniquenessConstraintViolated() {
+        assertThrows(DuplicateKeyException.class, ()-> audienceDao.save( new Audience( 301, 12, 1000L)));
     }
 }
