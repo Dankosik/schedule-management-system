@@ -36,7 +36,7 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
     }
 
     @Override
-    protected Group update(Group group) throws DuplicateKeyException {
+    protected Group update(Group group) {
         this.jdbcTemplate.update("UPDATE groups SET name = ?,  faculty_id = ?, university_id = ? WHERE id = ?",
                 group.getName(), group.getFacultyId(), group.getUniversityId(), group.getId());
         return new Group(group.getId(), group.getName(), group.getFacultyId(), group.getUniversityId());

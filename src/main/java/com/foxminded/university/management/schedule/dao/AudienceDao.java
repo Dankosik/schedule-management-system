@@ -37,7 +37,7 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
     }
 
     @Override
-    protected Audience update(Audience audience) throws DuplicateKeyException {
+    protected Audience update(Audience audience) {
         this.jdbcTemplate.update("UPDATE audiences SET number = ?, capacity = ?,  university_id = ? WHERE id = ?",
                 audience.getNumber(), audience.getCapacity(), audience.getUniversityId(), audience.getId());
         return new Audience(audience.getId(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());

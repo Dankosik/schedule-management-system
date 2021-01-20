@@ -35,7 +35,7 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
     }
 
     @Override
-    protected Subject update(Subject subject) throws DuplicateKeyException {
+    protected Subject update(Subject subject) {
         this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
                 subject.getName(), subject.getUniversityId(), subject.getId());
         return new Subject(subject.getId(), subject.getName(), subject.getUniversityId());

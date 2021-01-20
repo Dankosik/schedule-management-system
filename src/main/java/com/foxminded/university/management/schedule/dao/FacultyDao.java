@@ -35,7 +35,7 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
     }
 
     @Override
-    protected Faculty update(Faculty faculty) throws DuplicateKeyException {
+    protected Faculty update(Faculty faculty) {
         this.jdbcTemplate.update("UPDATE faculties SET name = ?, university_id = ? WHERE id = ?",
                 faculty.getName(), faculty.getUniversityId(), faculty.getId());
         return new Faculty(faculty.getId(), faculty.getName(), faculty.getUniversityId());
