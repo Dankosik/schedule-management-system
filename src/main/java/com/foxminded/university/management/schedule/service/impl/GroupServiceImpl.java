@@ -7,6 +7,8 @@ import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.GroupService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,7 @@ import java.util.List;
 @Service
 @Transactional
 public class GroupServiceImpl implements GroupService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupServiceImpl.class);
     private final GroupDao groupDao;
     private final StudentDao studentDao;
     private final FacultyDao facultyDao;
@@ -32,6 +35,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group saveGroup(Group group) {
         boolean isFacultyPresent = facultyDao.getById(group.getFacultyId()).isPresent();
+        LOGGER.debug("Audience is present: {}", isFacultyPresent);
         if (!isFacultyPresent)
             throw new ServiceException("Group's faculty with id: " + group.getFacultyId() + " is not exist");
         try {
@@ -43,7 +47,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group getGroupById(Long id) {
-        if (groupDao.getById(id).isPresent()) {
+        boolean isGroupPresent = groupDao.getById(id).isPresent();
+        LOGGER.debug("Group is present: {}", isGroupPresent);
+        if (isGroupPresent) {
             return groupDao.getById(id).get();
         }
         throw new ServiceException("Group with id: " + id + " is not found");
@@ -68,34 +74,48 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Student addStudentToGroup(Student student, Group group) {
+        LOGGER.debug("Adding student {} to group {}", student, group);
         boolean isStudentPresent = studentDao.getById(student.getId()).isPresent();
+        LOGGER.debug("Student is present: {}", isStudentPresent);
         if (!isStudentPresent)
             throw new ServiceException("Impossible to add student to group. Student with id: " + student.getId() + " is not exist");
 
         boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
+        LOGGER.debug("Group is present: {}", isGroupPresent);
         if (!isGroupPresent)
             throw new ServiceException("Impossible to add student to group. Group with id: " + group.getId() + " is not exist");
 
-        if (student.getGroupId() != null && student.getGroupId().equals(group.getId()))
+        boolean isStudentAlreadyAddedToGroup = student.getGroupId() != null && student.getGroupId().equals(group.getId());
+        LOGGER.debug("Student is already added to group: {}", isStudentAlreadyAddedToGroup);
+        if (isStudentAlreadyAddedToGroup)
             throw new ServiceException("Student with id: " + student.getId() + " is already added to group with id: " + group.getId());
 
         student.setGroupId(group.getId());
-        return studentService.saveStudent(student);
+        Student result = studentService.saveStudent(student);
+        LOGGER.info("Successful adding lecture to audience");
+        return result;
     }
 
     @Override
     public Student removeStudentFromGroup(Student student, Group group) {
+        LOGGER.debug("Removing student {} from group {}", student, group);
         boolean isStudentPresent = studentDao.getById(student.getId()).isPresent();
+        LOGGER.debug("Student is present: {}", isStudentPresent);
         if (!isStudentPresent)
             throw new ServiceException("Impossible to remove student from group. Student with id: " + student.getId() + " is not exist");
         boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
+        LOGGER.debug("Group is present: {}", isGroupPresent);
         if (!isGroupPresent)
             throw new ServiceException("Impossible to remove student from group. Group with id: " + group.getId() + " is not exist");
 
-        if (student.getGroupId() == null)
+        boolean isStudentAlreadyRemovedFromGroup = student.getGroupId() == null;
+        LOGGER.debug("Student is already removed from group: {}", isStudentAlreadyRemovedFromGroup);
+        if (isStudentAlreadyRemovedFromGroup)
             throw new ServiceException("Student with id: " + student.getId() + "is already removed from group with id: " + group.getId());
 
         student.setGroupId(null);
-        return studentService.saveStudent(student);
+        Student result = studentService.saveStudent(student);
+        LOGGER.info("Successful removing student {} from group {}", student, group);
+        return result;
     }
 }
