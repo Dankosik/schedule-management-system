@@ -14,7 +14,7 @@ import java.util.*;
 
 @Repository
 public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson, Long> {
-    private final Logger LOGGER = LoggerFactory.getLogger(LessonDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LessonDao.class);
     private final JdbcTemplate jdbcTemplate;
 
     public LessonDao(JdbcTemplate jdbcTemplate) {

@@ -12,7 +12,7 @@ import java.util.*;
 
 @Repository
 public class StudentDao extends AbstractDao<Student> implements Dao<Student, Long> {
-    private final Logger LOGGER = LoggerFactory.getLogger(StudentDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentDao.class);
     private final JdbcTemplate jdbcTemplate;
 
     public StudentDao(JdbcTemplate jdbcTemplate) {

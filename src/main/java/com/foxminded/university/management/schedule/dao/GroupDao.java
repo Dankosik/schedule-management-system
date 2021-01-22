@@ -13,7 +13,7 @@ import java.util.*;
 
 @Repository
 public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
-    private final Logger LOGGER = LoggerFactory.getLogger(GroupDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupDao.class);
     private final JdbcTemplate jdbcTemplate;
 
     public GroupDao(JdbcTemplate jdbcTemplate) {

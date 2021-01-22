@@ -12,7 +12,7 @@ import java.util.*;
 
 @Repository
 public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Long> {
-    private final Logger LOGGER = LoggerFactory.getLogger(AudienceDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AudienceDao.class);
     private final JdbcTemplate jdbcTemplate;
 
     public LectureDao(JdbcTemplate jdbcTemplate) {
