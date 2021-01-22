@@ -60,7 +60,7 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
         LOGGER.debug("Getting subject by id: {}", id);
         Optional<Subject> subject = this.jdbcTemplate.query("SELECT * FROM subjects WHERE id = ?", new SubjectRowMapper(), new Object[]{id})
                 .stream().findAny();
-        LOGGER.info("Successful received subject by id: {}. Received subject: {}", id, subject);
+        LOGGER.info("Received subject by id: {}. Received subject: {}", id, subject);
         return subject;
     }
 

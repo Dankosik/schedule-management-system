@@ -53,7 +53,7 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson, Long> 
         LOGGER.debug("Getting lesson by id: {}", id);
         Optional<Lesson> lesson = this.jdbcTemplate.query("SELECT * FROM lessons WHERE id = ?", new LessonRowMapper(), new Object[]{id})
                 .stream().findAny();
-        LOGGER.info("Successful received lesson by id: {}. Received lesson: {}", id, lesson);
+        LOGGER.info("Received lesson by id: {}. Received lesson: {}", id, lesson);
         return lesson;
     }
 

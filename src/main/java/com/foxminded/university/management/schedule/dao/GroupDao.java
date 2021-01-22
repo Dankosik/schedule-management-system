@@ -61,7 +61,7 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
         LOGGER.debug("Getting group by id: {}", id);
         Optional<Group> group = this.jdbcTemplate.query("SELECT * FROM groups WHERE id = ?", new GroupRowMapper(), new Object[]{id})
                 .stream().findAny();
-        LOGGER.info("Successful received group by id: {}. Received group: {}", id, group);
+        LOGGER.info("Received group by id: {}. Received group: {}", id, group);
         return group;
     }
 

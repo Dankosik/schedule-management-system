@@ -61,7 +61,7 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
         LOGGER.debug("Getting audience by id: {}", id);
         Optional<Audience> audience = this.jdbcTemplate.query("SELECT * FROM audiences WHERE id = ?", new AudienceRowMapper(), new Object[]{id})
                 .stream().findAny();
-        LOGGER.info("Successful received audience by id: {}. Received audience: {}", id, audience);
+        LOGGER.info("Received audience by id: {}. Received audience: {}", id, audience);
         return audience;
     }
 

@@ -56,7 +56,7 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student, Lon
         LOGGER.debug("Getting student by id: {}", id);
         Optional<Student> student = this.jdbcTemplate.query("SELECT * FROM students WHERE id = ?", new StudentRowMapper(), new Object[]{id})
                 .stream().findAny();
-        LOGGER.info("Successful received student by id: {}. Received student: {}", id, student);
+        LOGGER.info("Received student by id: {}. Received student: {}", id, student);
         return student;
     }
 

@@ -55,7 +55,7 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
         LOGGER.debug("Getting lecture by id: {}", id);
         Optional<Lecture> lecture = this.jdbcTemplate.query("SELECT * FROM lectures WHERE id = ?", new LectureRowMapper(), new Object[]{id})
                 .stream().findAny();
-        LOGGER.info("Successful received lecture by id: {}. Received lecture: {}", id, lecture);
+        LOGGER.info("Received lecture by id: {}. Received lecture: {}", id, lecture);
         return lecture;
     }
 

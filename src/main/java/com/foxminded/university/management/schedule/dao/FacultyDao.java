@@ -60,7 +60,7 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
         LOGGER.debug("Getting faculty by id: {}", id);
         Optional<Faculty> faculty = this.jdbcTemplate.query("SELECT * FROM faculties WHERE id = ?", new FacultyRowMapper(), new Object[]{id})
                 .stream().findAny();
-        LOGGER.info("Successful received faculty by id: {}. Received faculty: {}", id, faculty);
+        LOGGER.info("Received faculty by id: {}. Received faculty: {}", id, faculty);
         return faculty;
     }
 

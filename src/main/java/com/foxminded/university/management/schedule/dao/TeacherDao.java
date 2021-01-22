@@ -53,7 +53,7 @@ public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher, Lon
         LOGGER.debug("Getting teacher by id: {}", id);
         Optional<Teacher> teacher = this.jdbcTemplate.query("SELECT * FROM teachers WHERE id = ?", new TeacherRowMapper(), new Object[]{id})
                 .stream().findAny();
-        LOGGER.info("Successful received teacher by id: {}. Received teacher: {}", id, teacher);
+        LOGGER.info("Received teacher by id: {}. Received teacher: {}", id, teacher);
         return teacher;
     }
 
