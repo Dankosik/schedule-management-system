@@ -6,6 +6,8 @@ import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.service.AudienceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ import java.util.List;
 @Service
 @Transactional
 public class AudienceServiceImpl implements AudienceService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AudienceServiceImpl.class);
     private final AudienceDao audienceDao;
     private final LectureDao lectureDao;
     private final LectureServiceImpl lectureService;
@@ -37,7 +40,9 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public Audience getAudienceById(Long id) {
-        if (audienceDao.getById(id).isPresent()) {
+        boolean isAudiencePresent = audienceDao.getById(id).isPresent();
+        LOGGER.debug("Audience is present: {}", isAudiencePresent);
+        if (isAudiencePresent) {
             return audienceDao.getById(id).get();
         }
         throw new ServiceException("Audience with id: " + id + " is not found");
@@ -62,35 +67,49 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public Lecture addLectureToAudience(Lecture lecture, Audience audience) {
+        LOGGER.debug("Adding lecture {} to audience {}", lecture, audience);
         boolean isAudiencePresent = audienceDao.getById(audience.getId()).isPresent();
+        LOGGER.debug("Audience is present: {}", isAudiencePresent);
         if (!isAudiencePresent)
             throw new ServiceException("Impossible to add lecture to audience. Audience with id: " + audience.getId() + " is not exists");
 
         boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
+        LOGGER.debug("Lecture is present: {}", isLecturePresent);
         if (!isLecturePresent)
             throw new ServiceException("Impossible to add lecture to audience. Lecture with id: " + lecture.getId() + " is not exists");
 
-        if (lecture.getAudienceId() != null && lecture.getAudienceId().equals(audience.getId()))
+        boolean isLectureAlreadyAddedToAudience = lecture.getAudienceId() != null && lecture.getAudienceId().equals(audience.getId());
+        LOGGER.debug("Lecture is already added to audience: {}", isLectureAlreadyAddedToAudience);
+        if (isLectureAlreadyAddedToAudience)
             throw new ServiceException("Lecture with id: " + lecture.getId() + " is already added to audience with id: " + audience.getId());
 
         lecture.setAudienceId(audience.getId());
-        return lectureService.saveLecture(lecture);
+        Lecture result = lectureService.saveLecture(lecture);
+        LOGGER.info("Successful adding lecture {} to audience {}", lecture, audience);
+        return result;
     }
 
     @Override
     public Lecture removeLectureFromAudience(Lecture lecture, Audience audience) {
+        LOGGER.debug("Removing lecture {} from audience {}", lecture, audience);
         boolean isAudiencePresent = audienceDao.getById(audience.getId()).isPresent();
+        LOGGER.debug("Audience is present: {}", isAudiencePresent);
         if (!isAudiencePresent)
             throw new ServiceException("Impossible to remove lecture from audience. Audience with id: " + audience.getId() + " is not exists");
 
         boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
+        LOGGER.debug("Lecture is present: {}", isLecturePresent);
         if (!isLecturePresent)
             throw new ServiceException("Impossible to remove lecture from audience. Lecture with id: " + lecture.getId() + " is not exists");
 
-        if (lecture.getAudienceId() == null)
+        boolean isLectureAlreadyRemovingFromAudience = lecture.getAudienceId() == null;
+        LOGGER.debug("Lecture is already removed from audience: {}", isLectureAlreadyRemovingFromAudience);
+        if (isLectureAlreadyRemovingFromAudience)
             throw new ServiceException("Lecture with id: " + lecture.getId() + " is already removed from audience with id: " + audience.getId());
 
         lecture.setAudienceId(null);
-        return lectureService.saveLecture(lecture);
+        Lecture result = lectureService.saveLecture(lecture);
+        LOGGER.info("Successful removing lecture {} from audience {}", lecture, audience);
+        return result;
     }
 }

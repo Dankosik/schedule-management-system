@@ -100,7 +100,7 @@ class TeacherDaoTest extends BaseDaoTest {
     void shouldReturnListOfTeachersWithFacultyIdOne() {
         List<Teacher> expected = List.of(
                 new Teacher(1000L, "Hillel", "St. Leger", "Lugard", 1000L, 1000L));
-        List<Teacher> actual = teacherDao.getTeachersByUniversityId(1000L);
+        List<Teacher> actual = teacherDao.getTeachersByFacultyId(1000L);
 
         assertTrue(actual.containsAll(expected));
     }

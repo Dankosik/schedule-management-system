@@ -5,6 +5,8 @@ import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @Service
 @Transactional
 public class StudentServiceImpl implements StudentService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
     private final StudentDao studentDao;
     private final GroupDao groupDao;
 
@@ -25,6 +28,8 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student saveStudent(Student student) {
         boolean isGroupPresent = groupDao.getById(student.getGroupId()).isPresent();
+        LOGGER.debug("Group is present: {}", isGroupPresent);
+        LOGGER.debug("Student group id: {}", student.getGroupId());
         if (isGroupPresent || student.getGroupId() == null) {
             return studentDao.save(student);
         }
@@ -33,7 +38,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getStudentById(Long id) {
-        if (studentDao.getById(id).isPresent()) {
+        boolean isStudentPresent = studentDao.getById(id).isPresent();
+        LOGGER.debug("Student is present: {}", isStudentPresent);
+        if (isStudentPresent) {
             return studentDao.getById(id).get();
         }
         throw new ServiceException("Student with id: " + id + " is not found");
