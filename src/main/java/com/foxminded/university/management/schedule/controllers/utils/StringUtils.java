@@ -4,7 +4,7 @@ import java.time.Duration;
 
 public class StringUtils {
     public static String formatDuration(Duration duration) {
-        long s = duration.getSeconds();
-        return String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+        long seconds = duration.getSeconds();
+        return String.format("%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
     }
 }
