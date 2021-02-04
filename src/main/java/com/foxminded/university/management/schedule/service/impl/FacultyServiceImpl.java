@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -163,5 +164,19 @@ public class FacultyServiceImpl implements FacultyService {
         Teacher result = teacherService.saveTeacher(teacher);
         LOGGER.info("Successful removing teacher {} from faculty {}", teacher, faculty);
         return result;
+    }
+
+    @Override
+    public List<String> getFacultyNames(List<Teacher> teachers) {
+        List<String> result = new ArrayList<>();
+        teachers.forEach(teacher -> result.add(getFacultyById(teacher.getFacultyId()).getName()));
+        return result;
+    }
+
+    @Override
+    public List<Faculty> getFacultiesForTeachers(List<Teacher> teachers) {
+        return teachers.stream()
+                .map(teacher -> getFacultyById(teacher.getFacultyId()))
+                .collect(Collectors.toList());
     }
 }
