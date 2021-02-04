@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" th:rel="stylesheet">
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" th:rel="stylesheet"/>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <meta charset="UTF-8">
+    <title>FoxmindedUniversity</title>
+</head>
+<body>
+<div th:replace="commons/navbar :: navbar"></div>
+<div>
+    <form class="w-25 mx-auto mt-5">
+        <div class="form-row">
+            <div class="col">
+                <input class="form-control" placeholder="Name" type="text">
+            </div>
+            <button class="btn btn-light ml-1 " type="submit">Add group</button>
+        </div>
+    </form>
+</div>
+<div>
+    <table class="table table-bordered w-25 text-center mx-auto mt-5">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="group: ${groups}">
+            <td th:text="${group.id}"></td>
+            <td th:text="${group.name}"></td>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
