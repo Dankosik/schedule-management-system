@@ -68,7 +68,7 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
     public List<Faculty> getAll() {
         LOGGER.debug("Getting all faculties");
         List<Faculty> faculties = this.jdbcTemplate.query("SELECT * FROM faculties", new FacultyRowMapper());
-        LOGGER.info("Audiences received successful");
+        LOGGER.info("Faculties received successful");
         return faculties;
     }
 
