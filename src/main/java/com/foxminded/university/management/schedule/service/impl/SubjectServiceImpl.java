@@ -2,6 +2,8 @@ package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.SubjectService;
 import org.slf4j.Logger;
@@ -12,15 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class SubjectServiceImpl implements SubjectService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubjectServiceImpl.class);
     private final SubjectDao subjectDao;
+    private final LessonServiceImpl lessonService;
 
-    public SubjectServiceImpl(SubjectDao subjectDao) {
+    public SubjectServiceImpl(SubjectDao subjectDao, LessonServiceImpl lessonService) {
         this.subjectDao = subjectDao;
+        this.lessonService = lessonService;
     }
 
     @Override
@@ -57,5 +62,28 @@ public class SubjectServiceImpl implements SubjectService {
         List<Subject> result = new ArrayList<>();
         subjects.forEach(subject -> result.add(saveSubject(subject)));
         return result;
+    }
+
+    @Override
+    public List<String> getSubjectNamesForLessons(List<Lesson> lessons) {
+        List<String> result = new ArrayList<>();
+        lessons.forEach(lesson -> result.add(getSubjectById(lesson.getSubjectId()).getName()));
+        return result;
+    }
+
+    @Override
+    public List<Subject> getSubjectsForLectures(List<Lecture> lectures) {
+        return lectures.stream()
+                .map(lecture -> lessonService.getLessonById(lecture.getLessonId()).getSubjectId())
+                .map(this::getSubjectById)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Subject> getSubjectsForLessons(List<Lesson> lessons) {
+        return lessons.stream()
+                .map(Lesson::getSubjectId)
+                .map(this::getSubjectById)
+                .collect(Collectors.toList());
     }
 }
