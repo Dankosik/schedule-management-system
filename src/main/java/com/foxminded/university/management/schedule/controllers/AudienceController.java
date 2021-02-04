@@ -18,7 +18,6 @@ public class AudienceController {
     @GetMapping("/audiences")
     public String showAllAudiences(Model model) {
         model.addAttribute("audiences", audienceService.getAllAudiences());
-        model.addAttribute("newAudience", new Audience(0, 0, 1L));
         return "audiences";
     }
 
