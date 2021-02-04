@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.service.impl;
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.TeacherService;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -61,5 +63,24 @@ public class TeacherServiceImpl implements TeacherService {
         List<Teacher> result = new ArrayList<>();
         teachers.forEach(teacher -> result.add(saveTeacher(teacher)));
         return result;
+    }
+
+    @Override
+    public List<String> getLastNameWithInitialsForAllTeachers(List<Teacher> teachers) {
+        List<String> result = new ArrayList<>();
+        for (Teacher teacher : teachers) {
+            char firstName = teacher.getFirstName().charAt(0);
+            char middleName = teacher.getMiddleName().charAt(0);
+            String lastName = teacher.getLastName();
+            result.add(lastName + " " + firstName + ". " + middleName + ".");
+        }
+        return result;
+    }
+
+    @Override
+    public List<Teacher> getTeachersForLectures(List<Lecture> lectures) {
+        return lectures.stream()
+                .map(lecture -> getTeacherById(lecture.getTeacherId()))
+                .collect(Collectors.toList());
     }
 }
