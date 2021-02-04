@@ -19,4 +19,8 @@ public interface GroupService {
     Student addStudentToGroup(Student student, Group group);
 
     Student removeStudentFromGroup(Student student, Group group);
+
+    List<String> getGroupNames(List<Student> students);
+
+    List<Group> getGroupsForStudents(List<Student> students);
 }
