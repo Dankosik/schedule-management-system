@@ -68,7 +68,7 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
     public List<Subject> getAll() {
         LOGGER.debug("Getting all subjects");
         List<Subject> subjects = this.jdbcTemplate.query("SELECT * FROM subjects", new SubjectRowMapper());
-        LOGGER.info("subjects received successful");
+        LOGGER.info("Subjects received successful");
         return subjects;
     }
 
