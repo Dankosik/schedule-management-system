@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -111,5 +112,19 @@ public class AudienceServiceImpl implements AudienceService {
         Lecture result = lectureService.saveLecture(lecture);
         LOGGER.info("Successful removing lecture {} from audience {}", lecture, audience);
         return result;
+    }
+
+    @Override
+    public List<Integer> getAudienceNumbersForAudiences(List<Audience> audiences) {
+        List<Integer> result = new ArrayList<>();
+        audiences.forEach(audience -> result.add(audience.getNumber()));
+        return result;
+    }
+
+    @Override
+    public List<Audience> getAudiencesForLectures(List<Lecture> lectures) {
+        return lectures.stream()
+                .map(lecture -> getAudienceById(lecture.getAudienceId()))
+                .collect(Collectors.toList());
     }
 }

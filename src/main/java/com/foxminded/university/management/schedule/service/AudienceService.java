@@ -19,4 +19,8 @@ public interface AudienceService {
     Lecture addLectureToAudience(Lecture lecture, Audience audience);
 
     Lecture removeLectureFromAudience(Lecture lecture, Audience audience);
+
+    List<Integer> getAudienceNumbersForAudiences(List<Audience> audiences);
+
+    List<Audience> getAudiencesForLectures(List<Lecture> lectures);
 }
