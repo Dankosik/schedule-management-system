@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.service.impl;
 import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.LessonService;
@@ -11,8 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -109,5 +113,26 @@ public class LessonServiceImpl implements LessonService {
         Lesson result = saveLesson(lesson);
         LOGGER.info("Successful removing subject {} from lesson {}", subject, lesson);
         return result;
+    }
+
+    @Override
+    public List<Duration> getDurationsForLessons(List<Lesson> lessons) {
+        List<Duration> result = new ArrayList<>();
+        lessons.forEach(lesson -> result.add(lesson.getDuration()));
+        return result;
+    }
+
+    @Override
+    public List<Time> getStartTimesForLessons(List<Lesson> lessons) {
+        List<Time> result = new ArrayList<>();
+        lessons.forEach(lesson -> result.add(lesson.getStartTime()));
+        return result;
+    }
+
+    @Override
+    public List<Lesson> getLessonsForLectures(List<Lecture> lectures) {
+        return lectures.stream()
+                .map(lecture -> getLessonById(lecture.getId()))
+                .collect(Collectors.toList());
     }
 }

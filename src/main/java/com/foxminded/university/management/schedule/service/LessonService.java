@@ -1,8 +1,11 @@
 package com.foxminded.university.management.schedule.service;
 
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 
+import java.sql.Time;
+import java.time.Duration;
 import java.util.List;
 
 public interface LessonService {
@@ -19,4 +22,10 @@ public interface LessonService {
     Lesson addSubjectToLesson(Subject subject, Lesson lesson);
 
     Lesson removeSubjectFromLesson(Subject subject, Lesson lesson);
+
+    List<Duration> getDurationsForLessons(List<Lesson> lessons);
+
+    List<Time> getStartTimesForLessons(List<Lesson> lessons);
+
+    List<Lesson> getLessonsForLectures(List<Lecture> lectures);
 }
