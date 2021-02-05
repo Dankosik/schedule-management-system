@@ -127,7 +127,7 @@ class TeacherServiceImplTest {
 
         List<String> expected = List.of("Jackson J. J.", "Conor M. C.");
 
-        assertEquals(expected, teacherService.getLastNameWithInitialsForTeachers(teachers));
+        assertEquals(expected, teacherService.getLastNamesWithInitialsForTeachers(teachers));
     }
 
     @Test

@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.Duration;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +48,7 @@ public class LectureController {
 
         List<Teacher> teachers = teacherService.getTeachersForLectures(lectures);
         model.addAttribute("teachers", teachers);
-        model.addAttribute("teacherNames", teacherService.getLastNameWithInitialsForTeachers(teachers));
+        model.addAttribute("teacherNames", teacherService.getLastNamesWithInitialsForTeachers(teachers));
 
         List<Audience> audiences = audienceService.getAudiencesForLectures(lectures);
         model.addAttribute("audiences", audiences);

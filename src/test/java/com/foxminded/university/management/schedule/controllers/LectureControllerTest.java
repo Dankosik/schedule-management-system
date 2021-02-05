@@ -67,7 +67,7 @@ class LectureControllerTest {
         when(teacherService.getTeachersForLectures(lectures)).thenReturn(teachers);
 
         List<String> teacherNames = List.of("Jackson J. J.", "Conor M. C.");
-        when(teacherService.getLastNameWithInitialsForTeachers(teachers)).thenReturn(teacherNames);
+        when(teacherService.getLastNamesWithInitialsForTeachers(teachers)).thenReturn(teacherNames);
 
         List<Audience> audiences = List.of(
                 new Audience(1L, 301, 45, 1L),
