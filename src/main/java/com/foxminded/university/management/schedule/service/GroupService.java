@@ -20,7 +20,7 @@ public interface GroupService {
 
     Student removeStudentFromGroup(Student student, Group group);
 
-    List<String> getGroupNames(List<Student> students);
+    List<String> getGroupNamesForStudents(List<Student> students);
 
     List<Group> getGroupsForStudents(List<Student> students);
 }

@@ -121,7 +121,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<String> getGroupNames(List<Student> students) {
+    public List<String> getGroupNamesForStudents(List<Student> students) {
         List<String> result = new ArrayList<>();
         students.forEach(student -> result.add(getGroupById(student.getGroupId()).getName()));
         return result;

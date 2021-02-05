@@ -23,7 +23,7 @@ public class StudentController {
     public String showAllFaculties(Model model) {
         List<Student> students = studentService.getAllStudent();
         model.addAttribute("students", students);
-        model.addAttribute("groupNames", groupService.getGroupNames(students));
+        model.addAttribute("groupNames", groupService.getGroupNamesForStudents(students));
         model.addAttribute("groups", groupService.getGroupsForStudents(students));
         return "students";
     }
