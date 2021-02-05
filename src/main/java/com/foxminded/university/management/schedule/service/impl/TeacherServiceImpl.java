@@ -66,7 +66,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<String> getLastNameWithInitialsForAllTeachers(List<Teacher> teachers) {
+    public List<String> getLastNameWithInitialsForTeachers(List<Teacher> teachers) {
         List<String> result = new ArrayList<>();
         for (Teacher teacher : teachers) {
             char firstName = teacher.getFirstName().charAt(0);

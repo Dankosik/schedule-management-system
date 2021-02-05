@@ -51,7 +51,7 @@ public class LectureController {
         List<Teacher> teachers = teacherService.getTeachersForLectures(lectures);
         model.addAttribute("teachers", teachers);
         model.addAttribute("teacherNames",
-                teacherService.getLastNameWithInitialsForAllTeachers(teachers));
+                teacherService.getLastNameWithInitialsForTeachers(teachers));
 
         List<Audience> audiences = audienceService.getAudiencesForLectures(lectures);
         model.addAttribute("audiences", audiences);
