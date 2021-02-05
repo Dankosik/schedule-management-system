@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.service.GroupService;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
