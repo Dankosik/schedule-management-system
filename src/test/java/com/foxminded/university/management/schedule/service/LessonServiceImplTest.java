@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.service;
 import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
@@ -13,8 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -221,5 +224,50 @@ class LessonServiceImplTest {
         verify(subjectDao, times(1)).getById(1L);
         verify(lessonDao, times(1)).getById(1L);
         verify(lessonDao, never()).save(expected);
+    }
+
+    @Test
+    void shouldReturnDurationsForLessons() {
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Duration> expected = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
+
+        assertEquals(expected, lessonService.getDurationsForLessons(lessons));
+    }
+
+    @Test
+    void shouldReturnStartTimesForLessons() {
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Time> expected = List.of(
+                Time.valueOf(LocalTime.of(8, 30, 0)),
+                Time.valueOf(LocalTime.of(10, 10, 0)));
+
+        assertEquals(expected, lessonService.getStartTimesForLessons(lessons));
+    }
+
+    @Test
+    void shouldReturnLessonsForLectures() {
+        when(lessonDao.getById(1L))
+                .thenReturn(Optional.of(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
+        when(lessonDao.getById(2L))
+                .thenReturn(Optional.of( new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
+
+        List<Lecture> lectures = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 2L));
+
+        List<Lesson> expected = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        assertEquals(expected, lessonService.getLessonsForLectures(lectures));
+
+        verify(lessonDao, times(2)).getById(1L);
+        verify(lessonDao, times(2)).getById(2L);
     }
 }
