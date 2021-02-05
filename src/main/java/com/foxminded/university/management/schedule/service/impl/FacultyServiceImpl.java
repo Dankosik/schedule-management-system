@@ -167,7 +167,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public List<String> getFacultyNames(List<Teacher> teachers) {
+    public List<String> getFacultyNamesForTeachers(List<Teacher> teachers) {
         List<String> result = new ArrayList<>();
         teachers.forEach(teacher -> result.add(getFacultyById(teacher.getFacultyId()).getName()));
         return result;

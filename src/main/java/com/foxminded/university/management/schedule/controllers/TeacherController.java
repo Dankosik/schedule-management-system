@@ -24,7 +24,7 @@ public class TeacherController {
     public String showAllFaculties(Model model) {
         List<Teacher> teachers = teacherService.getAllTeachers();
         model.addAttribute("teachers", teachers);
-        model.addAttribute("facultyNames", facultyService.getFacultyNames(teachers));
+        model.addAttribute("facultyNames", facultyService.getFacultyNamesForTeachers(teachers));
         model.addAttribute("faculties", facultyService.getFacultiesForTeachers(teachers));
         return "teachers";
     }
