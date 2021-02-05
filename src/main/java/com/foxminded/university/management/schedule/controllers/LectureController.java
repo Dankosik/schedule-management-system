@@ -34,8 +34,7 @@ public class LectureController {
 
     @GetMapping("/lectures")
     public String showAllFaculties(Model model) {
-        List<Lecture> lectures = lectureService.getAllLectures().stream()
-                .sorted(Comparator.comparing(Lecture::getId)).collect(Collectors.toList());
+        List<Lecture> lectures = lectureService.getAllLectures();
         model.addAttribute("lectures", lectures);
 
         List<Lesson> lessons = lessonService.getLessonsForLectures(lectures);
@@ -50,8 +49,7 @@ public class LectureController {
 
         List<Teacher> teachers = teacherService.getTeachersForLectures(lectures);
         model.addAttribute("teachers", teachers);
-        model.addAttribute("teacherNames",
-                teacherService.getLastNameWithInitialsForTeachers(teachers));
+        model.addAttribute("teacherNames", teacherService.getLastNameWithInitialsForTeachers(teachers));
 
         List<Audience> audiences = audienceService.getAudiencesForLectures(lectures);
         model.addAttribute("audiences", audiences);
