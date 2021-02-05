@@ -117,22 +117,29 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<Duration> getDurationsForLessons(List<Lesson> lessons) {
+        LOGGER.debug("Getting durations for lessons {}", lessons);
         List<Duration> result = new ArrayList<>();
         lessons.forEach(lesson -> result.add(lesson.getDuration()));
+        LOGGER.info("Durations for lessons {} received successful", lessons);
         return result;
     }
 
     @Override
     public List<Time> getStartTimesForLessons(List<Lesson> lessons) {
+        LOGGER.debug("Getting start times for lessons {}", lessons);
         List<Time> result = new ArrayList<>();
         lessons.forEach(lesson -> result.add(lesson.getStartTime()));
+        LOGGER.info("Start times for lessons {} received successful", lessons);
         return result;
     }
 
     @Override
     public List<Lesson> getLessonsForLectures(List<Lecture> lectures) {
-        return lectures.stream()
+        LOGGER.debug("Getting lessons times for lectures {}", lectures);
+        List<Lesson> lessons = lectures.stream()
                 .map(lecture -> getLessonById(lecture.getId()))
                 .collect(Collectors.toList());
+        LOGGER.info("Lessons for lectures {} received successful", lectures);
+        return lessons;
     }
 }

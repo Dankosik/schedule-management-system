@@ -116,15 +116,20 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public List<Integer> getAudienceNumbersForAudiences(List<Audience> audiences) {
+        LOGGER.debug("Getting audience numbers for audiences {}", audiences);
         List<Integer> result = new ArrayList<>();
         audiences.forEach(audience -> result.add(audience.getNumber()));
+        LOGGER.info("Audience numbers for audiences {} received successful", audiences);
         return result;
     }
 
     @Override
     public List<Audience> getAudiencesForLectures(List<Lecture> lectures) {
-        return lectures.stream()
+        LOGGER.debug("Getting audiences for lectures {}", lectures);
+        List<Audience> audiences = lectures.stream()
                 .map(lecture -> getAudienceById(lecture.getAudienceId()))
                 .collect(Collectors.toList());
+        LOGGER.info("Audiences for lectures {} received successful", lectures);
+        return audiences;
     }
 }

@@ -168,15 +168,20 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public List<String> getFacultyNamesForTeachers(List<Teacher> teachers) {
+        LOGGER.debug("Getting faculty names for teachers {}", teachers);
         List<String> result = new ArrayList<>();
         teachers.forEach(teacher -> result.add(getFacultyById(teacher.getFacultyId()).getName()));
+        LOGGER.info("Faculty names for teachers {} received successful", teachers);
         return result;
     }
 
     @Override
     public List<Faculty> getFacultiesForTeachers(List<Teacher> teachers) {
-        return teachers.stream()
+        LOGGER.debug("Getting faculties for teachers {}", teachers);
+        List<Faculty> faculties = teachers.stream()
                 .map(teacher -> getFacultyById(teacher.getFacultyId()))
                 .collect(Collectors.toList());
+        LOGGER.info("Faculties for teachers {} received successful", teachers);
+        return faculties;
     }
 }

@@ -67,6 +67,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public List<String> getLastNameWithInitialsForTeachers(List<Teacher> teachers) {
+        LOGGER.debug("Getting last names with initials for teachers {}", teachers);
         List<String> result = new ArrayList<>();
         for (Teacher teacher : teachers) {
             char firstName = teacher.getFirstName().charAt(0);
@@ -74,13 +75,17 @@ public class TeacherServiceImpl implements TeacherService {
             String lastName = teacher.getLastName();
             result.add(lastName + " " + firstName + ". " + middleName + ".");
         }
+        LOGGER.info("Last names with initials for teachers {} received successful", teachers);
         return result;
     }
 
     @Override
     public List<Teacher> getTeachersForLectures(List<Lecture> lectures) {
-        return lectures.stream()
+        LOGGER.debug("Getting teachers for lectures {}", lectures);
+        List<Teacher> teachers = lectures.stream()
                 .map(lecture -> getTeacherById(lecture.getTeacherId()))
                 .collect(Collectors.toList());
+        LOGGER.info("Teachers for lectures {} received successful", lectures);
+        return teachers;
     }
 }

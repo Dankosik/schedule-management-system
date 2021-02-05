@@ -66,24 +66,32 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public List<String> getSubjectNamesForLessons(List<Lesson> lessons) {
+        LOGGER.debug("Getting subject names for lessons {}", lessons);
         List<String> result = new ArrayList<>();
         lessons.forEach(lesson -> result.add(getSubjectById(lesson.getSubjectId()).getName()));
+        LOGGER.info("Subject names for lessons {} received successful", lessons);
         return result;
     }
 
     @Override
     public List<Subject> getSubjectsForLectures(List<Lecture> lectures) {
-        return lectures.stream()
+        LOGGER.debug("Getting subjects for lectures {}", lectures);
+        List<Subject> subjects = lectures.stream()
                 .map(lecture -> lessonService.getLessonById(lecture.getLessonId()).getSubjectId())
                 .map(this::getSubjectById)
                 .collect(Collectors.toList());
+        LOGGER.info("Subject for lectures {} received successful", lectures);
+        return subjects;
     }
 
     @Override
     public List<Subject> getSubjectsForLessons(List<Lesson> lessons) {
-        return lessons.stream()
+        LOGGER.debug("Getting subjects for lessons {}", lessons);
+        List<Subject> subjects = lessons.stream()
                 .map(Lesson::getSubjectId)
                 .map(this::getSubjectById)
                 .collect(Collectors.toList());
+        LOGGER.info("Subject for lessons {} received successful", lessons);
+        return subjects;
     }
 }
