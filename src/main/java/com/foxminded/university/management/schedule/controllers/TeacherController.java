@@ -1,8 +1,8 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.service.FacultyService;
-import com.foxminded.university.management.schedule.service.TeacherService;
+import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
+import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +12,10 @@ import java.util.List;
 
 @Controller
 public class TeacherController {
-    private final TeacherService teacherService;
-    private final FacultyService facultyService;
+    private final TeacherServiceImpl teacherService;
+    private final FacultyServiceImpl facultyService;
 
-    public TeacherController(TeacherService teacherService, FacultyService facultyService) {
+    public TeacherController(TeacherServiceImpl teacherService, FacultyServiceImpl facultyService) {
         this.teacherService = teacherService;
         this.facultyService = facultyService;
     }

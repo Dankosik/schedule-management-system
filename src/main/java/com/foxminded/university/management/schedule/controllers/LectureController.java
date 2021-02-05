@@ -5,7 +5,7 @@ import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.service.*;
+import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 
 @Controller
 public class LectureController {
-    private final LectureService lectureService;
-    private final AudienceService audienceService;
-    private final LessonService lessonService;
-    private final TeacherService teacherService;
-    private final SubjectService subjectService;
+    private final LectureServiceImpl lectureService;
+    private final AudienceServiceImpl audienceService;
+    private final LessonServiceImpl lessonService;
+    private final TeacherServiceImpl teacherService;
+    private final SubjectServiceImpl subjectService;
 
-    public LectureController(LectureService lectureService, AudienceService audienceService, LessonService lessonService,
-                             TeacherService teacherService, SubjectService subjectService) {
+    public LectureController(LectureServiceImpl lectureService, AudienceServiceImpl audienceService, LessonServiceImpl lessonService,
+                             TeacherServiceImpl teacherService, SubjectServiceImpl subjectService) {
         this.lectureService = lectureService;
         this.audienceService = audienceService;
         this.lessonService = lessonService;

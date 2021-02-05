@@ -1,7 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.models.Audience;
-import com.foxminded.university.management.schedule.service.AudienceService;
+import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class AudienceController {
-    private final AudienceService audienceService;
+    private final AudienceServiceImpl audienceService;
 
-    public AudienceController(AudienceService audienceService) {
+    public AudienceController(AudienceServiceImpl audienceService) {
         this.audienceService = audienceService;
     }
 

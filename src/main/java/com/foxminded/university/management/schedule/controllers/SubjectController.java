@@ -1,6 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.service.SubjectService;
+import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class SubjectController {
-    private final SubjectService subjectService;
+    private final SubjectServiceImpl subjectService;
 
-    public SubjectController(SubjectService subjectService) {
+    public SubjectController(SubjectServiceImpl subjectService) {
         this.subjectService = subjectService;
     }
 

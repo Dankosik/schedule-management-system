@@ -1,6 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.service.GroupService;
+import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class GroupController {
-    private final GroupService groupService;
+    private final GroupServiceImpl groupService;
 
-    public GroupController(GroupService groupService) {
+    public GroupController(GroupServiceImpl groupService) {
         this.groupService = groupService;
     }
 
