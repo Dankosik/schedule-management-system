@@ -21,7 +21,7 @@ public class FacultyController {
     }
 
     @GetMapping("/faculties/{id}")
-    public String showOneTeacher(@PathVariable("id") Long id, Model model) {
+    public String showOneFaculty(@PathVariable("id") Long id, Model model) {
         model.addAttribute("faculty", facultyService.getFacultyById(id));
         return "faculty";
     }

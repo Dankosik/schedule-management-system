@@ -20,7 +20,7 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    public String showAllFaculties(Model model) {
+    public String showAllStudents(Model model) {
         List<Student> students = studentService.getAllStudent();
         model.addAttribute("students", students);
         model.addAttribute("groupNames", groupService.getGroupNamesForStudents(students));

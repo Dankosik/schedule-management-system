@@ -15,7 +15,7 @@ public class SubjectController {
     }
 
     @GetMapping("/subjects")
-    public String showAllFaculties(Model model) {
+    public String showAllTeachers(Model model) {
         model.addAttribute("subjects", subjectService.getAllSubjects());
         return "subjects";
     }

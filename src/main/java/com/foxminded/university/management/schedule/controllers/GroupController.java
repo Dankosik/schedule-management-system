@@ -15,13 +15,13 @@ public class GroupController {
     }
 
     @GetMapping("/groups")
-    public String showAllFaculties(Model model) {
+    public String showAllGroups(Model model) {
         model.addAttribute("groups", groupService.getAllAGroups());
         return "groups";
     }
 
     @GetMapping("/groups/{id}")
-    public String showOneAudience(@PathVariable("id") Long id, Model model) {
+    public String showOneGroup(@PathVariable("id") Long id, Model model) {
         model.addAttribute("group", groupService.getGroupById(id));
         return "group";
     }

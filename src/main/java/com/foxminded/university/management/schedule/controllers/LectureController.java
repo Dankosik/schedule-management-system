@@ -33,7 +33,7 @@ public class LectureController {
     }
 
     @GetMapping("/lectures")
-    public String showAllFaculties(Model model) {
+    public String showAllLectures(Model model) {
         List<Lecture> lectures = lectureService.getAllLectures();
         model.addAttribute("lectures", lectures);
 

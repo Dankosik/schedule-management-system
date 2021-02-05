@@ -23,7 +23,7 @@ public class LessonController {
     }
 
     @GetMapping("/lessons")
-    public String showAllFaculties(Model model) {
+    public String showAllLessons(Model model) {
         List<Lesson> lessons = lessonService.getAllLessons();
         model.addAttribute("lessons", lessons);
 
