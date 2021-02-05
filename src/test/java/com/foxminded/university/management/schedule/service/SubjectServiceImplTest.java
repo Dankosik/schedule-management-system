@@ -2,8 +2,10 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
-import com.foxminded.university.management.schedule.models.Faculty;
+import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +39,8 @@ class SubjectServiceImplTest {
     private SubjectServiceImpl subjectService;
     @MockBean
     private SubjectDao subjectDao;
+    @MockBean
+    private LessonServiceImpl lessonService;
 
     @Test
     void shouldSaveSubject() {
@@ -105,7 +114,7 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfUpdatedSubjectWithInputNameIsAlreadyExist() {
-        Subject expected = new Subject(1L,"Math", 1L);
+        Subject expected = new Subject(1L, "Math", 1L);
         when(subjectDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
         assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
@@ -121,5 +130,66 @@ class SubjectServiceImplTest {
 
         verify(subjectDao, times(1)).getById(1L);
         verify(subjectDao, never()).save(subject);
+    }
+
+    @Test
+    void shouldReturnSubjectNamesForLessons() {
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<String> expected = List.of("Math", "Art");
+
+        assertEquals(expected, subjectService.getSubjectNamesForLessons(lessons));
+
+        verify(subjectDao, times(2)).getById(1L);
+        verify(subjectDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnSubjectsForLessons() {
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Subject> expected = List.of(
+                new Subject(1L, "Math", 1L),
+                new Subject(2L, "Art", 1L));
+
+        assertEquals(expected, subjectService.getSubjectsForLessons(lessons));
+
+        verify(subjectDao, times(2)).getById(1L);
+        verify(subjectDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnLessonsForLectures() {
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(lessonService.getLessonById(1L))
+                .thenReturn(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
+        when(lessonService.getLessonById(2L))
+                .thenReturn(new Lesson(2L, 1, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Lecture> lectures = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 1L));
+
+        List<Subject> expected = List.of(
+                new Subject(1L, "Math", 1L),
+                new Subject(2L, "Art", 1L));
+
+        assertEquals(expected, subjectService.getSubjectsForLectures(lectures));
+
+        verify(subjectDao, times(2)).getById(1L);
+        verify(subjectDao, times(2)).getById(2L);
+        verify(lessonService, times(1)).getLessonById(1L);
+        verify(lessonService, times(1)).getLessonById(2L);
     }
 }
