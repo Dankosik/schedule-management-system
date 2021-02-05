@@ -259,4 +259,40 @@ class GroupServiceImplTest {
         verify(facultyDao, times(1)).getById(1L);
         verify(groupDao, never()).save(expected);
     }
+
+    @Test
+    void shouldReturnGroupNamesForStudents() {
+        when(groupDao.getById(1L)).thenReturn(Optional.of(new Group(1L, "AB-01", 1L, 1L)));
+        when(groupDao.getById(2L)).thenReturn(Optional.of(new Group(2L, "CD-21", 1L, 1L)));
+
+        List<Student> students = List.of(
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L));
+
+        List<String> expected = List.of("AB-01", "CD-21");
+
+        assertEquals(expected, groupService.getGroupNamesForStudents(students));
+
+        verify(groupDao, times(2)).getById(1L);
+        verify(groupDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnGroupsForStudents() {
+        when(groupDao.getById(1L)).thenReturn(Optional.of(new Group(1L, "AB-01", 1L, 1L)));
+        when(groupDao.getById(2L)).thenReturn(Optional.of(new Group(2L, "CD-21", 1L, 1L)));
+
+        List<Student> students = List.of(
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1L));
+
+        List<Group> expected = List.of(
+                new Group(1L, "AB-01", 1L, 1L),
+                new Group(2L, "CD-21", 1L, 1L));
+
+        assertEquals(expected, groupService.getGroupsForStudents(students));
+
+        verify(groupDao, times(2)).getById(1L);
+        verify(groupDao, times(2)).getById(2L);
+    }
 }
