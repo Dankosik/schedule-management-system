@@ -255,7 +255,7 @@ class LessonServiceImplTest {
         when(lessonDao.getById(1L))
                 .thenReturn(Optional.of(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
         when(lessonDao.getById(2L))
-                .thenReturn(Optional.of( new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
+                .thenReturn(Optional.of(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
 
         List<Lecture> lectures = List.of(
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),
