@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class FacultyControllerTest {
 
     @Test
     public void shouldReturnViewWithOneFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "FAIT", 1L);
+        Faculty faculty  =  new Faculty(1L, "FAIT", 1L);
         when(facultyService.getFacultyById(1L)).thenReturn(faculty);
 
         mockMvc.perform(get("/faculties/{id}", 1))

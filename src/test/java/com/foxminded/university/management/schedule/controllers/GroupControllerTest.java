@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class GroupControllerTest {
 
     @Test
     public void shouldReturnViewWithOneGroup() throws Exception {
-        Group group = new Group(1L, "AB-01", 1L, 1L);
+        Group group =  new Group(1L, "AB-01", 1L, 1L);
         when(groupService.getGroupById(1L)).thenReturn(group);
 
         mockMvc.perform(get("/groups/{id}", 1))

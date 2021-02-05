@@ -248,9 +248,9 @@ class AudienceServiceImplTest {
 
     @Test
     void shouldReturnAudienceNumbersForAudiences() {
-        List<Audience> input = List.of(new Audience(1L, 202, 45, 1L),
+        List<Audience> input = List.of(new Audience(1L,202, 45, 1L),
                 new Audience(2L, 203, 50, 1L),
-                new Audience(3L, 204, 55, 1L));
+                new Audience(3L,204, 55, 1L));
 
         List<Integer> expected = List.of(202, 203, 204);
 
@@ -260,12 +260,12 @@ class AudienceServiceImplTest {
     @Test
     void shouldReturnAudiencesForLectures() {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(new Audience(1L, 202, 45, 1L)));
-        when(audienceDao.getById(2L)).thenReturn(Optional.of(new Audience(2L, 203, 50, 1L)));
-        when(audienceDao.getById(3L)).thenReturn(Optional.of(new Audience(3L, 204, 55, 1L)));
+        when(audienceDao.getById(2L)).thenReturn(Optional.of( new Audience(2L, 203, 50, 1L)));
+        when(audienceDao.getById(3L)).thenReturn(Optional.of(new Audience(3L,204, 55, 1L)));
 
-        List<Audience> expected = List.of(new Audience(1L, 202, 45, 1L),
+        List<Audience> expected = List.of(new Audience(1L,202, 45, 1L),
                 new Audience(2L, 203, 50, 1L),
-                new Audience(3L, 204, 55, 1L));
+                new Audience(3L,204, 55, 1L));
 
         List<Lecture> input = List.of(
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),

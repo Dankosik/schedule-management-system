@@ -6,6 +6,7 @@ import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 

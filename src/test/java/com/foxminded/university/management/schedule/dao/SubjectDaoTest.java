@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Subject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -134,6 +135,6 @@ class SubjectDaoTest extends BaseDaoTest {
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
-        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject(1001L, "Math", 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject(1001L,"Math", 1000L)));
     }
 }

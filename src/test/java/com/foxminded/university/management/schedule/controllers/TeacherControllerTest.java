@@ -57,7 +57,7 @@ class TeacherControllerTest {
         Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L);
         when(teacherService.getTeacherById(1L)).thenReturn(teacher);
 
-        Faculty faculty = new Faculty(1L, "FAIT", 1L);
+        Faculty faculty = new Faculty(1L, "FAIT" , 1L);
         when(facultyService.getFacultyById(1L)).thenReturn(faculty);
 
         mockMvc.perform(get("/teachers/{id}", 1))
