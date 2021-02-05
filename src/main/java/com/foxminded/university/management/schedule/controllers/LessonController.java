@@ -29,7 +29,7 @@ public class LessonController {
 
         List<Duration> durations = lessonService.getDurationsForLessons(lessons);
         List<String> formattedDurations = durations.stream()
-                .map(StringUtils::formatDuration)
+                .map(StringUtils::formatDurationInMinutes)
                 .collect(Collectors.toList());
 
         model.addAttribute("durations", formattedDurations);
