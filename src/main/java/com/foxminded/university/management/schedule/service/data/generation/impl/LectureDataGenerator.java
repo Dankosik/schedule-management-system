@@ -1,0 +1,43 @@
+package com.foxminded.university.management.schedule.service.data.generation.impl;
+
+import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
+import com.foxminded.university.management.schedule.service.data.generation.utils.ReceivingIdUtils;
+import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
+import org.springframework.stereotype.Service;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class LectureDataGenerator implements DataGenerator<Lecture> {
+    private final LessonServiceImpl lessonService;
+    private final List<Date> dates = List.of(
+            Date.valueOf(LocalDate.of(2021, 1, 1)),
+            Date.valueOf(LocalDate.of(2021, 1, 2)),
+            Date.valueOf(LocalDate.of(2021, 1, 3)));
+
+    public LectureDataGenerator(LessonServiceImpl lessonService) {
+        this.lessonService = lessonService;
+    }
+
+    @Override
+    public List<Lecture> generateData() {
+        List<Lecture> result = new ArrayList<>();
+        List<Long> teacherIds = ReceivingIdUtils.getTeacherIds();
+        List<Long> audienceIds = ReceivingIdUtils.getAudienceIds();
+        List<Long> lessonIds = ReceivingIdUtils.getLessonIds();
+        for (int i = 0; i < lessonService.getAllLessons().size(); i++) {
+            Lecture lecture = new Lecture();
+            lecture.setDate(dates.get((int) (Math.random() * dates.size())));
+            lecture.setLessonId(lessonIds.get((int) (Math.random() * lessonIds.size())));
+            lecture.setTeacherId(teacherIds.get((int) (Math.random() * teacherIds.size())));
+            lecture.setAudienceId(audienceIds.get((int) (Math.random() * audienceIds.size())));
+            lecture.setNumber(1 + (int) (Math.random() * 5));
+            result.add(lecture);
+        }
+        return result;
+    }
+}
