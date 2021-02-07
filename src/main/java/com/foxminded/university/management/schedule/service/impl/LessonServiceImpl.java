@@ -137,7 +137,7 @@ public class LessonServiceImpl implements LessonService {
     public List<Lesson> getLessonsForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting lessons times for lectures {}", lectures);
         List<Lesson> lessons = lectures.stream()
-                .map(lecture -> getLessonById(lecture.getId()))
+                .map(lecture -> getLessonById(lecture.getLessonId()))
                 .collect(Collectors.toList());
         LOGGER.info("Lessons for lectures {} received successful", lectures);
         return lessons;
