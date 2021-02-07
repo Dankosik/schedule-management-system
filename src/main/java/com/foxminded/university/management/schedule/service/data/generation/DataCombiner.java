@@ -49,7 +49,7 @@ public class DataCombiner {
         this.lectureDataGenerator = lectureDataGenerator;
     }
 
-    public void generateData() {
+    public void generateDataIfTablesClear() {
         if (audienceService.getAllAudiences().size() == 0)
             audienceService.saveAllAudiences(audienceDataGenerator.generateData());
 
