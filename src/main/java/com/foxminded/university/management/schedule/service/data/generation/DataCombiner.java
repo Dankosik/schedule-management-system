@@ -2,10 +2,14 @@ package com.foxminded.university.management.schedule.service.data.generation;
 
 import com.foxminded.university.management.schedule.service.data.generation.impl.*;
 import com.foxminded.university.management.schedule.service.impl.*;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+@Profile("!test")
 @Service
-public class DataCombiner {
+public class DataCombiner implements ApplicationRunner {
     private final AudienceServiceImpl audienceService;
     private final FacultyServiceImpl facultyService;
     private final GroupServiceImpl groupService;
@@ -49,7 +53,8 @@ public class DataCombiner {
         this.lectureDataGenerator = lectureDataGenerator;
     }
 
-    public void generateDataIfTablesClear() {
+    @Override
+    public void run(ApplicationArguments args) {
         if (audienceService.getAllAudiences().size() == 0)
             audienceService.saveAllAudiences(audienceDataGenerator.generateData());
 
