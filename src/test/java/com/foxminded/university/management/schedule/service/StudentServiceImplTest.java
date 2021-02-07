@@ -59,7 +59,7 @@ class StudentServiceImplTest {
     void shouldReturnListOfStudents() {
         when(studentDao.getAll()).thenReturn(students);
 
-        assertEquals(students, studentService.getAllStudent());
+        assertEquals(students, studentService.getAllStudents());
 
         verify(studentDao, times(1)).getAll();
     }

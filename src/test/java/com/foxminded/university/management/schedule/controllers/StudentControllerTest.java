@@ -34,7 +34,7 @@ class StudentControllerTest {
                 new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L),
                 new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 1L, 1L),
                 new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 2L, 1L));
-        when(studentService.getAllStudent()).thenReturn(students);
+        when(studentService.getAllStudents()).thenReturn(students);
 
         List<Group> groups = List.of(
                 new Group(1L, "AB-01", 1L, 1L),

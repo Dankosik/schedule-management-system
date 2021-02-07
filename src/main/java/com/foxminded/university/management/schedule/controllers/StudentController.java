@@ -21,7 +21,7 @@ public class StudentController {
 
     @GetMapping("/students")
     public String showAllStudents(Model model) {
-        List<Student> students = studentService.getAllStudent();
+        List<Student> students = studentService.getAllStudents();
         model.addAttribute("students", students);
         model.addAttribute("groupNames", groupService.getGroupNamesForStudents(students));
         model.addAttribute("groups", groupService.getGroupsForStudents(students));
