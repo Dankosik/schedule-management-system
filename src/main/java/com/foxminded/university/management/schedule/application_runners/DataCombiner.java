@@ -1,14 +1,14 @@
-package com.foxminded.university.management.schedule.service.data.generation;
+package com.foxminded.university.management.schedule.application_runners;
 
 import com.foxminded.university.management.schedule.service.data.generation.impl.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 @Profile("!test")
-@Service
+@Component
 public class DataCombiner implements ApplicationRunner {
     private final AudienceServiceImpl audienceService;
     private final FacultyServiceImpl facultyService;
