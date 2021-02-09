@@ -140,8 +140,8 @@ class TeacherServiceImplTest {
                 .thenReturn(Optional.of(new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L)));
 
         List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 2L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 2L));
 
         List<Teacher> expected = List.of(
                 new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L),

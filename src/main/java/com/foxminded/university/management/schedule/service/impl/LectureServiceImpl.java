@@ -1,10 +1,8 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.dao.AudienceDao;
-import com.foxminded.university.management.schedule.dao.LectureDao;
-import com.foxminded.university.management.schedule.dao.LessonDao;
-import com.foxminded.university.management.schedule.dao.TeacherDao;
+import com.foxminded.university.management.schedule.dao.*;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Teacher;
@@ -25,12 +23,14 @@ public class LectureServiceImpl implements LectureService {
     private final LessonDao lessonDao;
     private final TeacherDao teacherDao;
     private final AudienceDao audienceDao;
+    private final GroupDao groupDao;
 
-    public LectureServiceImpl(LectureDao lectureDao, LessonDao lessonDao, TeacherDao teacherDao, AudienceDao audienceDao) {
+    public LectureServiceImpl(LectureDao lectureDao, LessonDao lessonDao, TeacherDao teacherDao, AudienceDao audienceDao, GroupDao groupDao) {
         this.lectureDao = lectureDao;
         this.lessonDao = lessonDao;
         this.teacherDao = teacherDao;
         this.audienceDao = audienceDao;
+        this.groupDao = groupDao;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public Lecture addTeacherToLecture(Teacher teacher, Lecture lecture) {
-        LOGGER.debug("Adding teacher {} to audience {}", teacher, lecture);
+        LOGGER.debug("Adding teacher {} to lecture {}", teacher, lecture);
         boolean isTeacherPresent = teacherDao.getById(teacher.getId()).isPresent();
         LOGGER.debug("Teacher is present: {}", isTeacherPresent);
         if (!isTeacherPresent)
@@ -154,7 +154,7 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public Lecture removeTeacherFromLecture(Teacher teacher, Lecture lecture) {
-        LOGGER.debug("Removing teacher {} from audience {}", teacher, lecture);
+        LOGGER.debug("Removing teacher {} from lecture {}", teacher, lecture);
         boolean isTeacherPresent = teacherDao.getById(teacher.getId()).isPresent();
         LOGGER.debug("Teacher is present: {}", isTeacherPresent);
         if (!isTeacherPresent)
@@ -173,6 +173,54 @@ public class LectureServiceImpl implements LectureService {
         lecture.setTeacherId(null);
         Lecture result = saveLecture(lecture);
         LOGGER.info("Successful removing teacher {} from lecture {}", teacher, lecture);
+        return result;
+    }
+
+    @Override
+    public Lecture addGroupToLecture(Group group, Lecture lecture) {
+        LOGGER.debug("Adding group {} to audience {}", group, lecture);
+        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
+        LOGGER.debug("Group is present: {}", isGroupPresent);
+        if (!isGroupPresent)
+            throw new ServiceException("Impossible to add group to lecture. Teacher with id: " + group.getId() + " not exist");
+
+        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
+        LOGGER.debug("Lecture is present: {}", isLecturePresent);
+        if (!isLecturePresent)
+            throw new ServiceException("Impossible to add group to lecture. Lecture with id: " + lecture.getId() + " not exist");
+
+        boolean isGroupAlreadyAddedToLecture = lecture.getGroupId() != null && lecture.getGroupId().equals(group.getId());
+        LOGGER.debug("Group is already added to lecture: {}", isGroupAlreadyAddedToLecture);
+        if (isGroupAlreadyAddedToLecture)
+            throw new ServiceException("Group with id: " + group.getId() + " is already added to lecture with id: " + lecture.getId());
+
+        lecture.setGroupId(group.getId());
+        Lecture result = saveLecture(lecture);
+        LOGGER.info("Successful adding group {} to lecture {}", group, lecture);
+        return result;
+    }
+
+    @Override
+    public Lecture removeGroupFromLecture(Group group, Lecture lecture) {
+        LOGGER.debug("Removing group {} from audience {}", group, lecture);
+        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
+        LOGGER.debug("Group is present: {}", isGroupPresent);
+        if (!isGroupPresent)
+            throw new ServiceException("Impossible to remove group from lecture. Group with id: " + group.getId() + " not exist");
+
+        boolean isLecturePresent = lectureDao.getById(lecture.getId()).isPresent();
+        LOGGER.debug("Lecture is present: {}", isLecturePresent);
+        if (!isLecturePresent)
+            throw new ServiceException("Impossible to remove group from lecture. Lecture with id: " + lecture.getId() + " not exist");
+
+        boolean isGroupAlreadyRemovedFromLecture = lecture.getGroupId() == null;
+        LOGGER.debug("Group is already removed from lecture: {}", isGroupAlreadyRemovedFromLecture);
+        if (isGroupAlreadyRemovedFromLecture)
+            throw new ServiceException("Group with id: " + group.getId() + " is already removed from lecture with id: " + lecture.getId());
+
+        lecture.setGroupId(null);
+        Lecture result = saveLecture(lecture);
+        LOGGER.info("Successful removing group {} from lecture {}", group, lecture);
         return result;
     }
 }

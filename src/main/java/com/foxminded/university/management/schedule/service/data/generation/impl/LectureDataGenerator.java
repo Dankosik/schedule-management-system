@@ -29,12 +29,14 @@ public class LectureDataGenerator implements DataGenerator<Lecture> {
         List<Long> teacherIds = ReceivingIdUtils.getTeacherIds();
         List<Long> audienceIds = ReceivingIdUtils.getAudienceIds();
         List<Long> lessonIds = ReceivingIdUtils.getLessonIds();
+        List<Long> groupIds = ReceivingIdUtils.getGroupIds();
         for (int i = 0; i < lessonService.getAllLessons().size(); i++) {
             Lecture lecture = new Lecture();
             lecture.setDate(dates.get((int) (Math.random() * dates.size())));
             lecture.setLessonId(lessonIds.get((int) (Math.random() * lessonIds.size())));
             lecture.setTeacherId(teacherIds.get((int) (Math.random() * teacherIds.size())));
             lecture.setAudienceId(audienceIds.get((int) (Math.random() * audienceIds.size())));
+            lecture.setGroupId(groupIds.get((int) (Math.random() * audienceIds.size())));
             lecture.setNumber(1 + (int) (Math.random() * 5));
             result.add(lecture);
         }

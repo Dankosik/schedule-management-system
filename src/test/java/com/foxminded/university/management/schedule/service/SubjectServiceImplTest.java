@@ -180,8 +180,8 @@ class SubjectServiceImplTest {
                 .thenReturn(new Lesson(2L, 1, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
 
         List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 1L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L,2L, 1L));
 
         List<Subject> expected = List.of(
                 new Subject(1L, "Math", 1L),

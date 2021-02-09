@@ -57,14 +57,14 @@ INSERT INTO teachers (id, first_name, last_name, middle_name, faculty_id, univer
 VALUES (1001, 'Lynsey', 'Grzeszczak', 'McPhillimey', 1001, 1000);
 
 
-INSERT INTO lectures (id, number, date, audience_id, lesson_id, teacher_id)
-VALUES (1000, 1, '1/1/2021', 1000, 1000, 1000);
-INSERT INTO lectures (id, number, date, audience_id, lesson_id, teacher_id)
-VALUES (1001, 2, '1/1/2021', 1001, 1001, 1001);
-INSERT INTO lectures (id, number, date, audience_id, lesson_id, teacher_id)
-VALUES (1002, 3, '1/1/2021', 1002, 1002, 1000);
-INSERT INTO lectures (id, number, date, audience_id, lesson_id, teacher_id)
-VALUES (1003, 4, '2/1/2021', 1003, 1003, 1001);
+INSERT INTO lectures (id, number, date, audience_id, group_id, lesson_id, teacher_id)
+VALUES (1000, 1, '1/1/2021', 1000, 1000, 1000, 1000);
+INSERT INTO lectures (id, number, date, audience_id, group_id, lesson_id, teacher_id)
+VALUES (1001, 2, '1/1/2021', 1001, 1000, 1001, 1001);
+INSERT INTO lectures (id, number, date, audience_id, group_id, lesson_id, teacher_id)
+VALUES (1002, 3, '1/1/2021', 1002, 1000, 1002, 1000);
+INSERT INTO lectures (id, number, date, audience_id, group_id, lesson_id, teacher_id)
+VALUES (1003, 4, '2/1/2021', 1003, 1000, 1003, 1001);
 
 insert into subjects_students (subject_id, student_id)
 values (1000, 1000);

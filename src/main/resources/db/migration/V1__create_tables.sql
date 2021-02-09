@@ -3,7 +3,8 @@ create table university
     id BIGSERIAL NOT NULL PRIMARY KEY
 );
 
-insert into university(id) values (1);
+insert into university(id)
+values (1);
 
 create table subjects
 (
@@ -47,21 +48,23 @@ create table teachers
     university_id BIGINT REFERENCES university (id) ON DELETE CASCADE
 );
 
-create table lectures
-(
-    id          BIGSERIAL NOT NULL PRIMARY KEY,
-    number      INT,
-    date        DATE,
-    audience_id BIGINT    REFERENCES audiences (id) ON DELETE SET NULL,
-    lesson_id   BIGINT    REFERENCES lessons (id) ON DELETE SET NULL,
-    teacher_id  BIGINT    REFERENCES teachers (id) ON DELETE SET NULL
-);
 create table groups
 (
     id            BIGSERIAL NOT NULL PRIMARY KEY,
     name          varchar(256) UNIQUE,
     faculty_id    BIGINT REFERENCES faculties (id) ON DELETE CASCADE,
     university_id BIGINT REFERENCES university (id) ON DELETE CASCADE
+);
+
+create table lectures
+(
+    id          BIGSERIAL NOT NULL PRIMARY KEY,
+    number      INT,
+    date        DATE,
+    audience_id BIGINT    REFERENCES audiences (id) ON DELETE SET NULL,
+    group_id    BIGINT REFERENCES groups (id) ON DELETE CASCADE,
+    lesson_id   BIGINT    REFERENCES lessons (id) ON DELETE SET NULL,
+    teacher_id  BIGINT    REFERENCES teachers (id) ON DELETE SET NULL
 );
 
 create table students

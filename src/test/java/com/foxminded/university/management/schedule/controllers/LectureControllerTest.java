@@ -36,12 +36,16 @@ class LectureControllerTest {
     private TeacherServiceImpl teacherService;
     @MockBean
     private SubjectServiceImpl subjectService;
+    @MockBean
+    private StudentServiceImpl studentService;
+    @MockBean
+    private GroupServiceImpl groupService;
 
     @Test
     public void shouldReturnViewWithAllLectures() throws Exception {
         List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 1L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 1L));
         when(lectureService.getAllLectures()).thenReturn(lectures);
 
         List<Lesson> lessons = List.of(
@@ -82,6 +86,19 @@ class LectureControllerTest {
                 new Subject(2L, "Art", 1L));
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);
 
+        List<Student> students = List.of(
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1000L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1000L));
+        when(studentService.getAllStudents()).thenReturn(students);
+
+        List<Group> groups = List.of(
+                new Group(1L, "AB-01", 1L, 1L),
+                new Group(2L, "AB-11", 1L, 1L));
+        when(groupService.getGroupsForStudents(students)).thenReturn(groups);
+
+        List<String> groupNames = List.of("AB-01", "AB-11");
+        when(groupService.getGroupNamesForStudents(students)).thenReturn(groupNames);
+
         mockMvc.perform(get("/lectures"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("lectures"))
@@ -93,7 +110,8 @@ class LectureControllerTest {
                 .andExpect(model().attribute("teacherNames", teacherNames))
                 .andExpect(model().attribute("audienceNumbers", audienceNumbers))
                 .andExpect(model().attribute("subjects", subjects))
+                .andExpect(model().attribute("groups", groups))
+                .andExpect(model().attribute("groupNames", groupNames))
                 .andExpect(model().attribute("audiences", audiences));
-
     }
 }

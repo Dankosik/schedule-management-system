@@ -1,10 +1,7 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
-import com.foxminded.university.management.schedule.models.Audience;
-import com.foxminded.university.management.schedule.models.Lecture;
-import com.foxminded.university.management.schedule.models.Lesson;
-import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,14 +18,18 @@ public class LectureController {
     private final LessonServiceImpl lessonService;
     private final TeacherServiceImpl teacherService;
     private final SubjectServiceImpl subjectService;
+    private final GroupServiceImpl groupService;
+    private final StudentServiceImpl studentService;
 
     public LectureController(LectureServiceImpl lectureService, AudienceServiceImpl audienceService, LessonServiceImpl lessonService,
-                             TeacherServiceImpl teacherService, SubjectServiceImpl subjectService) {
+                             TeacherServiceImpl teacherService, SubjectServiceImpl subjectService, GroupServiceImpl groupService, StudentServiceImpl studentService) {
         this.lectureService = lectureService;
         this.audienceService = audienceService;
         this.lessonService = lessonService;
         this.teacherService = teacherService;
         this.subjectService = subjectService;
+        this.groupService = groupService;
+        this.studentService = studentService;
     }
 
     @GetMapping("/lectures")
@@ -55,6 +56,10 @@ public class LectureController {
         model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersForAudiences(audiences));
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
+
+        List<Student> students = studentService.getAllStudents();
+        model.addAttribute("groupNames", groupService.getGroupNamesForStudents(students));
+        model.addAttribute("groups", groupService.getGroupsForStudents(students));
         return "lectures";
     }
 }

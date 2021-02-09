@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.service;
 
+import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Teacher;
@@ -24,4 +25,8 @@ public interface LectureService {
     Lecture addTeacherToLecture(Teacher teacher, Lecture lecture);
 
     Lecture removeTeacherFromLecture(Teacher teacher, Lecture lecture);
+
+    Lecture addGroupToLecture(Group group, Lecture lecture);
+
+    Lecture removeGroupFromLecture(Group group, Lecture lecture);
 }

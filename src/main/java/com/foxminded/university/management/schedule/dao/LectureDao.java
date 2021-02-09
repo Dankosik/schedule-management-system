@@ -29,13 +29,14 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
         params.put("number", lecture.getNumber());
         params.put("date", lecture.getDate());
         params.put("audience_id", lecture.getAudienceId());
+        params.put("group_id", lecture.getGroupId());
         params.put("lesson_id", lecture.getLessonId());
         params.put("teacher_id", lecture.getTeacherId());
 
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         LOGGER.info("Lecture created successful with id: {}", newId);
         return new Lecture(newId.longValue(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getLessonId(), lecture.getTeacherId());
+                lecture.getGroupId(), lecture.getLessonId(), lecture.getTeacherId());
     }
 
     @Override
@@ -47,7 +48,7 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
                 lecture.getId());
         LOGGER.info("Lecture updated successful: {}", lecture);
         return new Lecture(lecture.getId(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getLessonId(), lecture.getTeacherId());
+                lecture.getGroupId(), lecture.getLessonId(), lecture.getTeacherId());
     }
 
     @Override
@@ -104,6 +105,13 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
         LOGGER.debug("Getting lectures with teacher id: {}", id);
         List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures WHERE teacher_id = ?", new LectureRowMapper(), id);
         LOGGER.debug("Getting lectures with teacher id: {}", id);
+        return lectures;
+    }
+
+    public List<Lecture> getLecturesByGroupId(Long id) {
+        LOGGER.debug("Getting lectures with group id: {}", id);
+        List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures WHERE group_id = ?", new LectureRowMapper(), id);
+        LOGGER.debug("Getting lectures with group id: {}", id);
         return lectures;
     }
 }
