@@ -9,8 +9,9 @@
 </head>
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
+<div class="text-center mt-2">Group</div>
 <div>
-    <table class="table table-bordered w-25 text-center mx-auto mt-5">
+    <table class="table table-bordered w-25 text-center mx-auto mt-2">
         <thead>
         <tr>
             <th scope="col">id</th>
@@ -23,6 +24,32 @@
         <tr>
             <td th:text="${group.id}"></td>
             <td th:text="${group.name}"></td>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="text-center mt-2">Students</div>
+<div>
+    <table class="table table-bordered w-25 text-center mx-auto mt-2">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">First name</th>
+            <th scope="col">Last name</th>
+            <th scope="col">Middle name</th>
+            <th scope="col">Course number</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student, iter: ${students}">
+            <td th:text="${student.id}"></td>
+            <td th:text="${student.firstName}"></td>
+            <td th:text="${student.lastName}"></td>
+            <td th:text="${student.middleName}"></td>
+            <td th:text="${student.courseNumber}"></td>
             <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
         </tr>
         </tbody>
