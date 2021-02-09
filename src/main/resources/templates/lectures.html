@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" th:rel="stylesheet">
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" th:rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>FoxmindedUniversity</title>
+</head>
+<body>
+<div th:replace="commons/navbar :: navbar"></div>
+<div>
+    <form class="w-25 mx-auto mt-5">
+        <div class="form-row">
+            <div class="col">
+                <input class="form-control" placeholder="Number" type="text">
+            </div>
+            <div class="col">
+                <input class="form-control" placeholder="Date" type="date">
+            </div>
+            <div class="col">
+                <input class="form-control" placeholder="Lesson" type="text">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col mt-1">
+                <input class="form-control" placeholder="Number of audience" type="text">
+            </div>
+
+            <div class="col mt-1">
+                <input class="form-control" placeholder="Teacher" type="text">
+            </div>
+            <button class="btn btn-light ml-1 mt-1" type="submit">Add lecture</button>
+        </div>
+    </form>
+</div>
+<div>
+    <table class="table table-bordered w-25 text-center mx-auto mt-5">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Number</th>
+            <th scope="col">Date</th>
+            <th scope="col">Audience</th>
+            <th scope="col">Start time</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Subject</th>
+            <th scope="col">Teacher</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="lecture, iter: ${lectures}">
+            <td th:text="${lecture.id}"></td>
+            <td th:text="${lecture.number}"></td>
+            <td th:text="${lecture.date}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/audiences/'} + ${audiences.get(iter.index).getId()}"
+                   th:text="${audienceNumbers.get(iter.index)}">
+                </a>
+            </td>
+            <td th:text="${startTimes.get(iter.index)}"></td>
+            <td th:text="${durations.get(iter.index)}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                   th:text="${subjectNames.get(iter.index)}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+                   th:text="${teacherNames.get(iter.index)}">
+                </a>
+            </td>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

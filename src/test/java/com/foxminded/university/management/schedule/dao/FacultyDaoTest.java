@@ -1,17 +1,18 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Faculty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @SpringBootTest
 class FacultyDaoTest extends BaseDaoTest {
     private FacultyDao facultyDao;
@@ -109,11 +110,11 @@ class FacultyDaoTest extends BaseDaoTest {
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
-        assertThrows(DuplicateKeyException.class, ()-> facultyDao.save( new Faculty( "FAIT", 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> facultyDao.save(new Faculty("FAIT", 1000L)));
     }
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnCUpdate() {
-        assertThrows(DuplicateKeyException.class, ()-> facultyDao.save( new Faculty( 1000L, "FKFN", 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> facultyDao.save(new Faculty(1000L, "FKFN", 1000L)));
     }
 }

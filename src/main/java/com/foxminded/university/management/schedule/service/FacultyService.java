@@ -24,4 +24,8 @@ public interface FacultyService {
     Teacher addTeacherToFaculty(Teacher teacher, Faculty faculty);
 
     Teacher removeTeacherFromFaculty(Teacher teacher, Faculty faculty);
+
+    List<String> getFacultyNamesForTeachers(List<Teacher> teachers);
+
+    List<Faculty> getFacultiesForTeachers(List<Teacher> teachers);
 }

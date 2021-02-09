@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" th:rel="stylesheet"/>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand">Foxminded university</a>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/audiences">Audiences</a>
+                <a class="nav-item nav-link" href="/faculties">Faculties</a>
+                <a class="nav-item nav-link" href="/groups">Groups</a>
+                <a class="nav-item nav-link" href="/lectures">Lectures</a>
+                <a class="nav-item nav-link" href="/lessons">Lessons</a>
+                <a class="nav-item nav-link" href="/students">Students</a>
+                <a class="nav-item nav-link" href="/subjects">Subjects</a>
+                <a class="nav-item nav-link" href="/teachers">Teachers</a>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

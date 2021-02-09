@@ -3,6 +3,8 @@ create table university
     id BIGSERIAL NOT NULL PRIMARY KEY
 );
 
+insert into university(id) values (1);
+
 create table subjects
 (
     id            BIGSERIAL NOT NULL PRIMARY KEY,

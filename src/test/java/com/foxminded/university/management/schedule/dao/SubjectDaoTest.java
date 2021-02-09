@@ -1,17 +1,18 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Subject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 @SpringBootTest
 class SubjectDaoTest extends BaseDaoTest {
     private SubjectDao subjectDao;
@@ -135,6 +136,6 @@ class SubjectDaoTest extends BaseDaoTest {
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
-        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject(1001L,"Math", 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject(1001L, "Math", 1000L)));
     }
 }

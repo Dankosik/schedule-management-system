@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -25,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class FacultyServiceImplTest {
@@ -176,7 +178,7 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfUpdatedFacultyWithInputNameIsAlreadyExist() {
-        Faculty expected = new Faculty(1L,"FAIT", 1L);
+        Faculty expected = new Faculty(1L, "FAIT", 1L);
 
         when(facultyDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
@@ -345,5 +347,41 @@ class FacultyServiceImplTest {
         verify(facultyDao, times(1)).getById(1L);
         verify(teacherDao, times(1)).getById(1L);
         verify(teacherService, never()).saveTeacher(expected);
+    }
+
+    @Test
+    void shouldReturnFacultyNamesForTeachers() {
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
+        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN", 1L)));
+
+        List<Teacher> teachers = List.of(
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L, 1L));
+
+        List<String> expected = List.of("FAIT", "FKFN");
+
+        assertEquals(expected, facultyService.getFacultyNamesForTeachers(teachers));
+
+        verify(facultyDao, times(2)).getById(1L);
+        verify(facultyDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnFacultiesForTeachers() {
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
+        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN", 1L)));
+
+        List<Teacher> teachers = List.of(
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L, 1L));
+
+        List<Faculty> expected = List.of(
+                new Faculty(1L, "FAIT", 1L),
+                new Faculty(2L, "FKFN", 1L));
+
+        assertEquals(expected, facultyService.getFacultiesForTeachers(teachers));
+
+        verify(facultyDao, times(2)).getById(1L);
+        verify(facultyDao, times(2)).getById(2L);
     }
 }

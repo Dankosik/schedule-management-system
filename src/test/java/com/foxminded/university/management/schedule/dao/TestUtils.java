@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
+@ActiveProfiles("test")
 @Component
 public class TestUtils {
     private final DataSource dataSource;

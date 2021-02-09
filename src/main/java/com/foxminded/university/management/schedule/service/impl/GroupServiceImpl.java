@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -117,5 +118,24 @@ public class GroupServiceImpl implements GroupService {
         Student result = studentService.saveStudent(student);
         LOGGER.info("Successful removing student {} from group {}", student, group);
         return result;
+    }
+
+    @Override
+    public List<String> getGroupNamesForStudents(List<Student> students) {
+        LOGGER.debug("Getting group names for students {}", students);
+        List<String> result = new ArrayList<>();
+        students.forEach(student -> result.add(getGroupById(student.getGroupId()).getName()));
+        LOGGER.info("Group names for students {} received successful", students);
+        return result;
+    }
+
+    @Override
+    public List<Group> getGroupsForStudents(List<Student> students) {
+        LOGGER.debug("Getting groups for students {}", students);
+        List<Group> groups = students.stream()
+                .map(student -> getGroupById(student.getGroupId()))
+                .collect(Collectors.toList());
+        LOGGER.info("Group for students {} received successful", students);
+        return groups;
     }
 }

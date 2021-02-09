@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class StudentServiceImplTest {
@@ -59,7 +61,7 @@ class StudentServiceImplTest {
     void shouldReturnListOfStudents() {
         when(studentDao.getAll()).thenReturn(students);
 
-        assertEquals(students, studentService.getAllStudent());
+        assertEquals(students, studentService.getAllStudents());
 
         verify(studentDao, times(1)).getAll();
     }
