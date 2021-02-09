@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.service.impl;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.StudentService;
 import org.slf4j.Logger;
@@ -61,5 +62,10 @@ public class StudentServiceImpl implements StudentService {
         List<Student> result = new ArrayList<>();
         students.forEach(student -> result.add(saveStudent(student)));
         return result;
+    }
+
+    @Override
+    public List<Student> getStudentsForGroup(Group group) {
+        return studentDao.getStudentsByGroupId(group.getId());
     }
 }
