@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.service.data.generation.imp
 
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
+import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import com.foxminded.university.management.schedule.service.data.generation.utils.ReceivingIdUtils;
 import org.springframework.stereotype.Service;
 
@@ -21,18 +22,17 @@ public class TeacherDataGenerator implements DataGenerator<Teacher> {
     public List<Teacher> generateData() {
         List<Teacher> result = new ArrayList<>();
         List<Long> facultyIds = ReceivingIdUtils.getFacultyIds();
-        int min = 0;
-        int max = firstNames.size();
+        int max = firstNames.size() - 1;
         for (int i = 0; i < 1 + (int) (Math.random() * firstNames.size() - 1); i++) {
             Teacher teacher = new Teacher();
-            String firstName = firstNames.get((min + (int) (Math.random() * max)));
-            String lastName = lastNames.get((min + (int) (Math.random() * max)));
-            String middleName = lastNames.get((min + (int) (Math.random() * max)));
+            String firstName = firstNames.get(RandomUtils.random(0, max));
+            String lastName = lastNames.get(RandomUtils.random(0, max));
+            String middleName = lastNames.get(RandomUtils.random(0, max));
             teacher.setFirstName(firstName);
             teacher.setLastName(lastName);
             teacher.setMiddleName(middleName);
             teacher.setUniversityId(1L);
-            teacher.setFacultyId(facultyIds.get((int) (1 + (Math.random() * facultyIds.size() - 1))));
+            teacher.setFacultyId(facultyIds.get(RandomUtils.random(0, facultyIds.size() - 1)));
             result.add(teacher);
 
         }

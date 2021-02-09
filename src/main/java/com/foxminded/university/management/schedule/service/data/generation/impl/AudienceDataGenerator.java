@@ -2,17 +2,19 @@ package com.foxminded.university.management.schedule.service.data.generation.imp
 
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
+import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class AudienceDataGenerator implements DataGenerator<Audience> {
     @Override
     public List<Audience> generateData() {
         List<Audience> result = new ArrayList<>();
-        for (int i = 0; i < 1 + (int) (Math.random() * 10); i++) {
+        for (int i = 0; i < RandomUtils.random(1, 10); i++) {
             Audience audience = new Audience();
             audience.setNumber(generateAudienceNumber());
             audience.setUniversityId(1L);
@@ -25,12 +27,12 @@ public class AudienceDataGenerator implements DataGenerator<Audience> {
     private int generateAudienceNumber() {
         int min = 100;
         int max = 999;
-        return (min + (int) (Math.random() * max));
+        return RandomUtils.random(min, max);
     }
 
     private int generateAudienceCapacity() {
         int min = 10;
         int max = 100;
-        return (min + (int) (Math.random() * max));
+        return RandomUtils.random(min, max);
     }
 }

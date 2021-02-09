@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.service.data.generation.imp
 
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
+import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class FacultyDataGenerator implements DataGenerator<Faculty> {
     @Override
     public List<Faculty> generateData() {
         List<Faculty> result = new ArrayList<>();
-        for (int i = 0; i < 1 + (int) (Math.random() * 10); i++) {
+        for (int i = 0; i < RandomUtils.random(1, 10); i++) {
             Faculty faculty = new Faculty();
             faculty.setUniversityId(1L);
             faculty.setName(generateFacultyName());
@@ -26,7 +27,7 @@ public class FacultyDataGenerator implements DataGenerator<Faculty> {
         char[] chars = "ABCDIFGHIJKLMNOPRSTUVWXYZ".toCharArray();
         StringBuilder result = new StringBuilder();
         Random random = new Random();
-        for (int i = 0; i < 1 + (int) (Math.random() * 6); i++) {
+        for (int i = 0; i < RandomUtils.random(4, 7); i++) {
             char c = chars[random.nextInt(chars.length)];
             result.append(c);
         }

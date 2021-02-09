@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.service.data.generation.imp
 
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
+import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import com.foxminded.university.management.schedule.service.data.generation.utils.ReceivingIdUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,12 @@ public class LessonDataGenerator implements DataGenerator<Lesson> {
     public List<Lesson> generateData() {
         List<Lesson> result = new ArrayList<>();
         List<Long> subjectIds = ReceivingIdUtils.getSubjectIds();
-        for (int i = 0; i < 1 + (int) (Math.random() * 10); i++) {
+        for (int i = 0; i < RandomUtils.random(4, 10); i++) {
             Lesson lesson = new Lesson();
             lesson.setDuration(Duration.ofMinutes(90));
             lesson.setNumber(1 + (int) (Math.random() * 5));
-            lesson.setStartTime(startTimes.get((int) (Math.random() * startTimes.size())));
-            lesson.setSubjectId(subjectIds.get((int) (Math.random() * subjectIds.size())));
+            lesson.setStartTime(startTimes.get(RandomUtils.random(0, startTimes.size() - 1)));
+            lesson.setSubjectId(subjectIds.get(RandomUtils.random(0, subjectIds.size() - 1)));
             result.add(lesson);
         }
         return result;

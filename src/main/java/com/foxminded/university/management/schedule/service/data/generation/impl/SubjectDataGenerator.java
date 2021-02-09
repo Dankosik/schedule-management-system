@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.service.data.generation.imp
 
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
+import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class SubjectDataGenerator implements DataGenerator<Subject> {
     public List<Subject> generateData() {
         List<Subject> result = new ArrayList<>();
         int sizeOfSubjects = subjectNames.size();
-        for (int i = 0; i < 1 + (int) (Math.random() * sizeOfSubjects); i++) {
+        for (int i = 0; i < RandomUtils.random(1, sizeOfSubjects); i++) {
             Subject subject = new Subject();
             subject.setUniversityId(1L);
             subject.setName(generateSubjectName());
@@ -28,7 +29,7 @@ public class SubjectDataGenerator implements DataGenerator<Subject> {
     }
 
     private String generateSubjectName() {
-        String subjectName = subjectNames.get((int) (Math.random() * subjectNames.size()));
+        String subjectName = subjectNames.get(RandomUtils.random(0, subjectNames.size() - 1));
         subjectNames.remove(subjectName);
         return subjectName;
     }
