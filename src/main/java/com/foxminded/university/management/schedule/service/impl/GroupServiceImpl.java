@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.GroupService;
@@ -136,6 +137,14 @@ public class GroupServiceImpl implements GroupService {
                 .map(student -> getGroupById(student.getGroupId()))
                 .collect(Collectors.toList());
         LOGGER.info("Group for students {} received successful", students);
+        return groups;
+    }
+
+    @Override
+    public List<Group> getGroupsForFaculty(Faculty faculty) {
+        LOGGER.debug("Getting group for faculty {}", faculty);
+        List<Group> groups = groupDao.getGroupsByFacultyId(faculty.getId());
+        LOGGER.info("Groups for faculty {} received successful", faculty);
         return groups;
     }
 }

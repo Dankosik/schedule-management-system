@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.service;
 
+import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 
@@ -23,4 +24,6 @@ public interface GroupService {
     List<String> getGroupNamesForStudents(List<Student> students);
 
     List<Group> getGroupsForStudents(List<Student> students);
+
+    List<Group> getGroupsForFaculty(Faculty faculty);
 }
