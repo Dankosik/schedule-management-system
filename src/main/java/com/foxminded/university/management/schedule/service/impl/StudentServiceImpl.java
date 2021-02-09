@@ -66,6 +66,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> getStudentsForGroup(Group group) {
-        return studentDao.getStudentsByGroupId(group.getId());
+        LOGGER.debug("Getting students for group {}", group);
+        List<Student> students = studentDao.getStudentsByGroupId(group.getId());
+        LOGGER.info("Students for group {} received successful", group);
+        return students;
     }
 }
