@@ -3,6 +3,8 @@ package com.foxminded.university.management.schedule.service.impl;
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Audience;
+import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.TeacherService;
@@ -86,6 +88,14 @@ public class TeacherServiceImpl implements TeacherService {
                 .map(lecture -> getTeacherById(lecture.getTeacherId()))
                 .collect(Collectors.toList());
         LOGGER.info("Teachers for lectures {} received successful", lectures);
+        return teachers;
+    }
+
+    @Override
+    public List<Teacher> getTeachersForFaculty(Faculty faculty) {
+        LOGGER.debug("Getting teachers for faculty {}", faculty);
+        List<Teacher> teachers = teacherDao.getTeachersByFacultyId(faculty.getId());
+        LOGGER.info("Teachers for faculty {} received successful", faculty);
         return teachers;
     }
 }
