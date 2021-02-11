@@ -297,4 +297,17 @@ class GroupServiceImplTest {
         verify(groupDao, times(2)).getById(1L);
         verify(groupDao, times(2)).getById(2L);
     }
+
+    @Test
+    void shouldReturnGroupsForFaculty() {
+        List<Group> expected = List.of(
+            new Group(1L, "AB-01", 1L, 1L),
+            new Group(2L, "CD-21", 1L, 1L));
+
+        when(groupDao.getGroupsByFacultyId(1L)).thenReturn(expected);
+
+        assertEquals(expected, groupService.getGroupsForFaculty(new Faculty(1L, "AB-01", 1L)));
+
+        verify(groupDao, times(1)).getGroupsByFacultyId(1L);
+    }
 }
