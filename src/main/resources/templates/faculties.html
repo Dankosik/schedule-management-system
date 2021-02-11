@@ -30,9 +30,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="faculty: ${faculties}">
+        <tr th:each="faculty, iter: ${faculties}">
             <td th:text="${faculty.id}"></td>
-            <td th:text="${faculty.name}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/faculties/'} + ${faculties.get(iter.index).getId()}"
+                   th:text="${faculty.name}">
+                </a>
+            </td>
             <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
         </tr>
         </tbody>
