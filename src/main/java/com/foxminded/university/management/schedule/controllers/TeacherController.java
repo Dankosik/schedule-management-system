@@ -60,16 +60,15 @@ public class TeacherController {
                 .collect(Collectors.toList());
 
         model.addAttribute("durations", formattedDurations);
-        model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
         model.addAttribute("startTimes", lessonService.getStartTimesForLessons(lessons));
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
+        model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
 
-        List<Student> students = studentService.getAllStudents();
-        model.addAttribute("groupNames", groupService.getGroupNamesForStudents(students));
-        model.addAttribute("groups", groupService.getGroupsForStudents(students));
+        model.addAttribute("groupNames", groupService.getGroupNamesForLectures(lectures));
+        model.addAttribute("groups", groupService.getGroupsForLectures(lectures));
+
         List<Audience> audiences = audienceService.getAudiencesForLectures(lectures);
-
         model.addAttribute("audiences", audiences);
         model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersForAudiences(audiences));
         return "teacher";
