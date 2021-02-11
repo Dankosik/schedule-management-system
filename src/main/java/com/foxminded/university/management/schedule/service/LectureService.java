@@ -1,9 +1,6 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.models.Group;
-import com.foxminded.university.management.schedule.models.Lecture;
-import com.foxminded.university.management.schedule.models.Lesson;
-import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.models.*;
 
 import java.util.List;
 
@@ -29,4 +26,10 @@ public interface LectureService {
     Lecture addGroupToLecture(Group group, Lecture lecture);
 
     Lecture removeGroupFromLecture(Group group, Lecture lecture);
+
+    List<Lecture> getLecturesForAudience(Audience audience);
+
+    List<Lecture> getLecturesForTeacher(Teacher teacher);
+
+    List<Lecture> getLecturesForGroup(Group group);
 }

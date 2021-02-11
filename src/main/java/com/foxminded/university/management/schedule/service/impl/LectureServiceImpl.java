@@ -2,10 +2,7 @@ package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.*;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
-import com.foxminded.university.management.schedule.models.Group;
-import com.foxminded.university.management.schedule.models.Lecture;
-import com.foxminded.university.management.schedule.models.Lesson;
-import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.LectureService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -222,5 +219,29 @@ public class LectureServiceImpl implements LectureService {
         Lecture result = saveLecture(lecture);
         LOGGER.info("Successful removing group {} from lecture {}", group, lecture);
         return result;
+    }
+
+    @Override
+    public List<Lecture> getLecturesForAudience(Audience audience) {
+        LOGGER.debug("Getting lectures for audience {}", audience);
+        List<Lecture> lectures = lectureDao.getLecturesByAudienceId(audience.getId());
+        LOGGER.info("Lectures for audience {} received successful", audience);
+        return lectures;
+    }
+
+    @Override
+    public List<Lecture> getLecturesForTeacher(Teacher teacher) {
+        LOGGER.debug("Getting lectures for teacher {}", teacher);
+        List<Lecture> lectures = lectureDao.getLecturesByTeacherId(teacher.getId());
+        LOGGER.info("Lectures for teacher {} received successful", teacher);
+        return lectures;
+    }
+
+    @Override
+    public List<Lecture> getLecturesForGroup(Group group) {
+        LOGGER.debug("Getting lectures for group {}", group);
+        List<Lecture> lectures = lectureDao.getLecturesByGroupId(group.getId());
+        LOGGER.info("Lectures for group {} received successful", group);
+        return lectures;
     }
 }
