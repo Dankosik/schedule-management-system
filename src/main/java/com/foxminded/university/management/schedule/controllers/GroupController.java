@@ -44,6 +44,7 @@ public class GroupController {
     public String showOneGroup(@PathVariable("id") Long id, Model model) {
         Group group = groupService.getGroupById(id);
         model.addAttribute("group", group);
+
         model.addAttribute("students", studentService.getStudentsForGroup(group));
 
         List<Lecture> lectures = lectureService.getLecturesForGroup(group);
@@ -56,9 +57,9 @@ public class GroupController {
                 .collect(Collectors.toList());
 
         model.addAttribute("durations", formattedDurations);
-        model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
         model.addAttribute("startTimes", lessonService.getStartTimesForLessons(lessons));
 
+        model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
 
         List<Teacher> teachers = teacherService.getTeachersForLectures(lectures);

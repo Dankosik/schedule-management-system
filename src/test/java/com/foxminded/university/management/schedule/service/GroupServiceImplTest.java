@@ -304,8 +304,8 @@ class GroupServiceImplTest {
     @Test
     void shouldReturnGroupsForFaculty() {
         List<Group> expected = List.of(
-            new Group(1L, "AB-01", 1L, 1L),
-            new Group(2L, "CD-21", 1L, 1L));
+                new Group(1L, "AB-01", 1L, 1L),
+                new Group(2L, "CD-21", 1L, 1L));
 
         when(groupDao.getGroupsByFacultyId(1L)).thenReturn(expected);
 
@@ -320,8 +320,8 @@ class GroupServiceImplTest {
         when(groupDao.getById(2L)).thenReturn(Optional.of(new Group(2L, "CD-21", 1L, 1L)));
 
         List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L,2L, 1L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 2L, 1L));
 
         List<String> expected = List.of("AB-01", "CD-21");
 
@@ -337,8 +337,8 @@ class GroupServiceImplTest {
         when(groupDao.getById(2L)).thenReturn(Optional.of(new Group(2L, "CD-21", 1L, 1L)));
 
         List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L,2L, 1L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 2L, 1L));
 
         List<Group> expected = List.of(
                 new Group(1L, "AB-01", 1L, 1L),

@@ -167,7 +167,7 @@ class LectureServiceImplTest {
         when(lectureService.saveLecture(expected)).thenReturn(expected);
 
         Lecture actual = lectureService.removeLessonFromLecture(lesson, new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                null, null,1L, null));
+                null, null, 1L, null));
         assertEquals(expected, actual);
 
         verify(teacherDao, times(2)).getById(null);
@@ -217,7 +217,7 @@ class LectureServiceImplTest {
         when(lectureService.saveLecture(expected)).thenReturn(expected);
 
         Lecture actual = lectureService.removeTeacherFromLecture(teacher, new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                null, null,null, 1L));
+                null, null, null, 1L));
         assertEquals(expected, actual);
 
         verify(teacherDao, times(2)).getById(null);
@@ -470,7 +470,7 @@ class LectureServiceImplTest {
     @Test
     void shouldThrowExceptionIfLessonIsAlreadyRemovedFromLecture() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,null, 3L);
+                1L, 1L, null, 3L);
 
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -500,7 +500,7 @@ class LectureServiceImplTest {
     @Test
     void shouldThrowExceptionIfGroupIsAlreadyRemovedFromLecture() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, null,null, 3L);
+                1L, null, null, 3L);
 
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -515,7 +515,7 @@ class LectureServiceImplTest {
     @Test
     void shouldThrowExceptionIfTeacherIsAlreadyRemovedFromLecture() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,1L, null);
+                1L, 1L, 1L, null);
 
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -530,7 +530,7 @@ class LectureServiceImplTest {
     @Test
     void shouldThrowExceptionIfLectureTeacherNotFound() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,1L, 1L);
+                1L, 1L, 1L, 1L);
 
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
         when(teacherDao.getById(1L)).thenReturn(Optional.empty());
@@ -544,7 +544,7 @@ class LectureServiceImplTest {
     @Test
     void shouldThrowExceptionIfLectureLessonNotFound() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,1L, 1L);
+                1L, 1L, 1L, 1L);
 
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
         when(teacherDao.getById(1L))
@@ -564,7 +564,7 @@ class LectureServiceImplTest {
     @Test
     void shouldThrowExceptionIfLectureAudienceNotFound() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,1L, 1L);
+                1L, 1L, 1L, 1L);
 
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
         when(teacherDao.getById(1L))
@@ -581,8 +581,8 @@ class LectureServiceImplTest {
     @Test
     void shouldReturnLecturesForAudience() {
         List<Lecture> expected = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 2L,1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 3L,2L, 2L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 2L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 3L, 2L, 2L));
 
         when(lectureDao.getLecturesByAudienceId(1L)).thenReturn(expected);
 
@@ -594,13 +594,13 @@ class LectureServiceImplTest {
     @Test
     void shouldReturnLecturesForTeacher() {
         List<Lecture> expected = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 2L,1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 3L,2L, 1L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 2L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 3L, 2L, 1L));
 
         when(lectureDao.getLecturesByTeacherId(1L)).thenReturn(expected);
 
         assertEquals(expected, lectureService.getLecturesForTeacher(
-                new Teacher(1L,"John", "Jackson", "Jackson", 1L, 1L)));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L)));
 
         verify(lectureDao, times(1)).getLecturesByTeacherId(1L);
     }
@@ -608,8 +608,8 @@ class LectureServiceImplTest {
     @Test
     void shouldReturnLecturesForGroup() {
         List<Lecture> expected = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,2L, 1L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 2L, 1L));
 
         when(lectureDao.getLecturesByGroupId(1L)).thenReturn(expected);
 

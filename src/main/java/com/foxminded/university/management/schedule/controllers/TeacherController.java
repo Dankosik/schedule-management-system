@@ -1,7 +1,10 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
-import com.foxminded.university.management.schedule.models.*;
+import com.foxminded.university.management.schedule.models.Audience;
+import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.models.Lesson;
+import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

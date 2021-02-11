@@ -36,7 +36,7 @@ class AudienceServiceImplTest {
             new Audience(4L, 205, 60, 1L));
 
     private final Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-            null, 1L,2L, 3L);
+            null, 1L, 2L, 3L);
     @Autowired
     private AudienceServiceImpl audienceService;
     @MockBean
@@ -106,12 +106,12 @@ class AudienceServiceImplTest {
     @Test
     void shouldAddLectureToAudience() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,2L, 3L);
+                1L, 1L, 2L, 3L);
 
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureService.saveLecture(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,2L, 3L))).thenReturn(expected);
+                1L, 1L, 2L, 3L))).thenReturn(expected);
 
         Lecture actual = audienceService.addLectureToAudience(lecture, audience);
         assertEquals(expected, actual);
@@ -126,11 +126,11 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureService.saveLecture(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                null,1L, 2L, 3L)))
+                null, 1L, 2L, 3L)))
                 .thenReturn(lecture);
 
         Lecture actual = audienceService.removeLectureFromAudience(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,2L, 3L), audience);
+                1L, 1L, 2L, 3L), audience);
         assertEquals(lecture, actual);
 
         verify(audienceDao, times(1)).getById(1L);
@@ -221,7 +221,7 @@ class AudienceServiceImplTest {
     @Test
     void shouldThrowExceptionIfLectureIsAlreadyAddedToAudience() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 1L,2L, 3L);
+                1L, 1L, 2L, 3L);
 
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -236,7 +236,7 @@ class AudienceServiceImplTest {
     @Test
     void shouldThrowExceptionIfLectureIsAlreadyRemovedFromAudience() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                null, 1L,2L, 3L);
+                null, 1L, 2L, 3L);
 
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -270,9 +270,9 @@ class AudienceServiceImplTest {
                 new Audience(3L, 204, 55, 1L));
 
         List<Lecture> input = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L,1L, 1L),
-                new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 1L,1L, 1L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 1L, 1L),
+                new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 1L, 1L, 1L));
 
         assertEquals(expected, audienceService.getAudiencesForLectures(input));
 
