@@ -24,7 +24,7 @@ public class LectureController {
     private final GroupServiceImpl groupService;
 
     public LectureController(LectureServiceImpl lectureService, AudienceServiceImpl audienceService, LessonServiceImpl lessonService,
-                             TeacherServiceImpl teacherService, SubjectServiceImpl subjectService, GroupServiceImpl groupService, StudentServiceImpl studentService) {
+                             TeacherServiceImpl teacherService, SubjectServiceImpl subjectService, GroupServiceImpl groupService) {
         this.lectureService = lectureService;
         this.audienceService = audienceService;
         this.lessonService = lessonService;

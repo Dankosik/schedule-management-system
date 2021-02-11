@@ -23,18 +23,18 @@ public class TeacherController {
     private final LectureServiceImpl lectureService;
     private final LessonServiceImpl lessonService;
     private final SubjectServiceImpl subjectService;
-    private final StudentServiceImpl studentService;
     private final GroupServiceImpl groupService;
 
 
-    public TeacherController(TeacherServiceImpl teacherService, FacultyServiceImpl facultyService, AudienceServiceImpl audienceService, LectureServiceImpl lectureService, LessonServiceImpl lessonService, SubjectServiceImpl subjectService, StudentServiceImpl studentService, GroupServiceImpl groupService) {
+    public TeacherController(TeacherServiceImpl teacherService, FacultyServiceImpl facultyService,
+                             AudienceServiceImpl audienceService, LectureServiceImpl lectureService,
+                             LessonServiceImpl lessonService, SubjectServiceImpl subjectService, GroupServiceImpl groupService) {
         this.teacherService = teacherService;
         this.facultyService = facultyService;
         this.audienceService = audienceService;
         this.lectureService = lectureService;
         this.lessonService = lessonService;
         this.subjectService = subjectService;
-        this.studentService = studentService;
         this.groupService = groupService;
     }
 

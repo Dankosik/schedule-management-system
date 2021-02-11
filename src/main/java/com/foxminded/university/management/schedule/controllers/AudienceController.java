@@ -25,7 +25,9 @@ public class AudienceController {
     private final StudentServiceImpl studentService;
     private final GroupServiceImpl groupService;
 
-    public AudienceController(AudienceServiceImpl audienceService, LectureServiceImpl lectureService, LessonServiceImpl lessonService, SubjectServiceImpl subjectService, TeacherServiceImpl teacherService, StudentServiceImpl studentService, GroupServiceImpl groupService) {
+    public AudienceController(AudienceServiceImpl audienceService, LectureServiceImpl lectureService,
+                              LessonServiceImpl lessonService, SubjectServiceImpl subjectService,
+                              TeacherServiceImpl teacherService, StudentServiceImpl studentService, GroupServiceImpl groupService) {
         this.audienceService = audienceService;
         this.lectureService = lectureService;
         this.lessonService = lessonService;
