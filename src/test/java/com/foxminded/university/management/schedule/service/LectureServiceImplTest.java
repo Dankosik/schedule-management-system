@@ -577,4 +577,44 @@ class LectureServiceImplTest {
         verify(audienceDao, times(1)).getById(1L);
         verify(lectureDao, never()).save(expected);
     }
+
+    @Test
+    void shouldReturnLecturesForAudience() {
+        List<Lecture> expected = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 2L,1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 3L,2L, 2L));
+
+        when(lectureDao.getLecturesByAudienceId(1L)).thenReturn(expected);
+
+        assertEquals(expected, lectureService.getLecturesForAudience(new Audience(1L, 211, 35, 1L)));
+
+        verify(lectureDao, times(1)).getLecturesByAudienceId(1L);
+    }
+
+    @Test
+    void shouldReturnLecturesForTeacher() {
+        List<Lecture> expected = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 2L,1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 3L,2L, 1L));
+
+        when(lectureDao.getLecturesByTeacherId(1L)).thenReturn(expected);
+
+        assertEquals(expected, lectureService.getLecturesForTeacher(
+                new Teacher(1L,"John", "Jackson", "Jackson", 1L, 1L)));
+
+        verify(lectureDao, times(1)).getLecturesByTeacherId(1L);
+    }
+
+    @Test
+    void shouldReturnLecturesForGroup() {
+        List<Lecture> expected = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,2L, 1L));
+
+        when(lectureDao.getLecturesByGroupId(1L)).thenReturn(expected);
+
+        assertEquals(expected, lectureService.getLecturesForGroup(new Group(1L, "AB-12", 1L, 1L)));
+
+        verify(lectureDao, times(1)).getLecturesByGroupId(1L);
+    }
 }
