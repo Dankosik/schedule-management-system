@@ -9,8 +9,9 @@
 </head>
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
+<div class="text-center mb-2">Teacher</div>
 <div>
-    <table class="table table-bordered w-25 text-center mx-auto mt-5">
+    <table class="table table-bordered w-25 text-center mx-auto mt-2">
         <thead>
         <tr>
             <th scope="col">id</th>
@@ -39,5 +40,53 @@
         </tbody>
     </table>
 </div>
+<div th:if="${not #lists.isEmpty(lectures)}">
+    <div class="text-center mb-2">Lectures</div>
+    <table class="table table-bordered w-25 text-center mx-auto mt-2">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Number</th>
+            <th scope="col">Group</th>
+            <th scope="col">Audience</th>
+            <th scope="col">Date</th>
+            <th scope="col">Start time</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Subject</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="lecture, iter: ${lectures}">
+            <td th:text="${lecture.id}"></td>
+            <td th:text="${lecture.number}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/groups/'} + ${groups.get(iter.index).getId()}"
+                   th:text="${groupNames.get(iter.index)}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/audience/'} + ${audiences.get(iter.index).getId()}"
+                   th:text="${audienceNumbers.get(iter.index)}">
+                </a>
+            </td>
+            <td th:text="${lecture.date}"></td>
+            <td th:text="${startTimes.get(iter.index)}"></td>
+            <td th:text="${durations.get(iter.index)}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                   th:text="${subjectNames.get(iter.index)}">
+                </a>
+            </td>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="text-center" th:unless="${not #lists.isEmpty(lectures)}">This teacher have 0 lectures</div>
 </body>
 </html>
