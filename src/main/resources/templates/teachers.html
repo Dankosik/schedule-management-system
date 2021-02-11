@@ -46,9 +46,24 @@
         <tbody>
         <tr th:each="teacher, iter: ${teachers}">
             <td th:text="${teacher.id}"></td>
-            <td th:text="${teacher.firstName}"></td>
-            <td th:text="${teacher.lastName}"></td>
-            <td th:text="${teacher.middleName}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.firstName}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.lastName}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.middleName}">
+                </a>
+            </td>
             <td>
                 <a style="text-decoration: none; color: black"
                    th:href="@{'/faculties/'} + ${faculties.get(iter.index).getId()}"
