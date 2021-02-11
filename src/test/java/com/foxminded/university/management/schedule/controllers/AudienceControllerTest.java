@@ -103,18 +103,13 @@ class AudienceControllerTest {
                 new Subject(2L, "Art", 1L));
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);
 
-        List<Student> students = List.of(
-                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1000L),
-                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1000L));
-        when(studentService.getAllStudents()).thenReturn(students);
-
         List<Group> groups = List.of(
                 new Group(1L, "AB-01", 1L, 1L),
                 new Group(2L, "AB-11", 1L, 1L));
-        when(groupService.getGroupsForStudents(students)).thenReturn(groups);
+        when(groupService.getGroupsForLectures(lectures)).thenReturn(groups);
 
         List<String> groupNames = List.of("AB-01", "AB-11");
-        when(groupService.getGroupNamesForStudents(students)).thenReturn(groupNames);
+        when(groupService.getGroupNamesForLectures(lectures)).thenReturn(groupNames);
 
         mockMvc.perform(get("/audiences/{id}", 1))
                 .andExpect(status().isOk())
