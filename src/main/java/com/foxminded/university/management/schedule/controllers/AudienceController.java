@@ -61,9 +61,8 @@ public class AudienceController {
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
 
-        List<Student> students = studentService.getAllStudents();
-        model.addAttribute("groupNames", groupService.getGroupNamesForStudents(students));
-        model.addAttribute("groups", groupService.getGroupsForStudents(students));
+        model.addAttribute("groupNames", groupService.getGroupNamesForLectures(lectures));
+        model.addAttribute("groups", groupService.getGroupsForLectures(lectures));
         return "audience";
     }
 }
