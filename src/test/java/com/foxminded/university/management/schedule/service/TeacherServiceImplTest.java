@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
+import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
@@ -151,5 +152,18 @@ class TeacherServiceImplTest {
 
         verify(teacherDao, times(2)).getById(1L);
         verify(teacherDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnTeachersForFaculty() {
+        List<Teacher> expected = List.of(
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 1L, 1L));
+
+        when(teacherDao.getTeachersByFacultyId(1L)).thenReturn(expected);
+
+        assertEquals(expected, teacherService.getTeachersForFaculty(new Faculty(1L, "FAIT", 1L)));
+
+        verify(teacherDao, times(1)).getTeachersByFacultyId(1L);
     }
 }
