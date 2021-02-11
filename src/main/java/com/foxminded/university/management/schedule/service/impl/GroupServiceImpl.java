@@ -6,6 +6,7 @@ import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.GroupService;
 import org.slf4j.Logger;
@@ -137,7 +138,7 @@ public class GroupServiceImpl implements GroupService {
                 .stream()
                 .map(student -> getGroupById(student.getGroupId()))
                 .collect(Collectors.toList());
-        LOGGER.info("Group for students {} received successful", students);
+        LOGGER.info("Groups for students {} received successful", students);
         return groups;
     }
 
@@ -146,6 +147,26 @@ public class GroupServiceImpl implements GroupService {
         LOGGER.debug("Getting groups for faculty {}", faculty);
         List<Group> groups = groupDao.getGroupsByFacultyId(faculty.getId());
         LOGGER.info("Groups for faculty {} received successful", faculty);
+        return groups;
+    }
+
+    @Override
+    public List<String> getGroupNamesForLectures(List<Lecture> lectures) {
+        LOGGER.debug("Getting group names for lectures {}", lectures);
+        List<String> result = new ArrayList<>();
+        lectures.forEach(lecture -> result.add(getGroupById(lecture.getGroupId()).getName()));
+        LOGGER.info("Group names for lectures {} received successful", lectures);
+        return result;
+    }
+
+    @Override
+    public List<Group> getGroupsForLectures(List<Lecture> lectures) {
+        LOGGER.debug("Getting groups for lectures {}", lectures);
+        List<Group> groups = lectures
+                .stream()
+                .map(student -> getGroupById(student.getGroupId()))
+                .collect(Collectors.toList());
+        LOGGER.info("Groups for lectures {} received successful", lectures);
         return groups;
     }
 }
