@@ -133,7 +133,8 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getGroupsForStudents(List<Student> students) {
         LOGGER.debug("Getting groups for students {}", students);
-        List<Group> groups = students.stream()
+        List<Group> groups = students
+                .stream()
                 .map(student -> getGroupById(student.getGroupId()))
                 .collect(Collectors.toList());
         LOGGER.info("Group for students {} received successful", students);
@@ -142,7 +143,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> getGroupsForFaculty(Faculty faculty) {
-        LOGGER.debug("Getting group for faculty {}", faculty);
+        LOGGER.debug("Getting groups for faculty {}", faculty);
         List<Group> groups = groupDao.getGroupsByFacultyId(faculty.getId());
         LOGGER.info("Groups for faculty {} received successful", faculty);
         return groups;
