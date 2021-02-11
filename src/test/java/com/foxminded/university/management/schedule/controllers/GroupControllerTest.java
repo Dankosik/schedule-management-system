@@ -106,12 +106,13 @@ class GroupControllerTest {
         List<Student> students = List.of(
                 new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1000L),
                 new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1000L));
-        when(studentService.getAllStudents()).thenReturn(students);
+        when(studentService.getStudentsForGroup(group)).thenReturn(students);
 
         mockMvc.perform(get("/groups/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("group"))
                 .andExpect(model().attribute("lectures", lectures))
+                .andExpect(model().attribute("students", students))
                 .andExpect(model().attribute("durations", formattedDurations))
                 .andExpect(model().attribute("subjectNames", subjectNames))
                 .andExpect(model().attribute("startTimes", startTimes))
