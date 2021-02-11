@@ -32,7 +32,12 @@
         <tbody>
         <tr th:each="group: ${groups}">
             <td th:text="${group.id}"></td>
-            <td th:text="${group.name}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/groups/'} + ${group.id}"
+                   th:text="${group.name}">
+                </a>
+            </td>
             <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
         </tr>
         </tbody>
