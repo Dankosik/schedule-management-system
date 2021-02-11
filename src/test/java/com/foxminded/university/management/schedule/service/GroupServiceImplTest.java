@@ -6,6 +6,7 @@ import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
@@ -18,6 +19,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -309,5 +312,41 @@ class GroupServiceImplTest {
         assertEquals(expected, groupService.getGroupsForFaculty(new Faculty(1L, "AB-01", 1L)));
 
         verify(groupDao, times(1)).getGroupsByFacultyId(1L);
+    }
+
+    @Test
+    void shouldReturnGroupNamesForLectures() {
+        when(groupDao.getById(1L)).thenReturn(Optional.of(new Group(1L, "AB-01", 1L, 1L)));
+        when(groupDao.getById(2L)).thenReturn(Optional.of(new Group(2L, "CD-21", 1L, 1L)));
+
+        List<Lecture> lectures = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L,2L, 1L));
+
+        List<String> expected = List.of("AB-01", "CD-21");
+
+        assertEquals(expected, groupService.getGroupNamesForLectures(lectures));
+
+        verify(groupDao, times(2)).getById(1L);
+        verify(groupDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnGroupsForLectures() {
+        when(groupDao.getById(1L)).thenReturn(Optional.of(new Group(1L, "AB-01", 1L, 1L)));
+        when(groupDao.getById(2L)).thenReturn(Optional.of(new Group(2L, "CD-21", 1L, 1L)));
+
+        List<Lecture> lectures = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L,1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L,2L, 1L));
+
+        List<Group> expected = List.of(
+                new Group(1L, "AB-01", 1L, 1L),
+                new Group(2L, "CD-21", 1L, 1L));
+
+        assertEquals(expected, groupService.getGroupsForLectures(lectures));
+
+        verify(groupDao, times(2)).getById(1L);
+        verify(groupDao, times(2)).getById(2L);
     }
 }
