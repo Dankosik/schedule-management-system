@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -68,7 +67,17 @@ public class SubjectServiceImpl implements SubjectService {
     public List<String> getSubjectNamesForLessons(List<Lesson> lessons) {
         LOGGER.debug("Getting subject names for lessons {}", lessons);
         List<String> result = new ArrayList<>();
-        lessons.forEach(lesson -> result.add(getSubjectById(lesson.getSubjectId()).getName()));
+        for (Lesson lesson : lessons) {
+            if (lesson == null) {
+                result.add(null);
+                continue;
+            }
+            if (lesson.getSubjectId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getSubjectById(lesson.getSubjectId()).getName());
+            }
+        }
         LOGGER.info("Subject names for lessons {} received successful", lessons);
         return result;
     }
@@ -76,22 +85,38 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public List<Subject> getSubjectsForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting subjects for lectures {}", lectures);
-        List<Subject> subjects = lectures.stream()
-                .map(lecture -> lessonService.getLessonById(lecture.getLessonId()).getSubjectId())
-                .map(this::getSubjectById)
-                .collect(Collectors.toList());
+        List<Subject> result = new ArrayList<>();
+        for (Lecture lecture : lectures) {
+            if (lecture.getLessonId() == 0) {
+                result.add(null);
+                continue;
+            }
+            if (lessonService.getLessonById(lecture.getLessonId()).getSubjectId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getSubjectById(lessonService.getLessonById(lecture.getLessonId()).getSubjectId()));
+            }
+        }
         LOGGER.info("Subject for lectures {} received successful", lectures);
-        return subjects;
+        return result;
     }
 
     @Override
     public List<Subject> getSubjectsForLessons(List<Lesson> lessons) {
         LOGGER.debug("Getting subjects for lessons {}", lessons);
-        List<Subject> subjects = lessons.stream()
-                .map(Lesson::getSubjectId)
-                .map(this::getSubjectById)
-                .collect(Collectors.toList());
+        List<Subject> result = new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            if (lesson.getId() == 0) {
+                result.add(null);
+                continue;
+            }
+            if (lessonService.getLessonById(lesson.getId()).getSubjectId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getSubjectById(lessonService.getLessonById(lesson.getId()).getSubjectId()));
+            }
+        }
         LOGGER.info("Subject for lessons {} received successful", lessons);
-        return subjects;
+        return result;
     }
 }
