@@ -35,7 +35,8 @@
                    th:text="${faculty.name}">
                 </a>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/teachers/delete/',
+            id = ${teacher.id}, question = 'Are you sure you want to delete a teacher?')"></div>
         </tr>
         </tbody>
     </table>
@@ -69,7 +70,7 @@
             </td>
             <td>
                 <a style="text-decoration: none; color: black"
-                   th:href="@{'/audience/'} + ${audiences.get(iter.index).getId()}"
+                   th:href="@{'/audiences/'} + ${audiences.get(iter.index).getId()}"
                    th:text="${audienceNumbers.get(iter.index)}">
                 </a>
             </td>
@@ -77,12 +78,14 @@
             <td th:text="${startTimes.get(iter.index)}"></td>
             <td th:text="${durations.get(iter.index)}"></td>
             <td>
-                <a style="text-decoration: none; color: black"
-                   th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                <a style="text-decoration: none; color: black" th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                   th:if="${subjects.get(iter.index) !=null}"
                    th:text="${subjectNames.get(iter.index)}">
                 </a>
+                <div th:unless="${subjectNames.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/lectures/delete/',
+            id = ${lecture.id}, question = 'Are you sure you want to delete a lecture?')"></div>
         </tr>
         </tbody>
     </table>

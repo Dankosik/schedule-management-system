@@ -33,7 +33,8 @@
         <tr th:each="subject: ${subjects}">
             <td th:text="${subject.id}"></td>
             <td th:text="${subject.name}"></td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/subjects/delete/',
+            id = ${subject.id}, question = 'Are you sure you want to delete a subject?')"></div>
         </tr>
         </tbody>
     </table>

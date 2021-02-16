@@ -52,12 +52,14 @@
             <td th:text="${lesson.startTime}"></td>
             <td th:text="${durations.get(iter.index)}"></td>
             <td>
-                <a style="text-decoration: none; color: black"
-                   th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                <a style="text-decoration: none; color: black" th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                   th:if="${subjects.get(iter.index) !=null}"
                    th:text="${subjectNames.get(iter.index)}">
                 </a>
+                <div th:unless="${subjectNames.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/lessons/delete/',
+            id = ${lesson.id}, question = 'Are you sure you want to delete a lesson?')"></div>
         </tr>
         </tbody>
     </table>

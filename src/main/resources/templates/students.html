@@ -10,7 +10,7 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form class="w-50 mx-auto mt-5">
         <div class="form-row">
             <div class="col">
                 <input class="form-control" placeholder="First name" type="text">
@@ -34,7 +34,7 @@
     </form>
 </div>
 <div>
-    <table class="table table-bordered w-25 text-center mx-auto mt-5">
+    <table class="table table-bordered w-50 text-center mx-auto mt-5">
         <thead>
         <tr>
             <th scope="col">id</th>
@@ -55,12 +55,14 @@
             <td th:text="${student.middleName}"></td>
             <td th:text="${student.courseNumber}"></td>
             <td>
-                <a style="text-decoration: none; color: black"
-                   th:href="@{'/groups/'} + ${groups.get(iter.index).getId()}"
+                <a style="text-decoration: none; color: black" th:href="@{'/groups/'} + ${groups.get(iter.index).id}"
+                   th:if="${groups.get(iter.index) != null}"
                    th:text="${groupNames.get(iter.index)}">
                 </a>
+                <div th:unless="${groups.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = 'students/delete/',
+            id = ${student.id}, question = 'Are you sure you want to delete a student?')"></div>
         </tr>
         </tbody>
     </table>

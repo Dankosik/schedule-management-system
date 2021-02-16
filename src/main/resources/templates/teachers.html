@@ -70,7 +70,8 @@
                    th:text="${facultyNames.get(iter.index)}">
                 </a>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/teachers/delete/',
+            id = ${teacher.id}, question = 'Are you sure you want to delete a teacher?')"></div>
         </tr>
         </tbody>
     </table>

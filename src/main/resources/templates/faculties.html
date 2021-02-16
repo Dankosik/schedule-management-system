@@ -38,7 +38,8 @@
                    th:text="${faculty.name}">
                 </a>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/faculties/delete/',
+            id = ${faculty.id}, question = 'Are you sure you want to delete a faculty?')"></div>
         </tr>
         </tbody>
     </table>

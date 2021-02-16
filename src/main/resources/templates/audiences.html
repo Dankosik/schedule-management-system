@@ -34,11 +34,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="audience: ${audiences}">
+        <tr th:each="audience, iter: ${audiences}">
             <td th:text="${audience.id}"></td>
             <td th:text="${audience.number}"></td>
             <td th:text="${audience.capacity}"></td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/audiences/delete/',
+            id = ${audience.id}, question = 'Are you sure you want to delete a audience?')"></div>
         </tr>
         </tbody>
     </table>
