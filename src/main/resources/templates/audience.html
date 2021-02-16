@@ -69,14 +69,16 @@
                 <div th:unless="${durations.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
             <td>
-                <a style="text-decoration: none; color: black" th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
                    th:if="${subjects.get(iter.index) !=null}"
                    th:text="${subjectNames.get(iter.index)}">
                 </a>
                 <div th:unless="${subjectNames.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
             <td>
-                <a style="text-decoration: none; color: black" th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
                    th:if="${teachers.get(iter.index) !=null}"
                    th:text="${teacherNames.get(iter.index)}">
                 </a>

@@ -164,7 +164,7 @@ class SubjectServiceImplTest {
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L),
                 new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
 
-        List<String> expected =Arrays.asList(null, "Art");
+        List<String> expected = Arrays.asList(null, "Art");
 
         assertEquals(expected, subjectService.getSubjectNamesForLessons(lessons));
 

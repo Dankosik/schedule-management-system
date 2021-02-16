@@ -52,7 +52,8 @@
             <td th:text="${lesson.startTime}"></td>
             <td th:text="${durations.get(iter.index)}"></td>
             <td>
-                <a style="text-decoration: none; color: black" th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
                    th:if="${subjects.get(iter.index) !=null}"
                    th:text="${subjectNames.get(iter.index)}">
                 </a>
