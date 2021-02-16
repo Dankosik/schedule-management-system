@@ -17,8 +17,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -129,5 +132,14 @@ class TeacherControllerTest {
                 .andExpect(model().attribute("groupNames", groupNames))
                 .andExpect(model().attribute("teacher", teacher))
                 .andExpect(model().attribute("faculty", faculty));
+    }
+
+    @Test
+    public void shouldDeleteTeacher() throws Exception {
+        Teacher teacher = new Teacher("John", "Jackson", "Jackson", 1L, 1L);
+        given(teacherService.getTeacherById(1L)).willReturn(teacher);
+        doNothing().when(teacherService).deleteTeacherById(1L);
+        mockMvc.perform(post("/teachers/delete/{id}", 1L))
+                .andExpect(status().is3xxRedirection());
     }
 }

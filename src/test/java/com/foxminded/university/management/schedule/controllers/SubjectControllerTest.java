@@ -12,8 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -47,5 +50,14 @@ class SubjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("subject"))
                 .andExpect(model().attribute("subject", subject));
+    }
+
+    @Test
+    public void shouldDeleteSubject() throws Exception {
+        Subject subject = new Subject(1L, "Art", 1L);
+        given(subjectService.getSubjectById(1L)).willReturn(subject);
+        doNothing().when(subjectService).deleteSubjectById(1L);
+        mockMvc.perform(post("/subjects/delete/{id}", 1L))
+                .andExpect(status().is3xxRedirection());
     }
 }

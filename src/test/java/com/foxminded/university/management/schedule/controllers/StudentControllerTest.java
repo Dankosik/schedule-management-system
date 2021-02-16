@@ -14,8 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -53,4 +56,12 @@ class StudentControllerTest {
                 .andExpect(model().attribute("groups", groups));
     }
 
+    @Test
+    public void shouldDeleteStudent() throws Exception {
+        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L);
+        given(studentService.getStudentById(1L)).willReturn(student);
+        doNothing().when(studentService).deleteStudentById(1L);
+        mockMvc.perform(post("/students/delete/{id}", 1L))
+                .andExpect(status().is3xxRedirection());
+    }
 }

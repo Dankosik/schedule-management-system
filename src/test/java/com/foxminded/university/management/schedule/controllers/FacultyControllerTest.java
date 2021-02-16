@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
@@ -16,8 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -67,5 +71,14 @@ class FacultyControllerTest {
                 .andExpect(model().attribute("groups", groups))
                 .andExpect(model().attribute("teachers", teachers))
                 .andExpect(model().attribute("faculty", faculty));
+    }
+
+    @Test
+    public void shouldDeleteFaculty() throws Exception {
+        Faculty faculty = new Faculty(1L, "FAIT", 1L);
+        given(facultyService.getFacultyById(1L)).willReturn(faculty);
+        doNothing().when(facultyService).deleteFacultyById(1L);
+        mockMvc.perform(post("/faculties/delete/{id}", 1L))
+                .andExpect(status().is3xxRedirection());
     }
 }

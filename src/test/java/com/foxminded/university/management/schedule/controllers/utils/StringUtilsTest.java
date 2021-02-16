@@ -20,4 +20,11 @@ class StringUtilsTest {
         String actual = StringUtils.formatDurationInMinutes(Duration.ofMinutes(0));
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void shouldReturnFormattedNullDuration() {
+        String expected = null;
+        String actual = StringUtils.formatDurationInMinutes(null);
+        assertEquals(expected, actual);
+    }
 }

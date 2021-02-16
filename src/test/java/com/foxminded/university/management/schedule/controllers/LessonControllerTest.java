@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
@@ -12,13 +13,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -59,5 +65,14 @@ class LessonControllerTest {
                 .andExpect(model().attribute("subjects", subjects))
                 .andExpect(model().attribute("subjectNames", subjectNames))
                 .andExpect(model().attribute("lessons", lessons));
+    }
+
+    @Test
+    public void shouldDeleteLesson() throws Exception {
+       Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1L);
+        given(lessonService.getLessonById(1L)).willReturn(lesson);
+        doNothing().when(lessonService).deleteLessonById(1L);
+        mockMvc.perform(post("/lessons/delete/{id}", 1L))
+                .andExpect(status().is3xxRedirection());
     }
 }
