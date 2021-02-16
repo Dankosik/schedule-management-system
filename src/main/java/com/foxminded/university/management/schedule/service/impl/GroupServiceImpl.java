@@ -126,7 +126,13 @@ public class GroupServiceImpl implements GroupService {
     public List<String> getGroupNamesForStudents(List<Student> students) {
         LOGGER.debug("Getting group names for students {}", students);
         List<String> result = new ArrayList<>();
-        students.forEach(student -> result.add(getGroupById(student.getGroupId()).getName()));
+        for (Student student : students) {
+            if (student.getGroupId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getGroupById(student.getGroupId()).getName());
+            }
+        }
         LOGGER.info("Group names for students {} received successful", students);
         return result;
     }
@@ -134,12 +140,16 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> getGroupsForStudents(List<Student> students) {
         LOGGER.debug("Getting groups for students {}", students);
-        List<Group> groups = students
-                .stream()
-                .map(student -> getGroupById(student.getGroupId()))
-                .collect(Collectors.toList());
+        List<Group> result = new ArrayList<>();
+        for (Student student : students) {
+            if (student.getGroupId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getGroupById(student.getGroupId()));
+            }
+        }
         LOGGER.info("Groups for students {} received successful", students);
-        return groups;
+        return result;
     }
 
     @Override
