@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class SubjectController {
@@ -24,5 +25,11 @@ public class SubjectController {
     public String showOneTeacher(@PathVariable("id") Long id, Model model) {
         model.addAttribute("subject", subjectService.getSubjectById(id));
         return "subject";
+    }
+
+    @PostMapping("/subjects/delete/{id}")
+    public String deleteAudience(@PathVariable("id") Long id) {
+        subjectService.deleteSubjectById(id);
+        return "redirect:/subjects";
     }
 }

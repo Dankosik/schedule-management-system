@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class FacultyController {
@@ -36,5 +37,11 @@ public class FacultyController {
         model.addAttribute("groups", groupService.getGroupsForFaculty(faculty));
         model.addAttribute("teachers", teacherService.getTeachersForFaculty(faculty));
         return "faculty";
+    }
+
+    @PostMapping("/faculties/delete/{id}")
+    public String deleteFaculty(@PathVariable("id") Long id) {
+        facultyService.deleteFacultyById(id);
+        return "redirect:/faculties";
     }
 }

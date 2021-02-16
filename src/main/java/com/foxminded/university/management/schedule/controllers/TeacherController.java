@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 import java.util.List;
@@ -75,5 +76,11 @@ public class TeacherController {
         model.addAttribute("audiences", audiences);
         model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersForAudiences(audiences));
         return "teacher";
+    }
+
+    @PostMapping("/teachers/delete/{id}")
+    public String deleteAudience(@PathVariable("id") Long id) {
+        teacherService.deleteTeacherById(id);
+        return "redirect:/teachers";
     }
 }

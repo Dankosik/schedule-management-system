@@ -9,6 +9,8 @@ import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 import java.util.List;
@@ -61,5 +63,11 @@ public class LectureController {
         model.addAttribute("groupNames", groupService.getGroupNamesForLectures(lectures));
         model.addAttribute("groups", groupService.getGroupsForLectures(lectures));
         return "lectures";
+    }
+
+    @PostMapping("/lectures/delete/{id}")
+    public String deleteLecture(@PathVariable("id") Long id) {
+        lectureService.deleteLectureById(id);
+        return "redirect:/lectures";
     }
 }

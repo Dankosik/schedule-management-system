@@ -7,6 +7,8 @@ import com.foxminded.university.management.schedule.service.impl.SubjectServiceI
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 import java.util.List;
@@ -38,4 +40,9 @@ public class LessonController {
         return "lessons";
     }
 
+    @PostMapping("/lessons/delete/{id}")
+    public String deleteAudience(@PathVariable("id") Long id) {
+        lessonService.deleteLessonById(id);
+        return "redirect:/lessons";
+    }
 }

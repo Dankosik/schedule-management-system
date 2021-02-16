@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 import java.util.List;
@@ -22,18 +23,16 @@ public class AudienceController {
     private final LessonServiceImpl lessonService;
     private final SubjectServiceImpl subjectService;
     private final TeacherServiceImpl teacherService;
-    private final StudentServiceImpl studentService;
     private final GroupServiceImpl groupService;
 
     public AudienceController(AudienceServiceImpl audienceService, LectureServiceImpl lectureService,
                               LessonServiceImpl lessonService, SubjectServiceImpl subjectService,
-                              TeacherServiceImpl teacherService, StudentServiceImpl studentService, GroupServiceImpl groupService) {
+                              TeacherServiceImpl teacherService, GroupServiceImpl groupService) {
         this.audienceService = audienceService;
         this.lectureService = lectureService;
         this.lessonService = lessonService;
         this.subjectService = subjectService;
         this.teacherService = teacherService;
-        this.studentService = studentService;
         this.groupService = groupService;
     }
 
@@ -69,5 +68,11 @@ public class AudienceController {
         model.addAttribute("groupNames", groupService.getGroupNamesForLectures(lectures));
         model.addAttribute("groups", groupService.getGroupsForLectures(lectures));
         return "audience";
+    }
+
+    @PostMapping("/audiences/delete/{id}")
+    public String deleteAudience(@PathVariable("id") Long id) {
+        audienceService.deleteAudienceById(id);
+        return "redirect:/audiences";
     }
 }

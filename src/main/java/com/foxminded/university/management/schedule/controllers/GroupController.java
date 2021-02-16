@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 import java.util.List;
@@ -70,5 +71,11 @@ public class GroupController {
         model.addAttribute("audiences", audiences);
         model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersForAudiences(audiences));
         return "group";
+    }
+
+    @PostMapping("/groups/delete/{id}")
+    public String deleteGroup(@PathVariable("id") Long id) {
+        groupService.deleteGroupById(id);
+        return "redirect:/groups";
     }
 }
