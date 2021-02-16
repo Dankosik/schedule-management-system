@@ -20,6 +20,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,15 +166,25 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfLessonNotPresentInAddingSubjectToLesson() {
-        when(lessonDao.getById(1L)).thenReturn(Optional.empty());
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
+    void shouldReturnDurationsForLessons() {
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
 
-        assertThrows(ServiceException.class, () -> lessonService.addSubjectToLesson(subject, lesson));
+        List<Duration> expected = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
 
-        verify(subjectDao, times(1)).getById(1L);
-        verify(lessonDao, times(1)).getById(1L);
-        verify(lessonDao, never()).save(lesson);
+        assertEquals(expected, lessonService.getDurationsForLessons(lessons));
+    }
+
+    @Test
+    void shouldReturnDurationsForLessonsWithDurationNull() {
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), null, 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Duration> expected = Arrays.asList(null, Duration.ofMinutes(90));
+
+        assertEquals(expected, lessonService.getDurationsForLessons(lessons));
     }
 
     @Test
@@ -229,17 +240,6 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void shouldReturnDurationsForLessons() {
-        List<Lesson> lessons = List.of(
-                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
-
-        List<Duration> expected = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
-
-        assertEquals(expected, lessonService.getDurationsForLessons(lessons));
-    }
-
-    @Test
     void shouldReturnStartTimesForLessons() {
         List<Lesson> lessons = List.of(
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
@@ -248,6 +248,17 @@ class LessonServiceImplTest {
         List<Time> expected = List.of(
                 Time.valueOf(LocalTime.of(8, 30, 0)),
                 Time.valueOf(LocalTime.of(10, 10, 0)));
+
+        assertEquals(expected, lessonService.getStartTimesForLessons(lessons));
+    }
+
+    @Test
+    void shouldReturnStartTimesForLessonsWithStartTimeNull() {
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, null, Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Time> expected = Arrays.asList(null, Time.valueOf(LocalTime.of(10, 10, 0)));
 
         assertEquals(expected, lessonService.getStartTimesForLessons(lessons));
     }
@@ -269,7 +280,24 @@ class LessonServiceImplTest {
 
         assertEquals(expected, lessonService.getLessonsForLectures(lectures));
 
+        verify(lessonDao, times(2)).getById(2L);
         verify(lessonDao, times(2)).getById(1L);
+    }
+
+    @Test
+    void shouldReturnLessonsForLecturesWithLessonIdZero() {
+        when(lessonDao.getById(2L))
+                .thenReturn(Optional.of(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
+
+        List<Lecture> lectures = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 0L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 2L));
+
+        List<Lesson> expected = Arrays.asList(
+                null, new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        assertEquals(expected, lessonService.getLessonsForLectures(lectures));
+
         verify(lessonDao, times(2)).getById(2L);
     }
 }
