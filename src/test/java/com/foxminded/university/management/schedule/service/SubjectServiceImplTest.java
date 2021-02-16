@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.service;
 
+import com.foxminded.university.management.schedule.dao.LessonDao;
 import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
@@ -21,6 +22,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +43,8 @@ class SubjectServiceImplTest {
     private SubjectServiceImpl subjectService;
     @MockBean
     private SubjectDao subjectDao;
+    @MockBean
+    private LessonDao lessonDao;
     @MockBean
     private LessonServiceImpl lessonService;
 
@@ -152,9 +156,34 @@ class SubjectServiceImplTest {
     }
 
     @Test
+    void shouldReturnSubjectNamesForLessonsWithSubjectIdZero() {
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<String> expected =Arrays.asList(null, "Art");
+
+        assertEquals(expected, subjectService.getSubjectNamesForLessons(lessons));
+
+        verify(subjectDao, times(2)).getById(2L);
+    }
+
+    @Test
     void shouldReturnSubjectsForLessons() {
         when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
         when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(lessonDao.getById(1L))
+                .thenReturn(Optional.of(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
+        when(lessonDao.getById(2L))
+                .thenReturn(Optional.of(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
+        when(lessonService.getLessonById(1L))
+                .thenReturn((new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
+        when(lessonService.getLessonById(2L))
+                .thenReturn((new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
+
 
         List<Lesson> lessons = List.of(
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
@@ -168,10 +197,39 @@ class SubjectServiceImplTest {
 
         verify(subjectDao, times(2)).getById(1L);
         verify(subjectDao, times(2)).getById(2L);
+        verify(lessonService, times(2)).getLessonById(1L);
+        verify(lessonService, times(2)).getLessonById(2L);
     }
 
     @Test
-    void shouldReturnLessonsForLectures() {
+    void shouldReturnSubjectsForLessonsWithSubjectIdZero() {
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(lessonDao.getById(1L))
+                .thenReturn(Optional.of(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L)));
+        when(lessonDao.getById(2L))
+                .thenReturn(Optional.of(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
+        when(lessonService.getLessonById(1L))
+                .thenReturn((new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L)));
+        when(lessonService.getLessonById(2L))
+                .thenReturn((new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
+
+
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Subject> expected = Arrays.asList(null, new Subject(2L, "Art", 1L));
+
+        assertEquals(expected, subjectService.getSubjectsForLessons(lessons));
+
+        verify(subjectDao, times(2)).getById(2L);
+        verify(lessonService, times(1)).getLessonById(1L);
+        verify(lessonService, times(2)).getLessonById(2L);
+    }
+
+    @Test
+    void shouldReturnSubjectsForLectures() {
         when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
         when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
         when(lessonService.getLessonById(1L))
@@ -191,7 +249,27 @@ class SubjectServiceImplTest {
 
         verify(subjectDao, times(2)).getById(1L);
         verify(subjectDao, times(2)).getById(2L);
-        verify(lessonService, times(1)).getLessonById(1L);
-        verify(lessonService, times(1)).getLessonById(2L);
+        verify(lessonService, times(2)).getLessonById(1L);
+        verify(lessonService, times(2)).getLessonById(2L);
+    }
+
+    @Test
+    void shouldReturnSubjectsForLecturesWithSubjectIdZero() {
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(lessonService.getLessonById(1L))
+                .thenReturn(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
+        when(lessonService.getLessonById(2L))
+                .thenReturn(new Lesson(2L, 1, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Lecture> lectures = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 0L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 1L));
+
+        List<Subject> expected = Arrays.asList(null, new Subject(2L, "Art", 1L));
+
+        assertEquals(expected, subjectService.getSubjectsForLectures(lectures));
+
+        verify(lessonService, times(2)).getLessonById(2L);
     }
 }
