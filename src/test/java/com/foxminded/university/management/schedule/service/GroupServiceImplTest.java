@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -299,6 +300,37 @@ class GroupServiceImplTest {
 
         verify(groupDao, times(2)).getById(1L);
         verify(groupDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnGroupNamesForStudentsWithIdZero() {
+        when(groupDao.getById(1L)).thenReturn(Optional.of(new Group(1L, "AB-01", 1L, 1L)));
+
+        List<Student> students = List.of(
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 0L, 1L));
+
+        List<String> expected = Arrays.asList("AB-01", null);
+
+        assertEquals(expected, groupService.getGroupNamesForStudents(students));
+
+        verify(groupDao, times(2)).getById(1L);
+    }
+
+    @Test
+    void shouldReturnGroupsForStudentsWithIdZero() {
+        when(groupDao.getById(1L)).thenReturn(Optional.of(new Group(1L, "AB-01", 1L, 1L)));
+
+        List<Student> students = List.of(
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 0L, 1L));
+
+        List<Group> expected = Arrays.asList(
+                new Group(1L, "AB-01", 1L, 1L), null);
+
+        assertEquals(expected, groupService.getGroupsForStudents(students));
+
+        verify(groupDao, times(2)).getById(1L);
     }
 
     @Test
