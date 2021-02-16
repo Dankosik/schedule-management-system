@@ -37,7 +37,7 @@ public class LectureDataGenerator implements DataGenerator<Lecture> {
             lecture.setLessonId(lessonIds.get(RandomUtils.random(0, lessonIds.size() - 1)));
             lecture.setTeacherId(teacherIds.get(RandomUtils.random(0, teacherIds.size() - 1)));
             lecture.setAudienceId(audienceIds.get(RandomUtils.random(0, audienceIds.size() - 1)));
-            lecture.setGroupId(groupIds.get(RandomUtils.random(0, audienceIds.size() - 1)));
+            lecture.setGroupId(groupIds.get(RandomUtils.random(0, groupIds.size() - 1)));
             lecture.setNumber(RandomUtils.random(1, 5));
             result.add(lecture);
         }
