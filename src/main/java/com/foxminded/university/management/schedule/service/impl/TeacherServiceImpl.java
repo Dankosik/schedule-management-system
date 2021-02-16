@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -71,10 +70,14 @@ public class TeacherServiceImpl implements TeacherService {
         LOGGER.debug("Getting last names with initials for teachers {}", teachers);
         List<String> result = new ArrayList<>();
         for (Teacher teacher : teachers) {
-            char firstName = teacher.getFirstName().charAt(0);
-            char middleName = teacher.getMiddleName().charAt(0);
-            String lastName = teacher.getLastName();
-            result.add(lastName + " " + firstName + ". " + middleName + ".");
+            if (teacher != null) {
+                char firstName = teacher.getFirstName().charAt(0);
+                char middleName = teacher.getMiddleName().charAt(0);
+                String lastName = teacher.getLastName();
+                result.add(lastName + " " + firstName + ". " + middleName + ".");
+            } else {
+                result.add(null);
+            }
         }
         LOGGER.info("Last names with initials for teachers {} received successful", teachers);
         return result;
@@ -83,11 +86,16 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public List<Teacher> getTeachersForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting teachers for lectures {}", lectures);
-        List<Teacher> teachers = lectures.stream()
-                .map(lecture -> getTeacherById(lecture.getTeacherId()))
-                .collect(Collectors.toList());
+        List<Teacher> result = new ArrayList<>();
+        for (Lecture lecture : lectures) {
+            if (lecture.getTeacherId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getTeacherById(lecture.getTeacherId()));
+            }
+        }
         LOGGER.info("Teachers for lectures {} received successful", lectures);
-        return teachers;
+        return result;
     }
 
     @Override
