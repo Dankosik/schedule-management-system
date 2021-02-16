@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -118,7 +117,13 @@ public class AudienceServiceImpl implements AudienceService {
     public List<Integer> getAudienceNumbersForAudiences(List<Audience> audiences) {
         LOGGER.debug("Getting audience numbers for audiences {}", audiences);
         List<Integer> result = new ArrayList<>();
-        audiences.forEach(audience -> result.add(audience.getNumber()));
+        for (Audience audience : audiences) {
+            if (audience == null) {
+                result.add(null);
+            } else {
+                result.add(getAudienceById(audience.getId()).getNumber());
+            }
+        }
         LOGGER.info("Audience numbers for audiences {} received successful", audiences);
         return result;
     }
@@ -126,10 +131,15 @@ public class AudienceServiceImpl implements AudienceService {
     @Override
     public List<Audience> getAudiencesForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting audiences for lectures {}", lectures);
-        List<Audience> audiences = lectures.stream()
-                .map(lecture -> getAudienceById(lecture.getAudienceId()))
-                .collect(Collectors.toList());
+        List<Audience> result = new ArrayList<>();
+        for (Lecture lecture : lectures) {
+            if (lecture.getAudienceId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getAudienceById(lecture.getAudienceId()));
+            }
+        }
         LOGGER.info("Audiences for lectures {} received successful", lectures);
-        return audiences;
+        return result;
     }
 }
