@@ -50,7 +50,7 @@ class GroupControllerTest {
                 new Group(1L, "AB-01", 1L, 1L),
                 new Group(2L, "CD-21", 1L, 1L));
 
-        when(groupService.getAllAGroups()).thenReturn(groups);
+        when(groupService.getAllGroups()).thenReturn(groups);
 
         mockMvc.perform(get("/groups"))
                 .andExpect(status().isOk())
