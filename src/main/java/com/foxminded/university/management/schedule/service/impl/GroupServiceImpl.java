@@ -59,7 +59,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Group> getAllAGroups() {
+    public List<Group> getAllGroups() {
         return groupDao.getAll();
     }
 

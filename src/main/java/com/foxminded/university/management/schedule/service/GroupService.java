@@ -12,7 +12,7 @@ public interface GroupService {
 
     Group getGroupById(Long id);
 
-    List<Group> getAllAGroups();
+    List<Group> getAllGroups();
 
     void deleteGroupById(Long id);
 

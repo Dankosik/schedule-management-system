@@ -77,7 +77,7 @@ class GroupServiceImplTest {
     void shouldReturnListOfGroups() {
         when(groupDao.getAll()).thenReturn(groups);
 
-        assertEquals(groups, groupService.getAllAGroups());
+        assertEquals(groups, groupService.getAllGroups());
 
         verify(groupDao, times(1)).getAll();
     }

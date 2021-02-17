@@ -61,7 +61,7 @@ public class DataCombiner implements ApplicationRunner {
         if (facultyService.getAllFaculties().size() == 0)
             facultyService.saveAllFaculties(facultyDataGenerator.generateData());
 
-        if (groupService.getAllAGroups().size() == 0)
+        if (groupService.getAllGroups().size() == 0)
             groupService.saveAllGroups(groupDataGenerator.generateData());
 
         if (subjectService.getAllSubjects().size() == 0)
