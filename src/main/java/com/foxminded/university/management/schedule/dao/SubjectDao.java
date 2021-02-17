@@ -28,7 +28,7 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", subject.getName());
-        params.put("university_id", subject.getUniversityId());
+        params.put("university_id", 1L);
 
         Number newId;
         try {

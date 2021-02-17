@@ -28,7 +28,7 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", faculty.getName());
-        params.put("university_id", faculty.getUniversityId());
+        params.put("university_id", 1L);
 
         Number newId;
         try {

@@ -29,7 +29,7 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
         Map<String, Object> params = new HashMap<>();
         params.put("name", group.getName());
         params.put("faculty_id", group.getFacultyId());
-        params.put("university_id", group.getUniversityId());
+        params.put("university_id", 1L);
 
         Number newId;
         try {

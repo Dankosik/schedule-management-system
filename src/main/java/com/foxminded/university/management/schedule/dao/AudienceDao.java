@@ -29,7 +29,7 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
         Map<String, Object> params = new HashMap<>();
         params.put("number", audience.getNumber());
         params.put("capacity", audience.getCapacity());
-        params.put("university_id", audience.getUniversityId());
+        params.put("university_id", 1L);
 
         Number newId;
         try {

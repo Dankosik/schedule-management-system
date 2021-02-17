@@ -31,7 +31,7 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student, Lon
         params.put("middle_name", student.getMiddleName());
         params.put("course_number", student.getCourseNumber());
         params.put("group_id", student.getGroupId());
-        params.put("university_id", student.getUniversityId());
+        params.put("university_id", 1L);
 
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         LOGGER.info("Student created successful with id: {}", newId);

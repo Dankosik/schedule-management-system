@@ -30,7 +30,7 @@ public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher, Lon
         params.put("last_name", teacher.getLastName());
         params.put("middle_name", teacher.getMiddleName());
         params.put("faculty_id", teacher.getFacultyId());
-        params.put("university_id", teacher.getUniversityId());
+        params.put("university_id", 1L);
 
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         LOGGER.info("Teacher created successful with id: {}", newId);
