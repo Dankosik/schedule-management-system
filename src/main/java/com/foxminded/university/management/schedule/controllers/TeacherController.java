@@ -9,6 +9,7 @@ import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -45,6 +46,9 @@ public class TeacherController {
         model.addAttribute("teachers", teachers);
         model.addAttribute("facultyNames", facultyService.getFacultyNamesForTeachers(teachers));
         model.addAttribute("faculties", facultyService.getFacultiesForTeachers(teachers));
+
+        model.addAttribute("teacher", new Teacher());
+        model.addAttribute("allFaculties", facultyService.getAllFaculties());
         return "teachers";
     }
 
@@ -81,6 +85,12 @@ public class TeacherController {
     @PostMapping("/teachers/delete/{id}")
     public String deleteAudience(@PathVariable("id") Long id) {
         teacherService.deleteTeacherById(id);
+        return "redirect:/teachers";
+    }
+
+    @PostMapping("/teachers/add")
+    public String addStudent(@ModelAttribute Teacher teacher) {
+        teacherService.saveTeacher(teacher);
         return "redirect:/teachers";
     }
 }

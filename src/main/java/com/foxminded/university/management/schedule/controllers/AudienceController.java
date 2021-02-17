@@ -9,6 +9,7 @@ import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -39,6 +40,7 @@ public class AudienceController {
     @GetMapping("/audiences")
     public String showAllAudiences(Model model) {
         model.addAttribute("audiences", audienceService.getAllAudiences());
+        model.addAttribute("audience", new Audience());
         return "audiences";
     }
 
@@ -64,7 +66,6 @@ public class AudienceController {
         model.addAttribute("teacherNames", teacherService.getLastNamesWithInitialsForTeachers(teachers));
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
-
         model.addAttribute("groupNames", groupService.getGroupNamesForLectures(lectures));
         model.addAttribute("groups", groupService.getGroupsForLectures(lectures));
         return "audience";
@@ -73,6 +74,12 @@ public class AudienceController {
     @PostMapping("/audiences/delete/{id}")
     public String deleteAudience(@PathVariable("id") Long id) {
         audienceService.deleteAudienceById(id);
+        return "redirect:/audiences";
+    }
+
+    @PostMapping("/audiences/add")
+    public String addAudience(@ModelAttribute Audience audience) {
+        audienceService.saveAudience(audience);
         return "redirect:/audiences";
     }
 }

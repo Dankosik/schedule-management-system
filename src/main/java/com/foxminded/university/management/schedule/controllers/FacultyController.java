@@ -7,6 +7,7 @@ import com.foxminded.university.management.schedule.service.impl.TeacherServiceI
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -26,6 +27,7 @@ public class FacultyController {
     @GetMapping("/faculties")
     public String showAllFaculties(Model model) {
         model.addAttribute("faculties", facultyService.getAllFaculties());
+        model.addAttribute("faculty", new Faculty());
         return "faculties";
     }
 
@@ -42,6 +44,12 @@ public class FacultyController {
     @PostMapping("/faculties/delete/{id}")
     public String deleteFaculty(@PathVariable("id") Long id) {
         facultyService.deleteFacultyById(id);
+        return "redirect:/faculties";
+    }
+
+    @PostMapping("/faculties/add")
+    public String addFaculty(@ModelAttribute Faculty faculty) {
+        facultyService.saveFaculty(faculty);
         return "redirect:/faculties";
     }
 }

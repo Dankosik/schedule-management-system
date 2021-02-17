@@ -9,6 +9,7 @@ import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -52,22 +53,35 @@ public class LectureController {
 
         List<Teacher> teachers = teacherService.getTeachersForLectures(lectures);
         model.addAttribute("teachers", teachers);
+        model.addAttribute("allTeachers", teacherService.getAllTeachers());
         model.addAttribute("teacherNames", teacherService.getLastNamesWithInitialsForTeachers(teachers));
 
         List<Audience> audiences = audienceService.getAudiencesForLectures(lectures);
         model.addAttribute("audiences", audiences);
+        model.addAttribute("allAudiences", audienceService.getAllAudiences());
         model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersForAudiences(audiences));
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
 
         model.addAttribute("groupNames", groupService.getGroupNamesForLectures(lectures));
+        model.addAttribute("allGroups", groupService.getAllGroups());
         model.addAttribute("groups", groupService.getGroupsForLectures(lectures));
+
+        model.addAttribute("lecture", new Lecture());
+
+        model.addAttribute("lessons", lessonService.getAllLessons());
         return "lectures";
     }
 
     @PostMapping("/lectures/delete/{id}")
     public String deleteLecture(@PathVariable("id") Long id) {
         lectureService.deleteLectureById(id);
+        return "redirect:/lectures";
+    }
+
+    @PostMapping("/lectures/add")
+    public String addLecture(@ModelAttribute Lecture lecture) {
+        lectureService.saveLecture(lecture);
         return "redirect:/lectures";
     }
 }

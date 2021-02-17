@@ -1,9 +1,11 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -18,6 +20,7 @@ public class SubjectController {
     @GetMapping("/subjects")
     public String showAllTeachers(Model model) {
         model.addAttribute("subjects", subjectService.getAllSubjects());
+        model.addAttribute("subject", new Subject());
         return "subjects";
     }
 
@@ -30,6 +33,12 @@ public class SubjectController {
     @PostMapping("/subjects/delete/{id}")
     public String deleteAudience(@PathVariable("id") Long id) {
         subjectService.deleteSubjectById(id);
+        return "redirect:/subjects";
+    }
+
+    @PostMapping("/subjects/add")
+    public String addSubject(@ModelAttribute Subject subject) {
+        subjectService.saveSubject(subject);
         return "redirect:/subjects";
     }
 }
