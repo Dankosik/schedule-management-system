@@ -16,7 +16,6 @@ public class AudienceDataGenerator implements DataGenerator<Audience> {
         for (int i = 0; i < RandomUtils.random(1, 10); i++) {
             Audience audience = new Audience();
             audience.setNumber(generateAudienceNumber());
-            audience.setUniversityId(1L);
             audience.setCapacity(generateAudienceCapacity());
             result.add(audience);
         }

@@ -22,7 +22,6 @@ public class GroupDataGenerator implements DataGenerator<Group> {
             String groupName = generateFirstTwoCharacters() + "-" + generateTwoDigits();
             group.setName(groupName);
             group.setFacultyId(facultyIds.get(RandomUtils.random(0, facultyIds.size() - 1)));
-            group.setUniversityId(1L);
             result.add(group);
         }
         return result;

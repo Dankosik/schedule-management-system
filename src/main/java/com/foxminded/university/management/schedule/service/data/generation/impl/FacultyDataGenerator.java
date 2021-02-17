@@ -16,7 +16,6 @@ public class FacultyDataGenerator implements DataGenerator<Faculty> {
         List<Faculty> result = new ArrayList<>();
         for (int i = 0; i < RandomUtils.random(1, 10); i++) {
             Faculty faculty = new Faculty();
-            faculty.setUniversityId(1L);
             faculty.setName(generateFacultyName());
             result.add(faculty);
         }

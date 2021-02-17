@@ -29,7 +29,6 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
         Map<String, Object> params = new HashMap<>();
         params.put("name", group.getName());
         params.put("faculty_id", group.getFacultyId());
-        params.put("university_id", 1L);
 
         Number newId;
         try {
@@ -39,17 +38,17 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
                     ". Group with name: " + group.getName() + " is already exist");
         }
         LOGGER.info("Group created successful with id: {}", newId);
-        return new Group(newId.longValue(), group.getName(), group.getFacultyId(), group.getUniversityId());
+        return new Group(newId.longValue(), group.getName(), group.getFacultyId());
     }
 
     @Override
     protected Group update(Group group) {
         LOGGER.debug("Updating group: {}", group);
         try {
-            this.jdbcTemplate.update("UPDATE groups SET name = ?,  faculty_id = ?, university_id = ? WHERE id = ?",
-                    group.getName(), group.getFacultyId(), group.getUniversityId(), group.getId());
+            this.jdbcTemplate.update("UPDATE groups SET name = ?,  faculty_id = ? WHERE id = ?",
+                    group.getName(), group.getFacultyId(), group.getId());
             LOGGER.info("Group updated successful: {}", group);
-            return new Group(group.getId(), group.getName(), group.getFacultyId(), group.getUniversityId());
+            return new Group(group.getId(), group.getName(), group.getFacultyId());
         } catch (DuplicateKeyException e) {
             throw new DuplicateKeyException("Impossible to update group with id: " + group.getId() +
                     ". Group with name: " + group.getName() + " is already exist");
@@ -96,13 +95,6 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
         LOGGER.debug("Getting groups with faculty id: {}", id);
         List<Group> groups = this.jdbcTemplate.query("SELECT * FROM groups WHERE faculty_id = ?", new GroupRowMapper(), id);
         LOGGER.info("Successful received groups with faculty id: {}", id);
-        return groups;
-    }
-
-    public List<Group> getGroupsByUniversityId(Long id) {
-        LOGGER.debug("Getting groups with university id: {}", id);
-        List<Group> groups = this.jdbcTemplate.query("SELECT * FROM groups WHERE university_id = ?", new GroupRowMapper(), id);
-        LOGGER.info("Successful received groups with university id: {}", id);
         return groups;
     }
 }

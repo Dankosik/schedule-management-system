@@ -21,7 +21,6 @@ public class SubjectDataGenerator implements DataGenerator<Subject> {
         int sizeOfSubjects = subjectNames.size();
         for (int i = 0; i < RandomUtils.random(1, sizeOfSubjects); i++) {
             Subject subject = new Subject();
-            subject.setUniversityId(1L);
             subject.setName(generateSubjectName());
             result.add(subject);
         }

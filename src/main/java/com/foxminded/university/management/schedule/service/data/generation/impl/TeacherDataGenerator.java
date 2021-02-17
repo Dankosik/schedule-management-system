@@ -31,7 +31,6 @@ public class TeacherDataGenerator implements DataGenerator<Teacher> {
             teacher.setFirstName(firstName);
             teacher.setLastName(lastName);
             teacher.setMiddleName(middleName);
-            teacher.setUniversityId(1L);
             teacher.setFacultyId(facultyIds.get(RandomUtils.random(0, facultyIds.size() - 1)));
             result.add(teacher);
 

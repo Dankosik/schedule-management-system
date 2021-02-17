@@ -31,7 +31,6 @@ public class StudentDataGenerator implements DataGenerator<Student> {
             student.setFirstName(firstName);
             student.setLastName(lastName);
             student.setMiddleName(middleName);
-            student.setUniversityId(1L);
             student.setCourseNumber(RandomUtils.random(1, 4));
             student.setGroupId(groupIds.get(RandomUtils.random(0, groupIds.size() - 1)));
             result.add(student);
