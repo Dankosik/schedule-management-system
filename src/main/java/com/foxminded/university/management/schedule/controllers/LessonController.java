@@ -1,6 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
+import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
@@ -11,19 +11,21 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.sql.Time;
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Controller
 public class LessonController {
     private final LessonServiceImpl lessonService;
     private final SubjectServiceImpl subjectService;
+    private final DurationFormatter durationFormatter;
 
-    public LessonController(LessonServiceImpl lessonService, SubjectServiceImpl subjectService) {
+    public LessonController(LessonServiceImpl lessonService, SubjectServiceImpl subjectService, DurationFormatter durationFormatter) {
         this.lessonService = lessonService;
         this.subjectService = subjectService;
+        this.durationFormatter = durationFormatter;
     }
 
     @GetMapping("/lessons")
@@ -33,7 +35,7 @@ public class LessonController {
 
         List<Duration> durations = lessonService.getDurationsForLessons(lessons);
         List<String> formattedDurations = durations.stream()
-                .map(StringUtils::formatDurationInMinutes)
+                .map(duration -> durationFormatter.print(duration, Locale.getDefault()))
                 .collect(Collectors.toList());
 
         model.addAttribute("durations", formattedDurations);

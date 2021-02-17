@@ -1,6 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
+import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Controller
@@ -24,11 +25,12 @@ public class GroupController {
     private final AudienceServiceImpl audienceService;
     private final TeacherServiceImpl teacherService;
     private final FacultyServiceImpl facultyService;
+    private final DurationFormatter durationFormatter;
 
     public GroupController(GroupServiceImpl groupService, StudentServiceImpl studentService,
                            LectureServiceImpl lectureService, LessonServiceImpl lessonService,
                            SubjectServiceImpl subjectService, AudienceServiceImpl audienceService, TeacherServiceImpl teacherService,
-                           FacultyServiceImpl facultyService) {
+                           FacultyServiceImpl facultyService, DurationFormatter durationFormatter) {
         this.groupService = groupService;
         this.studentService = studentService;
         this.lectureService = lectureService;
@@ -37,6 +39,7 @@ public class GroupController {
         this.audienceService = audienceService;
         this.teacherService = teacherService;
         this.facultyService = facultyService;
+        this.durationFormatter = durationFormatter;
     }
 
     @GetMapping("/groups")
@@ -60,7 +63,7 @@ public class GroupController {
         List<Lesson> lessons = lessonService.getLessonsForLectures(lectures);
         List<Duration> durations = lessonService.getDurationsForLessons(lessons);
         List<String> formattedDurations = durations.stream()
-                .map(StringUtils::formatDurationInMinutes)
+                .map(duration -> durationFormatter.print(duration, Locale.getDefault()))
                 .collect(Collectors.toList());
 
         model.addAttribute("durations", formattedDurations);

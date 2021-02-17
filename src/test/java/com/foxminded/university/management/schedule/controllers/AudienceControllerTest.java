@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -41,6 +43,8 @@ class AudienceControllerTest {
     private TeacherServiceImpl teacherService;
     @MockBean
     private GroupServiceImpl groupService;
+    @MockBean
+    private DurationFormatter durationFormatter;
 
     @Test
     public void shouldReturnViewWithAllAudiences() throws Exception {
@@ -59,6 +63,8 @@ class AudienceControllerTest {
 
     @Test
     public void shouldReturnViewWithOneAudience() throws Exception {
+        when(durationFormatter.print(Duration.ofMinutes(90), Locale.getDefault())).thenReturn("1:30:00");
+
         Audience audience = new Audience(1L, 301, 45);
         when(audienceService.getAudienceById(1L)).thenReturn(audience);
 

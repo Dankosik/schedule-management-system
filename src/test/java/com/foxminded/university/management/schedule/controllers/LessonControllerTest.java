@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
@@ -16,6 +17,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -33,9 +35,12 @@ class LessonControllerTest {
     private LessonServiceImpl lessonService;
     @MockBean
     private SubjectServiceImpl subjectService;
+    @MockBean
+    private DurationFormatter durationFormatter;
 
     @Test
     public void shouldReturnViewWithAllLessons() throws Exception {
+        when(durationFormatter.print(Duration.ofMinutes(90), Locale.getDefault())).thenReturn("1:30:00");
         List<Lesson> lessons = List.of(
                 new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L),
                 new Lesson(1001L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1001L));
