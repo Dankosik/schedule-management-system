@@ -24,10 +24,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class StudentServiceImplTest {
-    private final Student student = new Student(1L, "John", "Jackson", "Jackson", 1, null, 1L);
+    private final Student student = new Student(1L, "John", "Jackson", "Jackson", 1, null);
     private final List<Student> students = List.of(student,
-            new Student(2L, "Ferdinanda", "Casajuana", "Lambarton", 1, null, 1L),
-            new Student(3L, "Lindsey", "Syplus", "Slocket", 1, null, 1L));
+            new Student(2L, "Ferdinanda", "Casajuana", "Lambarton", 1, null),
+            new Student(3L, "Lindsey", "Syplus", "Slocket", 1, null));
     @Autowired
     private StudentServiceImpl studentService;
     @MockBean
@@ -37,7 +37,7 @@ class StudentServiceImplTest {
 
     @Test
     void shouldSaveStudent() {
-        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, null, 1L)))
+        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, null)))
                 .thenReturn(student);
         Student actual = studentService.saveStudent(student);
 
@@ -79,11 +79,11 @@ class StudentServiceImplTest {
 
     @Test
     void shouldSaveListOfStudents() {
-        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, null, 1L)))
+        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, null)))
                 .thenReturn(student);
-        when(studentDao.save(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, null, 1L)))
+        when(studentDao.save(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, null)))
                 .thenReturn(students.get(1));
-        when(studentDao.save(new Student("Lindsey", "Syplus", "Slocket", 1, null, 1L)))
+        when(studentDao.save(new Student("Lindsey", "Syplus", "Slocket", 1, null)))
                 .thenReturn(students.get(2));
 
         List<Student> actual = studentService.saveAllStudents(students);
@@ -107,7 +107,7 @@ class StudentServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfStudentGroupNotFound() {
-        Student expected = new Student(1L, "John", "Jackson", "Jackson", 1, 1L, 1L);
+        Student expected = new Student(1L, "John", "Jackson", "Jackson", 1, 1L);
 
         when(studentDao.getById(1L)).thenReturn(Optional.of(expected));
         when(groupDao.getById(1L)).thenReturn(Optional.empty());

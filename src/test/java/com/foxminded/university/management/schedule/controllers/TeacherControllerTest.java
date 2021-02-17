@@ -47,15 +47,21 @@ class TeacherControllerTest {
     @Test
     public void shouldReturnViewWithAllTeachers() throws Exception {
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L));
 
         when(teacherService.getAllTeachers()).thenReturn(teachers);
 
         List<Faculty> faculties = List.of(
-                new Faculty(1L, "FAIT", 1L),
-                new Faculty(2L, "FKFN", 1L));
+                new Faculty(1L, "FAIT"),
+                new Faculty(2L, "FKFN"));
         when(facultyService.getFacultiesForTeachers(teachers)).thenReturn(faculties);
+
+        List<Faculty> allFaculties = List.of(
+                new Faculty(1L, "FAIT"),
+                new Faculty(2L, "FKFN"),
+                new Faculty(3L, "QNS"));
+        when(facultyService.getAllFaculties()).thenReturn(allFaculties);
 
         List<String> facultyNames = List.of("FAIT", "FKFN");
         when(facultyService.getFacultyNamesForTeachers(teachers)).thenReturn(facultyNames);
@@ -64,16 +70,18 @@ class TeacherControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("teachers"))
                 .andExpect(model().attribute("teachers", teachers))
+                .andExpect(model().attribute("teacher", new Teacher()))
                 .andExpect(model().attribute("faculties", faculties))
+                .andExpect(model().attribute("allFaculties", allFaculties))
                 .andExpect(model().attribute("facultyNames", facultyNames));
     }
 
     @Test
     public void shouldReturnViewWithOneTeacher() throws Exception {
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L);
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
         when(teacherService.getTeacherById(1L)).thenReturn(teacher);
 
-        Faculty faculty = new Faculty(1L, "FAIT", 1L);
+        Faculty faculty = new Faculty(1L, "FAIT");
         when(facultyService.getFacultyById(1L)).thenReturn(faculty);
 
         List<Lecture> lectures = List.of(
@@ -99,21 +107,21 @@ class TeacherControllerTest {
         when(lessonService.getStartTimesForLessons(lessons)).thenReturn(startTimes);
 
         List<Audience> audiences = List.of(
-                new Audience(1L, 301, 45, 1L),
-                new Audience(2L, 302, 55, 1L));
+                new Audience(1L, 301, 45),
+                new Audience(2L, 302, 55));
         when(audienceService.getAudiencesForLectures(lectures)).thenReturn(audiences);
 
         List<Integer> audienceNumbers = List.of(301, 302);
         when(audienceService.getAudienceNumbersForAudiences(audiences)).thenReturn(audienceNumbers);
 
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Art", 1L));
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"));
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);
 
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L, 1L),
-                new Group(2L, "AB-11", 1L, 1L));
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "AB-11", 1L));
         when(groupService.getGroupsForLectures(lectures)).thenReturn(groups);
 
         List<String> groupNames = List.of("AB-01", "AB-11");
@@ -136,7 +144,7 @@ class TeacherControllerTest {
 
     @Test
     public void shouldDeleteTeacher() throws Exception {
-        Teacher teacher = new Teacher("John", "Jackson", "Jackson", 1L, 1L);
+        Teacher teacher = new Teacher("John", "Jackson", "Jackson", 1L);
         given(teacherService.getTeacherById(1L)).willReturn(teacher);
         doNothing().when(teacherService).deleteTeacherById(1L);
         mockMvc.perform(post("/teachers/delete/{id}", 1L))

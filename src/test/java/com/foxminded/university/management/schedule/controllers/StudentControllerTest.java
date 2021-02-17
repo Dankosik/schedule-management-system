@@ -34,16 +34,23 @@ class StudentControllerTest {
     @Test
     public void shouldReturnViewWithAllStudents() throws Exception {
         List<Student> students = List.of(
-                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L),
-                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 1L, 1L),
-                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 2L, 1L));
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 1L),
+                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 2L));
         when(studentService.getAllStudents()).thenReturn(students);
 
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L, 1L),
-                new Group(1L, "AB-01", 1L, 1L),
-                new Group(2L, "CD-21", 1L, 1L));
+                new Group(1L, "AB-01", 1L),
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "CD-21", 1L));
         when(groupService.getGroupsForStudents(students)).thenReturn(groups);
+
+        List<Group> allGroups = List.of(
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "CD-21", 1L),
+                new Group(3L, "CD-22", 1L),
+                new Group(4L, "FB-01", 2L));
+        when(groupService.getAllGroups()).thenReturn(allGroups);
 
         List<String> groupNames = List.of("AB-01", "AB-01", "CD-21");
         when(groupService.getGroupNamesForStudents(students)).thenReturn(groupNames);
@@ -52,13 +59,15 @@ class StudentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("students"))
                 .andExpect(model().attribute("students", students))
+                .andExpect(model().attribute("student", new Student()))
                 .andExpect(model().attribute("groupNames", groupNames))
-                .andExpect(model().attribute("groups", groups));
+                .andExpect(model().attribute("groups", groups))
+                .andExpect(model().attribute("allGroups", allGroups));
     }
 
     @Test
     public void shouldDeleteStudent() throws Exception {
-        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1L);
+        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L);
         given(studentService.getStudentById(1L)).willReturn(student);
         doNothing().when(studentService).deleteStudentById(1L);
         mockMvc.perform(post("/students/delete/{id}", 1L))

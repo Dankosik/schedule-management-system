@@ -30,8 +30,8 @@ class SubjectControllerTest {
     @Test
     public void shouldReturnViewWithAllSubjects() throws Exception {
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Art", 1L));
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"));
 
         when(subjectService.getAllSubjects()).thenReturn(subjects);
 
@@ -43,7 +43,7 @@ class SubjectControllerTest {
 
     @Test
     public void shouldReturnViewWithOneSubject() throws Exception {
-        Subject subject = new Subject(1L, "Math", 1L);
+        Subject subject = new Subject(1L, "Math");
         when(subjectService.getSubjectById(1L)).thenReturn(subject);
 
         mockMvc.perform(get("/subjects/{id}", 1))
@@ -54,7 +54,7 @@ class SubjectControllerTest {
 
     @Test
     public void shouldDeleteSubject() throws Exception {
-        Subject subject = new Subject(1L, "Art", 1L);
+        Subject subject = new Subject(1L, "Art");
         given(subjectService.getSubjectById(1L)).willReturn(subject);
         doNothing().when(subjectService).deleteSubjectById(1L);
         mockMvc.perform(post("/subjects/delete/{id}", 1L))

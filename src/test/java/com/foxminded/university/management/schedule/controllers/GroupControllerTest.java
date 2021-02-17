@@ -43,24 +43,33 @@ class GroupControllerTest {
     private StudentServiceImpl studentService;
     @MockBean
     private GroupServiceImpl groupService;
+    @MockBean
+    private FacultyServiceImpl facultyService;
 
     @Test
     public void shouldReturnViewWithAllGroups() throws Exception {
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L, 1L),
-                new Group(2L, "CD-21", 1L, 1L));
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "CD-21", 1L));
 
         when(groupService.getAllGroups()).thenReturn(groups);
+
+        List<Faculty> faculties = List.of(
+                new Faculty(1L, "FAIT"),
+                new Faculty(2L, "FKFN"));
+        when(facultyService.getAllFaculties()).thenReturn(faculties);
 
         mockMvc.perform(get("/groups"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("groups"))
-                .andExpect(model().attribute("groups", groups));
+                .andExpect(model().attribute("groups", groups))
+                .andExpect(model().attribute("group", new Group()))
+                .andExpect(model().attribute("faculties", faculties));
     }
 
     @Test
     public void shouldReturnViewWithOneGroup() throws Exception {
-        Group group = new Group(1L, "AB-01", 1L, 1L);
+        Group group = new Group(1L, "AB-01", 1L);
         when(groupService.getGroupById(1L)).thenReturn(group);
 
         List<Lecture> lectures = List.of(
@@ -86,29 +95,29 @@ class GroupControllerTest {
         when(lessonService.getStartTimesForLessons(lessons)).thenReturn(startTimes);
 
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L));
         when(teacherService.getTeachersForLectures(lectures)).thenReturn(teachers);
 
         List<String> teacherNames = List.of("Jackson J. J.", "Conor M. C.");
         when(teacherService.getLastNamesWithInitialsForTeachers(teachers)).thenReturn(teacherNames);
 
         List<Audience> audiences = List.of(
-                new Audience(1L, 301, 45, 1L),
-                new Audience(2L, 302, 55, 1L));
+                new Audience(1L, 301, 45),
+                new Audience(2L, 302, 55));
         when(audienceService.getAudiencesForLectures(lectures)).thenReturn(audiences);
 
         List<Integer> audienceNumbers = List.of(301, 302);
         when(audienceService.getAudienceNumbersForAudiences(audiences)).thenReturn(audienceNumbers);
 
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Art", 1L));
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"));
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);
 
         List<Student> students = List.of(
-                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L, 1000L),
-                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L, 1000L));
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L));
         when(studentService.getStudentsForGroup(group)).thenReturn(students);
 
         mockMvc.perform(get("/groups/{id}", 1))
@@ -128,7 +137,7 @@ class GroupControllerTest {
 
     @Test
     public void shouldDeleteGroup() throws Exception {
-        Group group = new Group(1L, "AB-01", 1L, 1L);
+        Group group = new Group(1L, "AB-01", 1L);
         given(groupService.getGroupById(1L)).willReturn(group);
         doNothing().when(groupService).deleteGroupById(1L);
         mockMvc.perform(post("/groups/delete/{id}", 1L))

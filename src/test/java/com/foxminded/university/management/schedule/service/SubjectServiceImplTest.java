@@ -34,10 +34,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class SubjectServiceImplTest {
-    private final Subject subject = new Subject(1L, "Math", 1L);
+    private final Subject subject = new Subject(1L, "Math");
     private final List<Subject> subjects = List.of(subject,
-            new Subject(2L, "Art", 1L),
-            new Subject(3L, "Programming", 1L));
+            new Subject(2L, "Art"),
+            new Subject(3L, "Programming"));
 
     @Autowired
     private SubjectServiceImpl subjectService;
@@ -50,7 +50,7 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldSaveSubject() {
-        when(subjectDao.save(new Subject("Math", 1L))).thenReturn(subject);
+        when(subjectDao.save(new Subject("Math"))).thenReturn(subject);
 
         Subject actual = subjectService.saveSubject(subject);
 
@@ -92,11 +92,11 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldSaveListOfAudiences() {
-        when(subjectDao.save(new Subject("Math", 1L)))
+        when(subjectDao.save(new Subject("Math")))
                 .thenReturn(subject);
-        when(subjectDao.save(new Subject("Art", 1L)))
+        when(subjectDao.save(new Subject("Art")))
                 .thenReturn(subjects.get(1));
-        when(subjectDao.save(new Subject("Programming", 1L)))
+        when(subjectDao.save(new Subject("Programming")))
                 .thenReturn(subjects.get(2));
 
         List<Subject> actual = subjectService.saveAllSubjects(subjects);
@@ -110,7 +110,7 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfCreatedSubjectWithInputNameIsAlreadyExist() {
-        Subject expected = new Subject("Math", 1L);
+        Subject expected = new Subject("Math");
         when(subjectDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
         assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
@@ -120,7 +120,7 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfUpdatedSubjectWithInputNameIsAlreadyExist() {
-        Subject expected = new Subject(1L, "Math", 1L);
+        Subject expected = new Subject(1L, "Math");
         when(subjectDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
         assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
@@ -140,8 +140,8 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldReturnSubjectNamesForLessons() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
-        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math")));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art")));
 
         List<Lesson> lessons = List.of(
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
@@ -157,8 +157,8 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldReturnSubjectNamesForLessonsWithSubjectIdZero() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
-        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math")));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art")));
 
         List<Lesson> lessons = List.of(
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L),
@@ -173,8 +173,8 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldReturnSubjectsForLessons() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
-        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math")));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art")));
         when(lessonDao.getById(1L))
                 .thenReturn(Optional.of(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
         when(lessonDao.getById(2L))
@@ -190,8 +190,8 @@ class SubjectServiceImplTest {
                 new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
 
         List<Subject> expected = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Art", 1L));
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"));
 
         assertEquals(expected, subjectService.getSubjectsForLessons(lessons));
 
@@ -203,8 +203,8 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldReturnSubjectsForLessonsWithSubjectIdZero() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
-        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math")));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art")));
         when(lessonDao.getById(1L))
                 .thenReturn(Optional.of(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L)));
         when(lessonDao.getById(2L))
@@ -219,7 +219,7 @@ class SubjectServiceImplTest {
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L),
                 new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
 
-        List<Subject> expected = Arrays.asList(null, new Subject(2L, "Art", 1L));
+        List<Subject> expected = Arrays.asList(null, new Subject(2L, "Art"));
 
         assertEquals(expected, subjectService.getSubjectsForLessons(lessons));
 
@@ -230,8 +230,8 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldReturnSubjectsForLectures() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
-        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math")));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art")));
         when(lessonService.getLessonById(1L))
                 .thenReturn(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
         when(lessonService.getLessonById(2L))
@@ -242,8 +242,8 @@ class SubjectServiceImplTest {
                 new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 1L));
 
         List<Subject> expected = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Art", 1L));
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"));
 
         assertEquals(expected, subjectService.getSubjectsForLectures(lectures));
 
@@ -255,8 +255,8 @@ class SubjectServiceImplTest {
 
     @Test
     void shouldReturnSubjectsForLecturesWithSubjectIdZero() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math", 1L)));
-        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art", 1L)));
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math")));
+        when(subjectDao.getById(2L)).thenReturn(Optional.of(new Subject(2L, "Art")));
         when(lessonService.getLessonById(1L))
                 .thenReturn(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
         when(lessonService.getLessonById(2L))
@@ -266,7 +266,7 @@ class SubjectServiceImplTest {
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 0L, 1L),
                 new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 1L));
 
-        List<Subject> expected = Arrays.asList(null, new Subject(2L, "Art", 1L));
+        List<Subject> expected = Arrays.asList(null, new Subject(2L, "Art"));
 
         assertEquals(expected, subjectService.getSubjectsForLectures(lectures));
 

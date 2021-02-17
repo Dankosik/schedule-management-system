@@ -35,9 +35,9 @@ class LectureServiceImplTest {
                     null, null, null, null),
             new Lecture(3L, 3, Date.valueOf(LocalDate.of(2020, 1, 1)),
                     null, null, null, null));
-    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, 1L);
+    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null);
     private final Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
-    private final Group group = new Group(1L, "AB-01", null, 1L);
+    private final Group group = new Group(1L, "AB-01", null);
     @Autowired
     private LectureServiceImpl lectureService;
     @MockBean
@@ -56,9 +56,9 @@ class LectureServiceImplTest {
         when(lectureDao.save(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 null, null, null, null))).thenReturn(lecture);
         when(teacherDao.getById(null))
-                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null)));
         when(audienceDao.getById(null))
-                .thenReturn(Optional.of(new Audience(null, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(null, 202, 45)));
         when(lessonDao.getById(null))
                 .thenReturn(Optional.of(new Lesson(null, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
         Lecture actual = lectureService.saveLecture(lecture);
@@ -110,9 +110,9 @@ class LectureServiceImplTest {
         when(lectureDao.save(new Lecture(3, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 null, null, null, null))).thenReturn(lectures.get(2));
         when(teacherDao.getById(null))
-                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null)));
         when(audienceDao.getById(null))
-                .thenReturn(Optional.of(new Audience(null, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(null, 202, 45)));
         when(lessonDao.getById(null))
                 .thenReturn(Optional.of(new Lesson(null, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
 
@@ -134,9 +134,9 @@ class LectureServiceImplTest {
                 null, null, 1L, null);
 
         when(teacherDao.getById(null))
-                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null)));
         when(audienceDao.getById(null))
-                .thenReturn(Optional.of(new Audience(null, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(null, 202, 45)));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(lectureDao.save(expected)).thenReturn(expected);
@@ -157,9 +157,9 @@ class LectureServiceImplTest {
                 null, null, null, null);
 
         when(teacherDao.getById(null))
-                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null)));
         when(audienceDao.getById(null))
-                .thenReturn(Optional.of(new Audience(null, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(null, 202, 45)));
         when(lessonDao.getById(null))
                 .thenReturn(Optional.of(new Lesson(null, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
@@ -184,7 +184,7 @@ class LectureServiceImplTest {
                 null, null, null, 1L);
 
         when(audienceDao.getById(null))
-                .thenReturn(Optional.of(new Audience(null, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(null, 202, 45)));
         when(lessonDao.getById(null))
                 .thenReturn(Optional.of(new Lesson(null, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
@@ -207,11 +207,11 @@ class LectureServiceImplTest {
                 null, null, null, null);
 
         when(teacherDao.getById(null))
-                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null)));
         when(lessonDao.getById(null))
                 .thenReturn(Optional.of(new Lesson(null, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
         when(audienceDao.getById(null))
-                .thenReturn(Optional.of(new Audience(null, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(null, 202, 45)));
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureService.saveLecture(expected)).thenReturn(expected);
@@ -232,13 +232,13 @@ class LectureServiceImplTest {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 null, 1L, null, null);
         when(teacherDao.getById(null))
-                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null)));
         when(audienceDao.getById(null))
-                .thenReturn(Optional.of(new Audience(null, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(null, 202, 45)));
         when(lessonDao.getById(null))
                 .thenReturn(Optional.of(new Lesson(null, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
         when(groupDao.getById(1L))
-                .thenReturn(Optional.of(new Group(1L, "AB-01", 1L, 1L)));
+                .thenReturn(Optional.of(new Group(1L, "AB-01", 1L)));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureDao.save(expected)).thenReturn(expected);
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
@@ -259,13 +259,13 @@ class LectureServiceImplTest {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 null, null, null, null);
         when(teacherDao.getById(null))
-                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(null, "John", "Jackson", "Jackson", null)));
         when(audienceDao.getById(null))
-                .thenReturn(Optional.of(new Audience(null, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(null, 202, 45)));
         when(lessonDao.getById(null))
                 .thenReturn(Optional.of(new Lesson(null, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L)));
         when(groupDao.getById(1L))
-                .thenReturn(Optional.of(new Group(1L, "AB-01", 1L, 1L)));
+                .thenReturn(Optional.of(new Group(1L, "AB-01", 1L)));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureDao.save(expected)).thenReturn(expected);
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
@@ -548,9 +548,9 @@ class LectureServiceImplTest {
 
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
         when(teacherDao.getById(1L))
-                .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", null)));
         when(audienceDao.getById(1L))
-                .thenReturn(Optional.of(new Audience(1L, 202, 45, 1L)));
+                .thenReturn(Optional.of(new Audience(1L, 202, 45)));
         when(lessonDao.getById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> lectureService.saveLecture(expected));
@@ -568,7 +568,7 @@ class LectureServiceImplTest {
 
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
         when(teacherDao.getById(1L))
-                .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", null, 1L)));
+                .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", null)));
         when(audienceDao.getById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> lectureService.saveLecture(expected));
@@ -586,7 +586,7 @@ class LectureServiceImplTest {
 
         when(lectureDao.getLecturesByAudienceId(1L)).thenReturn(expected);
 
-        assertEquals(expected, lectureService.getLecturesForAudience(new Audience(1L, 211, 35, 1L)));
+        assertEquals(expected, lectureService.getLecturesForAudience(new Audience(1L, 211, 35)));
 
         verify(lectureDao, times(1)).getLecturesByAudienceId(1L);
     }
@@ -600,7 +600,7 @@ class LectureServiceImplTest {
         when(lectureDao.getLecturesByTeacherId(1L)).thenReturn(expected);
 
         assertEquals(expected, lectureService.getLecturesForTeacher(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L)));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L)));
 
         verify(lectureDao, times(1)).getLecturesByTeacherId(1L);
     }
@@ -613,7 +613,7 @@ class LectureServiceImplTest {
 
         when(lectureDao.getLecturesByGroupId(1L)).thenReturn(expected);
 
-        assertEquals(expected, lectureService.getLecturesForGroup(new Group(1L, "AB-12", 1L, 1L)));
+        assertEquals(expected, lectureService.getLecturesForGroup(new Group(1L, "AB-12", 1L)));
 
         verify(lectureDao, times(1)).getLecturesByGroupId(1L);
     }

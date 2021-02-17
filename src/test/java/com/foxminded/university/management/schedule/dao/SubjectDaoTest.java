@@ -24,30 +24,30 @@ class SubjectDaoTest extends BaseDaoTest {
 
     @Test
     void shouldCreateNewSubject() {
-        Subject subject = new Subject("Art", 1000L);
+        Subject subject = new Subject("Art");
         Long subjectId = subjectDao.save(subject).getId();
         assertTrue(testUtils.existsById("subjects", subjectId));
 
         Map<String, Object> map = testUtils.getEntry("subjects", subjectId);
-        Subject actual = new Subject((String) map.get("name"), (Long) map.get("university_id"));
+        Subject actual = new Subject((String) map.get("name"));
         assertEquals(subject, actual);
     }
 
     @Test
     void shouldUpdateSubject() {
-        Subject subject = new Subject(1000L, "Art", 1000L);
+        Subject subject = new Subject(1000L, "Art");
         Long subjectId = subjectDao.save(subject).getId();
         assertTrue(testUtils.existsById("subjects", subjectId));
 
         Map<String, Object> map = testUtils.getEntry("subjects", subjectId);
-        Subject actual = new Subject((Long) map.get("id"), (String) map.get("name"), (Long) map.get("university_id"));
+        Subject actual = new Subject((Long) map.get("id"), (String) map.get("name"));
         assertEquals(subject, actual);
     }
 
     @Test
     void shouldReturnSubjectWithIdOne() {
         Map<String, Object> map = testUtils.getEntry("subjects", 1000L);
-        Subject expected = new Subject((Long) map.get("id"), (String) map.get("name"), (Long) map.get("university_id"));
+        Subject expected = new Subject((Long) map.get("id"), (String) map.get("name"));
         Subject actual = subjectDao.getById(1000L).get();
 
         assertEquals(expected, actual);
@@ -56,9 +56,9 @@ class SubjectDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfSubjects() {
         List<Subject> expected = List.of(
-                new Subject(1000L, "Math", 1000L),
-                new Subject(1001L, "Physics", 1000L),
-                new Subject(1002L, "Programming", 1000L));
+                new Subject(1000L, "Math"),
+                new Subject(1001L, "Physics"),
+                new Subject(1002L, "Programming"));
         List<Subject> actual = subjectDao.getAll();
 
         assertTrue(actual.containsAll(expected));
@@ -73,15 +73,15 @@ class SubjectDaoTest extends BaseDaoTest {
     @Test
     void shouldSaveListOfAudiences() {
         List<Subject> subjects = List.of(
-                new Subject("Art", 1000L),
-                new Subject("Music", 1000L));
+                new Subject("Art"),
+                new Subject("Music"));
 
         List<Subject> expected = List.of(
-                new Subject(1000L, "Math", 1000L),
-                new Subject(1001L, "Physics", 1000L),
-                new Subject(1002L, "Programming", 1000L),
-                new Subject(1L, "Art", 1000L),
-                new Subject(2L, "Music", 1000L));
+                new Subject(1000L, "Math"),
+                new Subject(1001L, "Physics"),
+                new Subject(1002L, "Programming"),
+                new Subject(1L, "Art"),
+                new Subject(2L, "Music"));
         subjectDao.saveAll(subjects);
         List<Subject> actual = subjectDao.getAll();
 
@@ -89,21 +89,10 @@ class SubjectDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void shouldReturnListOfSubjectsWithUniversityIdOne() {
-        List<Subject> expected = List.of(
-                new Subject(1000L, "Math", 1000L),
-                new Subject(1001L, "Physics", 1000L),
-                new Subject(1002L, "Programming", 1000L));
-        List<Subject> actual = subjectDao.getSubjectsByUniversityId(1000L);
-
-        assertTrue(actual.containsAll(expected));
-    }
-
-    @Test
     void shouldReturnListOfSubjectsWithStudentIdOne() {
         List<Subject> expected = List.of(
-                new Subject(1000L, "Math", 1000L),
-                new Subject(1002L, "Programming", 1000L));
+                new Subject(1000L, "Math"),
+                new Subject(1002L, "Programming"));
         List<Subject> actual = subjectDao.getSubjectsByStudentId(1000L);
 
         assertTrue(actual.containsAll(expected));
@@ -112,8 +101,8 @@ class SubjectDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfSubjectsWithTeacherIdOne() {
         List<Subject> expected = List.of(
-                new Subject(1000L, "Math", 1000L),
-                new Subject(1001L, "Physics", 1000L));
+                new Subject(1000L, "Math"),
+                new Subject(1001L, "Physics"));
         List<Subject> actual = subjectDao.getSubjectsByTeacherId(1000L);
 
         assertTrue(actual.containsAll(expected));
@@ -131,11 +120,11 @@ class SubjectDaoTest extends BaseDaoTest {
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
-        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject("Math", 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject("Math")));
     }
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
-        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject(1001L, "Math", 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> subjectDao.save(new Subject(1001L, "Math")));
     }
 }

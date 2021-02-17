@@ -29,9 +29,9 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class TeacherServiceImplTest {
-    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, 1L);
+    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null);
     private final List<Teacher> teachers = List.of(teacher,
-            new Teacher(2L, "Mike", "Conor", "Conor", 1L, 1L));
+            new Teacher(2L, "Mike", "Conor", "Conor", 1L));
     @Autowired
     TeacherServiceImpl teacherService;
     @MockBean
@@ -42,7 +42,7 @@ class TeacherServiceImplTest {
 
     @Test
     void shouldSaveTeacher() {
-        when(teacherDao.save(new Teacher("John", "Jackson", "Jackson", null, 1L)))
+        when(teacherDao.save(new Teacher("John", "Jackson", "Jackson", null)))
                 .thenReturn(teacher);
         Teacher actual = teacherService.saveTeacher(teacher);
 
@@ -84,10 +84,10 @@ class TeacherServiceImplTest {
 
     @Test
     void shouldSaveListOfTeachers() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
-        when(teacherDao.save(new Teacher("John", "Jackson", "Jackson", null, 1L)))
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
+        when(teacherDao.save(new Teacher("John", "Jackson", "Jackson", null)))
                 .thenReturn(teacher);
-        when(teacherDao.save(new Teacher("Mike", "Conor", "Conor", 1L, 1L)))
+        when(teacherDao.save(new Teacher("Mike", "Conor", "Conor", 1L)))
                 .thenReturn(teachers.get(1));
 
         List<Teacher> actual = teacherService.saveAllTeachers(teachers);
@@ -111,7 +111,7 @@ class TeacherServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfTeachersFacultyNotFound() {
-        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L);
+        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
 
         when(teacherDao.getById(1L)).thenReturn(Optional.of(expected));
         when(facultyDao.getById(1L)).thenReturn(Optional.empty());
@@ -125,8 +125,8 @@ class TeacherServiceImplTest {
     @Test
     void shouldReturnNameWithInitialsForTeachers() {
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L));
 
         List<String> expected = List.of("Jackson J. J.", "Conor M. C.");
 
@@ -135,7 +135,7 @@ class TeacherServiceImplTest {
 
     @Test
     void shouldReturnNameWithInitialsForTeachersWithTeacherIdNull() {
-        List<Teacher> teachers = Arrays.asList(null, new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+        List<Teacher> teachers = Arrays.asList(null, new Teacher(2L, "Mike", "Conor", "Conor", 2L));
 
         List<String> expected = Arrays.asList(null, "Conor M. C.");
 
@@ -145,17 +145,17 @@ class TeacherServiceImplTest {
     @Test
     void shouldReturnTeachersForLectures() {
         when(teacherDao.getById(1L))
-                .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L)));
+                .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", 1L)));
         when(teacherDao.getById(2L))
-                .thenReturn(Optional.of(new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L)));
+                .thenReturn(Optional.of(new Teacher(2L, "Mike", "Conor", "Conor", 2L)));
 
         List<Lecture> lectures = List.of(
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
                 new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 2L));
 
         List<Teacher> expected = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L));
 
         assertEquals(expected, teacherService.getTeachersForLectures(lectures));
 
@@ -166,15 +166,15 @@ class TeacherServiceImplTest {
     @Test
     void shouldReturnTeachersForLecturesWithTeacherIdZero() {
         when(teacherDao.getById(1L))
-                .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L)));
+                .thenReturn(Optional.of(new Teacher(1L, "John", "Jackson", "Jackson", 1L)));
         when(teacherDao.getById(2L))
-                .thenReturn(Optional.of(new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L)));
+                .thenReturn(Optional.of(new Teacher(2L, "Mike", "Conor", "Conor", 2L)));
 
         List<Lecture> lectures = List.of(
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 0L),
                 new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 2L));
 
-        List<Teacher> expected = Arrays.asList(null, new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+        List<Teacher> expected = Arrays.asList(null, new Teacher(2L, "Mike", "Conor", "Conor", 2L));
 
         assertEquals(expected, teacherService.getTeachersForLectures(lectures));
 
@@ -184,12 +184,12 @@ class TeacherServiceImplTest {
     @Test
     void shouldReturnTeachersForFaculty() {
         List<Teacher> expected = List.of(
-                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L),
-                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 1L, 1L));
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 1L));
 
         when(teacherDao.getTeachersByFacultyId(1L)).thenReturn(expected);
 
-        assertEquals(expected, teacherService.getTeachersForFaculty(new Faculty(1L, "FAIT", 1L)));
+        assertEquals(expected, teacherService.getTeachersForFaculty(new Faculty(1L, "FAIT")));
 
         verify(teacherDao, times(1)).getTeachersByFacultyId(1L);
     }

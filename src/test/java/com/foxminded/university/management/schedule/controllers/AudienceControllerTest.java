@@ -40,27 +40,26 @@ class AudienceControllerTest {
     @MockBean
     private TeacherServiceImpl teacherService;
     @MockBean
-    private StudentServiceImpl studentService;
-    @MockBean
     private GroupServiceImpl groupService;
 
     @Test
     public void shouldReturnViewWithAllAudiences() throws Exception {
         List<Audience> audiences = List.of(
-                new Audience(1L, 301, 45, 1L),
-                new Audience(2L, 302, 55, 1L));
+                new Audience(1L, 301, 45),
+                new Audience(2L, 302, 55));
 
         when(audienceService.getAllAudiences()).thenReturn(audiences);
 
         mockMvc.perform(get("/audiences"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("audiences"))
-                .andExpect(model().attribute("audiences", audiences));
+                .andExpect(model().attribute("audiences", audiences))
+                .andExpect(model().attribute("audience", new Audience()));
     }
 
     @Test
     public void shouldReturnViewWithOneAudience() throws Exception {
-        Audience audience = new Audience(1L, 301, 45, 1L);
+        Audience audience = new Audience(1L, 301, 45);
         when(audienceService.getAudienceById(1L)).thenReturn(audience);
 
         List<Lecture> lectures = List.of(
@@ -86,29 +85,29 @@ class AudienceControllerTest {
         when(lessonService.getStartTimesForLessons(lessons)).thenReturn(startTimes);
 
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L));
         when(teacherService.getTeachersForLectures(lectures)).thenReturn(teachers);
 
         List<String> teacherNames = List.of("Jackson J. J.", "Conor M. C.");
         when(teacherService.getLastNamesWithInitialsForTeachers(teachers)).thenReturn(teacherNames);
 
         List<Audience> audiences = List.of(
-                new Audience(1L, 301, 45, 1L),
-                new Audience(2L, 302, 55, 1L));
+                new Audience(1L, 301, 45),
+                new Audience(2L, 302, 55));
         when(audienceService.getAudiencesForLectures(lectures)).thenReturn(audiences);
 
         List<Integer> audienceNumbers = List.of(301, 302);
         when(audienceService.getAudienceNumbersForAudiences(audiences)).thenReturn(audienceNumbers);
 
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Art", 1L));
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"));
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);
 
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L, 1L),
-                new Group(2L, "AB-11", 1L, 1L));
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "AB-11", 1L));
         when(groupService.getGroupsForLectures(lectures)).thenReturn(groups);
 
         List<String> groupNames = List.of("AB-01", "AB-11");
@@ -131,7 +130,7 @@ class AudienceControllerTest {
 
     @Test
     public void shouldDeleteAudience() throws Exception {
-        Audience audience = new Audience(1L, 201, 25, 1L);
+        Audience audience = new Audience(1L, 201, 25);
         given(audienceService.getAudienceById(1L)).willReturn(audience);
         doNothing().when(audienceService).deleteAudienceById(1L);
         mockMvc.perform(post("/audiences/delete/{id}", 1L))

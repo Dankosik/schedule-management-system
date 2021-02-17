@@ -40,8 +40,6 @@ class LectureControllerTest {
     @MockBean
     private SubjectServiceImpl subjectService;
     @MockBean
-    private StudentServiceImpl studentService;
-    @MockBean
     private GroupServiceImpl groupService;
 
     @Test
@@ -69,29 +67,49 @@ class LectureControllerTest {
         when(lessonService.getStartTimesForLessons(lessons)).thenReturn(startTimes);
 
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L, 1L));
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L));
         when(teacherService.getTeachersForLectures(lectures)).thenReturn(teachers);
+
+        List<Teacher> allTeachers = List.of(
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L),
+                new Teacher(3L, "Mike", "Mike", "Mike", 2L),
+                new Teacher(4L, "Jackson", "Jackson", "Jackson", 2L));
+        when(teacherService.getAllTeachers()).thenReturn(allTeachers);
 
         List<String> teacherNames = List.of("Jackson J. J.", "Conor M. C.");
         when(teacherService.getLastNamesWithInitialsForTeachers(teachers)).thenReturn(teacherNames);
 
         List<Audience> audiences = List.of(
-                new Audience(1L, 301, 45, 1L),
-                new Audience(2L, 302, 55, 1L));
+                new Audience(1L, 301, 45),
+                new Audience(2L, 302, 55));
         when(audienceService.getAudiencesForLectures(lectures)).thenReturn(audiences);
+
+        List<Audience> allAudiences = List.of(
+                new Audience(1L, 301, 45),
+                new Audience(2L, 302, 55),
+                new Audience(3L, 303, 65),
+                new Audience(4L, 304, 45));
+        when(audienceService.getAllAudiences()).thenReturn(allAudiences);
 
         List<Integer> audienceNumbers = List.of(301, 302);
         when(audienceService.getAudienceNumbersForAudiences(audiences)).thenReturn(audienceNumbers);
 
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Art", 1L));
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"));
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);
 
+        List<Group> allGroups = List.of(
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "AB-11", 1L),
+                new Group(3L, "CD-21", 2L));
+        when(groupService.getAllGroups()).thenReturn(allGroups);
+
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L, 1L),
-                new Group(2L, "AB-11", 1L, 1L));
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "AB-11", 1L));
         when(groupService.getGroupsForLectures(lectures)).thenReturn(groups);
 
         List<String> groupNames = List.of("AB-01", "AB-11");
@@ -105,12 +123,16 @@ class LectureControllerTest {
                 .andExpect(model().attribute("subjectNames", subjectNames))
                 .andExpect(model().attribute("startTimes", startTimes))
                 .andExpect(model().attribute("teachers", teachers))
+                .andExpect(model().attribute("allTeachers", allTeachers))
                 .andExpect(model().attribute("teacherNames", teacherNames))
                 .andExpect(model().attribute("audienceNumbers", audienceNumbers))
                 .andExpect(model().attribute("subjects", subjects))
                 .andExpect(model().attribute("groups", groups))
+                .andExpect(model().attribute("allGroups", allGroups))
                 .andExpect(model().attribute("groupNames", groupNames))
-                .andExpect(model().attribute("audiences", audiences));
+                .andExpect(model().attribute("audiences", audiences))
+                .andExpect(model().attribute("allAudiences", allAudiences))
+                .andExpect(model().attribute("lecture", new Lecture()));
     }
 
     @Test

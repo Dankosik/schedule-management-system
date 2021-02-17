@@ -36,7 +36,7 @@ class LessonServiceImplTest {
     private final List<Lesson> lessons = List.of(lesson,
             new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null),
             new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), null));
-    private final Subject subject = new Subject(1L, "Art", 1L);
+    private final Subject subject = new Subject(1L, "Art");
 
     @Autowired
     private LessonServiceImpl lessonService;
@@ -49,7 +49,7 @@ class LessonServiceImplTest {
     void shouldSaveLesson() {
         when(lessonDao.save(new Lesson(1, Time.valueOf(LocalTime.of(8, 30, 0)),
                 Duration.ofMinutes(90), null))).thenReturn(lesson);
-        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art", 1L)));
+        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art")));
         Lesson actual = lessonService.saveLesson(lesson);
 
         assertEquals(lesson, actual);
@@ -90,7 +90,7 @@ class LessonServiceImplTest {
 
     @Test
     void shouldSaveListOfLessons() {
-        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art", 1L)));
+        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art")));
         when(lessonDao.save(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null)))
                 .thenReturn(lesson);
         when(lessonDao.save(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null)))
@@ -128,7 +128,7 @@ class LessonServiceImplTest {
     void shouldRemoveSubjectFromLesson() {
         Lesson expected = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null);
 
-        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art", 1L)));
+        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art")));
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
         when(lessonService.saveLesson(expected)).thenReturn(expected);

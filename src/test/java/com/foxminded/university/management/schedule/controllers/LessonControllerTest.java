@@ -48,9 +48,15 @@ class LessonControllerTest {
         List<String> formattedDurations = List.of("1:30:00", "1:30:00");
 
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math", 1L),
-                new Subject(2L, "Art", 1L));
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"));
         when(subjectService.getSubjectsForLessons(lessons)).thenReturn(subjects);
+
+        List<Subject> allSubjects = List.of(
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"),
+                new Subject(3L, "Programming"));
+        when(subjectService.getAllSubjects()).thenReturn(allSubjects);
 
         List<String> subjectNames = List.of("Math", "Art");
         when(subjectService.getSubjectNamesForLessons(lessons)).thenReturn(subjectNames);
@@ -60,7 +66,9 @@ class LessonControllerTest {
                 .andExpect(view().name("lessons"))
                 .andExpect(model().attribute("durations", formattedDurations))
                 .andExpect(model().attribute("subjects", subjects))
+                .andExpect(model().attribute("allSubjects", allSubjects))
                 .andExpect(model().attribute("subjectNames", subjectNames))
+                .andExpect(model().attribute("lesson", new Lesson()))
                 .andExpect(model().attribute("lessons", lessons));
     }
 
