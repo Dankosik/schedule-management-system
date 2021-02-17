@@ -26,6 +26,7 @@ public class Audience implements BaseEntity<Long> {
         this.universityId = universityId;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -34,19 +35,19 @@ public class Audience implements BaseEntity<Long> {
         this.id = id;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 
-    public int getCapacity() {
+    public Integer getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
 
