@@ -14,9 +14,11 @@ import java.util.*;
 public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AudienceDao.class);
     private final JdbcTemplate jdbcTemplate;
+    private final LessonDao lessonDao;
 
-    public LectureDao(JdbcTemplate jdbcTemplate) {
+    public LectureDao(JdbcTemplate jdbcTemplate, LessonDao lessonDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.lessonDao = lessonDao;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
         simpleJdbcInsert.withTableName("lectures").usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = new HashMap<>();
-        params.put("number", lecture.getNumber());
+        params.put("number", lessonDao.getById(lecture.getLessonId()).get().getNumber());
         params.put("date", lecture.getDate());
         params.put("audience_id", lecture.getAudienceId());
         params.put("group_id", lecture.getGroupId());
