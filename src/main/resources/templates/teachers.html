@@ -10,21 +10,26 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form th:action="@{/teachers/add}" th:object="${teacher}" method="post" class="w-25 mx-auto mt-5">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="First name" type="text">
+                <input class="form-control" placeholder="First name" type="text" th:field="*{firstName}">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Last name" type="text">
+                <input class="form-control" placeholder="Last name" type="text" th:field="*{lastName}">
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control" placeholder="Middle name" type="text">
+                <input class="form-control" placeholder="Middle name" type="text" th:field="*{middleName}">
             </div>
             <div class="col mt-1">
-                <input class="form-control" placeholder="Faculty" type="text">
+                <select class="form-control" th:field="*{facultyId}">
+                    <div th:each="faculty: ${allFaculties}">
+                        <option th:value="${faculty.id}" th:text="${faculty.name}">
+                        </option>
+                    </div>
+                </select>
             </div>
             <button class="btn btn-light ml-1 mt-1" type="submit">Add teacher</button>
         </div>

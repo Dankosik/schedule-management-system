@@ -10,25 +10,47 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form th:action="@{/lectures/add}" th:object="${lecture}" method="post" class="w-25 mx-auto mt-5">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Number" type="text">
-            </div>
-            <div class="col">
-                <input class="form-control" placeholder="Date" type="date">
-            </div>
-            <div class="col">
-                <input class="form-control" placeholder="Lesson" type="text">
+                <input class="form-control" placeholder="Date" type="date" th:field="*{date}">
             </div>
         </div>
         <div class="form-row">
-            <div class="col mt-1">
-                <input class="form-control" placeholder="Number of audience" type="text">
+            <label class="mt-3">add lesson: </label>
+            <div class="col mt-2">
+                <select class="form-control" th:field="*{lessonId}">
+                    <div th:each="lesson: ${lessons}">
+                        <option th:value="${lesson.id}" th:text="'number: ' + ${lesson.number} +
+                    '   start time: '+ ${lesson.startTime} + '   duration: '+ ${lesson.duration}">
+                        </option>
+                    </div>
+                </select>
             </div>
-
-            <div class="col mt-1">
-                <input class="form-control" placeholder="Teacher" type="text">
+        </div>
+        <div class="form-row">
+            <label class="mt-3">add audience number: </label>
+            <div class="col mt-2">
+                <select class="form-control" th:field="*{audienceId}">
+                    <option th:each="audience: ${allAudiences}" th:value="${audience.id}"
+                            th:text="${audience.number}"></option>
+                </select>
+            </div>
+            <label class="mt-3 ml-2">add group: </label>
+            <div class="col mt-2">
+                <select class="form-control" th:field="*{groupId}">
+                    <option th:each="group: ${allGroups}" th:value="${group.id}"
+                            th:text="${group.name}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <label class="mt-3">add teacher: </label>
+            <div class="col mt-2">
+                <select class="form-control" th:field="*{teacherId}">
+                    <option th:each="teacher: ${allTeachers}" th:value="${teacher.id}"
+                            th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"></option>
+                </select>
             </div>
             <button class="btn btn-light ml-1 mt-1" type="submit">Add lecture</button>
         </div>

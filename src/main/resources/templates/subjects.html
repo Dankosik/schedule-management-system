@@ -10,10 +10,10 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form th:action="@{/subjects/add}" th:object="${subject}" method="post" class="w-25 mx-auto mt-5">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Name" type="text">
+                <input class="form-control" placeholder="Name" type="text" th:field="*{name}">
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add subject</button>
         </div>

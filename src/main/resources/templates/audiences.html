@@ -10,13 +10,13 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form th:action="@{/audiences/add}" th:object="${audience}" method="post" class="w-25 mx-auto mt-5" >
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Number" type="text"/>
+                <input class="form-control" placeholder="Number" type="text" th:field="*{number}"/>
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Capacity" type="text"/>
+                <input class="form-control" placeholder="Capacity" type="text" th:field="*{capacity}"/>
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add audience</button>
         </div>

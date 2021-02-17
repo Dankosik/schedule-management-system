@@ -10,10 +10,16 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form th:action="@{/groups/add}" th:object="${group}" method="post" class="w-25 mx-auto mt-5">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Name" type="text">
+                <input class="form-control" placeholder="Name" type="text" th:field="*{name}">
+            </div>
+            <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
+            <div class="col">
+                <select class="form-control" th:field="*{facultyId}">
+                    <option th:each="faculty: ${faculties}" th:value="${faculty.id}" th:text="${faculty.name}"></option>
+                </select>
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add group</button>
         </div>

@@ -10,24 +10,28 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-50 mx-auto mt-5">
+    <form th:action="@{/students/add}" th:object="${student}" method="post" class="w-50 mx-auto mt-5">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="First name" type="text">
+                <input class="form-control" placeholder="First name" type="text" th:field="*{firstName}">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Last name" type="text">
+                <input class="form-control" placeholder="Last name" type="text" th:field="*{lastName}">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Middle name" type="text">
+                <input class="form-control" placeholder="Middle name" type="text" th:field="*{middleName}">
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control" placeholder="Course number" type="text">
+                <input class="form-control" placeholder="Course number" type="text" th:field="*{courseNumber}">
             </div>
+            <label class="mt-2 ml-3 mr-1">add group: </label>
             <div class="col mt-1">
-                <input class="form-control" placeholder="Group" type="text">
+                <select class="form-control" th:field="*{groupId}">
+                    <option th:each="group: ${allGroups}" th:value="${group.id}"
+                            th:text="${group.name}"></option>
+                </select>
             </div>
             <button class="btn btn-light ml-1 mt-1" type="submit">Add student</button>
         </div>

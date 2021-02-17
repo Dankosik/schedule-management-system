@@ -11,22 +11,24 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-
-    <form class="w-25 mx-auto mt-5">
+    <form th:action="@{/lessons/add}" th:object="${lesson}" method="post" class="w-25 mx-auto mt-5">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Number" type="text">
+                <input class="form-control" placeholder="Number" type="text" th:field="*{number}">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Start time" type="time">
+                <input class="form-control" placeholder="Start time" type="time" th:field="*{startTime}">
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control html-duration-picker" data-duration="01:30:00" id="duration">
+                <input class="form-control html-duration-picker" data-duration="01:30:00" id="duration" th:field="*{duration}">
             </div>
             <div class="col mt-1">
-                <input class="form-control" placeholder="Subject" type="text">
+                <select class="form-control" th:field="*{subjectId}">
+                    <option th:each="subject: ${allSubjects}" th:value="${subject.id}"
+                            th:text="${subject.name}"></option>
+                </select>
             </div>
             <button class="btn btn-light ml-1 mt-1" type="submit">Add lesson</button>
         </div>
