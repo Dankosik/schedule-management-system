@@ -7,23 +7,20 @@ import java.util.Objects;
 public class Teacher extends Person implements BaseEntity<Long> {
     private Long id;
     private Long facultyId;
-    private Long universityId;
 
     public Teacher() {
 
     }
 
-    public Teacher(Long id, String firstName, String lastName, String middleName, Long facultyId, Long universityId) {
+    public Teacher(Long id, String firstName, String lastName, String middleName, Long facultyId) {
         super(firstName, lastName, middleName);
         this.id = id;
         this.facultyId = facultyId;
-        this.universityId = universityId;
     }
 
-    public Teacher(String firstName, String lastName, String middleName, Long facultyId, Long universityId) {
+    public Teacher(String firstName, String lastName, String middleName, Long facultyId ) {
         super(firstName, lastName, middleName);
         this.facultyId = facultyId;
-        this.universityId = universityId;
     }
 
     public Long getId() {
@@ -32,14 +29,6 @@ public class Teacher extends Person implements BaseEntity<Long> {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getUniversityId() {
-        return universityId;
-    }
-
-    public void setUniversityId(Long universityId) {
-        this.universityId = universityId;
     }
 
     public Long getFacultyId() {
@@ -56,12 +45,12 @@ public class Teacher extends Person implements BaseEntity<Long> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Teacher teacher = (Teacher) o;
-        return Objects.equals(facultyId, teacher.facultyId) && Objects.equals(universityId, teacher.universityId);
+        return Objects.equals(facultyId, teacher.facultyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), facultyId, universityId);
+        return Objects.hash(super.hashCode(), facultyId);
     }
 
     @Override
@@ -69,7 +58,6 @@ public class Teacher extends Person implements BaseEntity<Long> {
         return "Teacher{" +
                 "id=" + id +
                 ", facultyId=" + facultyId +
-                ", universityId=" + universityId +
                 '}';
     }
 }

@@ -8,24 +8,21 @@ public class Student extends Person implements BaseEntity<Long> {
     private Long id;
     private Integer courseNumber;
     private Long groupId;
-    private Long universityId;
 
     public Student() {
     }
 
-    public Student(Long id, String firstName, String lastName, String middleName, Integer courseNumber, Long groupId, Long universityId) {
+    public Student(Long id, String firstName, String lastName, String middleName, Integer courseNumber, Long groupId) {
         super(firstName, lastName, middleName);
         this.id = id;
         this.courseNumber = courseNumber;
         this.groupId = groupId;
-        this.universityId = universityId;
     }
 
-    public Student(String firstName, String lastName, String middleName, Integer courseNumber, Long groupId, Long universityId) {
+    public Student(String firstName, String lastName, String middleName, Integer courseNumber, Long groupId) {
         super(firstName, lastName, middleName);
         this.courseNumber = courseNumber;
         this.groupId = groupId;
-        this.universityId = universityId;
     }
 
     public Long getId() {
@@ -52,27 +49,18 @@ public class Student extends Person implements BaseEntity<Long> {
         this.courseNumber = courseNumber;
     }
 
-    public Long getUniversityId() {
-        return universityId;
-    }
-
-    public void setUniversityId(Long universityId) {
-        this.universityId = universityId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Student student = (Student) o;
-        return Objects.equals(courseNumber, student.courseNumber) && Objects.equals(groupId, student.groupId) &&
-                Objects.equals(universityId, student.universityId);
+        return Objects.equals(courseNumber, student.courseNumber) && Objects.equals(groupId, student.groupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), courseNumber, groupId, universityId);
+        return Objects.hash(super.hashCode(), courseNumber, groupId);
     }
 
     @Override
@@ -81,7 +69,6 @@ public class Student extends Person implements BaseEntity<Long> {
                 "id=" + id +
                 ", courseNumber=" + courseNumber +
                 ", groupId=" + groupId +
-                ", universityId=" + universityId +
                 '}';
     }
 }

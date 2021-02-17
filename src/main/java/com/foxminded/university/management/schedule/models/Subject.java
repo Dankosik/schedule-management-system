@@ -7,21 +7,18 @@ import java.util.Objects;
 public class Subject implements BaseEntity<Long> {
     private Long id;
     private String name;
-    private Long universityId;
 
     public Subject() {
 
     }
 
-    public Subject(Long id, String name, Long universityId) {
+    public Subject(Long id, String name ) {
         this.id = id;
         this.name = name;
-        this.universityId = universityId;
     }
 
-    public Subject(String name, Long universityId) {
+    public Subject(String name) {
         this.name = name;
-        this.universityId = universityId;
     }
 
     public Long getId() {
@@ -40,25 +37,17 @@ public class Subject implements BaseEntity<Long> {
         this.name = name;
     }
 
-    public Long getUniversityId() {
-        return universityId;
-    }
-
-    public void setUniversityId(Long universityId) {
-        this.universityId = universityId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Subject subject = (Subject) o;
-        return Objects.equals(name, subject.name) && Objects.equals(universityId, subject.universityId);
+        return Objects.equals(name, subject.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, universityId);
+        return Objects.hash(name);
     }
 
     @Override
@@ -66,7 +55,6 @@ public class Subject implements BaseEntity<Long> {
         return "Subject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", universityId=" + universityId +
                 '}';
     }
 }
