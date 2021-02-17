@@ -12,7 +12,6 @@ public class SubjectRowMapper implements RowMapper<Subject> {
         Subject subject = new Subject();
         subject.setId(resultSet.getLong("id"));
         subject.setName(resultSet.getString("name"));
-        subject.setUniversityId(resultSet.getLong("university_id"));
         return subject;
     }
 }

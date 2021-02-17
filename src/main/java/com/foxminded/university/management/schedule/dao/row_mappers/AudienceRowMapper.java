@@ -13,7 +13,6 @@ public class AudienceRowMapper implements RowMapper<Audience> {
         audience.setId(resultSet.getLong("id"));
         audience.setNumber(resultSet.getInt("number"));
         audience.setCapacity(resultSet.getInt("capacity"));
-        audience.setUniversityId(resultSet.getLong("university_id"));
         return audience;
     }
 }
