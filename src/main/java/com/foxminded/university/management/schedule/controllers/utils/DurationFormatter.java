@@ -11,7 +11,7 @@ import java.util.Locale;
 @Component
 public class DurationFormatter implements Formatter<Duration> {
     @Override
-    public Duration parse(String s, Locale locale) throws ParseException {
+    public Duration parse(String s, Locale locale){
         return Duration.parse(Duration.between(
                 LocalTime.MIN,
                 LocalTime.parse(s)
@@ -22,6 +22,6 @@ public class DurationFormatter implements Formatter<Duration> {
     public String print(Duration duration, Locale locale) {
         if (duration == null) return null;
         long seconds = duration.getSeconds();
-        return String.format("%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
+        return String.format("%d:%02d", seconds / 3600, (seconds % 3600) / 60);
     }
 }
