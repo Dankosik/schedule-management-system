@@ -10,23 +10,23 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form th:action="@{/teachers/add}" th:object="${teacher}" method="post" class="w-25 mx-auto mt-5">
+    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/teachers/add}" th:object="${teacher}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="First name" type="text" th:field="*{firstName}">
+                <input class="form-control" placeholder="First name" th:field="*{firstName}" type="text">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Last name" type="text" th:field="*{lastName}">
+                <input class="form-control" placeholder="Last name" th:field="*{lastName}" type="text">
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control" placeholder="Middle name" type="text" th:field="*{middleName}">
+                <input class="form-control" placeholder="Middle name" th:field="*{middleName}" type="text">
             </div>
             <div class="col mt-1">
                 <select class="form-control" th:field="*{facultyId}">
                     <div th:each="faculty: ${allFaculties}">
-                        <option th:value="${faculty.id}" th:text="${faculty.name}">
+                        <option th:text="${faculty.name}" th:value="${faculty.id}">
                         </option>
                     </div>
                 </select>
@@ -75,8 +75,63 @@
                    th:text="${facultyNames.get(iter.index)}">
                 </a>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/teachers/delete/',
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal" th:attrappend="data-target=${teacher}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${teacher}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/teachers/update/{id}(id=${teacher.id})}"
+                          th:object="${teacher}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit teacher</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" placeholder="First name" th:field="*{firstName}"
+                                                   type="text">
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Last name" th:field="*{lastName}"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col mt-1">
+                                            <input class="form-control" placeholder="Middle name" th:field="*{middleName}"
+                                                   type="text">
+                                        </div>
+                                        <div class="col mt-1">
+                                            <select class="form-control" th:field="*{facultyId}">
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <option th:text="${faculty.name}" th:value="${faculty.id}">
+                                                    </option>
+                                                </div>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/teachers/delete/',
             id = ${teacher.id}, question = 'Are you sure you want to delete a teacher?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>

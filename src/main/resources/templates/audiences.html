@@ -10,13 +10,13 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form th:action="@{/audiences/add}" th:object="${audience}" method="post" class="w-25 mx-auto mt-5" >
+    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/audiences/add}" th:object="${audience}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Number" type="text" th:field="*{number}"/>
+                <input class="form-control" placeholder="Number" th:field="*{number}" type="text"/>
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Capacity" type="text" th:field="*{capacity}"/>
+                <input class="form-control" placeholder="Capacity" th:field="*{capacity}" type="text"/>
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add audience</button>
         </div>
@@ -38,11 +38,62 @@
             <td th:text="${audience.id}"></td>
             <td th:text="${audience.number}"></td>
             <td th:text="${audience.capacity}"></td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/audiences/delete/',
-            id = ${audience.id}, question = 'Are you sure you want to delete a audience?')"></div>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal" th:attrappend="data-target=${audience}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${audience}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/audiences/update/{id}(id=${audience.id})}"
+                          th:object="${audience}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit audience</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Number" th:field="*{number}"
+                                                   type="text"/>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Capacity" th:field="*{capacity}"
+                                                   type="text"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/audiences/delete/',
+                id = ${audience.id}, question = 'Are you sure you want to delete a audience?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>
+</div>
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </div>
 </body>
 </html>

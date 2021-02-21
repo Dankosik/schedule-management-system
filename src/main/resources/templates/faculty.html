@@ -24,8 +24,45 @@
         <tr>
             <td th:text="${faculty.id}"></td>
             <td th:text="${faculty.name}"></td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/faculty/delete/',
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${faculty}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${faculty}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/faculties/update/{id}(id=${faculty.id})}" th:object="${faculty}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit faculty</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Name" th:field="*{name}"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/faculties/delete/',
             id = ${faculty.id}, question = 'Are you sure you want to delete a faculty?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>
@@ -50,8 +87,53 @@
                    th:text="${group.name}">
                 </a>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/groups/delete/',
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${group}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${group}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/groups/update/{id}(id=${group.id})}"
+                          th:object="${group}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit group</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Name" th:field="*{name}"
+                                                   type="text">
+                                        </div>
+                                        <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
+                                        <div class="col">
+                                            <select class="form-control" th:field="*{facultyId}">
+                                                <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
+                                                        th:value="${faculty.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/groups/delete/',
             id = ${group.id}, question = 'Are you sure you want to delete a group?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>
@@ -91,13 +173,77 @@
                    th:text="${teacher.middleName}">
                 </a>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/teachers/delete/',
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal" th:attrappend="data-target=${teacher}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${teacher}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/teachers/update/{id}(id=${teacher.id})}"
+                          th:object="${teacher}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit teacher</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" placeholder="First name" th:field="*{firstName}"
+                                                   type="text">
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Last name" th:field="*{lastName}"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col mt-1">
+                                            <input class="form-control" placeholder="Middle name" th:field="*{middleName}"
+                                                   type="text">
+                                        </div>
+                                        <div class="col mt-1">
+                                            <select class="form-control" th:field="*{facultyId}">
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <option th:text="${faculty.name}" th:value="${faculty.id}">
+                                                    </option>
+                                                </div>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/teachers/delete/',
             id = ${teacher.id}, question = 'Are you sure you want to delete a teacher?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>
 </div>
 <div class="text-center" th:unless="${not #lists.isEmpty(groups)}">0 groups in this faculty</div>
 <div class="text-center" th:unless="${not #lists.isEmpty(teachers)}">0 teachers in this faculty</div>
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

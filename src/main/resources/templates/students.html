@@ -10,27 +10,27 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form th:action="@{/students/add}" th:object="${student}" method="post" class="w-50 mx-auto mt-5">
+    <form class="w-50 mx-auto mt-5" method="post" th:action="@{/students/add}" th:object="${student}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="First name" type="text" th:field="*{firstName}">
+                <input class="form-control" placeholder="First name" th:field="*{firstName}" type="text">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Last name" type="text" th:field="*{lastName}">
+                <input class="form-control" placeholder="Last name" th:field="*{lastName}" type="text">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Middle name" type="text" th:field="*{middleName}">
+                <input class="form-control" placeholder="Middle name" th:field="*{middleName}" type="text">
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control" placeholder="Course number" type="text" th:field="*{courseNumber}">
+                <input class="form-control" placeholder="Course number" th:field="*{courseNumber}" type="text">
             </div>
             <label class="mt-2 ml-3 mr-1">add group: </label>
             <div class="col mt-1">
                 <select class="form-control" th:field="*{groupId}">
-                    <option th:each="group: ${allGroups}" th:value="${group.id}"
-                            th:text="${group.name}"></option>
+                    <option th:each="group: ${allGroups}" th:text="${group.name}"
+                            th:value="${group.id}"></option>
                 </select>
             </div>
             <button class="btn btn-light ml-1 mt-1" type="submit">Add student</button>
@@ -65,8 +65,66 @@
                 </a>
                 <div th:unless="${groups.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = 'students/delete/',
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal" th:attrappend="data-target=${student}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${student}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/students/update/{id}(id=${student.id})}"
+                          th:object="${student}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit student</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" placeholder="First name" th:field="*{firstName}"
+                                                   type="text">
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Last name" th:field="*{lastName}"
+                                                   type="text">
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Middle name" th:field="*{middleName}"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col mt-1">
+                                            <input class="form-control" placeholder="Course number" th:field="*{courseNumber}"
+                                                   type="text">
+                                        </div>
+                                        <label class="mt-2 ml-3 mr-1">add group: </label>
+                                        <div class="col mt-1">
+                                            <select class="form-control" th:field="*{groupId}">
+                                                <option th:each="group: ${allGroups}" th:text="${group.name}"
+                                                        th:value="${group.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = 'students/delete/',
             id = ${student.id}, question = 'Are you sure you want to delete a student?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>

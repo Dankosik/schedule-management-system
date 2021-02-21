@@ -10,10 +10,10 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form th:action="@{/faculties/add}" th:object="${faculty}" method="post" class="w-25 mx-auto mt-5">
+    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/faculties/add}" th:object="${faculty}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Name" type="text" th:field="*{name}">
+                <input class="form-control" placeholder="Name" th:field="*{name}" type="text">
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add faculty</button>
         </div>
@@ -38,8 +38,44 @@
                    th:text="${faculty.name}">
                 </a>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons(deletePath = '/faculties/delete/',
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal" th:attrappend="data-target=${faculty}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${faculty}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/faculties/update/{id}(id=${faculty.id})}" th:object="${faculty}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit faculty</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" placeholder="Name" th:field="*{name}"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/faculties/delete/',
             id = ${faculty.id}, question = 'Are you sure you want to delete a faculty?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>
