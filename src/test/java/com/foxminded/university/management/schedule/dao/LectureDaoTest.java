@@ -51,7 +51,9 @@ class LectureDaoTest extends BaseDaoTest {
 
     @Test
     void shouldUpdateLecture() {
-        Lecture lecture = new Lecture(1000L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)), 1000L, 1000L, 1000L, 1000L);
+        Lecture lecture = new Lecture(1000L, 2, Date.valueOf(LocalDate.of(2020, 1, 1)), 1000L, 1000L, 1000L, 1000L);
+        Lesson lesson = new Lesson(1000L, 2, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L);
+        when(lessonDao.getById(1000L)).thenReturn(java.util.Optional.of(lesson));
         Long lectureId = lectureDao.save(lecture).getId();
         assertTrue(testUtils.existsById("lectures", lectureId));
 
