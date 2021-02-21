@@ -41,4 +41,10 @@ public class SubjectController {
         subjectService.saveSubject(subject);
         return "redirect:/subjects";
     }
+
+    @PostMapping("/subjects/update/{id}")
+    public String updateSubject(@ModelAttribute Subject subject) {
+        subjectService.saveSubject(subject);
+        return "redirect:/subjects";
+    }
 }
