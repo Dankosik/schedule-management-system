@@ -44,10 +44,10 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
     @Override
     protected Lecture update(Lecture lecture) {
         LOGGER.debug("Updating lecture: {}", lecture);
-        this.jdbcTemplate.update("UPDATE lectures SET number = ?, date = ?,  audience_id = ?, lesson_id = ?, " +
-                        "teacher_id = ? WHERE id = ?",
-                lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(), lecture.getLessonId(), lecture.getTeacherId(),
-                lecture.getId());
+        this.jdbcTemplate.update("UPDATE lectures SET number = ?, date = ?,  audience_id = ?, lesson_id = ?, group_id = ?, " +
+                        "teacher_id=? WHERE id = ?",
+                lessonDao.getById(lecture.getLessonId()).get().getNumber(), lecture.getDate(), lecture.getAudienceId(),
+                lecture.getLessonId(), lecture.getGroupId(), lecture.getTeacherId(), lecture.getId());
         LOGGER.info("Lecture updated successful: {}", lecture);
         return new Lecture(lecture.getId(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
                 lecture.getGroupId(), lecture.getLessonId(), lecture.getTeacherId());
