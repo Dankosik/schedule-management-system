@@ -18,7 +18,7 @@ public class Teacher extends Person implements BaseEntity<Long> {
         this.facultyId = facultyId;
     }
 
-    public Teacher(String firstName, String lastName, String middleName, Long facultyId ) {
+    public Teacher(String firstName, String lastName, String middleName, Long facultyId) {
         super(firstName, lastName, middleName);
         this.facultyId = facultyId;
     }

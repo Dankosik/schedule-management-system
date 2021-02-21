@@ -137,7 +137,7 @@ class FacultyServiceImplTest {
 
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson",1L)))
+        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", 1L)))
                 .thenReturn(expected);
 
         Teacher actual = facultyService.addTeacherToFaculty(teacher, faculty);

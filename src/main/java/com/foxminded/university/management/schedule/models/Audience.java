@@ -66,7 +66,7 @@ public class Audience implements BaseEntity<Long> {
         return "Audience{" +
                 "id=" + id +
                 ", number=" + number +
-                ", capacity=" + capacity+
+                ", capacity=" + capacity +
                 '}';
     }
 }

@@ -2,8 +2,6 @@ package com.foxminded.university.management.schedule.controllers.utils;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -16,9 +14,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 class StringUtilsTest {
+    private final List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(80));
     @MockBean
     private DurationFormatter durationFormatter;
-    private final List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(80));
 
     @Test
     public void shouldReturnFormattedListOfDurations() {

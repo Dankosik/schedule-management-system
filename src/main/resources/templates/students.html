@@ -66,7 +66,8 @@
                 <div th:unless="${groups.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
             <td>
-                <button class="btn btn-light" data-target="#editModal" data-toggle="modal" th:attrappend="data-target=${student}"
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${student}"
                         type="button">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -96,13 +97,15 @@
                                                    type="text">
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" placeholder="Middle name" th:field="*{middleName}"
+                                            <input class="form-control" placeholder="Middle name"
+                                                   th:field="*{middleName}"
                                                    type="text">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="col mt-1">
-                                            <input class="form-control" placeholder="Course number" th:field="*{courseNumber}"
+                                            <input class="form-control" placeholder="Course number"
+                                                   th:field="*{courseNumber}"
                                                    type="text">
                                         </div>
                                         <label class="mt-2 ml-3 mr-1">add group: </label>

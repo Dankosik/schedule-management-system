@@ -25,7 +25,8 @@
             <td th:text="${group.id}"></td>
             <td th:text="${group.name}"></td>
             <td>
-                <button class="btn btn-light" data-target="#editModal" data-toggle="modal" th:attrappend="data-target=${group}"
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${group}"
                         type="button">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -129,7 +130,8 @@
                 <div th:unless="${teacherNames.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
             <td>
-                <button class="btn btn-light" data-target="#editModal" data-toggle="modal" th:attrappend="data-target=${lecture}"
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${lecture}"
                         type="button">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -189,7 +191,8 @@
                                         <label class="mt-3">add teacher: </label>
                                         <div class="col mt-2">
                                             <select class="form-control" th:field="*{teacherId}">
-                                                <option th:each="teacher: ${allTeachers}" th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                                <option th:each="teacher: ${allTeachers}"
+                                                        th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
                                                         th:value="${teacher.id}"></option>
                                             </select>
                                         </div>

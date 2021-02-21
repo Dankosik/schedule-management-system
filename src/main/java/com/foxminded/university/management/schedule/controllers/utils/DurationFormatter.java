@@ -3,7 +3,6 @@ package com.foxminded.university.management.schedule.controllers.utils;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Locale;
@@ -11,7 +10,7 @@ import java.util.Locale;
 @Component
 public class DurationFormatter implements Formatter<Duration> {
     @Override
-    public Duration parse(String s, Locale locale){
+    public Duration parse(String s, Locale locale) {
         return Duration.parse(Duration.between(
                 LocalTime.MIN,
                 LocalTime.parse(s)

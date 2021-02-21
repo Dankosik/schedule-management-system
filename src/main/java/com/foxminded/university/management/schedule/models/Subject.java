@@ -12,7 +12,7 @@ public class Subject implements BaseEntity<Long> {
 
     }
 
-    public Subject(Long id, String name ) {
+    public Subject(Long id, String name) {
         this.id = id;
         this.name = name;
     }

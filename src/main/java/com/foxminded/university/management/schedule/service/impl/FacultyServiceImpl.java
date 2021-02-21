@@ -28,7 +28,8 @@ public class FacultyServiceImpl implements FacultyService {
     private final GroupServiceImpl groupService;
     private final TeacherServiceImpl teacherService;
 
-    public FacultyServiceImpl(FacultyDao facultyDao, GroupDao groupDao, TeacherDao teacherDao, GroupServiceImpl groupService, TeacherServiceImpl teacherService) {
+    public FacultyServiceImpl(FacultyDao facultyDao, GroupDao groupDao, TeacherDao teacherDao, GroupServiceImpl groupService,
+                              TeacherServiceImpl teacherService) {
         this.facultyDao = facultyDao;
         this.groupDao = groupDao;
         this.teacherDao = teacherDao;

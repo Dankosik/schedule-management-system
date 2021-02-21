@@ -1,14 +1,14 @@
 create table subjects
 (
-    id            BIGSERIAL NOT NULL PRIMARY KEY,
-    name          varchar(256) UNIQUE
+    id   BIGSERIAL NOT NULL PRIMARY KEY,
+    name varchar(256) UNIQUE
 );
 
 create table audiences
 (
-    id            BIGSERIAL NOT NULL PRIMARY KEY,
-    number        INT UNIQUE,
-    capacity      INT
+    id       BIGSERIAL NOT NULL PRIMARY KEY,
+    number   INT UNIQUE,
+    capacity INT
 );
 
 create table lessons
@@ -23,24 +23,24 @@ create table lessons
 
 create table faculties
 (
-    id            BIGSERIAL NOT NULL PRIMARY KEY,
-    name          varchar(256) UNIQUE
+    id   BIGSERIAL NOT NULL PRIMARY KEY,
+    name varchar(256) UNIQUE
 );
 
 create table teachers
 (
-    id            BIGSERIAL NOT NULL PRIMARY KEY,
-    first_name    varchar(50),
-    last_name     varchar(50),
-    middle_name   varchar(50),
-    faculty_id    BIGINT REFERENCES faculties (id) ON DELETE CASCADE
+    id          BIGSERIAL NOT NULL PRIMARY KEY,
+    first_name  varchar(50),
+    last_name   varchar(50),
+    middle_name varchar(50),
+    faculty_id  BIGINT REFERENCES faculties (id) ON DELETE CASCADE
 );
 
 create table groups
 (
-    id            BIGSERIAL NOT NULL PRIMARY KEY,
-    name          varchar(256) UNIQUE,
-    faculty_id    BIGINT REFERENCES faculties (id) ON DELETE CASCADE
+    id         BIGSERIAL NOT NULL PRIMARY KEY,
+    name       varchar(256) UNIQUE,
+    faculty_id BIGINT REFERENCES faculties (id) ON DELETE CASCADE
 );
 
 create table lectures
