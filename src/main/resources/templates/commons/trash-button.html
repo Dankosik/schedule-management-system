@@ -7,20 +7,15 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<div th:fragment="trash-and-edit-buttons(deletePath, id, question)">
+<div th:fragment="trash-button(deletePath, id, question)">
     <td>
-        <button class="btn btn-light" type="button">
-            <i class="fas fa-edit"></i>
-        </button>
-    </td>
-    <td>
-        <button class="btn btn-light" data-target="#exampleModal" data-toggle="modal" th:attrappend="data-target=${id}"
+        <button class="btn btn-light" data-target="#deleteModal" data-toggle="modal" th:attrappend="data-target=${id}"
                 type="button">
             <i class="fas fa-trash-alt"></i>
         </button>
     </td>
-    <!-- Modal -->
-    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" role="dialog"
+    <!-- Delete Modal -->
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="deleteModal" role="dialog"
          tabindex="-1" th:attrappend="id=${id}">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
