@@ -1,6 +1,8 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.models.Faculty;
+import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
@@ -38,6 +40,10 @@ public class FacultyController {
 
         model.addAttribute("groups", groupService.getGroupsForFaculty(faculty));
         model.addAttribute("teachers", teacherService.getTeachersForFaculty(faculty));
+
+        model.addAttribute("group", new Group());
+        model.addAttribute("teacher", new Teacher());
+        model.addAttribute("allFaculties", facultyService.getAllFaculties());
         return "faculty";
     }
 
@@ -49,6 +55,12 @@ public class FacultyController {
 
     @PostMapping("/faculties/add")
     public String addFaculty(@ModelAttribute Faculty faculty) {
+        facultyService.saveFaculty(faculty);
+        return "redirect:/faculties";
+    }
+
+    @PostMapping("/faculties/update/{id}")
+    public String updateFaculty(@ModelAttribute Faculty faculty) {
         facultyService.saveFaculty(faculty);
         return "redirect:/faculties";
     }
