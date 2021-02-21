@@ -1,6 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
+import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Controller
 public class AudienceController {
@@ -26,18 +23,16 @@ public class AudienceController {
     private final SubjectServiceImpl subjectService;
     private final TeacherServiceImpl teacherService;
     private final GroupServiceImpl groupService;
-    private final DurationFormatter  durationFormatter;
 
     public AudienceController(AudienceServiceImpl audienceService, LectureServiceImpl lectureService,
                               LessonServiceImpl lessonService, SubjectServiceImpl subjectService,
-                              TeacherServiceImpl teacherService, GroupServiceImpl groupService, DurationFormatter durationFormatter) {
+                              TeacherServiceImpl teacherService, GroupServiceImpl groupService) {
         this.audienceService = audienceService;
         this.lectureService = lectureService;
         this.lessonService = lessonService;
         this.subjectService = subjectService;
         this.teacherService = teacherService;
         this.groupService = groupService;
-        this.durationFormatter = durationFormatter;
     }
 
     @GetMapping("/audiences")
@@ -55,10 +50,7 @@ public class AudienceController {
         model.addAttribute("lectures", lectures);
 
         List<Lesson> lessons = lessonService.getLessonsForLectures(lectures);
-        List<Duration> durations = lessonService.getDurationsForLessons(lessons);
-        List<String> formattedDurations = durations.stream()
-                .map(duration -> durationFormatter.print(duration, Locale.getDefault()))
-                .collect(Collectors.toList());
+        List<String> formattedDurations = StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(lessons));
 
         model.addAttribute("durations", formattedDurations);
         model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
@@ -69,8 +61,22 @@ public class AudienceController {
         model.addAttribute("teacherNames", teacherService.getLastNamesWithInitialsForTeachers(teachers));
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
+
         model.addAttribute("groupNames", groupService.getGroupNamesForLectures(lectures));
         model.addAttribute("groups", groupService.getGroupsForLectures(lectures));
+
+        model.addAttribute("lecture", new Lecture());
+
+        model.addAttribute("allTeachers", teacherService.getAllTeachers());
+        model.addAttribute("allAudiences", audienceService.getAllAudiences());
+        model.addAttribute("allGroups", groupService.getAllGroups());
+
+        List<Lesson> allLessons = lessonService.getAllLessons();
+        model.addAttribute("allLessons", allLessons);
+
+        List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(allLessons));
+        model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
+        model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsForLessons(allLessons));
         return "audience";
     }
 
@@ -82,6 +88,12 @@ public class AudienceController {
 
     @PostMapping("/audiences/add")
     public String addAudience(@ModelAttribute Audience audience) {
+        audienceService.saveAudience(audience);
+        return "redirect:/audiences";
+    }
+
+    @PostMapping("/audiences/update/{id}")
+    public String updateAudience(@ModelAttribute Audience audience) {
         audienceService.saveAudience(audience);
         return "redirect:/audiences";
     }
