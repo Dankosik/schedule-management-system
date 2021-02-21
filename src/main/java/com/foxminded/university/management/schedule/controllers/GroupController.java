@@ -1,6 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
+import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Controller
 public class GroupController {
@@ -25,12 +22,11 @@ public class GroupController {
     private final AudienceServiceImpl audienceService;
     private final TeacherServiceImpl teacherService;
     private final FacultyServiceImpl facultyService;
-    private final DurationFormatter durationFormatter;
 
     public GroupController(GroupServiceImpl groupService, StudentServiceImpl studentService,
                            LectureServiceImpl lectureService, LessonServiceImpl lessonService,
                            SubjectServiceImpl subjectService, AudienceServiceImpl audienceService, TeacherServiceImpl teacherService,
-                           FacultyServiceImpl facultyService, DurationFormatter durationFormatter) {
+                           FacultyServiceImpl facultyService) {
         this.groupService = groupService;
         this.studentService = studentService;
         this.lectureService = lectureService;
@@ -39,7 +35,6 @@ public class GroupController {
         this.audienceService = audienceService;
         this.teacherService = teacherService;
         this.facultyService = facultyService;
-        this.durationFormatter = durationFormatter;
     }
 
     @GetMapping("/groups")
@@ -61,12 +56,8 @@ public class GroupController {
         model.addAttribute("lectures", lectures);
 
         List<Lesson> lessons = lessonService.getLessonsForLectures(lectures);
-        List<Duration> durations = lessonService.getDurationsForLessons(lessons);
-        List<String> formattedDurations = durations.stream()
-                .map(duration -> durationFormatter.print(duration, Locale.getDefault()))
-                .collect(Collectors.toList());
 
-        model.addAttribute("durations", formattedDurations);
+        model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(lessons)));
         model.addAttribute("startTimes", lessonService.getStartTimesForLessons(lessons));
 
         model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
@@ -79,6 +70,21 @@ public class GroupController {
         List<Audience> audiences = audienceService.getAudiencesForLectures(lectures);
         model.addAttribute("audiences", audiences);
         model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersForAudiences(audiences));
+
+        model.addAttribute("lecture", new Lecture());
+        model.addAttribute("student", new Student());
+
+        model.addAttribute("allTeachers", teacherService.getAllTeachers());
+        model.addAttribute("allAudiences", audienceService.getAllAudiences());
+        model.addAttribute("allGroups", groupService.getAllGroups());
+
+        List<Lesson> allLessons = lessonService.getAllLessons();
+        model.addAttribute("allLessons", allLessons);
+
+        List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(allLessons));
+        model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
+        model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsForLessons(allLessons));
+        model.addAttribute("faculties", facultyService.getAllFaculties());
         return "group";
     }
 
@@ -90,6 +96,12 @@ public class GroupController {
 
     @PostMapping("/groups/add")
     public String addGroup(@ModelAttribute Group group) {
+        groupService.saveGroup(group);
+        return "redirect:/groups";
+    }
+
+    @PostMapping("/groups/update/{id}")
+    public String updateGroup(@ModelAttribute Group group) {
         groupService.saveGroup(group);
         return "redirect:/groups";
     }
