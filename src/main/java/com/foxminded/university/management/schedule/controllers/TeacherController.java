@@ -1,6 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
+import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Controller
 public class TeacherController {
@@ -27,13 +24,11 @@ public class TeacherController {
     private final LessonServiceImpl lessonService;
     private final SubjectServiceImpl subjectService;
     private final GroupServiceImpl groupService;
-    private final DurationFormatter durationFormatter;
 
 
     public TeacherController(TeacherServiceImpl teacherService, FacultyServiceImpl facultyService,
                              AudienceServiceImpl audienceService, LectureServiceImpl lectureService,
-                             LessonServiceImpl lessonService, SubjectServiceImpl subjectService, GroupServiceImpl groupService,
-                             DurationFormatter durationFormatter) {
+                             LessonServiceImpl lessonService, SubjectServiceImpl subjectService, GroupServiceImpl groupService) {
         this.teacherService = teacherService;
         this.facultyService = facultyService;
         this.audienceService = audienceService;
@@ -41,7 +36,6 @@ public class TeacherController {
         this.lessonService = lessonService;
         this.subjectService = subjectService;
         this.groupService = groupService;
-        this.durationFormatter = durationFormatter;
     }
 
     @GetMapping("/teachers")
@@ -66,12 +60,8 @@ public class TeacherController {
         model.addAttribute("lectures", lectures);
 
         List<Lesson> lessons = lessonService.getLessonsForLectures(lectures);
-        List<Duration> durations = lessonService.getDurationsForLessons(lessons);
-        List<String> formattedDurations = durations.stream()
-                .map(duration -> durationFormatter.print(duration, Locale.getDefault()))
-                .collect(Collectors.toList());
 
-        model.addAttribute("durations", formattedDurations);
+        model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(lessons)));
         model.addAttribute("startTimes", lessonService.getStartTimesForLessons(lessons));
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
@@ -83,6 +73,19 @@ public class TeacherController {
         List<Audience> audiences = audienceService.getAudiencesForLectures(lectures);
         model.addAttribute("audiences", audiences);
         model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersForAudiences(audiences));
+
+        model.addAttribute("lecture", new Lecture());
+        model.addAttribute("allFaculties", facultyService.getAllFaculties());
+        model.addAttribute("allTeachers", teacherService.getAllTeachers());
+        model.addAttribute("allAudiences", audienceService.getAllAudiences());
+        model.addAttribute("allGroups", groupService.getAllGroups());
+
+        List<Lesson> allLessons = lessonService.getAllLessons();
+        model.addAttribute("allLessons", allLessons);
+
+        List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(allLessons));
+        model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
+        model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsForLessons(allLessons));
         return "teacher";
     }
 
@@ -94,6 +97,12 @@ public class TeacherController {
 
     @PostMapping("/teachers/add")
     public String addStudent(@ModelAttribute Teacher teacher) {
+        teacherService.saveTeacher(teacher);
+        return "redirect:/teachers";
+    }
+
+    @PostMapping("/teachers/update/{id}")
+    public String updateTeacher(@ModelAttribute Teacher teacher) {
         teacherService.saveTeacher(teacher);
         return "redirect:/teachers";
     }
