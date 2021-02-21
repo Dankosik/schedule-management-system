@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.*;
 
 @Repository
@@ -42,7 +43,7 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson, Long> 
     protected Lesson update(Lesson lesson) {
         LOGGER.debug("Updating lesson: {}", lesson);
         this.jdbcTemplate.update("UPDATE lessons SET number = ?, start_time = ?,  duration = ?, subject_id = ? WHERE id = ?",
-                lesson.getNumber(), lesson.getStartTime(), convertDurationToHourAndMinutePgInterval(lesson), lesson.getSubjectId(), lesson.getId());
+                lesson.getNumber(), lesson.getStartTime(), convertDurationToHourAndMinutePgInterval(lesson.getDuration()), lesson.getSubjectId(), lesson.getId());
         LOGGER.info("Lesson updated successful: {}", lesson);
         return new Lesson(lesson.getId(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(), lesson.getSubjectId());
     }
@@ -85,8 +86,8 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson, Long> 
         return result;
     }
 
-    private PGInterval convertDurationToHourAndMinutePgInterval(Lesson lesson) {
-        long minutes = lesson.getDuration().toMinutes();
+    private PGInterval convertDurationToHourAndMinutePgInterval(Duration duration) {
+        long minutes = duration.toMinutes();
         PGInterval pgInterval;
         try {
             pgInterval = new PGInterval(minutes / 60 + " hour " + minutes % 60 + " minute");
