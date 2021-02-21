@@ -19,9 +19,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -69,6 +67,9 @@ class GroupControllerTest {
                 .andExpect(model().attribute("groups", groups))
                 .andExpect(model().attribute("group", new Group()))
                 .andExpect(model().attribute("faculties", faculties));
+
+        verify(groupService, times(1)).getAllGroups();
+        verify(facultyService, times(1)).getAllFaculties();
     }
 
     @Test
@@ -89,7 +90,7 @@ class GroupControllerTest {
 
         List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
         when(lessonService.getDurationsForLessons(lessons)).thenReturn(durations);
-        List<String> formattedDurations = List.of("1:30:00", "1:30:00");
+        List<String> formattedDurations = List.of("1:30", "1:30");
 
         List<String> subjectNames = List.of("Math", "Art");
         when(subjectService.getSubjectNamesForLessons(lessons)).thenReturn(subjectNames);
@@ -125,7 +126,41 @@ class GroupControllerTest {
                 new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 2L));
         when(studentService.getStudentsForGroup(group)).thenReturn(students);
 
-        mockMvc.perform(get("/groups/{id}", 1))
+        List<Teacher> allTeachers = List.of(
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
+                new Teacher(2L, "Mike", "Conor", "Conor", 2L),
+                new Teacher(3L, "John", "Conor", "John", 2L));
+        when(teacherService.getAllTeachers()).thenReturn(allTeachers);
+
+        List<Audience> allAudiences = List.of(
+                new Audience(1L, 301, 45),
+                new Audience(2L, 302, 55),
+                new Audience(3L, 303, 65));
+        when(audienceService.getAllAudiences()).thenReturn(allAudiences);
+
+        List<Group> allGroups = List.of(
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "AB-11", 1L),
+                new Group(3L, "AC-21", 1L));
+        when(groupService.getAllGroups()).thenReturn(allGroups);
+
+        List<Lesson> allLessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
+                new Lesson(3L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
+        when(lessonService.getAllLessons()).thenReturn(allLessons);
+
+        List<Duration> durationsForAllLessons = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(90));
+        when(lessonService.getDurationsForLessons(allLessons)).thenReturn(durationsForAllLessons);
+        List<String> formattedDurationsForAllLessons = List.of("1:30", "1:30", "1:30");
+
+        List<Subject> allSubjects = List.of(
+                new Subject(1L, "Math"),
+                new Subject(2L, "Art"),
+                new Subject(2L, "Programming"));
+        when(subjectService.getSubjectsForLessons(allLessons)).thenReturn(allSubjects);
+
+        mockMvc.perform(get("/groups/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("group"))
                 .andExpect(model().attribute("lectures", lectures))
@@ -137,15 +172,72 @@ class GroupControllerTest {
                 .andExpect(model().attribute("teacherNames", teacherNames))
                 .andExpect(model().attribute("audienceNumbers", audienceNumbers))
                 .andExpect(model().attribute("subjects", subjects))
+                .andExpect(model().attribute("lecture", new Lecture()))
+                .andExpect(model().attribute("student", new Student()))
+                .andExpect(model().attribute("allTeachers", allTeachers))
+                .andExpect(model().attribute("allAudiences", allAudiences))
+                .andExpect(model().attribute("allGroups", allGroups))
+                .andExpect(model().attribute("allLessons", allLessons))
+                .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
+                .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
                 .andExpect(model().attribute("group", group));
+
+        verify(groupService, times(1)).getGroupById(1L);
+        verify(studentService, times(1)).getStudentsForGroup(group);
+        verify(lectureService, times(1)).getLecturesForGroup(group);
+        verify(lessonService, times(1)).getLessonsForLectures(lectures);
+        verify(lessonService, times(1)).getDurationsForLessons(lessons);
+        verify(lessonService, times(1)).getStartTimesForLessons(lessons);
+        verify(subjectService, times(1)).getSubjectNamesForLessons(lessons);
+        verify(subjectService, times(1)).getSubjectsForLectures(lectures);
+        verify(teacherService, times(1)).getTeachersForLectures(lectures);
+        verify(teacherService, times(1)).getLastNamesWithInitialsForTeachers(teachers);
+        verify(audienceService, times(1)).getAudiencesForLectures(lectures);
+        verify(audienceService, times(1)).getAudienceNumbersForAudiences(audiences);
+        verify(teacherService, times(1)).getAllTeachers();
+        verify(audienceService, times(1)).getAllAudiences();
+        verify(groupService, times(1)).getAllGroups();
+        verify(lessonService, times(1)).getAllLessons();
+        verify(lessonService, times(1)).getDurationsForLessons(allLessons);
+        verify(subjectService, times(1)).getSubjectsForLessons(allLessons);
+    }
+
+    @Test
+    public void shouldAddGroup() throws Exception {
+        Group group = new Group(1L, "AB-01", 1L);
+        when(groupService.saveGroup(new Group("AB-01", 1L))).thenReturn(group);
+        mockMvc.perform(
+                post("/groups/add")
+                        .flashAttr("group", group))
+                .andExpect(redirectedUrl("/groups"))
+                .andExpect(view().name("redirect:/groups"));
+
+        verify(groupService, times(1)).saveGroup(new Group("AB-01", 1L));
+    }
+
+    @Test
+    public void shouldUpdateGroup() throws Exception {
+        Group group = new Group(1L, "AB-01", 1L);
+        when(groupService.saveGroup(group)).thenReturn(group);
+        mockMvc.perform(
+                post("/groups/update/{id}", 1L)
+                        .flashAttr("group", group))
+                .andExpect(redirectedUrl("/groups"))
+                .andExpect(view().name("redirect:/groups"));
+
+        verify(groupService, times(1)).saveGroup(group);
     }
 
     @Test
     public void shouldDeleteGroup() throws Exception {
         Group group = new Group(1L, "AB-01", 1L);
-        given(groupService.getGroupById(1L)).willReturn(group);
         doNothing().when(groupService).deleteGroupById(1L);
-        mockMvc.perform(post("/groups/delete/{id}", 1L))
-                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(
+                post("/groups/delete/{id}", 1L)
+                        .flashAttr("group", group))
+                .andExpect(redirectedUrl("/groups"))
+                .andExpect(view().name("redirect:/groups"));
+
+        verify(groupService, times(1)).deleteGroupById(1L);
     }
 }

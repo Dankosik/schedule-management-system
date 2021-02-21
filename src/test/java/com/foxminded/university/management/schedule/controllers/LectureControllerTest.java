@@ -19,9 +19,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -61,7 +59,10 @@ class LectureControllerTest {
 
         List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
         when(lessonService.getDurationsForLessons(lessons)).thenReturn(durations);
-        List<String> formattedDurations = List.of("1:30:00", "1:30:00");
+        List<String> formattedDurations = List.of("1:30", "1:30");
+
+        List<Subject> subjectsForLessons = List.of(new Subject(1L, "Math"), new Subject(2L, "Art"));
+        when(subjectService.getSubjectsForLessons(lessons)).thenReturn(subjectsForLessons);
 
         List<String> subjectNames = List.of("Math", "Art");
         when(subjectService.getSubjectNamesForLessons(lessons)).thenReturn(subjectNames);
@@ -120,6 +121,19 @@ class LectureControllerTest {
         List<String> groupNames = List.of("AB-01", "AB-11");
         when(groupService.getGroupNamesForLectures(lectures)).thenReturn(groupNames);
 
+        List<Lesson> allLessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
+                new Lesson(3L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+        when(lessonService.getAllLessons()).thenReturn(allLessons);
+
+        List<Duration> durationsForAllLessons = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(90));
+        when(lessonService.getDurationsForLessons(allLessons)).thenReturn(durationsForAllLessons);
+        List<String> formattedDurationsForAllLessons = List.of("1:30", "1:30", "1:30");
+
+        List<Subject> subjectsForAllLessons = List.of(new Subject(1L, "Math"), new Subject(2L, "Art"), new Subject(2L, "Art"));
+        when(subjectService.getSubjectsForLessons(allLessons)).thenReturn(subjectsForAllLessons);
+
         mockMvc.perform(get("/lectures"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("lectures"))
@@ -130,22 +144,81 @@ class LectureControllerTest {
                 .andExpect(model().attribute("teachers", teachers))
                 .andExpect(model().attribute("allTeachers", allTeachers))
                 .andExpect(model().attribute("teacherNames", teacherNames))
-                .andExpect(model().attribute("audienceNumbers", audienceNumbers))
-                .andExpect(model().attribute("subjects", subjects))
-                .andExpect(model().attribute("groups", groups))
-                .andExpect(model().attribute("allGroups", allGroups))
-                .andExpect(model().attribute("groupNames", groupNames))
                 .andExpect(model().attribute("audiences", audiences))
                 .andExpect(model().attribute("allAudiences", allAudiences))
+                .andExpect(model().attribute("audienceNumbers", audienceNumbers))
+                .andExpect(model().attribute("subjects", subjects))
+                .andExpect(model().attribute("subjectsForLessons", subjectsForLessons))
+                .andExpect(model().attribute("groups", groups))
+                .andExpect(model().attribute("groupNames", groupNames))
+                .andExpect(model().attribute("allGroups", allGroups))
+                .andExpect(model().attribute("allLessons", allLessons))
+                .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
+                .andExpect(model().attribute("subjectsForAllLessons", subjectsForAllLessons))
                 .andExpect(model().attribute("lecture", new Lecture()));
+
+        verify(lectureService, times(1)).getAllLectures();
+        verify(lessonService, times(1)).getLessonsForLectures(lectures);
+        verify(lessonService, times(1)).getDurationsForLessons(lessons);
+        verify(subjectService, times(1)).getSubjectNamesForLessons(lessons);
+        verify(lessonService, times(1)).getStartTimesForLessons(lessons);
+        verify(teacherService, times(1)).getTeachersForLectures(lectures);
+        verify(teacherService, times(1)).getAllTeachers();
+        verify(teacherService, times(1)).getLastNamesWithInitialsForTeachers(teachers);
+        verify(audienceService, times(1)).getAudiencesForLectures(lectures);
+        verify(audienceService, times(1)).getAllAudiences();
+        verify(audienceService, times(1)).getAudienceNumbersForAudiences(audiences);
+        verify(subjectService, times(1)).getSubjectsForLectures(lectures);
+        verify(subjectService, times(1)).getSubjectsForLessons(lessons);
+        verify(groupService, times(1)).getGroupNamesForLectures(lectures);
+        verify(groupService, times(1)).getAllGroups();
+        verify(groupService, times(1)).getGroupsForLectures(lectures);
+        verify(lessonService, times(1)).getAllLessons();
+        verify(lessonService, times(1)).getDurationsForLessons(allLessons);
+        verify(subjectService, times(1)).getSubjectsForLessons(allLessons);
+    }
+
+    @Test
+    public void shouldAddLecture() throws Exception {
+        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                1L, 1L, 1L, 1L);
+        when(lectureService.saveLecture(new Lecture(111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                1L, 1L, 1L, 1L))).thenReturn(lecture);
+        mockMvc.perform(
+                post("/lectures/add")
+                        .flashAttr("lecture", lecture))
+                .andExpect(redirectedUrl("/lectures"))
+                .andExpect(view().name("redirect:/lectures"));
+
+        verify(lectureService, times(1)).saveLecture(new Lecture(111,
+                Date.valueOf(LocalDate.of(2020, 1, 1)), 1L, 1L, 1L, 1L));
+    }
+
+    @Test
+    public void shouldUpdateLecture() throws Exception {
+        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                1L, 1L, 1L, 1L);
+        when(lectureService.saveLecture(lecture)).thenReturn(lecture);
+        mockMvc.perform(
+                post("/lectures/update/{id}", 1L)
+                        .flashAttr("lecture", lecture))
+                .andExpect(redirectedUrl("/lectures"))
+                .andExpect(view().name("redirect:/lectures"));
+
+        verify(lectureService, times(1)).saveLecture(lecture);
     }
 
     @Test
     public void shouldDeleteLecture() throws Exception {
-        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)), 1L, 1L, 1L, 1L);
-        given(lectureService.getLectureById(1L)).willReturn(lecture);
+        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                1L, 1L, 1L, 1L);
         doNothing().when(lectureService).deleteLectureById(1L);
-        mockMvc.perform(post("/lectures/delete/{id}", 1L))
-                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(
+                post("/lectures/delete/{id}", 1L)
+                        .flashAttr("lecture", lecture))
+                .andExpect(redirectedUrl("/lectures"))
+                .andExpect(view().name("redirect:/lectures"));
+
+        verify(lectureService, times(1)).deleteLectureById(1L);
     }
 }

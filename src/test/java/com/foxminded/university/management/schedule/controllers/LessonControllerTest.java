@@ -19,9 +19,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,7 +48,7 @@ class LessonControllerTest {
         List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
         when(lessonService.getDurationsForLessons(lessons)).thenReturn(durations);
 
-        List<String> formattedDurations = List.of("1:30:00", "1:30:00");
+        List<String> formattedDurations = List.of("1:30", "1:30");
 
         List<Subject> subjects = List.of(
                 new Subject(1L, "Math"),
@@ -75,14 +73,53 @@ class LessonControllerTest {
                 .andExpect(model().attribute("subjectNames", subjectNames))
                 .andExpect(model().attribute("lesson", new Lesson()))
                 .andExpect(model().attribute("lessons", lessons));
+
+        verify(lessonService, times(1)).getAllLessons();
+        verify(lessonService, times(1)).getDurationsForLessons(lessons);
+        verify(subjectService, times(1)).getSubjectNamesForLessons(lessons);
+        verify(subjectService, times(1)).getSubjectsForLessons(lessons);
+        verify(subjectService, times(1)).getAllSubjects();
+    }
+
+    @Test
+    public void shouldAddLesson() throws Exception {
+        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1L);
+        when(lessonService.saveLesson(new Lesson(2, Time.valueOf(LocalTime.of(10, 10, 0)),
+                Duration.ofMinutes(90), 1L))).thenReturn(lesson);
+        mockMvc.perform(
+                post("/lessons/add")
+                        .flashAttr("lesson", lesson))
+                .andExpect(redirectedUrl("/lessons"))
+                .andExpect(view().name("redirect:/lessons"));
+
+        verify(lessonService, times(1)).saveLesson(new Lesson(2,
+                Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1L));
+    }
+
+    @Test
+    public void shouldUpdateLesson() throws Exception {
+        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1L);
+        when(lessonService.saveLesson(lesson)).thenReturn(lesson);
+        mockMvc.perform(
+                post("/lessons/update/{id}", 1L)
+                        .flashAttr("lesson", lesson))
+                .andExpect(redirectedUrl("/lessons"))
+                .andExpect(view().name("redirect:/lessons"));
+
+        verify(lessonService, times(1)).saveLesson(lesson);
     }
 
     @Test
     public void shouldDeleteLesson() throws Exception {
-        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1L);
-        given(lessonService.getLessonById(1L)).willReturn(lesson);
+        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)),
+                Duration.ofMinutes(90), 1L);
         doNothing().when(lessonService).deleteLessonById(1L);
-        mockMvc.perform(post("/lessons/delete/{id}", 1L))
-                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(
+                post("/lessons/delete/{id}", 1L)
+                        .flashAttr("lesson", lesson))
+                .andExpect(redirectedUrl("/lessons"))
+                .andExpect(view().name("redirect:/lessons"));
+
+        verify(lessonService, times(1)).deleteLessonById(1L);
     }
 }

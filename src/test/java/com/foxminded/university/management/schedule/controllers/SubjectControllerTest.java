@@ -12,9 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,6 +37,7 @@ class SubjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("subjects"))
                 .andExpect(model().attribute("subjects", subjects));
+        verify(subjectService, times(1)).getAllSubjects();
     }
 
     @Test
@@ -46,18 +45,48 @@ class SubjectControllerTest {
         Subject subject = new Subject(1L, "Math");
         when(subjectService.getSubjectById(1L)).thenReturn(subject);
 
-        mockMvc.perform(get("/subjects/{id}", 1))
+        mockMvc.perform(get("/subjects/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("subject"))
                 .andExpect(model().attribute("subject", subject));
     }
 
     @Test
+    public void shouldAddSubject() throws Exception {
+        Subject subject = new Subject(1L, "Art");
+        when(subjectService.saveSubject(new Subject("Art"))).thenReturn(subject);
+        mockMvc.perform(
+                post("/subjects/add")
+                        .flashAttr("subject", subject))
+                .andExpect(redirectedUrl("/subjects"))
+                .andExpect(view().name("redirect:/subjects"));
+
+        verify(subjectService, times(1)).saveSubject(new Subject("Art"));
+    }
+
+    @Test
+    public void shouldUpdateSubject() throws Exception {
+        Subject subject = new Subject(1L, "Art");
+        when(subjectService.saveSubject(subject)).thenReturn(subject);
+        mockMvc.perform(
+                post("/subjects/update/{id}", 1L)
+                        .flashAttr("subject", subject))
+                .andExpect(redirectedUrl("/subjects"))
+                .andExpect(view().name("redirect:/subjects"));
+
+        verify(subjectService, times(1)).saveSubject(subject);
+    }
+
+    @Test
     public void shouldDeleteSubject() throws Exception {
         Subject subject = new Subject(1L, "Art");
-        given(subjectService.getSubjectById(1L)).willReturn(subject);
         doNothing().when(subjectService).deleteSubjectById(1L);
-        mockMvc.perform(post("/subjects/delete/{id}", 1L))
-                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(
+                post("/subjects/delete/{id}", 1L)
+                        .flashAttr("subject", subject))
+                .andExpect(redirectedUrl("/subjects"))
+                .andExpect(view().name("redirect:/subjects"));
+
+        verify(subjectService, times(1)).deleteSubjectById(1L);
     }
 }

@@ -14,9 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -63,14 +61,51 @@ class StudentControllerTest {
                 .andExpect(model().attribute("groupNames", groupNames))
                 .andExpect(model().attribute("groups", groups))
                 .andExpect(model().attribute("allGroups", allGroups));
+
+        verify(studentService, times(1)).getAllStudents();
+        verify(groupService, times(1)).getGroupNamesForStudents(students);
+        verify(groupService, times(1)).getGroupsForStudents(students);
+        verify(groupService, times(1)).getAllGroups();
+    }
+
+    @Test
+    public void shouldAddStudent() throws Exception {
+        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L);
+        when(studentService.saveStudent(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, 1L)))
+                .thenReturn(student);
+        mockMvc.perform(
+                post("/students/add")
+                        .flashAttr("student", student))
+                .andExpect(redirectedUrl("/students"))
+                .andExpect(view().name("redirect:/students"));
+
+        verify(studentService, times(1))
+                .saveStudent(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, 1L));
+    }
+
+    @Test
+    public void shouldUpdateStudent() throws Exception {
+        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L);
+        when(studentService.saveStudent(student)).thenReturn(student);
+        mockMvc.perform(
+                post("/students/update/{id}", 1L)
+                        .flashAttr("student", student))
+                .andExpect(redirectedUrl("/students"))
+                .andExpect(view().name("redirect:/students"));
+
+        verify(studentService, times(1)).saveStudent(student);
     }
 
     @Test
     public void shouldDeleteStudent() throws Exception {
         Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L);
-        given(studentService.getStudentById(1L)).willReturn(student);
         doNothing().when(studentService).deleteStudentById(1L);
-        mockMvc.perform(post("/students/delete/{id}", 1L))
-                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(
+                post("/students/delete/{id}", 1L)
+                        .flashAttr("student", student))
+                .andExpect(redirectedUrl("/students"))
+                .andExpect(view().name("redirect:/students"));
+
+        verify(studentService, times(1)).deleteStudentById(1L);
     }
 }

@@ -16,9 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -48,6 +46,8 @@ class FacultyControllerTest {
                 .andExpect(view().name("faculties"))
                 .andExpect(model().attribute("faculties", faculties))
                 .andExpect(model().attribute("faculty", new Faculty()));
+
+        verify(facultyService, times(1)).getAllFaculties();
     }
 
     @Test
@@ -65,20 +65,60 @@ class FacultyControllerTest {
                 new Teacher("Mike", "Conor", "Conor", 1L));
         when(teacherService.getTeachersForFaculty(faculty)).thenReturn(teachers);
 
-        mockMvc.perform(get("/faculties/{id}", 1))
+        List<Faculty> allFaculties = List.of(new Faculty(1L, "FAIT"), new Faculty(2L, "FKFN"));
+        when(facultyService.getAllFaculties()).thenReturn(allFaculties);
+        mockMvc.perform(get("/faculties/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("faculty"))
                 .andExpect(model().attribute("groups", groups))
                 .andExpect(model().attribute("teachers", teachers))
+                .andExpect(model().attribute("group", new Group()))
+                .andExpect(model().attribute("teacher", new Teacher()))
+                .andExpect(model().attribute("allFaculties", allFaculties))
                 .andExpect(model().attribute("faculty", faculty));
+
+        verify(facultyService, times(1)).getFacultyById(1L);
+        verify(groupService, times(1)).getGroupsForFaculty(faculty);
+        verify(teacherService, times(1)).getTeachersForFaculty(faculty);
+        verify(facultyService, times(1)).getAllFaculties();
+    }
+
+    @Test
+    public void shouldAddFaculty() throws Exception {
+        Faculty faculty = new Faculty(1L, "FAIT");
+        when(facultyService.saveFaculty(new Faculty("FAIT"))).thenReturn(faculty);
+        mockMvc.perform(
+                post("/faculties/add")
+                        .flashAttr("faculty", faculty))
+                .andExpect(redirectedUrl("/faculties"))
+                .andExpect(view().name("redirect:/faculties"));
+
+        verify(facultyService, times(1)).saveFaculty(new Faculty("FAIT"));
+    }
+
+    @Test
+    public void shouldUpdateFaculty() throws Exception {
+        Faculty faculty = new Faculty(1L, "FAIT");
+        when(facultyService.saveFaculty(faculty)).thenReturn(faculty);
+        mockMvc.perform(
+                post("/faculties/update/{id}", 1L)
+                        .flashAttr("faculty", faculty))
+                .andExpect(redirectedUrl("/faculties"))
+                .andExpect(view().name("redirect:/faculties"));
+
+        verify(facultyService, times(1)).saveFaculty(faculty);
     }
 
     @Test
     public void shouldDeleteFaculty() throws Exception {
         Faculty faculty = new Faculty(1L, "FAIT");
-        given(facultyService.getFacultyById(1L)).willReturn(faculty);
         doNothing().when(facultyService).deleteFacultyById(1L);
-        mockMvc.perform(post("/faculties/delete/{id}", 1L))
-                .andExpect(status().is3xxRedirection());
+        mockMvc.perform(
+                post("/faculties/delete/{id}", 1L)
+                        .flashAttr("faculty", faculty))
+                .andExpect(redirectedUrl("/faculties"))
+                .andExpect(view().name("redirect:/faculties"));
+
+        verify(facultyService, times(1)).deleteFacultyById(1L);
     }
 }
