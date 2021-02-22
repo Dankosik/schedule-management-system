@@ -26,8 +26,8 @@ public class StudentController {
     public String showAllStudents(Model model) {
         List<Student> students = studentService.getAllStudents();
         model.addAttribute("students", students);
-        model.addAttribute("groupNames", groupService.getGroupNamesForStudents(students));
-        model.addAttribute("groups", groupService.getGroupsForStudents(students));
+        model.addAttribute("groupNames", groupService.getGroupNamesWithPossibleNullForStudents(students));
+        model.addAttribute("groups", groupService.getGroupsWithPossibleNullForStudents(students));
         model.addAttribute("allGroups", groupService.getAllGroups());
         model.addAttribute("student", new Student());
         return "students";

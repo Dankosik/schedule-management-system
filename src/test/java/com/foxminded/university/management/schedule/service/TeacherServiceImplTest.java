@@ -130,7 +130,7 @@ class TeacherServiceImplTest {
 
         List<String> expected = List.of("Jackson J. J.", "Conor M. C.");
 
-        assertEquals(expected, teacherService.getLastNamesWithInitialsForTeachers(teachers));
+        assertEquals(expected, teacherService.getLastNamesWithInitialsWithPossibleNullForTeachers(teachers));
     }
 
     @Test
@@ -139,7 +139,7 @@ class TeacherServiceImplTest {
 
         List<String> expected = Arrays.asList(null, "Conor M. C.");
 
-        assertEquals(expected, teacherService.getLastNamesWithInitialsForTeachers(teachers));
+        assertEquals(expected, teacherService.getLastNamesWithInitialsWithPossibleNullForTeachers(teachers));
     }
 
     @Test
@@ -157,7 +157,7 @@ class TeacherServiceImplTest {
                 new Teacher(1L, "John", "Jackson", "Jackson", 1L),
                 new Teacher(2L, "Mike", "Conor", "Conor", 2L));
 
-        assertEquals(expected, teacherService.getTeachersForLectures(lectures));
+        assertEquals(expected, teacherService.getTeachersWithPossibleNullForLectures(lectures));
 
         verify(teacherDao, times(2)).getById(1L);
         verify(teacherDao, times(2)).getById(2L);
@@ -176,7 +176,7 @@ class TeacherServiceImplTest {
 
         List<Teacher> expected = Arrays.asList(null, new Teacher(2L, "Mike", "Conor", "Conor", 2L));
 
-        assertEquals(expected, teacherService.getTeachersForLectures(lectures));
+        assertEquals(expected, teacherService.getTeachersWithPossibleNullForLectures(lectures));
 
         verify(teacherDao, times(2)).getById(2L);
     }

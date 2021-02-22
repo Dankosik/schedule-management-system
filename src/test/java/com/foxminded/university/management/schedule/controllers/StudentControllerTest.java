@@ -41,7 +41,7 @@ class StudentControllerTest {
                 new Group(1L, "AB-01", 1L),
                 new Group(1L, "AB-01", 1L),
                 new Group(2L, "CD-21", 1L));
-        when(groupService.getGroupsForStudents(students)).thenReturn(groups);
+        when(groupService.getGroupsWithPossibleNullForStudents(students)).thenReturn(groups);
 
         List<Group> allGroups = List.of(
                 new Group(1L, "AB-01", 1L),
@@ -51,7 +51,7 @@ class StudentControllerTest {
         when(groupService.getAllGroups()).thenReturn(allGroups);
 
         List<String> groupNames = List.of("AB-01", "AB-01", "CD-21");
-        when(groupService.getGroupNamesForStudents(students)).thenReturn(groupNames);
+        when(groupService.getGroupNamesWithPossibleNullForStudents(students)).thenReturn(groupNames);
 
         mockMvc.perform(get("/students"))
                 .andExpect(status().isOk())
@@ -63,8 +63,8 @@ class StudentControllerTest {
                 .andExpect(model().attribute("allGroups", allGroups));
 
         verify(studentService, times(1)).getAllStudents();
-        verify(groupService, times(1)).getGroupNamesForStudents(students);
-        verify(groupService, times(1)).getGroupsForStudents(students);
+        verify(groupService, times(1)).getGroupNamesWithPossibleNullForStudents(students);
+        verify(groupService, times(1)).getGroupsWithPossibleNullForStudents(students);
         verify(groupService, times(1)).getAllGroups();
     }
 

@@ -277,7 +277,7 @@ class GroupServiceImplTest {
 
         List<String> expected = List.of("AB-01", "CD-21");
 
-        assertEquals(expected, groupService.getGroupNamesForStudents(students));
+        assertEquals(expected, groupService.getGroupNamesWithPossibleNullForStudents(students));
 
         verify(groupDao, times(2)).getById(1L);
         verify(groupDao, times(2)).getById(2L);
@@ -296,7 +296,7 @@ class GroupServiceImplTest {
                 new Group(1L, "AB-01", 1L),
                 new Group(2L, "CD-21", 1L));
 
-        assertEquals(expected, groupService.getGroupsForStudents(students));
+        assertEquals(expected, groupService.getGroupsWithPossibleNullForStudents(students));
 
         verify(groupDao, times(2)).getById(1L);
         verify(groupDao, times(2)).getById(2L);
@@ -312,7 +312,7 @@ class GroupServiceImplTest {
 
         List<String> expected = Arrays.asList("AB-01", null);
 
-        assertEquals(expected, groupService.getGroupNamesForStudents(students));
+        assertEquals(expected, groupService.getGroupNamesWithPossibleNullForStudents(students));
 
         verify(groupDao, times(2)).getById(1L);
     }
@@ -328,7 +328,7 @@ class GroupServiceImplTest {
         List<Group> expected = Arrays.asList(
                 new Group(1L, "AB-01", 1L), null);
 
-        assertEquals(expected, groupService.getGroupsForStudents(students));
+        assertEquals(expected, groupService.getGroupsWithPossibleNullForStudents(students));
 
         verify(groupDao, times(2)).getById(1L);
     }

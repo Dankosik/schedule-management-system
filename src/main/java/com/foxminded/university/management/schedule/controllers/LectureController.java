@@ -39,24 +39,24 @@ public class LectureController {
         List<Lecture> lectures = lectureService.getAllLectures();
         model.addAttribute("lectures", lectures);
 
-        List<Lesson> lessons = lessonService.getLessonsForLectures(lectures);
+        List<Lesson> lessons = lessonService.getLessonsWithPossibleNullForLectures(lectures);
 
-        model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(lessons)));
+        model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(lessons)));
         model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
-        model.addAttribute("startTimes", lessonService.getStartTimesForLessons(lessons));
+        model.addAttribute("startTimes", lessonService.getStartTimesWithPossibleNullForLessons(lessons));
 
-        List<Teacher> teachers = teacherService.getTeachersForLectures(lectures);
+        List<Teacher> teachers = teacherService.getTeachersWithPossibleNullForLectures(lectures);
         model.addAttribute("teachers", teachers);
         model.addAttribute("allTeachers", teacherService.getAllTeachers());
-        model.addAttribute("teacherNames", teacherService.getLastNamesWithInitialsForTeachers(teachers));
+        model.addAttribute("teacherNames", teacherService.getLastNamesWithInitialsWithPossibleNullForTeachers(teachers));
 
-        List<Audience> audiences = audienceService.getAudiencesForLectures(lectures);
+        List<Audience> audiences = audienceService.getAudiencesWithPossibleNullForLectures(lectures);
         model.addAttribute("audiences", audiences);
         model.addAttribute("allAudiences", audienceService.getAllAudiences());
-        model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersForAudiences(audiences));
+        model.addAttribute("audienceNumbers", audienceService.getAudienceNumbersWithPossibleNullForAudiences(audiences));
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
-        model.addAttribute("subjectsForLessons", subjectService.getSubjectsForLessons(lessons));
+        model.addAttribute("subjectsForLessons", subjectService.getSubjectsWithPossibleNullForLessons(lessons));
 
         model.addAttribute("groupNames", groupService.getGroupNamesForLectures(lectures));
         model.addAttribute("allGroups", groupService.getAllGroups());
@@ -66,8 +66,8 @@ public class LectureController {
 
         List<Lesson> allLessons = lessonService.getAllLessons();
         model.addAttribute("allLessons", allLessons);
-        model.addAttribute("durationsForAllLessons", StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(allLessons)));
-        model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsForLessons(allLessons));
+        model.addAttribute("durationsForAllLessons", StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(allLessons)));
+        model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
         return "lectures";
     }
 

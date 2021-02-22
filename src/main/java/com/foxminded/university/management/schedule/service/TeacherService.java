@@ -17,9 +17,9 @@ public interface TeacherService {
 
     List<Teacher> saveAllTeachers(List<Teacher> teachers);
 
-    List<String> getLastNamesWithInitialsForTeachers(List<Teacher> teachers);
+    List<String> getLastNamesWithInitialsWithPossibleNullForTeachers(List<Teacher> teachers);
 
-    List<Teacher> getTeachersForLectures(List<Lecture> lectures);
+    List<Teacher> getTeachersWithPossibleNullForLectures(List<Lecture> lectures);
 
     List<Teacher> getTeachersForFaculty(Faculty faculty);
 }

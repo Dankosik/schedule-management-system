@@ -22,9 +22,9 @@ public interface GroupService {
 
     Student removeStudentFromGroup(Student student, Group group);
 
-    List<String> getGroupNamesForStudents(List<Student> students);
+    List<String> getGroupNamesWithPossibleNullForStudents(List<Student> students);
 
-    List<Group> getGroupsForStudents(List<Student> students);
+    List<Group> getGroupsWithPossibleNullForStudents(List<Student> students);
 
     List<Group> getGroupsForFaculty(Faculty faculty);
 

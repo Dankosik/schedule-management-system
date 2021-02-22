@@ -49,16 +49,16 @@ public class AudienceController {
         List<Lecture> lectures = lectureService.getLecturesForAudience(audience);
         model.addAttribute("lectures", lectures);
 
-        List<Lesson> lessons = lessonService.getLessonsForLectures(lectures);
-        List<String> formattedDurations = StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(lessons));
+        List<Lesson> lessons = lessonService.getLessonsWithPossibleNullForLectures(lectures);
+        List<String> formattedDurations = StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(lessons));
 
         model.addAttribute("durations", formattedDurations);
         model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
-        model.addAttribute("startTimes", lessonService.getStartTimesForLessons(lessons));
+        model.addAttribute("startTimes", lessonService.getStartTimesWithPossibleNullForLessons(lessons));
 
-        List<Teacher> teachers = teacherService.getTeachersForLectures(lectures);
+        List<Teacher> teachers = teacherService.getTeachersWithPossibleNullForLectures(lectures);
         model.addAttribute("teachers", teachers);
-        model.addAttribute("teacherNames", teacherService.getLastNamesWithInitialsForTeachers(teachers));
+        model.addAttribute("teacherNames", teacherService.getLastNamesWithInitialsWithPossibleNullForTeachers(teachers));
 
         model.addAttribute("subjects", subjectService.getSubjectsForLectures(lectures));
 
@@ -74,9 +74,9 @@ public class AudienceController {
         List<Lesson> allLessons = lessonService.getAllLessons();
         model.addAttribute("allLessons", allLessons);
 
-        List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(allLessons));
+        List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(allLessons));
         model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
-        model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsForLessons(allLessons));
+        model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
         return "audience";
     }
 

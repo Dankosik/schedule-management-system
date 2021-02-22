@@ -21,5 +21,5 @@ public interface SubjectService {
 
     List<Subject> getSubjectsForLectures(List<Lecture> lectures);
 
-    List<Subject> getSubjectsForLessons(List<Lesson> lessons);
+    List<Subject> getSubjectsWithPossibleNullForLessons(List<Lesson> lessons);
 }

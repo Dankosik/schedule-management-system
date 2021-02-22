@@ -115,7 +115,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Time> getStartTimesForLessons(List<Lesson> lessons) {
+    public List<Time> getStartTimesWithPossibleNullForLessons(List<Lesson> lessons) {
         LOGGER.debug("Getting start times for lessons {}", lessons);
         List<Time> result = new ArrayList<>();
         for (Lesson lesson : lessons) {
@@ -130,7 +130,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Duration> getDurationsForLessons(List<Lesson> lessons) {
+    public List<Duration> getDurationsWithPossibleNullForLessons(List<Lesson> lessons) {
         LOGGER.debug("Getting durations for lessons {}", lessons);
         List<Duration> result = new ArrayList<>();
         for (Lesson lesson : lessons) {
@@ -145,7 +145,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Lesson> getLessonsForLectures(List<Lecture> lectures) {
+    public List<Lesson> getLessonsWithPossibleNullForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting lessons times for lectures {}", lectures);
         List<Lesson> result = new ArrayList<>();
         for (Lecture lecture : lectures) {

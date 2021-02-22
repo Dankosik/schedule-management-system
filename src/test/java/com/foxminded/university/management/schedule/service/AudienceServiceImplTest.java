@@ -260,7 +260,7 @@ class AudienceServiceImplTest {
 
         List<Integer> expected = List.of(202, 203, 204);
 
-        assertEquals(expected, audienceService.getAudienceNumbersForAudiences(input));
+        assertEquals(expected, audienceService.getAudienceNumbersWithPossibleNullForAudiences(input));
 
         verify(audienceDao, times(2)).getById(1L);
         verify(audienceDao, times(2)).getById(2L);
@@ -274,7 +274,7 @@ class AudienceServiceImplTest {
 
         List<Integer> expected = Arrays.asList(null, 203, null);
 
-        assertEquals(expected, audienceService.getAudienceNumbersForAudiences(input));
+        assertEquals(expected, audienceService.getAudienceNumbersWithPossibleNullForAudiences(input));
 
         verify(audienceDao, times(2)).getById(2L);
     }
@@ -294,7 +294,7 @@ class AudienceServiceImplTest {
                 new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 1L, 1L),
                 new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 1L, 1L, 1L));
 
-        assertEquals(expected, audienceService.getAudiencesForLectures(input));
+        assertEquals(expected, audienceService.getAudiencesWithPossibleNullForLectures(input));
 
         verify(audienceDao, times(2)).getById(1L);
         verify(audienceDao, times(2)).getById(2L);
@@ -314,7 +314,7 @@ class AudienceServiceImplTest {
                 new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 0L, 1L, 1L, 1L),
                 new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 1L, 1L, 1L));
 
-        assertEquals(expected, audienceService.getAudiencesForLectures(input));
+        assertEquals(expected, audienceService.getAudiencesWithPossibleNullForLectures(input));
 
         verify(audienceDao, times(2)).getById(1L);
         verify(audienceDao, times(2)).getById(3L);

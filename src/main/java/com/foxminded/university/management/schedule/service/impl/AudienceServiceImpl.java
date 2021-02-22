@@ -114,7 +114,7 @@ public class AudienceServiceImpl implements AudienceService {
     }
 
     @Override
-    public List<Integer> getAudienceNumbersForAudiences(List<Audience> audiences) {
+    public List<Integer> getAudienceNumbersWithPossibleNullForAudiences(List<Audience> audiences) {
         LOGGER.debug("Getting audience numbers for audiences {}", audiences);
         List<Integer> result = new ArrayList<>();
         for (Audience audience : audiences) {
@@ -129,7 +129,7 @@ public class AudienceServiceImpl implements AudienceService {
     }
 
     @Override
-    public List<Audience> getAudiencesForLectures(List<Lecture> lectures) {
+    public List<Audience> getAudiencesWithPossibleNullForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting audiences for lectures {}", lectures);
         List<Audience> result = new ArrayList<>();
         for (Lecture lecture : lectures) {

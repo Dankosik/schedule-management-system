@@ -102,7 +102,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public List<Subject> getSubjectsForLessons(List<Lesson> lessons) {
+    public List<Subject> getSubjectsWithPossibleNullForLessons(List<Lesson> lessons) {
         LOGGER.debug("Getting subjects for lessons {}", lessons);
         List<Subject> result = new ArrayList<>();
         for (Lesson lesson : lessons) {

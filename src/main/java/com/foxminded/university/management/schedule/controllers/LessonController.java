@@ -27,9 +27,9 @@ public class LessonController {
     public String showAllLessons(Model model) {
         List<Lesson> lessons = lessonService.getAllLessons();
         model.addAttribute("lessons", lessons);
-        model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsForLessons(lessons)));
+        model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(lessons)));
         model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
-        model.addAttribute("subjects", subjectService.getSubjectsForLessons(lessons));
+        model.addAttribute("subjects", subjectService.getSubjectsWithPossibleNullForLessons(lessons));
         model.addAttribute("allSubjects", subjectService.getAllSubjects());
         model.addAttribute("lesson", new Lesson());
         return "lessons";

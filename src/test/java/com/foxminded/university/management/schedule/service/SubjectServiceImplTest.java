@@ -193,7 +193,7 @@ class SubjectServiceImplTest {
                 new Subject(1L, "Math"),
                 new Subject(2L, "Art"));
 
-        assertEquals(expected, subjectService.getSubjectsForLessons(lessons));
+        assertEquals(expected, subjectService.getSubjectsWithPossibleNullForLessons(lessons));
 
         verify(subjectDao, times(2)).getById(1L);
         verify(subjectDao, times(2)).getById(2L);
@@ -221,7 +221,7 @@ class SubjectServiceImplTest {
 
         List<Subject> expected = Arrays.asList(null, new Subject(2L, "Art"));
 
-        assertEquals(expected, subjectService.getSubjectsForLessons(lessons));
+        assertEquals(expected, subjectService.getSubjectsWithPossibleNullForLessons(lessons));
 
         verify(subjectDao, times(2)).getById(2L);
         verify(lessonService, times(1)).getLessonById(1L);

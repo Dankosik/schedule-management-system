@@ -123,7 +123,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<String> getGroupNamesForStudents(List<Student> students) {
+    public List<String> getGroupNamesWithPossibleNullForStudents(List<Student> students) {
         LOGGER.debug("Getting group names for students {}", students);
         List<String> result = new ArrayList<>();
         for (Student student : students) {
@@ -138,7 +138,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Group> getGroupsForStudents(List<Student> students) {
+    public List<Group> getGroupsWithPossibleNullForStudents(List<Student> students) {
         LOGGER.debug("Getting groups for students {}", students);
         List<Group> result = new ArrayList<>();
         for (Student student : students) {

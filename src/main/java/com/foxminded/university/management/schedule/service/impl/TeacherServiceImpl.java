@@ -66,7 +66,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<String> getLastNamesWithInitialsForTeachers(List<Teacher> teachers) {
+    public List<String> getLastNamesWithInitialsWithPossibleNullForTeachers(List<Teacher> teachers) {
         LOGGER.debug("Getting last names with initials for teachers {}", teachers);
         List<String> result = new ArrayList<>();
         for (Teacher teacher : teachers) {
@@ -84,7 +84,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<Teacher> getTeachersForLectures(List<Lecture> lectures) {
+    public List<Teacher> getTeachersWithPossibleNullForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting teachers for lectures {}", lectures);
         List<Teacher> result = new ArrayList<>();
         for (Lecture lecture : lectures) {

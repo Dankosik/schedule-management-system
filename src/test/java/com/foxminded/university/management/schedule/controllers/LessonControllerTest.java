@@ -46,14 +46,14 @@ class LessonControllerTest {
         when(lessonService.getAllLessons()).thenReturn(lessons);
 
         List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
-        when(lessonService.getDurationsForLessons(lessons)).thenReturn(durations);
+        when(lessonService.getDurationsWithPossibleNullForLessons(lessons)).thenReturn(durations);
 
         List<String> formattedDurations = List.of("1:30", "1:30");
 
         List<Subject> subjects = List.of(
                 new Subject(1L, "Math"),
                 new Subject(2L, "Art"));
-        when(subjectService.getSubjectsForLessons(lessons)).thenReturn(subjects);
+        when(subjectService.getSubjectsWithPossibleNullForLessons(lessons)).thenReturn(subjects);
 
         List<Subject> allSubjects = List.of(
                 new Subject(1L, "Math"),
@@ -75,9 +75,9 @@ class LessonControllerTest {
                 .andExpect(model().attribute("lessons", lessons));
 
         verify(lessonService, times(1)).getAllLessons();
-        verify(lessonService, times(1)).getDurationsForLessons(lessons);
+        verify(lessonService, times(1)).getDurationsWithPossibleNullForLessons(lessons);
         verify(subjectService, times(1)).getSubjectNamesForLessons(lessons);
-        verify(subjectService, times(1)).getSubjectsForLessons(lessons);
+        verify(subjectService, times(1)).getSubjectsWithPossibleNullForLessons(lessons);
         verify(subjectService, times(1)).getAllSubjects();
     }
 

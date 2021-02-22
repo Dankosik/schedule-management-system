@@ -100,10 +100,10 @@ class TeacherControllerTest {
         List<Lesson> lessons = List.of(
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
                 new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
-        when(lessonService.getLessonsForLectures(lectures)).thenReturn(lessons);
+        when(lessonService.getLessonsWithPossibleNullForLectures(lectures)).thenReturn(lessons);
 
         List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
-        when(lessonService.getDurationsForLessons(lessons)).thenReturn(durations);
+        when(lessonService.getDurationsWithPossibleNullForLessons(lessons)).thenReturn(durations);
         List<String> formattedDurations = List.of("1:30", "1:30");
 
         List<String> subjectNames = List.of("Math", "Art");
@@ -112,15 +112,15 @@ class TeacherControllerTest {
         List<Time> startTimes = List.of(
                 Time.valueOf(LocalTime.of(8, 30, 0)),
                 Time.valueOf(LocalTime.of(10, 10, 0)));
-        when(lessonService.getStartTimesForLessons(lessons)).thenReturn(startTimes);
+        when(lessonService.getStartTimesWithPossibleNullForLessons(lessons)).thenReturn(startTimes);
 
         List<Audience> audiences = List.of(
                 new Audience(1L, 301, 45),
                 new Audience(2L, 302, 55));
-        when(audienceService.getAudiencesForLectures(lectures)).thenReturn(audiences);
+        when(audienceService.getAudiencesWithPossibleNullForLectures(lectures)).thenReturn(audiences);
 
         List<Integer> audienceNumbers = List.of(301, 302);
-        when(audienceService.getAudienceNumbersForAudiences(audiences)).thenReturn(audienceNumbers);
+        when(audienceService.getAudienceNumbersWithPossibleNullForAudiences(audiences)).thenReturn(audienceNumbers);
 
         List<Subject> subjects = List.of(
                 new Subject(1L, "Math"),
@@ -166,14 +166,14 @@ class TeacherControllerTest {
         when(lessonService.getAllLessons()).thenReturn(allLessons);
 
         List<Duration> durationsForAllLessons = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(90));
-        when(lessonService.getDurationsForLessons(allLessons)).thenReturn(durationsForAllLessons);
+        when(lessonService.getDurationsWithPossibleNullForLessons(allLessons)).thenReturn(durationsForAllLessons);
         List<String> formattedDurationsForAllLessons = List.of("1:30", "1:30", "1:30");
 
         List<Subject> allSubjects = List.of(
                 new Subject(1L, "Math"),
                 new Subject(2L, "Art"),
                 new Subject(2L, "Programming"));
-        when(subjectService.getSubjectsForLessons(allLessons)).thenReturn(allSubjects);
+        when(subjectService.getSubjectsWithPossibleNullForLessons(allLessons)).thenReturn(allSubjects);
 
         mockMvc.perform(get("/teachers/{id}", 1L))
                 .andExpect(status().isOk())
@@ -200,22 +200,22 @@ class TeacherControllerTest {
         verify(teacherService, times(1)).getTeacherById(1L);
         verify(facultyService, times(1)).getFacultyById(teacher.getFacultyId());
         verify(lectureService, times(1)).getLecturesForTeacher(teacher);
-        verify(lessonService, times(1)).getLessonsForLectures(lectures);
-        verify(lessonService, times(1)).getDurationsForLessons(lessons);
-        verify(lessonService, times(1)).getStartTimesForLessons(lessons);
+        verify(lessonService, times(1)).getLessonsWithPossibleNullForLectures(lectures);
+        verify(lessonService, times(1)).getDurationsWithPossibleNullForLessons(lessons);
+        verify(lessonService, times(1)).getStartTimesWithPossibleNullForLessons(lessons);
         verify(subjectService, times(1)).getSubjectsForLectures(lectures);
         verify(subjectService, times(1)).getSubjectNamesForLessons(lessons);
         verify(groupService, times(1)).getGroupNamesForLectures(lectures);
         verify(groupService, times(1)).getGroupsForLectures(lectures);
-        verify(audienceService, times(1)).getAudiencesForLectures(lectures);
-        verify(audienceService, times(1)).getAudienceNumbersForAudiences(audiences);
+        verify(audienceService, times(1)).getAudiencesWithPossibleNullForLectures(lectures);
+        verify(audienceService, times(1)).getAudienceNumbersWithPossibleNullForAudiences(audiences);
         verify(facultyService, times(1)).getAllFaculties();
         verify(teacherService, times(1)).getAllTeachers();
         verify(audienceService, times(1)).getAllAudiences();
         verify(groupService, times(1)).getAllGroups();
         verify(lessonService, times(1)).getAllLessons();
-        verify(lessonService, times(1)).getDurationsForLessons(allLessons);
-        verify(subjectService, times(1)).getSubjectsForLessons(allLessons);
+        verify(lessonService, times(1)).getDurationsWithPossibleNullForLessons(allLessons);
+        verify(subjectService, times(1)).getSubjectsWithPossibleNullForLessons(allLessons);
     }
 
     @Test
