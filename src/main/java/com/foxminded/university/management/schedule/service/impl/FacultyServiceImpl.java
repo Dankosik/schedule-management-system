@@ -185,4 +185,22 @@ public class FacultyServiceImpl implements FacultyService {
         LOGGER.info("Faculties for teachers {} received successful", teachers);
         return faculties;
     }
+
+    @Override
+    public List<Faculty> getFacultiesForGroups(List<Group> groups) {
+        LOGGER.debug("Getting faculties for groups {}", groups);
+        List<Faculty> faculties = groups.stream()
+                .map(group -> getFacultyById(group.getFacultyId()))
+                .collect(Collectors.toList());
+        LOGGER.info("Faculties for groups {} received successful", groups);
+        return faculties;
+    }
+
+    @Override
+    public Faculty getFacultyForGroup(Group group) {
+        LOGGER.debug("Getting faculty for group {}", group);
+        Faculty faculty = getFacultyById(group.getFacultyId());
+        LOGGER.info("Faculty for group {} received successful", group);
+        return faculty;
+    }
 }

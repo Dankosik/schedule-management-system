@@ -28,4 +28,8 @@ public interface FacultyService {
     List<String> getFacultyNamesForTeachers(List<Teacher> teachers);
 
     List<Faculty> getFacultiesForTeachers(List<Teacher> teachers);
+
+    List<Faculty> getFacultiesForGroups(List<Group> groups);
+
+    Faculty getFacultyForGroup(Group group);
 }
