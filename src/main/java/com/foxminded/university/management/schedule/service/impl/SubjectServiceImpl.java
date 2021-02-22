@@ -106,6 +106,10 @@ public class SubjectServiceImpl implements SubjectService {
         LOGGER.debug("Getting subjects for lessons {}", lessons);
         List<Subject> result = new ArrayList<>();
         for (Lesson lesson : lessons) {
+            if (lesson == null) {
+                result.add(null);
+                continue;
+            }
             if (lesson.getId() == 0) {
                 result.add(null);
                 continue;
