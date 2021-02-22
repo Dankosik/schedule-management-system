@@ -50,23 +50,30 @@ class GroupControllerTest {
 
     @Test
     public void shouldReturnViewWithAllGroups() throws Exception {
-        List<Group> groups = List.of(
+        List<Group> allGroups = List.of(
                 new Group(1L, "AB-01", 1L),
                 new Group(2L, "CD-21", 1L));
 
-        when(groupService.getAllGroups()).thenReturn(groups);
+        when(groupService.getAllGroups()).thenReturn(allGroups);
+
+        List<Faculty> allFaculties = List.of(
+                new Faculty(1L, "FAIT"),
+                new Faculty(2L, "FKFN"),
+                new Faculty(3L, "NSAX"));
+        when(facultyService.getAllFaculties()).thenReturn(allFaculties);
 
         List<Faculty> faculties = List.of(
                 new Faculty(1L, "FAIT"),
-                new Faculty(2L, "FKFN"));
-        when(facultyService.getAllFaculties()).thenReturn(faculties);
+                new Faculty(1L, "FAIT"));
+        when(facultyService.getFacultiesForGroups(allGroups)).thenReturn(faculties);
 
         mockMvc.perform(get("/groups"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("groups"))
-                .andExpect(model().attribute("groups", groups))
+                .andExpect(model().attribute("allGroups", allGroups))
                 .andExpect(model().attribute("group", new Group()))
-                .andExpect(model().attribute("faculties", faculties));
+                .andExpect(model().attribute("faculties", faculties))
+                .andExpect(model().attribute("allFaculties", allFaculties));
 
         verify(groupService, times(1)).getAllGroups();
         verify(facultyService, times(1)).getAllFaculties();
@@ -160,6 +167,9 @@ class GroupControllerTest {
                 new Subject(2L, "Programming"));
         when(subjectService.getSubjectsForLessons(allLessons)).thenReturn(allSubjects);
 
+        Faculty faculty = new Faculty(1L, "FAIT");
+        when(facultyService.getFacultyForGroup(group)).thenReturn(faculty);
+
         mockMvc.perform(get("/groups/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("group"))
@@ -180,6 +190,7 @@ class GroupControllerTest {
                 .andExpect(model().attribute("allLessons", allLessons))
                 .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
                 .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
+                .andExpect(model().attribute("faculty", faculty))
                 .andExpect(model().attribute("group", group));
 
         verify(groupService, times(1)).getGroupById(1L);
