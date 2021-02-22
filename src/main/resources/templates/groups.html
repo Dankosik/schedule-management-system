@@ -18,7 +18,8 @@
             <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
             <div class="col">
                 <select class="form-control" th:field="*{facultyId}">
-                    <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}" th:value="${faculty.id}"></option>
+                    <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
+                            th:value="${faculty.id}"></option>
                 </select>
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add group</button>
