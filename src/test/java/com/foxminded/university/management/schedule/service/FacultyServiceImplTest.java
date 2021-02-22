@@ -383,4 +383,35 @@ class FacultyServiceImplTest {
         verify(facultyDao, times(2)).getById(1L);
         verify(facultyDao, times(2)).getById(2L);
     }
+
+    @Test
+    void shouldReturnFacultiesForGroups() {
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
+        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN")));
+
+        List<Group> groups = List.of(
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "CD-21", 2L));
+
+        List<Faculty> expected = List.of(
+                new Faculty(1L, "FAIT"),
+                new Faculty(2L, "FKFN"));
+
+        assertEquals(expected, facultyService.getFacultiesForGroups(groups));
+
+        verify(facultyDao, times(2)).getById(1L);
+        verify(facultyDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnFacultyForGroup() {
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
+
+        Group group = new Group(1L, "AB-01", 1L);
+        Faculty expected = new Faculty(1L, "FAIT");
+
+        assertEquals(expected, facultyService.getFacultyForGroup(group));
+
+        verify(facultyDao, times(2)).getById(1L);
+    }
 }
