@@ -18,7 +18,7 @@
             <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
             <div class="col">
                 <select class="form-control" th:field="*{facultyId}">
-                    <option th:each="faculty: ${faculties}" th:text="${faculty.name}" th:value="${faculty.id}"></option>
+                    <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}" th:value="${faculty.id}"></option>
                 </select>
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add group</button>
@@ -31,17 +31,24 @@
         <tr>
             <th scope="col">id</th>
             <th scope="col">Name</th>
+            <th scope="col">Faculty</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="group: ${groups}">
+        <tr th:each="group, iter: ${allGroups}">
             <td th:text="${group.id}"></td>
             <td>
                 <a style="text-decoration: none; color: black"
                    th:href="@{'/groups/'} + ${group.id}"
                    th:text="${group.name}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/faculties/'} + ${faculties.get(iter.index).getId()}"
+                   th:text="${faculties.get(iter.index).getName()}">
                 </a>
             </td>
             <td>
@@ -74,7 +81,7 @@
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
                                         <div class="col">
                                             <select class="form-control" th:field="*{facultyId}">
-                                                <option th:each="faculty: ${faculties}" th:text="${faculty.name}"
+                                                <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
                                                         th:value="${faculty.id}"></option>
                                             </select>
                                         </div>

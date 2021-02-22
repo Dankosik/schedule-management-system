@@ -16,6 +16,7 @@
         <tr>
             <th scope="col">id</th>
             <th scope="col">Name</th>
+            <th scope="col">Faculty</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
         </tr>
@@ -24,6 +25,7 @@
         <tr>
             <td th:text="${group.id}"></td>
             <td th:text="${group.name}"></td>
+            <td th:text="${faculty.name}"></td>
             <td>
                 <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
                         th:attrappend="data-target=${group}"
