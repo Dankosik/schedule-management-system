@@ -39,9 +39,11 @@ public class GroupController {
 
     @GetMapping("/groups")
     public String showAllGroups(Model model) {
-        model.addAttribute("groups", groupService.getAllGroups());
+        List<Group> allGroups = groupService.getAllGroups();
+        model.addAttribute("allGroups", allGroups);
         model.addAttribute("group", new Group());
-        model.addAttribute("faculties", facultyService.getAllFaculties());
+        model.addAttribute("faculties", facultyService.getFacultiesForGroups(allGroups));
+        model.addAttribute("allFaculties", facultyService.getAllFaculties());
         return "groups";
     }
 
@@ -85,6 +87,7 @@ public class GroupController {
         model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsForLessons(allLessons));
         model.addAttribute("faculties", facultyService.getAllFaculties());
+        model.addAttribute("faculty", facultyService.getFacultyForGroup(group));
         return "group";
     }
 
