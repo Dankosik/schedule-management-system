@@ -58,6 +58,7 @@ public class TeacherController {
 
         List<Lecture> lectures = lectureService.getLecturesForTeacher(teacher);
         model.addAttribute("lectures", lectures);
+        model.addAttribute("lecturesDate", lectureService.getLectureDateWithPossibleNullForLectures(lectures));
 
         List<Lesson> lessons = lessonService.getLessonsWithPossibleNullForLectures(lectures);
 
