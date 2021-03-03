@@ -106,7 +106,13 @@
                 </a>
                 <div th:unless="${audienceNumbers.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
-            <td th:text="${lecture.date}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:if="${lecturesDate.get(iter.index) !=null}"
+                   th:text="${lecturesDate.get(iter.index)}">
+                </a>
+                <div th:unless="${lecturesDate.get(iter.index) != null}">Deleted or not added yet</div>
+            </td>
             <td>
                 <div th:if="${startTimes.get(iter.index) !=null}" th:text="${startTimes.get(iter.index)}"></div>
                 <div th:unless="${startTimes.get(iter.index) != null}">Deleted or not added yet</div>
