@@ -152,6 +152,11 @@ class AudienceControllerTest {
                 new Subject(2L, "Programming"));
         when(subjectService.getSubjectsWithPossibleNullForLessons(allLessons)).thenReturn(allSubjects);
 
+        List<Date> lecturesDate = List.of(
+                Date.valueOf("2021-03-04"), Date.valueOf("2021-03-05"),
+                Date.valueOf("2021-03-06"), Date.valueOf("2021-03-07"));
+        when(lectureService.getLectureDateWithPossibleNullForLectures(lectures)).thenReturn(lecturesDate);
+
         mockMvc.perform(get("/audiences/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("audience"))
@@ -171,6 +176,7 @@ class AudienceControllerTest {
                 .andExpect(model().attribute("allLessons", allLessons))
                 .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
                 .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
+                .andExpect(model().attribute("lecturesDate", lecturesDate))
                 .andExpect(model().attribute("audience", audience));
 
         verify(audienceService, times(1)).getAudienceById(1L);
@@ -189,6 +195,7 @@ class AudienceControllerTest {
         verify(lessonService, times(1)).getAllLessons();
         verify(lessonService, times(1)).getDurationsWithPossibleNullForLessons(allLessons);
         verify(subjectService, times(1)).getSubjectsWithPossibleNullForLessons(allLessons);
+        verify(lectureService, times(1)).getLectureDateWithPossibleNullForLectures(lectures);
     }
 
     @Test

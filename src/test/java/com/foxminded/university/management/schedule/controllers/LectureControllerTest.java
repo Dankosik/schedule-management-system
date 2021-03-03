@@ -182,6 +182,7 @@ class LectureControllerTest {
         verify(lessonService, times(1)).getAllLessons();
         verify(lessonService, times(1)).getDurationsWithPossibleNullForLessons(allLessons);
         verify(subjectService, times(1)).getSubjectsWithPossibleNullForLessons(allLessons);
+        verify(lectureService, times(1)).getLectureDateWithPossibleNullForLectures(lectures);
     }
 
     @Test

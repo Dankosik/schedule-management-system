@@ -170,6 +170,11 @@ class GroupControllerTest {
         Faculty faculty = new Faculty(1L, "FAIT");
         when(facultyService.getFacultyForGroup(group)).thenReturn(faculty);
 
+        List<Date> lecturesDate = List.of(
+                Date.valueOf("2021-03-04"), Date.valueOf("2021-03-05"),
+                Date.valueOf("2021-03-06"), Date.valueOf("2021-03-07"));
+        when(lectureService.getLectureDateWithPossibleNullForLectures(lectures)).thenReturn(lecturesDate);
+
         mockMvc.perform(get("/groups/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("group"))
@@ -191,6 +196,7 @@ class GroupControllerTest {
                 .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
                 .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
                 .andExpect(model().attribute("faculty", faculty))
+                .andExpect(model().attribute("lecturesDate", lecturesDate))
                 .andExpect(model().attribute("group", group));
 
         verify(groupService, times(1)).getGroupById(1L);
@@ -211,6 +217,7 @@ class GroupControllerTest {
         verify(lessonService, times(1)).getAllLessons();
         verify(lessonService, times(1)).getDurationsWithPossibleNullForLessons(allLessons);
         verify(subjectService, times(1)).getSubjectsWithPossibleNullForLessons(allLessons);
+        verify(lectureService, times(1)).getLectureDateWithPossibleNullForLectures(lectures);
     }
 
     @Test
