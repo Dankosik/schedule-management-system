@@ -7,7 +7,6 @@ import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
