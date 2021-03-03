@@ -48,6 +48,7 @@ public class AudienceController {
         model.addAttribute("audience", audience);
         List<Lecture> lectures = lectureService.getLecturesForAudience(audience);
         model.addAttribute("lectures", lectures);
+        model.addAttribute("lecturesDate", lectureService.getLectureDateWithPossibleNullForLectures(lectures));
 
         List<Lesson> lessons = lessonService.getLessonsWithPossibleNullForLectures(lectures);
         List<String> formattedDurations = StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(lessons));
