@@ -17,6 +17,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -616,5 +617,20 @@ class LectureServiceImplTest {
         assertEquals(expected, lectureService.getLecturesForGroup(new Group(1L, "AB-12", 1L)));
 
         verify(lectureDao, times(1)).getLecturesByGroupId(1L);
+    }
+
+    @Test
+    void shouldReturnDatesForLectures() {
+        List<Lecture> lectures = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 2)), 1L, 1L, 2L, 1L),
+                new Lecture(2L, 2, null, 1L, 1L, 2L, 1L));
+
+        List<Date> expected = Arrays.asList(
+                Date.valueOf(LocalDate.of(2021, 1, 1)),
+                Date.valueOf(LocalDate.of(2021, 1, 2)),
+                null);
+
+        assertEquals(expected, lectureService.getLectureDateWithPossibleNullForLectures(lectures));
     }
 }
