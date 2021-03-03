@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {SubjectServiceImpl.class})
 class SubjectServiceImplTest {
     private final Subject subject = new Subject(1L, "Math");
     private final List<Subject> subjects = List.of(subject,

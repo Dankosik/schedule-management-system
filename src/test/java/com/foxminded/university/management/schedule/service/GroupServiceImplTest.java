@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {GroupServiceImpl.class})
 class GroupServiceImplTest {
     private final Group group = new Group(1L, "AB-01", 1L);
     private final List<Group> groups = List.of(group,

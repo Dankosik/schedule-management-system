@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {StudentServiceImpl.class})
 class StudentServiceImplTest {
     private final Student student = new Student(1L, "John", "Jackson", "Jackson", 1, null);
     private final List<Student> students = List.of(student,

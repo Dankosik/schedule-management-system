@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {LectureServiceImpl.class})
 class LectureServiceImplTest {
     private final Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
             null, null, null, null);

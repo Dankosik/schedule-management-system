@@ -7,6 +7,7 @@ import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.LectureServiceImpl;
+import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {AudienceServiceImpl.class})
 class AudienceServiceImplTest {
     private final Audience audience = new Audience(1L, 202, 45);
     private final List<Audience> audiences = List.of(audience,

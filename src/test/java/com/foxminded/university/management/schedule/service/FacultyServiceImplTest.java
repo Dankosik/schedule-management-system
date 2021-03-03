@@ -7,6 +7,7 @@ import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {FacultyServiceImpl.class})
 class FacultyServiceImplTest {
     private final Faculty faculty = new Faculty(1L, "FAIT");
     private final List<Faculty> faculties = List.of(faculty, new Faculty(2L, "FKFN"));

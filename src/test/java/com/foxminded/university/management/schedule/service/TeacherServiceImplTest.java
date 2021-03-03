@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {TeacherServiceImpl.class})
 class TeacherServiceImplTest {
     private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null);
     private final List<Teacher> teachers = List.of(teacher,
