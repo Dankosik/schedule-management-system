@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -243,5 +244,20 @@ public class LectureServiceImpl implements LectureService {
         List<Lecture> lectures = lectureDao.getLecturesByGroupId(group.getId());
         LOGGER.info("Lectures for group {} received successful", group);
         return lectures;
+    }
+
+    @Override
+    public List<Date> getLectureDateWithPossibleNullForLectures(List<Lecture> lectures) {
+        LOGGER.debug("Getting lectures date for lectures {}", lectures);
+        List<Date> result = new ArrayList<>();
+        for (Lecture lecture : lectures) {
+            if (lecture.getDate() == null) {
+                result.add(null);
+            } else {
+                result.add(lecture.getDate());
+            }
+        }
+        LOGGER.info("Lectures date for lectures {} received successful", lectures);
+        return result;
     }
 }
