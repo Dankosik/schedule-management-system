@@ -56,6 +56,7 @@ public class GroupController {
 
         List<Lecture> lectures = lectureService.getLecturesForGroup(group);
         model.addAttribute("lectures", lectures);
+        model.addAttribute("lecturesDate", lectureService.getLectureDateWithPossibleNullForLectures(lectures));
 
         List<Lesson> lessons = lessonService.getLessonsWithPossibleNullForLectures(lectures);
 
