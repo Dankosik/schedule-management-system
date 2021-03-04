@@ -11,10 +11,7 @@ import java.util.Locale;
 public class DurationFormatter implements Formatter<Duration> {
     @Override
     public Duration parse(String s, Locale locale) {
-        return Duration.parse(Duration.between(
-                LocalTime.MIN,
-                LocalTime.parse(s)
-        ).toString());
+        return Duration.parse(s);
     }
 
     @Override
