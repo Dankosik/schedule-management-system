@@ -50,12 +50,12 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Number" th:field="*{number}"
-                                                   type="text"/>
+                                            <input class="form-control" placeholder="Number" th:value="${audience.number}" id="editNumber"
+                                                   name="number" type="text" required/>
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" placeholder="Capacity" th:field="*{capacity}"
-                                                   type="text"/>
+                                            <input class="form-control" placeholder="Capacity" th:value="${audience.capacity}"id="editCapacity"
+                                                   name="capacity" type="text" required/>
                                         </div>
                                     </div>
                                 </div>
@@ -156,8 +156,8 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Date" th:field="*{date}"
-                                                   type="date">
+                                            <input class="form-control" placeholder="Date" th:value="${lecture.date}"
+                                                   id="editLectureDate" name="date" type="date" required>
                                         </div>
                                     </div>
                                     <div class="form-row">

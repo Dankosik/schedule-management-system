@@ -13,18 +13,18 @@
     <form class="w-50 mx-auto mt-5" method="post" th:action="@{/students/add}" th:object="${student}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="First name" th:field="*{firstName}" type="text">
+                <input class="form-control" placeholder="First name" th:field="*{firstName}" type="text" required>
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Last name" th:field="*{lastName}" type="text">
+                <input class="form-control" placeholder="Last name" th:field="*{lastName}" type="text" required>
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Middle name" th:field="*{middleName}" type="text">
+                <input class="form-control" placeholder="Middle name" th:field="*{middleName}" type="text" required>
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control" placeholder="Course number" th:field="*{courseNumber}" type="text">
+                <input class="form-control" placeholder="Course number" th:field="*{courseNumber}" type="text" required>
             </div>
             <label class="mt-2 ml-3 mr-1">add group: </label>
             <div class="col mt-1">
@@ -89,24 +89,28 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="First name" th:field="*{firstName}"
-                                                   type="text">
+                                            <input class="form-control" placeholder="First name"
+                                                   th:value="${student.firstName}"
+                                                   id="editStudentFirstName" name="firstName" type="text" required>
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" placeholder="Last name" th:field="*{lastName}"
-                                                   type="text">
+                                            <input class="form-control" placeholder="Last name"
+                                                   th:value="${student.lastName}"
+                                                   id="editStudentLastName" name="lastName" type="text" required>
                                         </div>
                                         <div class="col">
                                             <input class="form-control" placeholder="Middle name"
-                                                   th:field="*{middleName}"
-                                                   type="text">
+                                                   th:value="${student.middleName}" id="editStudentMiddleName"
+                                                   name="middleName"
+                                                   type="text" required>
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="col mt-1">
                                             <input class="form-control" placeholder="Course number"
-                                                   th:field="*{courseNumber}"
-                                                   type="text">
+                                                   th:value="${student.courseNumber}" id="editStudentCourseNumber"
+                                                   name="courseNumber"
+                                                   type="text" required>
                                         </div>
                                         <label class="mt-2 ml-3 mr-1">add group: </label>
                                         <div class="col mt-1">

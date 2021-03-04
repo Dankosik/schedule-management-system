@@ -60,18 +60,18 @@
                                     <div class="form-row">
                                         <div class="col">
                                             <input class="form-control" placeholder="First name" th:field="*{firstName}"
-                                                   type="text">
+                                                   type="text" required>
                                         </div>
                                         <div class="col">
                                             <input class="form-control" placeholder="Last name" th:field="*{lastName}"
-                                                   type="text">
+                                                   type="text" required>
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="col mt-1">
                                             <input class="form-control" placeholder="Middle name"
                                                    th:field="*{middleName}"
-                                                   type="text">
+                                                   type="text" required>
                                         </div>
                                         <div class="col mt-1">
                                             <select class="form-control" th:field="*{facultyId}">
@@ -172,8 +172,8 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Date" th:field="*{date}"
-                                                   type="date">
+                                            <input class="form-control" placeholder="Date" th:value="${lecture.date}"
+                                                   id="editLectureDate" name="date" type="date" required>
                                         </div>
                                     </div>
                                     <div class="form-row">

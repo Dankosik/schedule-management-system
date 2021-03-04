@@ -13,10 +13,10 @@
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/audiences/add}" th:object="${audience}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Number" th:field="*{number}" type="text"/>
+                <input class="form-control" placeholder="Number" th:field="*{number}" type="text" required/>
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Capacity" th:field="*{capacity}" type="text"/>
+                <input class="form-control" placeholder="Capacity" th:field="*{capacity}" type="text" required/>
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add audience</button>
         </div>
@@ -62,12 +62,12 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Number" th:field="*{number}"
-                                                   type="text"/>
+                                            <input class="form-control" placeholder="Number" th:value="${audience.number}" id="editNumber"
+                                                   name="number" type="text" required/>
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" placeholder="Capacity" th:field="*{capacity}"
-                                                   type="text"/>
+                                            <input class="form-control" placeholder="Capacity" th:value="${audience.capacity}"id="editCapacity"
+                                                   name="capacity" type="text" required/>
                                         </div>
                                     </div>
                                 </div>

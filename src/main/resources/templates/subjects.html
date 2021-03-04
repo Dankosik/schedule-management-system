@@ -13,7 +13,7 @@
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/subjects/add}" th:object="${subject}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Name" th:field="*{name}" type="text">
+                <input class="form-control" placeholder="Name" th:field="*{name}" type="text" required>
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add subject</button>
         </div>
@@ -61,7 +61,8 @@
                             <div class="modal-body">
                                 <div class="form-row">
                                     <div class="col">
-                                        <input class="form-control" placeholder="Name" th:field="*{name}" type="text">
+                                        <input class="form-control" placeholder="Name" th:value="${subject.name}"
+                                               id="editSubjectName" name="name" type="text" required>
                                     </div>
                                 </div>
                             </div>
