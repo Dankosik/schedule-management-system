@@ -13,7 +13,7 @@
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lectures/add}" th:object="${lecture}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Date" th:field="*{date}" type="date" required>
+                <input class="form-control" placeholder="Date" required th:field="*{date}" type="date">
             </div>
         </div>
         <div class="form-row">
@@ -149,8 +149,8 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Date" th:value="${lecture.date}"
-                                                   id="editLectureDate" name="date" type="date" required>
+                                            <input class="form-control" id="editLectureDate" name="date"
+                                                   placeholder="Date" required th:value="${lecture.date}" type="date">
                                         </div>
                                     </div>
                                     <div class="form-row">

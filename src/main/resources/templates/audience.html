@@ -50,12 +50,14 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Number" th:value="${audience.number}" id="editNumber"
-                                                   name="number" type="text" required/>
+                                            <input class="form-control" id="editNumber"
+                                                   name="number" placeholder="Number"
+                                                   required th:value="${audience.number}" type="text"/>
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" placeholder="Capacity" th:value="${audience.capacity}"id="editCapacity"
-                                                   name="capacity" type="text" required/>
+                                            <input class="form-control" id="editCapacity"
+                                                   name="capacity" placeholder="Capacity"
+                                                   required th:value="${audience.capacity}" type="text"/>
                                         </div>
                                     </div>
                                 </div>
@@ -156,8 +158,8 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Date" th:value="${lecture.date}"
-                                                   id="editLectureDate" name="date" type="date" required>
+                                            <input class="form-control" id="editLectureDate" name="date"
+                                                   placeholder="Date" required th:value="${lecture.date}" type="date">
                                         </div>
                                     </div>
                                     <div class="form-row">

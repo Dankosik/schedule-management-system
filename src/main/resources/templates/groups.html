@@ -13,7 +13,7 @@
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/groups/add}" th:object="${group}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Name" th:field="*{name}" type="text" required>
+                <input class="form-control" placeholder="Name" required th:field="*{name}" type="text">
             </div>
             <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
             <div class="col">
@@ -76,8 +76,8 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Name" th:value="${group.name}"
-                                                 id="editGroupName" name="name" type="text" required>
+                                            <input class="form-control" id="editGroupName" name="name"
+                                                   placeholder="Name" required th:value="${group.name}" type="text">
                                         </div>
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
                                         <div class="col">

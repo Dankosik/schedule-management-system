@@ -59,19 +59,19 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="First name" th:field="*{firstName}"
-                                                   type="text" required>
+                                            <input class="form-control" placeholder="First name" required
+                                                   th:field="*{firstName}" type="text">
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" placeholder="Last name" th:field="*{lastName}"
-                                                   type="text" required>
+                                            <input class="form-control" placeholder="Last name" required
+                                                   th:field="*{lastName}" type="text">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="col mt-1">
                                             <input class="form-control" placeholder="Middle name"
-                                                   th:field="*{middleName}"
-                                                   type="text" required>
+                                                   required
+                                                   th:field="*{middleName}" type="text">
                                         </div>
                                         <div class="col mt-1">
                                             <select class="form-control" th:field="*{facultyId}">
@@ -172,8 +172,8 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Date" th:value="${lecture.date}"
-                                                   id="editLectureDate" name="date" type="date" required>
+                                            <input class="form-control" id="editLectureDate" name="date"
+                                                   placeholder="Date" required th:value="${lecture.date}" type="date">
                                         </div>
                                     </div>
                                     <div class="form-row">

@@ -13,7 +13,7 @@
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/faculties/add}" th:object="${faculty}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Name" th:field="*{name}" type="text" required>
+                <input class="form-control" placeholder="Name" required th:field="*{name}" type="text">
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add faculty</button>
         </div>
@@ -61,8 +61,9 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Name" th:value="${faculty.name}" id="editName"
-                                                  name="name" type="text" required>
+                                            <input class="form-control" id="editName" name="name"
+                                                   placeholder="Name"
+                                                   required th:value="${faculty.name}" type="text">
                                         </div>
                                     </div>
                                 </div>

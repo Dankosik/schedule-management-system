@@ -47,8 +47,8 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Name" th:value="${faculty.name}"
-                                                   id="editFacultyName" name="name" type="text" required>
+                                            <input class="form-control" id="editFacultyName" name="name"
+                                                   placeholder="Name" required th:value="${faculty.name}" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -111,9 +111,9 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="Name" th:value="${group.name}"
-                                                   id="editGroupName"
-                                                   name="name" type="text" required>
+                                            <input class="form-control" id="editGroupName" name="name"
+                                                   placeholder="Name"
+                                                   required th:value="${group.name}" type="text">
                                         </div>
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
                                         <div class="col">
@@ -198,23 +198,23 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="First name"
-                                                   th:value="${teacher.firstName}"
-                                                   id="editTeacherFirstName" name="firstName" type="text" required>
+                                            <input class="form-control" id="editTeacherFirstName"
+                                                   name="firstName"
+                                                   placeholder="First name" required th:value="${teacher.firstName}" type="text">
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" placeholder="Last name"
-                                                   th:value="${teacher.lastName}" id="editTeacherLastName"
-                                                   name="lastName"
-                                                   type="text" required>
+                                            <input class="form-control" id="editTeacherLastName"
+                                                   name="lastName" placeholder="Last name"
+                                                   required
+                                                   th:value="${teacher.lastName}" type="text">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="col mt-1">
-                                            <input class="form-control" placeholder="Middle name"
-                                                   th:value="${teacher.middleName}" id="editTeacherMiddleName"
-                                                   name="middleName"
-                                                   type="text" required>
+                                            <input class="form-control" id="editTeacherMiddleName"
+                                                   name="middleName" placeholder="Middle name"
+                                                   required
+                                                   th:value="${teacher.middleName}" type="text">
                                         </div>
                                         <div class="col mt-1">
                                             <select class="form-control" th:field="*{facultyId}">

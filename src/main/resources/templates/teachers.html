@@ -13,15 +13,15 @@
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/teachers/add}" th:object="${teacher}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="First name" th:field="*{firstName}" type="text" required>
+                <input class="form-control" placeholder="First name" required th:field="*{firstName}" type="text">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Last name" th:field="*{lastName}" type="text" required>
+                <input class="form-control" placeholder="Last name" required th:field="*{lastName}" type="text">
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control" placeholder="Middle name" th:field="*{middleName}" type="text" required>
+                <input class="form-control" placeholder="Middle name" required th:field="*{middleName}" type="text">
             </div>
             <div class="col mt-1">
                 <select class="form-control" th:field="*{facultyId}">
@@ -99,23 +99,23 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" placeholder="First name"
-                                                   th:value="${teacher.firstName}"
-                                                   id="editTeacherFirstName" name="firstName" type="text" required>
+                                            <input class="form-control" id="editTeacherFirstName"
+                                                   name="firstName"
+                                                   placeholder="First name" required th:value="${teacher.firstName}" type="text">
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" placeholder="Last name"
-                                                   th:value="${teacher.lastName}" id="editTeacherLastName"
-                                                   name="lastName"
-                                                   type="text" required>
+                                            <input class="form-control" id="editTeacherLastName"
+                                                   name="lastName" placeholder="Last name"
+                                                   required
+                                                   th:value="${teacher.lastName}" type="text">
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="col mt-1">
-                                            <input class="form-control" placeholder="Middle name"
-                                                   th:value="${teacher.middleName}" id="editTeacherMiddleName"
-                                                   name="middleName"
-                                                   type="text" required>
+                                            <input class="form-control" id="editTeacherMiddleName"
+                                                   name="middleName" placeholder="Middle name"
+                                                   required
+                                                   th:value="${teacher.middleName}" type="text">
                                         </div>
                                         <div class="col mt-1">
                                             <select class="form-control" th:field="*{facultyId}">
