@@ -245,19 +245,4 @@ public class LectureServiceImpl implements LectureService {
         LOGGER.info("Lectures for group {} received successful", group);
         return lectures;
     }
-
-    @Override
-    public List<Date> getLectureDateWithPossibleNullForLectures(List<Lecture> lectures) {
-        LOGGER.debug("Getting lectures date for lectures {}", lectures);
-        List<Date> result = new ArrayList<>();
-        for (Lecture lecture : lectures) {
-            if (lecture.getDate() == null) {
-                result.add(null);
-            } else {
-                result.add(lecture.getDate());
-            }
-        }
-        LOGGER.info("Lectures date for lectures {} received successful", lectures);
-        return result;
-    }
 }

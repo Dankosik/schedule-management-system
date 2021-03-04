@@ -33,6 +33,4 @@ public interface LectureService {
     List<Lecture> getLecturesForTeacher(Teacher teacher);
 
     List<Lecture> getLecturesForGroup(Group group);
-
-    List<Date> getLectureDateWithPossibleNullForLectures(List<Lecture> lectures);
 }

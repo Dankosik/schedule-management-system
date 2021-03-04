@@ -68,7 +68,6 @@ public class LectureController {
         model.addAttribute("allLessons", allLessons);
         model.addAttribute("durationsForAllLessons", StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(allLessons)));
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
-        model.addAttribute("lecturesDate", lectureService.getLectureDateWithPossibleNullForLectures(lectures));
         return "lectures";
     }
 

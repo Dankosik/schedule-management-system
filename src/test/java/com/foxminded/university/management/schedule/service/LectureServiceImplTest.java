@@ -618,19 +618,4 @@ class LectureServiceImplTest {
 
         verify(lectureDao, times(1)).getLecturesByGroupId(1L);
     }
-
-    @Test
-    void shouldReturnDatesForLectures() {
-        List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 2)), 1L, 1L, 2L, 1L),
-                new Lecture(2L, 2, null, 1L, 1L, 2L, 1L));
-
-        List<Date> expected = Arrays.asList(
-                Date.valueOf(LocalDate.of(2021, 1, 1)),
-                Date.valueOf(LocalDate.of(2021, 1, 2)),
-                null);
-
-        assertEquals(expected, lectureService.getLectureDateWithPossibleNullForLectures(lectures));
-    }
 }
