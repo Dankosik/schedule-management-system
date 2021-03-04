@@ -2,7 +2,6 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.models.*;
 
-import java.sql.Date;
 import java.util.List;
 
 public interface LectureService {
