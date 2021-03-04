@@ -22,6 +22,13 @@ class DurationFormatterTest {
     }
 
     @Test
+    public void shouldReturnDurationOnInputStringDuration() {
+        Duration expected = Duration.ofMinutes(90);
+        Duration actual = durationFormatter.parse("PT1H30M", Locale.getDefault());
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void shouldReturnFormattedStringOnInputDuration() {
         String expected = "1:30";
         String actual = durationFormatter.print(Duration.ofMinutes(90), Locale.getDefault());
