@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" th:rel="stylesheet">
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" th:rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.23/datatables.min.css"/>
+    <meta charset="UTF-8">
+    <title>FoxmindedUniversity</title>
+</head>
+<body>
+<div id="all">
+    <div th:replace="commons/navbar :: navbar"></div>
+    <div>
+        <form class="w-25 mx-auto mt-5" method="post" th:action="@{/audiences/add}" th:object="${audience}" id="add">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" placeholder="Number" required th:field="*{number}" type="text"/>
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Capacity" required th:field="*{capacity}" type="text"/>
+                </div>
+                <button class="btn btn-light ml-1 " type="submit">Add audience</button>
+            </div>
+        </form>
+    </div>
+    <div id="123">
+        <table class="table table-bordered w-25 text-center mx-auto mt-5" id="table">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Number</th>
+                <th scope="col">Capacity</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="audience, iter: ${audiences}">
+                <td th:text="${audience.id}" id="id"></td>
+                <td th:text="${audience.number}" id="number"></td>
+                <td th:text="${audience.capacity}" id="capacity"></td>
+                <td id="editButton">
+                    <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                            th:attrappend="data-target=${audience}"
+                            type="button">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+                <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal"
+                     role="dialog"
+                     tabindex="-1">
+                    <div class="modal-dialog" role="document">
+                        <form method="post" th:action="@{/audiences/update/{id}(id=${audience.id})}"
+                              th:object=" ${audience}">
+                            <h1 th:if="${exception !=null}" th:text="${exception.getMessage()}" style="color: red"></h1>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit audience</h5>
+                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <input class="form-control" id="addNumber"
+                                                       name="number" placeholder="Number"
+                                                       required th:value="${newAudience.number}" type="text"/>
+                                            </div>
+                                            <div class="col">
+                                                <input class="form-control" id="addCapacity"
+                                                       name="capacity" placeholder="Capacity"
+                                                       required th:value="${newAudience.capacity}" type="text"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                    <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div th:insert="commons/trash-button :: trash-button(deletePath = '/audiences/delete/',
+                id = ${audience.id}, question = 'Are you sure you want to delete a audience?')" id="deleteButton"></div>
+                </div>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('#editModal').modal('show');
+    });
+
+    $('#editModal').on('hidden.bs.modal', function () {
+        window.location.replace("/audiences");
+    })
+</script>
+</body>
+</html>
