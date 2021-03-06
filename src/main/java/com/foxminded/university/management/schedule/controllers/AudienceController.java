@@ -1,6 +1,7 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
@@ -87,14 +88,30 @@ public class AudienceController {
     }
 
     @PostMapping("/audiences/add")
-    public String addAudience(@ModelAttribute Audience audience) {
-        audienceService.saveAudience(audience);
+    public String addAudience(@ModelAttribute Audience audience, Model model) {
+        try {
+            audienceService.saveAudience(audience);
+        } catch (ServiceException e) {
+            model.addAttribute("audiences", audienceService.getAllAudiences());
+            model.addAttribute("newAudience", audience);
+            model.addAttribute("audience", new Audience());
+            model.addAttribute("exception", e);
+            return "audience-add-error-page";
+        }
         return "redirect:/audiences";
     }
 
     @PostMapping("/audiences/update/{id}")
-    public String updateAudience(@ModelAttribute Audience audience) {
-        audienceService.saveAudience(audience);
+    public String updateAudience(@ModelAttribute Audience audience, Model model) {
+        try {
+            audienceService.saveAudience(audience);
+        } catch (ServiceException e) {
+            model.addAttribute("audiences", audienceService.getAllAudiences());
+            model.addAttribute("newAudience", audience);
+            model.addAttribute("audience", new Audience());
+            model.addAttribute("exception", e);
+            return "audience-edit-error-page";
+        }
         return "redirect:/audiences";
     }
 }
