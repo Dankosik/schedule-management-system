@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.springframework.stereotype.Controller;
@@ -37,14 +38,28 @@ public class SubjectController {
     }
 
     @PostMapping("/subjects/add")
-    public String addSubject(@ModelAttribute Subject subject) {
-        subjectService.saveSubject(subject);
+    public String addSubject(@ModelAttribute Subject subject, Model model) {
+        try {
+            subjectService.saveSubject(subject);
+        } catch (ServiceException e) {
+            model.addAttribute("subject", new Subject());
+            model.addAttribute("newSubject", subject);
+            model.addAttribute("exception", e);
+            return "error/subject-add-error-page";
+        }
         return "redirect:/subjects";
     }
 
     @PostMapping("/subjects/update/{id}")
-    public String updateSubject(@ModelAttribute Subject subject) {
-        subjectService.saveSubject(subject);
+    public String updateSubject(@ModelAttribute Subject subject, Model model) {
+        try {
+            subjectService.saveSubject(subject);
+        } catch (ServiceException e) {
+            model.addAttribute("subject", new Subject());
+            model.addAttribute("newSubject", subject);
+            model.addAttribute("exception", e);
+            return "error/subject-edit-error-page";
+        }
         return "redirect:/subjects";
     }
 }
