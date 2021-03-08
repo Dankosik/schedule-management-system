@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.controllers.utils.DurationFo
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -216,6 +218,11 @@ class AudienceControllerTest {
         mockMvc.perform(
                 post("/audiences/add", 1L)
                         .flashAttr("audience", audience))
+                .andExpect(model().attribute("newAudience", audience))
+                .andExpect(model().attribute("audience", new Audience()))
+                .andExpect(MockMvcResultMatchers.model().attribute(
+                        "exception",
+                        Matchers.isA(ServiceException.class)))
                 .andExpect(view().name("error/audience-add-error-page"));
 
         verify(audienceService, times(1)).saveAudience(new Audience(201, 25));
@@ -242,6 +249,11 @@ class AudienceControllerTest {
         mockMvc.perform(
                 post("/audiences/update/{id}", 1L)
                         .flashAttr("audience", audience))
+                .andExpect(model().attribute("newAudience", audience))
+                .andExpect(model().attribute("audience", new Audience()))
+                .andExpect(MockMvcResultMatchers.model().attribute(
+                        "exception",
+                        Matchers.isA(ServiceException.class)))
                 .andExpect(view().name("error/audience-edit-error-page"));
 
         verify(audienceService, times(1)).saveAudience(audience);
