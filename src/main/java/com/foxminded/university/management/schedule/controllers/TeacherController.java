@@ -86,6 +86,7 @@ public class TeacherController {
         List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(allLessons));
         model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
+        model.addAttribute("subjectService", subjectService);
         return "teacher";
     }
 
