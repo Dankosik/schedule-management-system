@@ -293,6 +293,6 @@ class SubjectServiceImplTest {
 
         assertNull(subjectService.getSubjectForLesson(lesson));
 
-        verify(lessonService,times(1)).getLessonById(1L);
+        verify(lessonService, times(1)).getLessonById(1L);
     }
 }

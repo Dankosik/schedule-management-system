@@ -56,9 +56,9 @@ public class FacultyController {
 
     @PostMapping("/faculties/add")
     public String addFaculty(@ModelAttribute Faculty faculty, Model model) {
-        try{
+        try {
             facultyService.saveFaculty(faculty);
-        } catch (ServiceException e){
+        } catch (ServiceException e) {
             model.addAttribute("newFaculty", faculty);
             model.addAttribute("faculty", new Faculty());
             model.addAttribute("exception", e);
@@ -69,9 +69,9 @@ public class FacultyController {
 
     @PostMapping("/faculties/update/{id}")
     public String updateFaculty(@ModelAttribute Faculty faculty, Model model) {
-        try{
+        try {
             facultyService.saveFaculty(faculty);
-        } catch (ServiceException e){
+        } catch (ServiceException e) {
             model.addAttribute("newFaculty", faculty);
             model.addAttribute("faculty", new Faculty());
             model.addAttribute("exception", e);

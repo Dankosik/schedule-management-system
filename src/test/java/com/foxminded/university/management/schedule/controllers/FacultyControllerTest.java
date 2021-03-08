@@ -1,7 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
-import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
@@ -108,7 +107,7 @@ class FacultyControllerTest {
                 post("/faculties/add")
                         .flashAttr("faculty", faculty))
                 .andExpect(model().attribute("newFaculty", faculty))
-                .andExpect(model().attribute("faculty",new Faculty()))
+                .andExpect(model().attribute("faculty", new Faculty()))
                 .andExpect(MockMvcResultMatchers.model().attribute(
                         "exception",
                         Matchers.isA(ServiceException.class)))
@@ -138,7 +137,7 @@ class FacultyControllerTest {
                 post("/faculties/update/{id}", 1L)
                         .flashAttr("faculty", faculty))
                 .andExpect(model().attribute("newFaculty", faculty))
-                .andExpect(model().attribute("faculty",new Faculty()))
+                .andExpect(model().attribute("faculty", new Faculty()))
                 .andExpect(MockMvcResultMatchers.model().attribute(
                         "exception",
                         Matchers.isA(ServiceException.class)))
