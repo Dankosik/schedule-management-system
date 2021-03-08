@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.controllers.utils.DurationFo
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -238,6 +240,11 @@ class GroupControllerTest {
         mockMvc.perform(
                 post("/groups/add")
                         .flashAttr("group", group))
+                .andExpect(model().attribute("newGroup", group))
+                .andExpect(model().attribute("group", new Group()))
+                .andExpect(MockMvcResultMatchers.model().attribute(
+                        "exception",
+                        Matchers.isA(ServiceException.class)))
                 .andExpect(view().name("error/group-add-error-page"));
 
         verify(groupService, times(1)).saveGroup(new Group("AB-01", 1L));
@@ -263,6 +270,11 @@ class GroupControllerTest {
         mockMvc.perform(
                 post("/groups/update/{id}", 1L)
                         .flashAttr("group", group))
+                .andExpect(model().attribute("newGroup", group))
+                .andExpect(model().attribute("group", new Group()))
+                .andExpect(MockMvcResultMatchers.model().attribute(
+                        "exception",
+                        Matchers.isA(ServiceException.class)))
                 .andExpect(view().name("error/group-edit-error-page"));
 
         verify(groupService, times(1)).saveGroup(group);

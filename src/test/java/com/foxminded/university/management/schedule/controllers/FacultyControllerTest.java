@@ -1,12 +1,14 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
@@ -104,6 +107,11 @@ class FacultyControllerTest {
         mockMvc.perform(
                 post("/faculties/add")
                         .flashAttr("faculty", faculty))
+                .andExpect(model().attribute("newFaculty", faculty))
+                .andExpect(model().attribute("faculty",new Faculty()))
+                .andExpect(MockMvcResultMatchers.model().attribute(
+                        "exception",
+                        Matchers.isA(ServiceException.class)))
                 .andExpect(view().name("error/faculty-add-error-page"));
 
         verify(facultyService, times(1)).saveFaculty(new Faculty("FAIT"));
@@ -129,6 +137,11 @@ class FacultyControllerTest {
         mockMvc.perform(
                 post("/faculties/update/{id}", 1L)
                         .flashAttr("faculty", faculty))
+                .andExpect(model().attribute("newFaculty", faculty))
+                .andExpect(model().attribute("faculty",new Faculty()))
+                .andExpect(MockMvcResultMatchers.model().attribute(
+                        "exception",
+                        Matchers.isA(ServiceException.class)))
                 .andExpect(view().name("error/faculty-edit-error-page"));
 
         verify(facultyService, times(1)).saveFaculty(faculty);
