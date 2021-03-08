@@ -78,6 +78,7 @@ public class AudienceController {
         List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(allLessons));
         model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
+        model.addAttribute("subjectService", subjectService);
         return "audience";
     }
 
@@ -92,11 +93,10 @@ public class AudienceController {
         try {
             audienceService.saveAudience(audience);
         } catch (ServiceException e) {
-            model.addAttribute("audiences", audienceService.getAllAudiences());
             model.addAttribute("newAudience", audience);
             model.addAttribute("audience", new Audience());
             model.addAttribute("exception", e);
-            return "audience-add-error-page";
+            return "error/audience-add-error-page";
         }
         return "redirect:/audiences";
     }
@@ -106,11 +106,10 @@ public class AudienceController {
         try {
             audienceService.saveAudience(audience);
         } catch (ServiceException e) {
-            model.addAttribute("audiences", audienceService.getAllAudiences());
             model.addAttribute("newAudience", audience);
             model.addAttribute("audience", new Audience());
             model.addAttribute("exception", e);
-            return "audience-edit-error-page";
+            return "error/audience-edit-error-page";
         }
         return "redirect:/audiences";
     }
