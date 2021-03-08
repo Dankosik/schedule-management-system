@@ -26,8 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -271,5 +270,29 @@ class SubjectServiceImplTest {
         assertEquals(expected, subjectService.getSubjectsForLectures(lectures));
 
         verify(lessonService, times(2)).getLessonById(2L);
+    }
+
+    @Test
+    void shouldReturnSubjectForLecture() {
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math")));
+        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L);
+        when(lessonService.getLessonById(1L)).thenReturn(lesson);
+
+        Subject expected = new Subject(1L, "Math");
+
+        assertEquals(expected, subjectService.getSubjectForLesson(lesson));
+
+        verify(lessonService, times(2)).getLessonById(1L);
+    }
+
+    @Test
+    void shouldReturnSubjectForLectureWithSubjectIdZero() {
+        when(subjectDao.getById(1L)).thenReturn(Optional.of(new Subject(1L, "Math")));
+        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 0L);
+        when(lessonService.getLessonById(1L)).thenReturn(lesson);
+
+        assertNull(subjectService.getSubjectForLesson(lesson));
+
+        verify(lessonService,times(1)).getLessonById(1L);
     }
 }

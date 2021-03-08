@@ -32,7 +32,7 @@ public class SubjectServiceImpl implements SubjectService {
         try {
             return subjectDao.save(subject);
         } catch (DuplicateKeyException e) {
-            throw new ServiceException("Subject with name: " + subject.getName() + "is already exist");
+            throw new ServiceException("Subject with name: " + subject.getName() + " is already exist");
         }
     }
 
@@ -122,5 +122,18 @@ public class SubjectServiceImpl implements SubjectService {
         }
         LOGGER.info("Subject for lessons {} received successful", lessons);
         return result;
+    }
+
+    public Subject getSubjectForLesson(Lesson lesson) {
+        LOGGER.debug("Getting subject for lesson {}", lesson);
+        if (lesson.getId() == 0) {
+            return null;
+        }
+        if (lessonService.getLessonById(lesson.getId()).getSubjectId() == 0) {
+            return null;
+        }
+        Subject subject = getSubjectById(lessonService.getLessonById(lesson.getId()).getSubjectId());
+        LOGGER.info("Subject for lesson {} received successful", lesson);
+        return subject;
     }
 }
