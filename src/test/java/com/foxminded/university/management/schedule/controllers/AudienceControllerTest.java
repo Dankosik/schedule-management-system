@@ -1,6 +1,7 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.junit.jupiter.api.Test;
@@ -152,6 +153,9 @@ class AudienceControllerTest {
                 new Subject(2L, "Programming"));
         when(subjectService.getSubjectsWithPossibleNullForLessons(allLessons)).thenReturn(allSubjects);
 
+        when(subjectService.getSubjectForLesson(lessons.get(0))).thenReturn(subjects.get(0));
+        when(subjectService.getSubjectForLesson(lessons.get(1))).thenReturn(subjects.get(1));
+
         mockMvc.perform(get("/audiences/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("audience"))
@@ -171,6 +175,7 @@ class AudienceControllerTest {
                 .andExpect(model().attribute("allLessons", allLessons))
                 .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
                 .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
+                .andExpect(model().attribute("subjectService", subjectService))
                 .andExpect(model().attribute("audience", audience));
 
         verify(audienceService, times(1)).getAudienceById(1L);
@@ -196,13 +201,26 @@ class AudienceControllerTest {
         Audience audience = new Audience(1L, 201, 25);
         when(audienceService.saveAudience(new Audience(201, 25))).thenReturn(audience);
         mockMvc.perform(
-                post("/audiences/update/{id}", 1L)
+                post("/audiences/add", 1L)
                         .flashAttr("audience", audience))
                 .andExpect(redirectedUrl("/audiences"))
                 .andExpect(view().name("redirect:/audiences"));
 
         verify(audienceService, times(1)).saveAudience(new Audience(201, 25));
     }
+
+    @Test
+    public void shouldReturnErrorPageOnAddAudience() throws Exception {
+        Audience audience = new Audience(1L, 201, 25);
+        when(audienceService.saveAudience(new Audience(201, 25))).thenThrow(ServiceException.class);
+        mockMvc.perform(
+                post("/audiences/add", 1L)
+                        .flashAttr("audience", audience))
+                .andExpect(view().name("error/audience-add-error-page"));
+
+        verify(audienceService, times(1)).saveAudience(new Audience(201, 25));
+    }
+
 
     @Test
     public void shouldUpdateAudience() throws Exception {
@@ -213,6 +231,18 @@ class AudienceControllerTest {
                         .flashAttr("audience", audience))
                 .andExpect(redirectedUrl("/audiences"))
                 .andExpect(view().name("redirect:/audiences"));
+
+        verify(audienceService, times(1)).saveAudience(audience);
+    }
+
+    @Test
+    public void shouldReturnErrorPageOnUpdateAudience() throws Exception {
+        Audience audience = new Audience(1L, 201, 25);
+        when(audienceService.saveAudience(audience)).thenThrow(ServiceException.class);
+        mockMvc.perform(
+                post("/audiences/update/{id}", 1L)
+                        .flashAttr("audience", audience))
+                .andExpect(view().name("error/audience-edit-error-page"));
 
         verify(audienceService, times(1)).saveAudience(audience);
     }
