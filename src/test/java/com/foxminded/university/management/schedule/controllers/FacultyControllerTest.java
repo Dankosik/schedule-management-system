@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
@@ -97,6 +98,18 @@ class FacultyControllerTest {
     }
 
     @Test
+    public void shouldReturnErrorPageOnAddFaculty() throws Exception {
+        Faculty faculty = new Faculty(1L, "FAIT");
+        when(facultyService.saveFaculty(new Faculty("FAIT"))).thenThrow(ServiceException.class);
+        mockMvc.perform(
+                post("/faculties/add")
+                        .flashAttr("faculty", faculty))
+                .andExpect(view().name("error/faculty-add-error-page"));
+
+        verify(facultyService, times(1)).saveFaculty(new Faculty("FAIT"));
+    }
+
+    @Test
     public void shouldUpdateFaculty() throws Exception {
         Faculty faculty = new Faculty(1L, "FAIT");
         when(facultyService.saveFaculty(faculty)).thenReturn(faculty);
@@ -105,6 +118,18 @@ class FacultyControllerTest {
                         .flashAttr("faculty", faculty))
                 .andExpect(redirectedUrl("/faculties"))
                 .andExpect(view().name("redirect:/faculties"));
+
+        verify(facultyService, times(1)).saveFaculty(faculty);
+    }
+
+    @Test
+    public void shouldReturnErrorPageOnUpdateFaculty() throws Exception {
+        Faculty faculty = new Faculty(1L, "FAIT");
+        when(facultyService.saveFaculty(faculty)).thenThrow(ServiceException.class);
+        mockMvc.perform(
+                post("/faculties/update/{id}", 1L)
+                        .flashAttr("faculty", faculty))
+                .andExpect(view().name("error/faculty-edit-error-page"));
 
         verify(facultyService, times(1)).saveFaculty(faculty);
     }
