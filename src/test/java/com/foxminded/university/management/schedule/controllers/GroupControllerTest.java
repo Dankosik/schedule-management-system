@@ -1,6 +1,7 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.junit.jupiter.api.Test;
@@ -170,6 +171,9 @@ class GroupControllerTest {
         Faculty faculty = new Faculty(1L, "FAIT");
         when(facultyService.getFacultyForGroup(group)).thenReturn(faculty);
 
+        when(subjectService.getSubjectForLesson(lessons.get(0))).thenReturn(subjects.get(0));
+        when(subjectService.getSubjectForLesson(lessons.get(1))).thenReturn(subjects.get(1));
+
         mockMvc.perform(get("/groups/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("group"))
@@ -191,6 +195,7 @@ class GroupControllerTest {
                 .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
                 .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
                 .andExpect(model().attribute("faculty", faculty))
+                .andExpect(model().attribute("subjectService", subjectService))
                 .andExpect(model().attribute("group", group));
 
         verify(groupService, times(1)).getGroupById(1L);
@@ -227,6 +232,18 @@ class GroupControllerTest {
     }
 
     @Test
+    public void shouldReturnErrorPageOnAddGroup() throws Exception {
+        Group group = new Group(1L, "AB-01", 1L);
+        when(groupService.saveGroup(new Group("AB-01", 1L))).thenThrow(ServiceException.class);
+        mockMvc.perform(
+                post("/groups/add")
+                        .flashAttr("group", group))
+                .andExpect(view().name("error/group-add-error-page"));
+
+        verify(groupService, times(1)).saveGroup(new Group("AB-01", 1L));
+    }
+
+    @Test
     public void shouldUpdateGroup() throws Exception {
         Group group = new Group(1L, "AB-01", 1L);
         when(groupService.saveGroup(group)).thenReturn(group);
@@ -235,6 +252,18 @@ class GroupControllerTest {
                         .flashAttr("group", group))
                 .andExpect(redirectedUrl("/groups"))
                 .andExpect(view().name("redirect:/groups"));
+
+        verify(groupService, times(1)).saveGroup(group);
+    }
+
+    @Test
+    public void shouldReturnErrorPageOnUpdateGroup() throws Exception {
+        Group group = new Group(1L, "AB-01", 1L);
+        when(groupService.saveGroup(group)).thenThrow(ServiceException.class);
+        mockMvc.perform(
+                post("/groups/update/{id}", 1L)
+                        .flashAttr("group", group))
+                .andExpect(view().name("error/group-edit-error-page"));
 
         verify(groupService, times(1)).saveGroup(group);
     }
