@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
@@ -54,14 +55,28 @@ public class FacultyController {
     }
 
     @PostMapping("/faculties/add")
-    public String addFaculty(@ModelAttribute Faculty faculty) {
-        facultyService.saveFaculty(faculty);
+    public String addFaculty(@ModelAttribute Faculty faculty, Model model) {
+        try{
+            facultyService.saveFaculty(faculty);
+        } catch (ServiceException e){
+            model.addAttribute("newFaculty", faculty);
+            model.addAttribute("faculty", new Faculty());
+            model.addAttribute("exception", e);
+            return "error/faculty-add-error-page";
+        }
         return "redirect:/faculties";
     }
 
     @PostMapping("/faculties/update/{id}")
-    public String updateFaculty(@ModelAttribute Faculty faculty) {
-        facultyService.saveFaculty(faculty);
+    public String updateFaculty(@ModelAttribute Faculty faculty, Model model) {
+        try{
+            facultyService.saveFaculty(faculty);
+        } catch (ServiceException e){
+            model.addAttribute("newFaculty", faculty);
+            model.addAttribute("faculty", new Faculty());
+            model.addAttribute("exception", e);
+            return "error/faculty-edit-error-page";
+        }
         return "redirect:/faculties";
     }
 }
