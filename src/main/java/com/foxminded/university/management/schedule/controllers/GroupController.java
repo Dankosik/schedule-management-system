@@ -1,6 +1,7 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
@@ -88,6 +89,7 @@ public class GroupController {
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
         model.addAttribute("faculties", facultyService.getAllFaculties());
         model.addAttribute("faculty", facultyService.getFacultyForGroup(group));
+        model.addAttribute("subjectService", subjectService);
         return "group";
     }
 
@@ -98,14 +100,30 @@ public class GroupController {
     }
 
     @PostMapping("/groups/add")
-    public String addGroup(@ModelAttribute Group group) {
-        groupService.saveGroup(group);
+    public String addGroup(@ModelAttribute Group group, Model model) {
+        try {
+            groupService.saveGroup(group);
+        } catch (ServiceException e) {
+            model.addAttribute("group", new Group());
+            model.addAttribute("newGroup", group);
+            model.addAttribute("allFaculties", facultyService.getAllFaculties());
+            model.addAttribute("exception", e);
+            return "error/group-add-error-page";
+        }
         return "redirect:/groups";
     }
 
     @PostMapping("/groups/update/{id}")
-    public String updateGroup(@ModelAttribute Group group) {
-        groupService.saveGroup(group);
+    public String updateGroup(@ModelAttribute Group group, Model model) {
+        try {
+            groupService.saveGroup(group);
+        } catch (ServiceException e) {
+            model.addAttribute("group", new Group());
+            model.addAttribute("newGroup", group);
+            model.addAttribute("allFaculties", facultyService.getAllFaculties());
+            model.addAttribute("exception", e);
+            return "error/group-edit-error-page";
+        }
         return "redirect:/groups";
     }
 }
