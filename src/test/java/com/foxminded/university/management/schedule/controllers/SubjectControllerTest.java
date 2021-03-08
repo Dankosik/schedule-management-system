@@ -1,7 +1,9 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
@@ -65,6 +68,23 @@ class SubjectControllerTest {
     }
 
     @Test
+    public void shouldReturnErrorPageOnAddSubject() throws Exception {
+        Subject subject = new Subject(1L, "Art");
+        when(subjectService.saveSubject(new Subject("Art"))).thenThrow(ServiceException.class);
+        mockMvc.perform(
+                post("/subjects/add")
+                        .flashAttr("subject", subject))
+                .andExpect(model().attribute("newSubject", subject))
+                .andExpect(model().attribute("subject", new Subject()))
+                .andExpect(MockMvcResultMatchers.model().attribute(
+                        "exception",
+                        Matchers.isA(ServiceException.class)))
+                .andExpect(view().name("error/subject-add-error-page"));
+
+        verify(subjectService, times(1)).saveSubject(new Subject("Art"));
+    }
+
+    @Test
     public void shouldUpdateSubject() throws Exception {
         Subject subject = new Subject(1L, "Art");
         when(subjectService.saveSubject(subject)).thenReturn(subject);
@@ -73,6 +93,23 @@ class SubjectControllerTest {
                         .flashAttr("subject", subject))
                 .andExpect(redirectedUrl("/subjects"))
                 .andExpect(view().name("redirect:/subjects"));
+
+        verify(subjectService, times(1)).saveSubject(subject);
+    }
+
+    @Test
+    public void shouldReturnErrorPageOnUpdateSubject() throws Exception {
+        Subject subject = new Subject(1L, "Art");
+        when(subjectService.saveSubject(subject)).thenThrow(ServiceException.class);
+        mockMvc.perform(
+                post("/subjects/update/{id}", 1L)
+                        .flashAttr("subject", subject))
+                .andExpect(model().attribute("newSubject", subject))
+                .andExpect(model().attribute("subject", new Subject()))
+                .andExpect(MockMvcResultMatchers.model().attribute(
+                        "exception",
+                        Matchers.isA(ServiceException.class)))
+                .andExpect(view().name("error/subject-edit-error-page"));
 
         verify(subjectService, times(1)).saveSubject(subject);
     }
