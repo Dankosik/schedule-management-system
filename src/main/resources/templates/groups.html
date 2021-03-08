@@ -82,8 +82,18 @@
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
                                         <div class="col">
                                             <select class="form-control" th:field="*{facultyId}">
-                                                <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
-                                                        th:value="${faculty.id}"></option>
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <div th:if="${group.facultyId == faculty.id}">
+                                                        <option th:text="${faculty.name}"
+                                                                th:value="${faculty.id}"></option>
+                                                    </div>
+                                                </div>
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <div th:if="${group.facultyId != faculty.id}">
+                                                        <option th:text="${faculty.name}"
+                                                                th:value="${faculty.id}"></option>
+                                                    </div>
+                                                </div>
                                             </select>
                                         </div>
                                     </div>

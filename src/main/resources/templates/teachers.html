@@ -121,8 +121,16 @@
                                         <div class="col mt-1">
                                             <select class="form-control" th:field="*{facultyId}">
                                                 <div th:each="faculty: ${allFaculties}">
-                                                    <option th:text="${faculty.name}" th:value="${faculty.id}">
-                                                    </option>
+                                                    <div th:if="${teacher.facultyId == faculty.id}">
+                                                        <option th:text="${faculty.name}"
+                                                                th:value="${faculty.id}"></option>
+                                                    </div>
+                                                </div>
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <div th:if="${teacher.facultyId != faculty.id}">
+                                                        <option th:text="${faculty.name}"
+                                                                th:value="${faculty.id}"></option>
+                                                    </div>
                                                 </div>
                                             </select>
                                         </div>

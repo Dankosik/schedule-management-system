@@ -117,8 +117,18 @@
                                         <label class="mt-2 ml-3 mr-1">add group: </label>
                                         <div class="col mt-1">
                                             <select class="form-control" th:field="*{groupId}">
-                                                <option th:each="group: ${allGroups}" th:text="${group.name}"
-                                                        th:value="${group.id}"></option>
+                                                <div th:each="group: ${allGroups}">
+                                                    <div th:if="${student.groupId == group.id}">
+                                                        <option th:text="${group.name}"
+                                                                th:value="${group.id}"></option>
+                                                    </div>
+                                                </div>
+                                                <div th:each="group: ${allGroups}">
+                                                    <div th:if="${student.groupId != group.id}">
+                                                        <option th:text="${group.name}"
+                                                                th:value="${group.id}"></option>
+                                                    </div>
+                                                </div>
                                             </select>
                                         </div>
                                     </div>
