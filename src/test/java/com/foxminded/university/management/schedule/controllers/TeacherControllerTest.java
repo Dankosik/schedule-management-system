@@ -175,6 +175,9 @@ class TeacherControllerTest {
                 new Subject(2L, "Programming"));
         when(subjectService.getSubjectsWithPossibleNullForLessons(allLessons)).thenReturn(allSubjects);
 
+        when(subjectService.getSubjectForLesson(lessons.get(0))).thenReturn(subjects.get(0));
+        when(subjectService.getSubjectForLesson(lessons.get(1))).thenReturn(subjects.get(1));
+
         mockMvc.perform(get("/teachers/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("teacher"))
@@ -195,6 +198,7 @@ class TeacherControllerTest {
                 .andExpect(model().attribute("lecture", new Lecture()))
                 .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
                 .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
+                .andExpect(model().attribute("subjectService", subjectService))
                 .andExpect(model().attribute("faculty", faculty));
 
         verify(teacherService, times(1)).getTeacherById(1L);
