@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class FacultyController {
@@ -55,27 +56,27 @@ public class FacultyController {
     }
 
     @PostMapping("/faculties/add")
-    public String addFaculty(@ModelAttribute Faculty faculty, Model model) {
+    public String addFaculty(@ModelAttribute Faculty faculty, RedirectAttributes redirectAttributes) {
         try {
             facultyService.saveFaculty(faculty);
         } catch (ServiceException e) {
-            model.addAttribute("newFaculty", faculty);
-            model.addAttribute("faculty", new Faculty());
-            model.addAttribute("exception", e);
-            return "error/faculty-add-error-page";
+            redirectAttributes.addFlashAttribute("newFaculty", faculty);
+            redirectAttributes.addFlashAttribute("faculty", new Faculty());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", e);
+            return "redirect:/faculties";
         }
         return "redirect:/faculties";
     }
 
     @PostMapping("/faculties/update/{id}")
-    public String updateFaculty(@ModelAttribute Faculty faculty, Model model) {
+    public String updateFaculty(@ModelAttribute Faculty faculty, RedirectAttributes redirectAttributes) {
         try {
             facultyService.saveFaculty(faculty);
         } catch (ServiceException e) {
-            model.addAttribute("newFaculty", faculty);
-            model.addAttribute("faculty", new Faculty());
-            model.addAttribute("exception", e);
-            return "error/faculty-edit-error-page";
+            redirectAttributes.addFlashAttribute("newFaculty", faculty);
+            redirectAttributes.addFlashAttribute("faculty", new Faculty());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnUpdate", e);
+            return "redirect:/faculties";
         }
         return "redirect:/faculties";
     }

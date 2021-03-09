@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -100,29 +101,29 @@ public class GroupController {
     }
 
     @PostMapping("/groups/add")
-    public String addGroup(@ModelAttribute Group group, Model model) {
+    public String addGroup(@ModelAttribute Group group, RedirectAttributes redirectAttributes) {
         try {
             groupService.saveGroup(group);
         } catch (ServiceException e) {
-            model.addAttribute("group", new Group());
-            model.addAttribute("newGroup", group);
-            model.addAttribute("allFaculties", facultyService.getAllFaculties());
-            model.addAttribute("exception", e);
-            return "error/group-add-error-page";
+            redirectAttributes.addFlashAttribute("group", new Group());
+            redirectAttributes.addFlashAttribute("newGroup", group);
+            redirectAttributes.addFlashAttribute("allFaculties", facultyService.getAllFaculties());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", e);
+            return "redirect:/groups";
         }
         return "redirect:/groups";
     }
 
     @PostMapping("/groups/update/{id}")
-    public String updateGroup(@ModelAttribute Group group, Model model) {
+    public String updateGroup(@ModelAttribute Group group, RedirectAttributes redirectAttributes) {
         try {
             groupService.saveGroup(group);
         } catch (ServiceException e) {
-            model.addAttribute("group", new Group());
-            model.addAttribute("newGroup", group);
-            model.addAttribute("allFaculties", facultyService.getAllFaculties());
-            model.addAttribute("exception", e);
-            return "error/group-edit-error-page";
+            redirectAttributes.addFlashAttribute("group", new Group());
+            redirectAttributes.addFlashAttribute("newGroup", group);
+            redirectAttributes.addFlashAttribute("allFaculties", facultyService.getAllFaculties());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnUpdate", e);
+            return "redirect:/groups";
         }
         return "redirect:/groups";
     }

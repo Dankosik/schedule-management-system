@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -89,27 +90,26 @@ public class AudienceController {
     }
 
     @PostMapping("/audiences/add")
-    public String addAudience(@ModelAttribute Audience audience, Model model) {
+    public String addAudience(@ModelAttribute Audience audience, RedirectAttributes redirectAttributes) {
         try {
             audienceService.saveAudience(audience);
         } catch (ServiceException e) {
-            model.addAttribute("newAudience", audience);
-            model.addAttribute("audience", new Audience());
-            model.addAttribute("exception", e);
-            return "error/audience-add-error-page";
-        }
+            redirectAttributes.addFlashAttribute("newAudience", audience);
+            redirectAttributes.addFlashAttribute("audience", new Audience());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", e);
+            return "redirect:/audiences";        }
         return "redirect:/audiences";
     }
 
     @PostMapping("/audiences/update/{id}")
-    public String updateAudience(@ModelAttribute Audience audience, Model model) {
+    public String updateAudience(@ModelAttribute Audience audience, RedirectAttributes redirectAttributes) {
         try {
             audienceService.saveAudience(audience);
         } catch (ServiceException e) {
-            model.addAttribute("newAudience", audience);
-            model.addAttribute("audience", new Audience());
-            model.addAttribute("exception", e);
-            return "error/audience-edit-error-page";
+            redirectAttributes.addFlashAttribute("newAudience", audience);
+            redirectAttributes.addFlashAttribute("audience", new Audience());
+            redirectAttributes.addFlashAttribute("serviceExceptionOnUpdate", e);
+            return "redirect:/audiences";
         }
         return "redirect:/audiences";
     }

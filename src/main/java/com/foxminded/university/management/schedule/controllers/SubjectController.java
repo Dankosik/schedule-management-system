@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class SubjectController {
@@ -38,27 +39,27 @@ public class SubjectController {
     }
 
     @PostMapping("/subjects/add")
-    public String addSubject(@ModelAttribute Subject subject, Model model) {
+    public String addSubject(@ModelAttribute Subject subject, RedirectAttributes redirectAttributes) {
         try {
             subjectService.saveSubject(subject);
         } catch (ServiceException e) {
-            model.addAttribute("subject", new Subject());
-            model.addAttribute("newSubject", subject);
-            model.addAttribute("exception", e);
-            return "error/subject-add-error-page";
+            redirectAttributes.addFlashAttribute("subject", new Subject());
+            redirectAttributes.addFlashAttribute("newSubject", subject);
+            redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", e);
+            return "redirect:/subjects";
         }
         return "redirect:/subjects";
     }
 
     @PostMapping("/subjects/update/{id}")
-    public String updateSubject(@ModelAttribute Subject subject, Model model) {
+    public String updateSubject(@ModelAttribute Subject subject, RedirectAttributes redirectAttributes) {
         try {
             subjectService.saveSubject(subject);
         } catch (ServiceException e) {
-            model.addAttribute("subject", new Subject());
-            model.addAttribute("newSubject", subject);
-            model.addAttribute("exception", e);
-            return "error/subject-edit-error-page";
+            redirectAttributes.addFlashAttribute("subject", new Subject());
+            redirectAttributes.addFlashAttribute("newSubject", subject);
+            redirectAttributes.addFlashAttribute("serviceExceptionOnUpdate", e);
+            return "redirect:/subjects";
         }
         return "redirect:/subjects";
     }
