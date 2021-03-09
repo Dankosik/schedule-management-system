@@ -45,6 +45,68 @@
                     <i class="fas fa-edit"></i>
                 </button>
             </td>
+            <div th:if="${serviceExceptionOnAdd !=null}" aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="addModalForExceptionOnAdd" role="dialog"
+                 tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/faculties/add}" th:object="${faculty}">
+                        <h1 style="color: red" th:if="${serviceExceptionOnAdd !=null}" th:text="${serviceExceptionOnAdd.getMessage()}"></h1>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">Add faculty</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="addNameForExceptionOnAdd" name="name"
+                                                   placeholder="Name"
+                                                   required th:value="${newFaculty.name}" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" disabled id="saveForExceptionOnAdd" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div th:if="${serviceExceptionOnUpdate !=null}" aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModalForExceptionOnUpdate" role="dialog"
+                 tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/faculties/update/{id}(id=${newFaculty.id})}" th:object="${faculty}">
+                        <h1 style="color: red" th:if="${serviceExceptionOnUpdate !=null}" th:text="${serviceExceptionOnUpdate.getMessage()}"></h1>
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel1">Edit faculty</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editNameForExceptionOnUpdate" name="name"
+                                                   placeholder="Name"
+                                                   required th:value="${newFaculty.name}" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" disabled id="saveForExceptionOnUpdate" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
                  tabindex="-1"
                  th:attrappend="id=${faculty}">
@@ -82,5 +144,50 @@
         </tbody>
     </table>
 </div>
+<script th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}" crossorigin="anonymous"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<script th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}" crossorigin="anonymous"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}" crossorigin="anonymous"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+<script th:if="${serviceExceptionOnUpdate !=null}">
+    const editNameInputValueForExceptionOnUpdate = document.getElementById('editNameForExceptionOnUpdate').value;
+
+    $(document).ready(function () {
+        $('#editModalForExceptionOnUpdate').modal('show');
+    });
+
+    $("#editNameForExceptionOnUpdate").change(function () {
+        const saveButton = document.getElementById('saveForExceptionOnUpdate');
+        const editNameInput = document.getElementById('editNameForExceptionOnUpdate');
+        saveButton.disabled = editNameInput.value === editNameInputValueForExceptionOnUpdate;
+    });
+
+    $('#editModalForExceptionOnUpdate').on('hidden.bs.modal', function () {
+        window.location.replace('/faculties');
+    })
+</script>
+
+<script th:if="${serviceExceptionOnAdd !=null}">
+    const addNameInputValueForExceptionOnAdd = document.getElementById('addNameForExceptionOnAdd').value;
+
+    $(document).ready(function () {
+        $('#addModalForExceptionOnAdd').modal('show');
+    });
+
+    $("#addNameForExceptionOnAdd").change(function () {
+        const saveButton = document.getElementById('saveForExceptionOnAdd');
+        const addNameInput = document.getElementById('addNameForExceptionOnAdd');
+        saveButton.disabled = addNameInput.value === addNameInputValueForExceptionOnAdd;
+    });
+
+    $('#addModalForExceptionOnAdd').on('hidden.bs.modal', function () {
+        window.location.replace('/faculties');
+    })
+</script>
 </body>
 </html>
