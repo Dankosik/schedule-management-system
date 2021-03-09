@@ -50,8 +50,6 @@
                  th:if="${serviceExceptionOnAdd !=null}">
                 <div class="modal-dialog" role="document">
                     <form method="post" th:action="@{/subjects/add}" th:object="${subject}">
-                        <h1 style="color: red" th:if="${serviceExceptionOnAdd !=null}"
-                            th:text="${serviceExceptionOnAdd.getMessage()}"></h1>
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -69,6 +67,8 @@
                                                    type="text">
                                         </div>
                                     </div>
+                                    <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnAdd !=null}"
+                                        th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
@@ -87,8 +87,6 @@
                 <div class="modal-dialog" role="document">
                     <form method="post" th:action="@{/subjects/update/{id}(id=${newSubject.id})}"
                           th:object="${subject}">
-                        <h1 style="color: red" th:if="${serviceExceptionOnUpdate != null}"
-                            th:text="${serviceExceptionOnUpdate.getMessage()}"></h1>
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -107,6 +105,8 @@
                                                    type="text">
                                         </div>
                                     </div>
+                                    <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnUpdate != null}"
+                                        th:text="${serviceExceptionOnUpdate.getMessage()}"></h5>
                                 </div>
                                 <div class="modal-footer">
                                     <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
