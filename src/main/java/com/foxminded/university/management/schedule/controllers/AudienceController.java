@@ -97,7 +97,8 @@ public class AudienceController {
             redirectAttributes.addFlashAttribute("newAudience", audience);
             redirectAttributes.addFlashAttribute("audience", new Audience());
             redirectAttributes.addFlashAttribute("serviceExceptionOnAdd", e);
-            return "redirect:/audiences";        }
+            return "redirect:/audiences";
+        }
         return "redirect:/audiences";
     }
 

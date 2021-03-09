@@ -59,11 +59,13 @@
                     <i class="fas fa-edit"></i>
                 </button>
             </td>
-            <div th:if="${serviceExceptionOnAdd !=null}" aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="addModalForExceptionOnAdd" role="dialog"
-                 tabindex="-1">
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                 id="addModalForExceptionOnAdd" role="dialog" tabindex="-1"
+                 th:if="${serviceExceptionOnAdd !=null}">
                 <div class="modal-dialog" role="document">
                     <form method="post" th:action="@{/groups/add}" th:object="${group}">
-                        <h1 style="color: red" th:if="${serviceExceptionOnAdd !=null}" th:text="${serviceExceptionOnAdd.getMessage()}"></h1>
+                        <h1 style="color: red" th:if="${serviceExceptionOnAdd !=null}"
+                            th:text="${serviceExceptionOnAdd.getMessage()}"></h1>
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel1">Add group</h5>
@@ -100,17 +102,21 @@
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
-                                <button class="btn btn-light ml-1" disabled id="saveForExceptionOnAdd" type="submit">Save changes</button>
+                                <button class="btn btn-light ml-1" disabled id="saveForExceptionOnAdd" type="submit">
+                                    Save changes
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-            <div th:if="${serviceExceptionOnUpdate !=null}" aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModalForExceptionOnUpdate" role="dialog"
-                 tabindex="-1">
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                 id="editModalForExceptionOnUpdate" role="dialog" tabindex="-1"
+                 th:if="${serviceExceptionOnUpdate !=null}">
                 <div class="modal-dialog" role="document">
                     <form method="post" th:action="@{/groups/update/{id}(id=${newGroup.id})}" th:object="${group}">
-                        <h1 style="color: red" th:if="${serviceExceptionOnUpdate !=null}" th:text="${serviceExceptionOnUpdate.getMessage()}"></h1>
+                        <h1 style="color: red" th:if="${serviceExceptionOnUpdate !=null}"
+                            th:text="${serviceExceptionOnUpdate.getMessage()}"></h1>
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel2">Edit group</h5>
@@ -122,7 +128,8 @@
                                 <div>
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" id="editGroupNameForExceptionOnUpdate" name="name"
+                                            <input class="form-control" id="editGroupNameForExceptionOnUpdate"
+                                                   name="name"
                                                    placeholder="Name" required th:value="${newGroup.name}" type="text">
                                         </div>
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
@@ -147,7 +154,9 @@
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
-                                <button class="btn btn-light ml-1" disabled id="saveForExceptionOnUpdate" type="submit">Save changes</button>
+                                <button class="btn btn-light ml-1" disabled id="saveForExceptionOnUpdate" type="submit">
+                                    Save changes
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -207,15 +216,15 @@
         </tbody>
     </table>
 </div>
-<script th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}" crossorigin="anonymous"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-<script th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}" crossorigin="anonymous"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}" crossorigin="anonymous"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
+<script crossorigin="anonymous" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
+<script crossorigin="anonymous" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
 
 <script th:if="${serviceExceptionOnAdd !=null}">
     const addGroupNameInputValueForExceptionOnAdd = document.getElementById('addGroupNameForExceptionOnAdd').value;
