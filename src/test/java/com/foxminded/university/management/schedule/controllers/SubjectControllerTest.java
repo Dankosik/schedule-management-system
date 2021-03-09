@@ -68,18 +68,19 @@ class SubjectControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorPageOnAddSubject() throws Exception {
+    public void shouldReturnFormWithErrorOnAddSubject() throws Exception {
         Subject subject = new Subject(1L, "Art");
         when(subjectService.saveSubject(new Subject("Art"))).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/subjects/add")
                         .flashAttr("subject", subject))
-                .andExpect(model().attribute("newSubject", subject))
-                .andExpect(model().attribute("subject", new Subject()))
-                .andExpect(MockMvcResultMatchers.model().attribute(
-                        "exception",
+                .andExpect(flash().attribute("newSubject", subject))
+                .andExpect(flash().attribute("subject", new Subject()))
+                .andExpect(MockMvcResultMatchers.flash().attribute(
+                        "serviceExceptionOnAdd",
                         Matchers.isA(ServiceException.class)))
-                .andExpect(view().name("error/subject-add-error-page"));
+                .andExpect(redirectedUrl("/subjects"))
+                .andExpect(view().name("redirect:/subjects"));
 
         verify(subjectService, times(1)).saveSubject(new Subject("Art"));
     }
@@ -98,18 +99,19 @@ class SubjectControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorPageOnUpdateSubject() throws Exception {
+    public void shouldReturnFormWithErrorOnUpdateSubject() throws Exception {
         Subject subject = new Subject(1L, "Art");
         when(subjectService.saveSubject(subject)).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/subjects/update/{id}", 1L)
                         .flashAttr("subject", subject))
-                .andExpect(model().attribute("newSubject", subject))
-                .andExpect(model().attribute("subject", new Subject()))
-                .andExpect(MockMvcResultMatchers.model().attribute(
-                        "exception",
+                .andExpect(flash().attribute("newSubject", subject))
+                .andExpect(flash().attribute("subject", new Subject()))
+                .andExpect(MockMvcResultMatchers.flash().attribute(
+                        "serviceExceptionOnUpdate",
                         Matchers.isA(ServiceException.class)))
-                .andExpect(view().name("error/subject-edit-error-page"));
+                .andExpect(redirectedUrl("/subjects"))
+                .andExpect(view().name("redirect:/subjects"));
 
         verify(subjectService, times(1)).saveSubject(subject);
     }

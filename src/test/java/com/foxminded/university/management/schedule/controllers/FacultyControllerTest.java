@@ -100,18 +100,19 @@ class FacultyControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorPageOnAddFaculty() throws Exception {
+    public void shouldReturnFormWithErrorOnAddFaculty() throws Exception {
         Faculty faculty = new Faculty(1L, "FAIT");
         when(facultyService.saveFaculty(new Faculty("FAIT"))).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/faculties/add")
                         .flashAttr("faculty", faculty))
-                .andExpect(model().attribute("newFaculty", faculty))
-                .andExpect(model().attribute("faculty", new Faculty()))
-                .andExpect(MockMvcResultMatchers.model().attribute(
-                        "exception",
+                .andExpect(flash().attribute("newFaculty", faculty))
+                .andExpect(flash().attribute("faculty", new Faculty()))
+                .andExpect(MockMvcResultMatchers.flash().attribute(
+                        "serviceExceptionOnAdd",
                         Matchers.isA(ServiceException.class)))
-                .andExpect(view().name("error/faculty-add-error-page"));
+                .andExpect(redirectedUrl("/faculties"))
+                .andExpect(view().name("redirect:/faculties"));
 
         verify(facultyService, times(1)).saveFaculty(new Faculty("FAIT"));
     }
@@ -130,18 +131,19 @@ class FacultyControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorPageOnUpdateFaculty() throws Exception {
+    public void shouldReturnFormWithErrorOnUpdateFaculty() throws Exception {
         Faculty faculty = new Faculty(1L, "FAIT");
         when(facultyService.saveFaculty(faculty)).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/faculties/update/{id}", 1L)
                         .flashAttr("faculty", faculty))
-                .andExpect(model().attribute("newFaculty", faculty))
-                .andExpect(model().attribute("faculty", new Faculty()))
-                .andExpect(MockMvcResultMatchers.model().attribute(
-                        "exception",
+                .andExpect(flash().attribute("newFaculty", faculty))
+                .andExpect(flash().attribute("faculty", new Faculty()))
+                .andExpect(MockMvcResultMatchers.flash().attribute(
+                        "serviceExceptionOnUpdate",
                         Matchers.isA(ServiceException.class)))
-                .andExpect(view().name("error/faculty-edit-error-page"));
+                .andExpect(redirectedUrl("/faculties"))
+                .andExpect(view().name("redirect:/faculties"));
 
         verify(facultyService, times(1)).saveFaculty(faculty);
     }

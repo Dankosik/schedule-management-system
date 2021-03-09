@@ -212,18 +212,19 @@ class AudienceControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorPageOnAddAudience() throws Exception {
+    public void shouldReturnFormWithErrorOnAddAudience() throws Exception {
         Audience audience = new Audience(1L, 201, 25);
         when(audienceService.saveAudience(new Audience(201, 25))).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/audiences/add", 1L)
                         .flashAttr("audience", audience))
-                .andExpect(model().attribute("newAudience", audience))
-                .andExpect(model().attribute("audience", new Audience()))
-                .andExpect(MockMvcResultMatchers.model().attribute(
-                        "exception",
+                .andExpect(flash().attribute("newAudience", audience))
+                .andExpect(flash().attribute("audience", new Audience()))
+                .andExpect(MockMvcResultMatchers.flash().attribute(
+                        "serviceExceptionOnAdd",
                         Matchers.isA(ServiceException.class)))
-                .andExpect(view().name("error/audience-add-error-page"));
+                .andExpect(redirectedUrl("/audiences"))
+                .andExpect(view().name("redirect:/audiences"));
 
         verify(audienceService, times(1)).saveAudience(new Audience(201, 25));
     }
@@ -243,18 +244,19 @@ class AudienceControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorPageOnUpdateAudience() throws Exception {
+    public void shouldReturnFormWithErrorOnUpdateAudience() throws Exception {
         Audience audience = new Audience(1L, 201, 25);
         when(audienceService.saveAudience(audience)).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/audiences/update/{id}", 1L)
                         .flashAttr("audience", audience))
-                .andExpect(model().attribute("newAudience", audience))
-                .andExpect(model().attribute("audience", new Audience()))
-                .andExpect(MockMvcResultMatchers.model().attribute(
-                        "exception",
+                .andExpect(flash().attribute("newAudience", audience))
+                .andExpect(flash().attribute("audience", new Audience()))
+                .andExpect(MockMvcResultMatchers.flash().attribute(
+                        "serviceExceptionOnUpdate",
                         Matchers.isA(ServiceException.class)))
-                .andExpect(view().name("error/audience-edit-error-page"));
+                .andExpect(redirectedUrl("/audiences"))
+                .andExpect(view().name("redirect:/audiences"));
 
         verify(audienceService, times(1)).saveAudience(audience);
     }

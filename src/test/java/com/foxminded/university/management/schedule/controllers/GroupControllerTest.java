@@ -234,18 +234,19 @@ class GroupControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorPageOnAddGroup() throws Exception {
+    public void shouldReturnFormWithErrorOnAddGroup() throws Exception {
         Group group = new Group(1L, "AB-01", 1L);
         when(groupService.saveGroup(new Group("AB-01", 1L))).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/groups/add")
                         .flashAttr("group", group))
-                .andExpect(model().attribute("newGroup", group))
-                .andExpect(model().attribute("group", new Group()))
-                .andExpect(MockMvcResultMatchers.model().attribute(
-                        "exception",
+                .andExpect(flash().attribute("newGroup", group))
+                .andExpect(flash().attribute("group", new Group()))
+                .andExpect(MockMvcResultMatchers.flash().attribute(
+                        "serviceExceptionOnAdd",
                         Matchers.isA(ServiceException.class)))
-                .andExpect(view().name("error/group-add-error-page"));
+                .andExpect(redirectedUrl("/groups"))
+                .andExpect(view().name("redirect:/groups"));
 
         verify(groupService, times(1)).saveGroup(new Group("AB-01", 1L));
     }
@@ -264,18 +265,19 @@ class GroupControllerTest {
     }
 
     @Test
-    public void shouldReturnErrorPageOnUpdateGroup() throws Exception {
+    public void shouldReturnFormWithErrorOnUpdateGroup() throws Exception {
         Group group = new Group(1L, "AB-01", 1L);
         when(groupService.saveGroup(group)).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/groups/update/{id}", 1L)
                         .flashAttr("group", group))
-                .andExpect(model().attribute("newGroup", group))
-                .andExpect(model().attribute("group", new Group()))
-                .andExpect(MockMvcResultMatchers.model().attribute(
-                        "exception",
+                .andExpect(flash().attribute("newGroup", group))
+                .andExpect(flash().attribute("group", new Group()))
+                .andExpect(MockMvcResultMatchers.flash().attribute(
+                        "serviceExceptionOnUpdate",
                         Matchers.isA(ServiceException.class)))
-                .andExpect(view().name("error/group-edit-error-page"));
+                .andExpect(redirectedUrl("/groups"))
+                .andExpect(view().name("redirect:/groups"));
 
         verify(groupService, times(1)).saveGroup(group);
     }
