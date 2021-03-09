@@ -7,10 +7,11 @@ import com.foxminded.university.management.schedule.service.impl.SubjectServiceI
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class LessonController {
@@ -26,16 +27,29 @@ public class LessonController {
     public String showAllLessons(Model model) {
         List<Lesson> lessons = lessonService.getAllLessons();
         model.addAttribute("lessons", lessons);
-
-        List<Duration> durations = lessonService.getDurationsForLessons(lessons);
-        List<String> formattedDurations = durations.stream()
-                .map(StringUtils::formatDurationInMinutes)
-                .collect(Collectors.toList());
-
-        model.addAttribute("durations", formattedDurations);
+        model.addAttribute("durations", StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(lessons)));
         model.addAttribute("subjectNames", subjectService.getSubjectNamesForLessons(lessons));
-        model.addAttribute("subjects", subjectService.getSubjectsForLessons(lessons));
+        model.addAttribute("subjects", subjectService.getSubjectsWithPossibleNullForLessons(lessons));
+        model.addAttribute("allSubjects", subjectService.getAllSubjects());
+        model.addAttribute("lesson", new Lesson());
         return "lessons";
     }
 
+    @PostMapping("/lessons/delete/{id}")
+    public String deleteAudience(@PathVariable("id") Long id) {
+        lessonService.deleteLessonById(id);
+        return "redirect:/lessons";
+    }
+
+    @PostMapping("/lessons/add")
+    public String addLesson(@ModelAttribute Lesson lesson) {
+        lessonService.saveLesson(lesson);
+        return "redirect:/lessons";
+    }
+
+    @PostMapping("/lessons/update/{id}")
+    public String updateLesson(@ModelAttribute Lesson lesson) {
+        lessonService.saveLesson(lesson);
+        return "redirect:/lessons";
+    }
 }

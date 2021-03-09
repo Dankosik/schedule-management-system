@@ -31,24 +31,23 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student, Lon
         params.put("middle_name", student.getMiddleName());
         params.put("course_number", student.getCourseNumber());
         params.put("group_id", student.getGroupId());
-        params.put("university_id", student.getUniversityId());
 
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         LOGGER.info("Student created successful with id: {}", newId);
         return new Student(newId.longValue(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getCourseNumber(), student.getGroupId(), student.getUniversityId());
+                student.getCourseNumber(), student.getGroupId());
     }
 
     @Override
     protected Student update(Student student) {
         LOGGER.debug("Updating student: {}", student);
         this.jdbcTemplate.update("UPDATE students SET first_name = ?, last_name = ?, middle_name = ?, " +
-                        "course_number = ?, group_id = ?,  university_id = ? WHERE id = ?",
-                student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getCourseNumber(), student.getGroupId(), student.getUniversityId(), student.getId());
+                        "course_number = ?, group_id = ? WHERE id = ?",
+                student.getFirstName(), student.getLastName(), student.getMiddleName(), student.getCourseNumber(),
+                student.getGroupId(), student.getId());
         LOGGER.info("Student updated successful: {}", student);
         return new Student(student.getId(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getCourseNumber(), student.getGroupId(), student.getUniversityId());
+                student.getCourseNumber(), student.getGroupId());
     }
 
     @Override
@@ -83,13 +82,6 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student, Lon
         }
         LOGGER.info("Successful saved all students");
         return result;
-    }
-
-    public List<Student> getStudentsByUniversityId(Long id) {
-        LOGGER.debug("Getting students with university id: {}", id);
-        List<Student> students = this.jdbcTemplate.query("SELECT * FROM students WHERE university_id = ?", new StudentRowMapper(), id);
-        LOGGER.info("Successful received students with university id: {}", id);
-        return students;
     }
 
     public List<Student> getStudentsByGroupId(Long id) {

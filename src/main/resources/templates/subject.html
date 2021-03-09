@@ -23,7 +23,43 @@
         <tr>
             <td th:text="${subject.id}"></td>
             <td th:text="${subject.name}"></td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${subject}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${subject}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/subjects/update/{id}(id=${subject.id})}"
+                          th:object="${subject}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit subject</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input class="form-control" placeholder="Name" th:field="*{name}" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/subjects/delete/',
+            id = ${subject.id}, question = 'Are you sure you want to delete a subject?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>

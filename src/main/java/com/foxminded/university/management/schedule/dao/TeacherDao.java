@@ -30,22 +30,21 @@ public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher, Lon
         params.put("last_name", teacher.getLastName());
         params.put("middle_name", teacher.getMiddleName());
         params.put("faculty_id", teacher.getFacultyId());
-        params.put("university_id", teacher.getUniversityId());
 
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         LOGGER.info("Teacher created successful with id: {}", newId);
         return new Teacher(newId.longValue(), teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
-                teacher.getFacultyId(), teacher.getUniversityId());
+                teacher.getFacultyId());
     }
 
     @Override
     protected Teacher update(Teacher teacher) {
         LOGGER.debug("Updating teacher: {}", teacher);
-        this.jdbcTemplate.update("UPDATE teachers SET first_name = ?, last_name = ?, middle_name = ?, faculty_id = ?, university_id = ? WHERE id = ?",
-                teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(), teacher.getFacultyId(), teacher.getUniversityId(), teacher.getId());
+        this.jdbcTemplate.update("UPDATE teachers SET first_name = ?, last_name = ?, middle_name = ?, faculty_id = ? WHERE id = ?",
+                teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(), teacher.getFacultyId(), teacher.getId());
         LOGGER.info("Teacher updated successful: {}", teacher);
         return new Teacher(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
-                teacher.getFacultyId(), teacher.getUniversityId());
+                teacher.getFacultyId());
     }
 
     @Override
@@ -82,13 +81,6 @@ public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher, Lon
         }
         LOGGER.info("Successful saved all teachers");
         return result;
-    }
-
-    public List<Teacher> getTeachersByUniversityId(Long id) {
-        LOGGER.debug("Getting teachers with university id: {}", id);
-        List<Teacher> teachers = this.jdbcTemplate.query("SELECT * FROM teachers WHERE university_id = ?", new TeacherRowMapper(), id);
-        LOGGER.info("Successful received teachers with university id: {}", id);
-        return teachers;
     }
 
     public List<Teacher> getTeachersByFacultyId(Long id) {

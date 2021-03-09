@@ -14,9 +14,11 @@ import java.util.*;
 public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AudienceDao.class);
     private final JdbcTemplate jdbcTemplate;
+    private final LessonDao lessonDao;
 
-    public LectureDao(JdbcTemplate jdbcTemplate) {
+    public LectureDao(JdbcTemplate jdbcTemplate, LessonDao lessonDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.lessonDao = lessonDao;
     }
 
     @Override
@@ -26,28 +28,29 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
         simpleJdbcInsert.withTableName("lectures").usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = new HashMap<>();
-        params.put("number", lecture.getNumber());
+        params.put("number", lessonDao.getById(lecture.getLessonId()).get().getNumber());
         params.put("date", lecture.getDate());
         params.put("audience_id", lecture.getAudienceId());
+        params.put("group_id", lecture.getGroupId());
         params.put("lesson_id", lecture.getLessonId());
         params.put("teacher_id", lecture.getTeacherId());
 
         Number newId = simpleJdbcInsert.executeAndReturnKey(params);
         LOGGER.info("Lecture created successful with id: {}", newId);
         return new Lecture(newId.longValue(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getLessonId(), lecture.getTeacherId());
+                lecture.getGroupId(), lecture.getLessonId(), lecture.getTeacherId());
     }
 
     @Override
     protected Lecture update(Lecture lecture) {
         LOGGER.debug("Updating lecture: {}", lecture);
-        this.jdbcTemplate.update("UPDATE lectures SET number = ?, date = ?,  audience_id = ?, lesson_id = ?, " +
-                        "teacher_id = ? WHERE id = ?",
-                lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(), lecture.getLessonId(), lecture.getTeacherId(),
-                lecture.getId());
+        this.jdbcTemplate.update("UPDATE lectures SET number = ?, date = ?,  audience_id = ?, lesson_id = ?, group_id = ?, " +
+                        "teacher_id=? WHERE id = ?",
+                lessonDao.getById(lecture.getLessonId()).get().getNumber(), lecture.getDate(), lecture.getAudienceId(),
+                lecture.getLessonId(), lecture.getGroupId(), lecture.getTeacherId(), lecture.getId());
         LOGGER.info("Lecture updated successful: {}", lecture);
         return new Lecture(lecture.getId(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getLessonId(), lecture.getTeacherId());
+                lecture.getGroupId(), lecture.getLessonId(), lecture.getTeacherId());
     }
 
     @Override
@@ -104,6 +107,13 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
         LOGGER.debug("Getting lectures with teacher id: {}", id);
         List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures WHERE teacher_id = ?", new LectureRowMapper(), id);
         LOGGER.debug("Getting lectures with teacher id: {}", id);
+        return lectures;
+    }
+
+    public List<Lecture> getLecturesByGroupId(Long id) {
+        LOGGER.debug("Getting lectures with group id: {}", id);
+        List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures WHERE group_id = ?", new LectureRowMapper(), id);
+        LOGGER.debug("Getting lectures with group id: {}", id);
         return lectures;
     }
 }

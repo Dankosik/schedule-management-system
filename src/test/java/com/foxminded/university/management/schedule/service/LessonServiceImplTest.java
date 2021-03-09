@@ -20,6 +20,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,13 +30,13 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {LessonServiceImpl.class})
 class LessonServiceImplTest {
     private final Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null);
     private final List<Lesson> lessons = List.of(lesson,
             new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null),
             new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), null));
-    private final Subject subject = new Subject(1L, "Art", 1L);
+    private final Subject subject = new Subject(1L, "Art");
 
     @Autowired
     private LessonServiceImpl lessonService;
@@ -48,7 +49,7 @@ class LessonServiceImplTest {
     void shouldSaveLesson() {
         when(lessonDao.save(new Lesson(1, Time.valueOf(LocalTime.of(8, 30, 0)),
                 Duration.ofMinutes(90), null))).thenReturn(lesson);
-        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art", 1L)));
+        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art")));
         Lesson actual = lessonService.saveLesson(lesson);
 
         assertEquals(lesson, actual);
@@ -89,7 +90,7 @@ class LessonServiceImplTest {
 
     @Test
     void shouldSaveListOfLessons() {
-        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art", 1L)));
+        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art")));
         when(lessonDao.save(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null)))
                 .thenReturn(lesson);
         when(lessonDao.save(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null)))
@@ -127,7 +128,7 @@ class LessonServiceImplTest {
     void shouldRemoveSubjectFromLesson() {
         Lesson expected = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null);
 
-        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art", 1L)));
+        when(subjectDao.getById(null)).thenReturn(Optional.of(new Subject(null, "Art")));
         when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
         when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
         when(lessonService.saveLesson(expected)).thenReturn(expected);
@@ -165,15 +166,25 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionIfLessonNotPresentInAddingSubjectToLesson() {
-        when(lessonDao.getById(1L)).thenReturn(Optional.empty());
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
+    void shouldReturnDurationsForLessons() {
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
 
-        assertThrows(ServiceException.class, () -> lessonService.addSubjectToLesson(subject, lesson));
+        List<Duration> expected = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
 
-        verify(subjectDao, times(1)).getById(1L);
-        verify(lessonDao, times(1)).getById(1L);
-        verify(lessonDao, never()).save(lesson);
+        assertEquals(expected, lessonService.getDurationsWithPossibleNullForLessons(lessons));
+    }
+
+    @Test
+    void shouldReturnDurationsForLessonsWithDurationNull() {
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), null, 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Duration> expected = Arrays.asList(null, Duration.ofMinutes(90));
+
+        assertEquals(expected, lessonService.getDurationsWithPossibleNullForLessons(lessons));
     }
 
     @Test
@@ -229,17 +240,6 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void shouldReturnDurationsForLessons() {
-        List<Lesson> lessons = List.of(
-                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
-
-        List<Duration> expected = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
-
-        assertEquals(expected, lessonService.getDurationsForLessons(lessons));
-    }
-
-    @Test
     void shouldReturnStartTimesForLessons() {
         List<Lesson> lessons = List.of(
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
@@ -249,7 +249,18 @@ class LessonServiceImplTest {
                 Time.valueOf(LocalTime.of(8, 30, 0)),
                 Time.valueOf(LocalTime.of(10, 10, 0)));
 
-        assertEquals(expected, lessonService.getStartTimesForLessons(lessons));
+        assertEquals(expected, lessonService.getStartTimesWithPossibleNullForLessons(lessons));
+    }
+
+    @Test
+    void shouldReturnStartTimesForLessonsWithStartTimeNull() {
+        List<Lesson> lessons = List.of(
+                new Lesson(1L, 1, null, Duration.ofMinutes(90), 1L),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        List<Time> expected = Arrays.asList(null, Time.valueOf(LocalTime.of(10, 10, 0)));
+
+        assertEquals(expected, lessonService.getStartTimesWithPossibleNullForLessons(lessons));
     }
 
     @Test
@@ -260,16 +271,33 @@ class LessonServiceImplTest {
                 .thenReturn(Optional.of(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
 
         List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 2L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 2L));
 
         List<Lesson> expected = List.of(
                 new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
                 new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
 
-        assertEquals(expected, lessonService.getLessonsForLectures(lectures));
+        assertEquals(expected, lessonService.getLessonsWithPossibleNullForLectures(lectures));
 
+        verify(lessonDao, times(2)).getById(2L);
         verify(lessonDao, times(2)).getById(1L);
+    }
+
+    @Test
+    void shouldReturnLessonsForLecturesWithLessonIdZero() {
+        when(lessonDao.getById(2L))
+                .thenReturn(Optional.of(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L)));
+
+        List<Lecture> lectures = List.of(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 0L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 2L, 2L));
+
+        List<Lesson> expected = Arrays.asList(
+                null, new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+
+        assertEquals(expected, lessonService.getLessonsWithPossibleNullForLectures(lectures));
+
         verify(lessonDao, times(2)).getById(2L);
     }
 }

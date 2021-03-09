@@ -34,7 +34,7 @@ public class ReceivingIdUtils {
     }
 
     public static List<Long> getGroupIds() {
-        return groupService.getAllAGroups()
+        return groupService.getAllGroups()
                 .stream()
                 .map(Group::getId)
                 .collect(Collectors.toList());

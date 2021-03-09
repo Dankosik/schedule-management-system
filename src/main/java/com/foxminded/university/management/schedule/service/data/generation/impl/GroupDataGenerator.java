@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.service.data.generation.imp
 
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
+import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,12 +17,11 @@ public class GroupDataGenerator implements DataGenerator<Group> {
     public List<Group> generateData() {
         List<Group> result = new ArrayList<>();
         List<Long> facultyIds = getFacultyIds();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < RandomUtils.random(5, 10); i++) {
             Group group = new Group();
             String groupName = generateFirstTwoCharacters() + "-" + generateTwoDigits();
             group.setName(groupName);
-            group.setFacultyId(facultyIds.get((int) (1 + (Math.random() * facultyIds.size() - 1))));
-            group.setUniversityId(1L);
+            group.setFacultyId(facultyIds.get(RandomUtils.random(0, facultyIds.size() - 1)));
             result.add(group);
         }
         return result;
@@ -43,7 +43,7 @@ public class GroupDataGenerator implements DataGenerator<Group> {
         int min = 0;
         int max = 9;
         for (int i = 0; i < 2; i++) {
-            result.append((min + (int) (Math.random() * max)));
+            result.append(RandomUtils.random(min, max));
         }
         return result.toString();
     }

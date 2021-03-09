@@ -10,21 +10,26 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/teachers/add}" th:object="${teacher}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="First name" type="text">
+                <input class="form-control" placeholder="First name" required th:field="*{firstName}" type="text">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Last name" type="text">
+                <input class="form-control" placeholder="Last name" required th:field="*{lastName}" type="text">
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control" placeholder="Middle name" type="text">
+                <input class="form-control" placeholder="Middle name" required th:field="*{middleName}" type="text">
             </div>
             <div class="col mt-1">
-                <input class="form-control" placeholder="Faculty" type="text">
+                <select class="form-control" th:field="*{facultyId}">
+                    <div th:each="faculty: ${allFaculties}">
+                        <option th:text="${faculty.name}" th:value="${faculty.id}">
+                        </option>
+                    </div>
+                </select>
             </div>
             <button class="btn btn-light ml-1 mt-1" type="submit">Add teacher</button>
         </div>
@@ -46,16 +51,102 @@
         <tbody>
         <tr th:each="teacher, iter: ${teachers}">
             <td th:text="${teacher.id}"></td>
-            <td th:text="${teacher.firstName}"></td>
-            <td th:text="${teacher.lastName}"></td>
-            <td th:text="${teacher.middleName}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.firstName}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.lastName}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.middleName}">
+                </a>
+            </td>
             <td>
                 <a style="text-decoration: none; color: black"
                    th:href="@{'/faculties/'} + ${faculties.get(iter.index).getId()}"
                    th:text="${facultyNames.get(iter.index)}">
                 </a>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${teacher}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${teacher}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/teachers/update/{id}(id=${teacher.id})}"
+                          th:object="${teacher}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit teacher</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editTeacherFirstName"
+                                                   name="firstName"
+                                                   placeholder="First name" required th:value="${teacher.firstName}"
+                                                   type="text">
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" id="editTeacherLastName"
+                                                   name="lastName" placeholder="Last name"
+                                                   required
+                                                   th:value="${teacher.lastName}" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col mt-1">
+                                            <input class="form-control" id="editTeacherMiddleName"
+                                                   name="middleName" placeholder="Middle name"
+                                                   required
+                                                   th:value="${teacher.middleName}" type="text">
+                                        </div>
+                                        <div class="col mt-1">
+                                            <select class="form-control" th:field="*{facultyId}">
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <div th:if="${teacher.facultyId == faculty.id}">
+                                                        <option th:text="${faculty.name}"
+                                                                th:value="${faculty.id}"></option>
+                                                    </div>
+                                                </div>
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <div th:if="${teacher.facultyId != faculty.id}">
+                                                        <option th:text="${faculty.name}"
+                                                                th:value="${faculty.id}"></option>
+                                                    </div>
+                                                </div>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/teachers/delete/',
+            id = ${teacher.id}, question = 'Are you sure you want to delete a teacher?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>

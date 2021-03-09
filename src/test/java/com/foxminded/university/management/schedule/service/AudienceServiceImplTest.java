@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,16 +28,16 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {AudienceServiceImpl.class})
 class AudienceServiceImplTest {
-    private final Audience audience = new Audience(1L, 202, 45, 1L);
+    private final Audience audience = new Audience(1L, 202, 45);
     private final List<Audience> audiences = List.of(audience,
-            new Audience(2L, 203, 50, 1L),
-            new Audience(3L, 204, 55, 1L),
-            new Audience(4L, 205, 60, 1L));
+            new Audience(2L, 203, 50),
+            new Audience(3L, 204, 55),
+            new Audience(4L, 205, 60));
 
     private final Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-            null, 2L, 3L);
+            null, 1L, 2L, 3L);
     @Autowired
     private AudienceServiceImpl audienceService;
     @MockBean
@@ -48,7 +49,7 @@ class AudienceServiceImplTest {
 
     @Test
     void shouldSaveAudience() {
-        when(audienceDao.save(new Audience(202, 45, 1L))).thenReturn(audience);
+        when(audienceDao.save(new Audience(202, 45))).thenReturn(audience);
         Audience actual = audienceService.saveAudience(audience);
 
         assertEquals(audience, actual);
@@ -88,10 +89,10 @@ class AudienceServiceImplTest {
 
     @Test
     void shouldSaveListOfAudiences() {
-        when(audienceDao.save(new Audience(202, 45, 1L))).thenReturn(audience);
-        when(audienceDao.save(new Audience(203, 50, 1L))).thenReturn(audiences.get(1));
-        when(audienceDao.save(new Audience(204, 55, 1L))).thenReturn(audiences.get(2));
-        when(audienceDao.save(new Audience(205, 60, 1L))).thenReturn(audiences.get(3));
+        when(audienceDao.save(new Audience(202, 45))).thenReturn(audience);
+        when(audienceDao.save(new Audience(203, 50))).thenReturn(audiences.get(1));
+        when(audienceDao.save(new Audience(204, 55))).thenReturn(audiences.get(2));
+        when(audienceDao.save(new Audience(205, 60))).thenReturn(audiences.get(3));
 
         List<Audience> actual = audienceService.saveAllAudiences(audiences);
 
@@ -106,12 +107,12 @@ class AudienceServiceImplTest {
     @Test
     void shouldAddLectureToAudience() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 2L, 3L);
+                1L, 1L, 2L, 3L);
 
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureService.saveLecture(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 2L, 3L))).thenReturn(expected);
+                1L, 1L, 2L, 3L))).thenReturn(expected);
 
         Lecture actual = audienceService.addLectureToAudience(lecture, audience);
         assertEquals(expected, actual);
@@ -126,11 +127,11 @@ class AudienceServiceImplTest {
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
         when(lectureService.saveLecture(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                null, 2L, 3L)))
+                null, 1L, 2L, 3L)))
                 .thenReturn(lecture);
 
         Lecture actual = audienceService.removeLectureFromAudience(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 2L, 3L), audience);
+                1L, 1L, 2L, 3L), audience);
         assertEquals(lecture, actual);
 
         verify(audienceDao, times(1)).getById(1L);
@@ -140,7 +141,7 @@ class AudienceServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfCreatedAudienceWithInputNumberIsAlreadyExist() {
-        Audience expected = new Audience(202, 45, 1L);
+        Audience expected = new Audience(202, 45);
 
         when(audienceDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
@@ -151,7 +152,7 @@ class AudienceServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfUpdatedAudienceWithInputNumberIsAlreadyExist() {
-        Audience expected = new Audience(1L, 202, 45, 1L);
+        Audience expected = new Audience(1L, 202, 45);
 
         when(audienceDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
@@ -221,7 +222,7 @@ class AudienceServiceImplTest {
     @Test
     void shouldThrowExceptionIfLectureIsAlreadyAddedToAudience() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                1L, 2L, 3L);
+                1L, 1L, 2L, 3L);
 
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -236,7 +237,7 @@ class AudienceServiceImplTest {
     @Test
     void shouldThrowExceptionIfLectureIsAlreadyRemovedFromAudience() {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                null, 2L, 3L);
+                null, 1L, 2L, 3L);
 
         when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
         when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -249,35 +250,73 @@ class AudienceServiceImplTest {
     }
 
     @Test
-    void shouldReturnAudienceNumbersForAudiences() {
-        List<Audience> input = List.of(new Audience(1L, 202, 45, 1L),
-                new Audience(2L, 203, 50, 1L),
-                new Audience(3L, 204, 55, 1L));
+    void shouldReturnAudienceNumbersForEachAudiences() {
+        when(audienceDao.getById(1L)).thenReturn(Optional.of(new Audience(1L, 202, 45)));
+        when(audienceDao.getById(2L)).thenReturn(Optional.of(new Audience(2L, 203, 50)));
+        when(audienceDao.getById(3L)).thenReturn(Optional.of(new Audience(3L, 204, 55)));
+        List<Audience> input = List.of(new Audience(1L, 202, 45),
+                new Audience(2L, 203, 50),
+                new Audience(3L, 204, 55));
 
         List<Integer> expected = List.of(202, 203, 204);
 
-        assertEquals(expected, audienceService.getAudienceNumbersForAudiences(input));
+        assertEquals(expected, audienceService.getAudienceNumbersWithPossibleNullForAudiences(input));
+
+        verify(audienceDao, times(2)).getById(1L);
+        verify(audienceDao, times(2)).getById(2L);
+        verify(audienceDao, times(2)).getById(3L);
+    }
+
+    @Test
+    void shouldReturnAudienceNumbersForEachAudiencesWithIdNull() {
+        when(audienceDao.getById(2L)).thenReturn(Optional.of(new Audience(2L, 203, 50)));
+        List<Audience> input = Arrays.asList(null, new Audience(2L, 203, 50), null);
+
+        List<Integer> expected = Arrays.asList(null, 203, null);
+
+        assertEquals(expected, audienceService.getAudienceNumbersWithPossibleNullForAudiences(input));
+
+        verify(audienceDao, times(2)).getById(2L);
     }
 
     @Test
     void shouldReturnAudiencesForLectures() {
-        when(audienceDao.getById(1L)).thenReturn(Optional.of(new Audience(1L, 202, 45, 1L)));
-        when(audienceDao.getById(2L)).thenReturn(Optional.of(new Audience(2L, 203, 50, 1L)));
-        when(audienceDao.getById(3L)).thenReturn(Optional.of(new Audience(3L, 204, 55, 1L)));
+        when(audienceDao.getById(1L)).thenReturn(Optional.of(new Audience(1L, 202, 45)));
+        when(audienceDao.getById(2L)).thenReturn(Optional.of(new Audience(2L, 203, 50)));
+        when(audienceDao.getById(3L)).thenReturn(Optional.of(new Audience(3L, 204, 55)));
 
-        List<Audience> expected = List.of(new Audience(1L, 202, 45, 1L),
-                new Audience(2L, 203, 50, 1L),
-                new Audience(3L, 204, 55, 1L));
+        List<Audience> expected = List.of(new Audience(1L, 202, 45),
+                new Audience(2L, 203, 50),
+                new Audience(3L, 204, 55));
 
         List<Lecture> input = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 1L),
-                new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 1L, 1L));
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 1L, 1L, 1L),
+                new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 1L, 1L, 1L));
 
-        assertEquals(expected, audienceService.getAudiencesForLectures(input));
+        assertEquals(expected, audienceService.getAudiencesWithPossibleNullForLectures(input));
 
         verify(audienceDao, times(2)).getById(1L);
         verify(audienceDao, times(2)).getById(2L);
+        verify(audienceDao, times(2)).getById(3L);
+    }
+
+    @Test
+    void shouldReturnAudiencesForEachLecturesWithIdNull() {
+        when(audienceDao.getById(1L)).thenReturn(Optional.of(new Audience(1L, 202, 45)));
+        when(audienceDao.getById(3L)).thenReturn(Optional.of(new Audience(3L, 204, 55)));
+
+        List<Audience> expected = Arrays.asList(new Audience(1L, 202, 45), null,
+                new Audience(3L, 204, 55));
+
+        List<Lecture> input = Arrays.asList(
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 0L, 1L, 1L, 1L),
+                new Lecture(3L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 3L, 1L, 1L, 1L));
+
+        assertEquals(expected, audienceService.getAudiencesWithPossibleNullForLectures(input));
+
+        verify(audienceDao, times(2)).getById(1L);
         verify(audienceDao, times(2)).getById(3L);
     }
 }

@@ -16,7 +16,6 @@ import java.sql.Time;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -116,30 +115,47 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public List<Duration> getDurationsForLessons(List<Lesson> lessons) {
-        LOGGER.debug("Getting durations for lessons {}", lessons);
-        List<Duration> result = new ArrayList<>();
-        lessons.forEach(lesson -> result.add(lesson.getDuration()));
-        LOGGER.info("Durations for lessons {} received successful", lessons);
-        return result;
-    }
-
-    @Override
-    public List<Time> getStartTimesForLessons(List<Lesson> lessons) {
+    public List<Time> getStartTimesWithPossibleNullForLessons(List<Lesson> lessons) {
         LOGGER.debug("Getting start times for lessons {}", lessons);
         List<Time> result = new ArrayList<>();
-        lessons.forEach(lesson -> result.add(lesson.getStartTime()));
+        for (Lesson lesson : lessons) {
+            if (lesson == null) {
+                result.add(null);
+            } else {
+                result.add(lesson.getStartTime());
+            }
+        }
         LOGGER.info("Start times for lessons {} received successful", lessons);
         return result;
     }
 
     @Override
-    public List<Lesson> getLessonsForLectures(List<Lecture> lectures) {
+    public List<Duration> getDurationsWithPossibleNullForLessons(List<Lesson> lessons) {
+        LOGGER.debug("Getting durations for lessons {}", lessons);
+        List<Duration> result = new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            if (lesson == null) {
+                result.add(null);
+            } else {
+                result.add(lesson.getDuration());
+            }
+        }
+        LOGGER.info("Durations for lessons {} received successful", lessons);
+        return result;
+    }
+
+    @Override
+    public List<Lesson> getLessonsWithPossibleNullForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting lessons times for lectures {}", lectures);
-        List<Lesson> lessons = lectures.stream()
-                .map(lecture -> getLessonById(lecture.getLessonId()))
-                .collect(Collectors.toList());
+        List<Lesson> result = new ArrayList<>();
+        for (Lecture lecture : lectures) {
+            if (lecture.getLessonId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getLessonById(lecture.getLessonId()));
+            }
+        }
         LOGGER.info("Lessons for lectures {} received successful", lectures);
-        return lessons;
+        return result;
     }
 }

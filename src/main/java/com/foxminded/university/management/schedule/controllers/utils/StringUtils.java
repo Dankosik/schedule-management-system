@@ -1,10 +1,16 @@
 package com.foxminded.university.management.schedule.controllers.utils;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class StringUtils {
-    public static String formatDurationInMinutes(Duration duration) {
-        long seconds = duration.getSeconds();
-        return String.format("%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
+    private static final DurationFormatter durationFormatter = new DurationFormatter();
+
+    public static List<String> formatListOfDurations(List<Duration> durations) {
+        return durations.stream()
+                .map(duration -> durationFormatter.print(duration, Locale.getDefault()))
+                .collect(Collectors.toList());
     }
 }

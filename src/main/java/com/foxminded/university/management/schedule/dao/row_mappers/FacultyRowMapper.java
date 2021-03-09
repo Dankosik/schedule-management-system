@@ -12,7 +12,6 @@ public class FacultyRowMapper implements RowMapper<Faculty> {
         Faculty faculty = new Faculty();
         faculty.setId(resultSet.getLong("id"));
         faculty.setName(resultSet.getString("name"));
-        faculty.setUniversityId(resultSet.getLong("university_id"));
         return faculty;
     }
 }

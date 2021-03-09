@@ -24,32 +24,30 @@ class GroupDaoTest extends BaseDaoTest {
 
     @Test
     void shouldCreateNewGroup() {
-        Group group = new Group("AB-81", 1000L, 1000L);
+        Group group = new Group("AB-81", 1000L);
         Long groupId = groupDao.save(group).getId();
         assertTrue(testUtils.existsById("groups", groupId));
 
         Map<String, Object> map = testUtils.getEntry("groups", groupId);
-        Group actual = new Group((String) map.get("name"), (Long) map.get("faculty_id"), (Long) map.get("university_id"));
+        Group actual = new Group((String) map.get("name"), (Long) map.get("faculty_id"));
         assertEquals(group, actual);
     }
 
     @Test
     void shouldUpdateGroup() {
-        Group group = new Group(1000L, "AB-81", 1000L, 1000L);
+        Group group = new Group(1000L, "AB-81", 1000L);
         Long groupId = groupDao.save(group).getId();
         assertTrue(testUtils.existsById("groups", groupId));
 
         Map<String, Object> map = testUtils.getEntry("groups", groupId);
-        Group actual = new Group((Long) map.get("id"), (String) map.get("name"), (Long) map.get("faculty_id"),
-                (Long) map.get("university_id"));
+        Group actual = new Group((Long) map.get("id"), (String) map.get("name"), (Long) map.get("faculty_id"));
         assertEquals(group, actual);
     }
 
     @Test
     void shouldReturnGroupWithIdOne() {
         Map<String, Object> map = testUtils.getEntry("groups", 1000L);
-        Group expected = new Group((Long) map.get("id"), (String) map.get("name"), (Long) map.get("faculty_id"),
-                (Long) map.get("university_id"));
+        Group expected = new Group((Long) map.get("id"), (String) map.get("name"), (Long) map.get("faculty_id"));
         Group actual = groupDao.getById(1000L).get();
 
         assertEquals(expected, actual);
@@ -58,8 +56,8 @@ class GroupDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfGroups() {
         List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L, 1000L),
-                new Group(1001L, "BC-01", 1001L, 1000L));
+                new Group(1000L, "AB-91", 1000L),
+                new Group(1001L, "BC-01", 1001L));
         List<Group> actual = groupDao.getAll();
 
         assertTrue(actual.containsAll(expected));
@@ -74,14 +72,14 @@ class GroupDaoTest extends BaseDaoTest {
     @Test
     void shouldSaveListOfGroups() {
         List<Group> groups = List.of(
-                new Group("CD-71", 1000L, 1000L),
-                new Group("IF-61", 1001L, 1000L));
+                new Group("CD-71", 1000L),
+                new Group("IF-61", 1001L));
 
         List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L, 1000L),
-                new Group(1001L, "BC-01", 1001L, 1000L),
-                new Group(1L, "CD-71", 1000L, 1000L),
-                new Group(2L, "IF-61", 1001L, 1000L));
+                new Group(1000L, "AB-91", 1000L),
+                new Group(1001L, "BC-01", 1001L),
+                new Group(1L, "CD-71", 1000L),
+                new Group(2L, "IF-61", 1001L));
         groupDao.saveAll(groups);
         List<Group> actual = groupDao.getAll();
 
@@ -89,19 +87,9 @@ class GroupDaoTest extends BaseDaoTest {
     }
 
     @Test
-    void shouldReturnListOfGroupsWithUniversityIdOne() {
-        List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L, 1000L),
-                new Group(1001L, "BC-01", 1001L, 1000L));
-        List<Group> actual = groupDao.getGroupsByUniversityId(1000L);
-
-        assertTrue(actual.containsAll(expected));
-    }
-
-    @Test
     void shouldReturnListOfGroupsWithFacultyIdOne() {
         List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L, 1000L));
+                new Group(1000L, "AB-91", 1000L));
         List<Group> actual = groupDao.getGroupsByFacultyId(1000L);
 
         assertTrue(actual.containsAll(expected));
@@ -119,11 +107,11 @@ class GroupDaoTest extends BaseDaoTest {
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
-        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group("AB-91", 1000L, 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group("AB-91", 1000L)));
     }
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
-        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group(1001L, "AB-91", 1000L, 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group(1001L, "AB-91", 1000L)));
     }
 }

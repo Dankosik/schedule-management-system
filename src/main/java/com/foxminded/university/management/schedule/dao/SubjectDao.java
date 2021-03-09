@@ -28,7 +28,6 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", subject.getName());
-        params.put("university_id", subject.getUniversityId());
 
         Number newId;
         try {
@@ -38,17 +37,17 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
                     ". Subject with name: " + subject.getName() + " is already exist");
         }
         LOGGER.info("Subject created successful with id: {}", newId);
-        return new Subject(newId.longValue(), subject.getName(), subject.getUniversityId());
+        return new Subject(newId.longValue(), subject.getName());
     }
 
     @Override
     protected Subject update(Subject subject) {
         LOGGER.debug("Updating subject: {}", subject);
         try {
-            this.jdbcTemplate.update("UPDATE subjects SET name = ?, university_id = ? WHERE id = ?",
-                    subject.getName(), subject.getUniversityId(), subject.getId());
+            this.jdbcTemplate.update("UPDATE subjects SET name = ? WHERE id = ?",
+                    subject.getName(), subject.getId());
             LOGGER.info("Subject updated successful: {}", subject);
-            return new Subject(subject.getId(), subject.getName(), subject.getUniversityId());
+            return new Subject(subject.getId(), subject.getName());
         } catch (DuplicateKeyException e) {
             throw new DuplicateKeyException("Impossible to update subject with id: " + subject.getId() +
                     ". Subject with name: " + subject.getName() + " is already exist");
@@ -106,13 +105,6 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
                 "JOIN subjects_students ON subjects_students.subject_id = subjects.id " +
                 "WHERE subjects_students.student_id = ?", new SubjectRowMapper(), id);
         LOGGER.info("Successful received student with teacher id: {}", id);
-        return subjects;
-    }
-
-    public List<Subject> getSubjectsByUniversityId(Long id) {
-        LOGGER.debug("Getting subjects with university id: {}", id);
-        List<Subject> subjects = this.jdbcTemplate.query("SELECT * FROM subjects WHERE university_id = ?", new SubjectRowMapper(), id);
-        LOGGER.info("Successful received subjects with university id: {}", id);
         return subjects;
     }
 }

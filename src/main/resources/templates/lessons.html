@@ -11,22 +11,25 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-
-    <form class="w-25 mx-auto mt-5">
+    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lessons/add}" th:object="${lesson}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Number" type="text">
+                <input class="form-control" placeholder="Number" required th:field="*{number}" type="text">
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Start time" type="time">
+                <input class="form-control" placeholder="Start time" required th:field="*{startTime}" type="time">
             </div>
         </div>
         <div class="form-row">
             <div class="col mt-1">
-                <input class="form-control html-duration-picker" data-duration="01:30:00" id="duration">
+                <input class="form-control html-duration-picker" data-duration="01:30" data-hide-seconds
+                       id="duration" required th:field="*{duration}">
             </div>
             <div class="col mt-1">
-                <input class="form-control" placeholder="Subject" type="text">
+                <select class="form-control" th:field="*{subjectId}">
+                    <option th:each="subject: ${allSubjects}" th:text="${subject.name}"
+                            th:value="${subject.id}"></option>
+                </select>
             </div>
             <button class="btn btn-light ml-1 mt-1" type="submit">Add lesson</button>
         </div>
@@ -54,10 +57,77 @@
             <td>
                 <a style="text-decoration: none; color: black"
                    th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+                   th:if="${subjects.get(iter.index) !=null}"
                    th:text="${subjectNames.get(iter.index)}">
                 </a>
+                <div th:unless="${subjectNames.get(iter.index) != null}">Deleted or not added yet</div>
             </td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${lesson}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${lesson}">
+                <div class="modal-dialog">
+                    <form method="post" th:action="@{/lessons/update/{id}(id=${lesson.id})}"
+                          th:object="${lesson}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit lesson</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input class="form-control" id="editLessonNumber" name="number"
+                                               placeholder="Number" required th:value="${lesson.number}" type="text">
+                                    </div>
+                                    <div class="col">
+                                        <input class="form-control" id="editLessonStartTime"
+                                               name="startTime"
+                                               placeholder="Start time" required th:value="${lesson.startTime}"
+                                               type="time">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col mt-1">
+                                        <input class="form-control" id="editLessonDuration" name="duration"
+                                               placeholder="Duration" th:value="${lesson.duration}">
+                                    </div>
+                                    <div class="col mt-1">
+                                        <select class="form-control" th:field="*{subjectId}">
+                                            <div th:each="subject: ${allSubjects}">
+                                                <div th:if="${lesson.subjectId == subject.id}">
+                                                    <option th:text="${subject.name}"
+                                                            th:value="${subject.id}"></option>
+                                                </div>
+                                            </div>
+                                            <div th:each="subject: ${allSubjects}">
+                                                <div th:if="${lesson.subjectId != subject.id}">
+                                                    <option th:text="${subject.name}"
+                                                            th:value="${subject.id}"></option>
+                                                </div>
+                                            </div>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div th:insert="commons/trash-button :: trash-button(deletePath = '/lessons/delete/',
+            id = ${lesson.id}, question = 'Are you sure you want to delete a lesson?')"></div>
         </tr>
         </tbody>
     </table>

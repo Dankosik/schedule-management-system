@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -33,7 +32,7 @@ public class SubjectServiceImpl implements SubjectService {
         try {
             return subjectDao.save(subject);
         } catch (DuplicateKeyException e) {
-            throw new ServiceException("Subject with name: " + subject.getName() + "is already exist");
+            throw new ServiceException("Subject with name: " + subject.getName() + " is already exist");
         }
     }
 
@@ -68,7 +67,17 @@ public class SubjectServiceImpl implements SubjectService {
     public List<String> getSubjectNamesForLessons(List<Lesson> lessons) {
         LOGGER.debug("Getting subject names for lessons {}", lessons);
         List<String> result = new ArrayList<>();
-        lessons.forEach(lesson -> result.add(getSubjectById(lesson.getSubjectId()).getName()));
+        for (Lesson lesson : lessons) {
+            if (lesson == null) {
+                result.add(null);
+                continue;
+            }
+            if (lesson.getSubjectId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getSubjectById(lesson.getSubjectId()).getName());
+            }
+        }
         LOGGER.info("Subject names for lessons {} received successful", lessons);
         return result;
     }
@@ -76,22 +85,55 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public List<Subject> getSubjectsForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting subjects for lectures {}", lectures);
-        List<Subject> subjects = lectures.stream()
-                .map(lecture -> lessonService.getLessonById(lecture.getLessonId()).getSubjectId())
-                .map(this::getSubjectById)
-                .collect(Collectors.toList());
+        List<Subject> result = new ArrayList<>();
+        for (Lecture lecture : lectures) {
+            if (lecture.getLessonId() == 0) {
+                result.add(null);
+                continue;
+            }
+            if (lessonService.getLessonById(lecture.getLessonId()).getSubjectId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getSubjectById(lessonService.getLessonById(lecture.getLessonId()).getSubjectId()));
+            }
+        }
         LOGGER.info("Subject for lectures {} received successful", lectures);
-        return subjects;
+        return result;
     }
 
     @Override
-    public List<Subject> getSubjectsForLessons(List<Lesson> lessons) {
+    public List<Subject> getSubjectsWithPossibleNullForLessons(List<Lesson> lessons) {
         LOGGER.debug("Getting subjects for lessons {}", lessons);
-        List<Subject> subjects = lessons.stream()
-                .map(Lesson::getSubjectId)
-                .map(this::getSubjectById)
-                .collect(Collectors.toList());
+        List<Subject> result = new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            if (lesson == null) {
+                result.add(null);
+                continue;
+            }
+            if (lesson.getId() == 0) {
+                result.add(null);
+                continue;
+            }
+            if (lessonService.getLessonById(lesson.getId()).getSubjectId() == 0) {
+                result.add(null);
+            } else {
+                result.add(getSubjectById(lessonService.getLessonById(lesson.getId()).getSubjectId()));
+            }
+        }
         LOGGER.info("Subject for lessons {} received successful", lessons);
-        return subjects;
+        return result;
+    }
+
+    public Subject getSubjectForLesson(Lesson lesson) {
+        LOGGER.debug("Getting subject for lesson {}", lesson);
+        if (lesson.getId() == 0) {
+            return null;
+        }
+        if (lessonService.getLessonById(lesson.getId()).getSubjectId() == 0) {
+            return null;
+        }
+        Subject subject = getSubjectById(lessonService.getLessonById(lesson.getId()).getSubjectId());
+        LOGGER.info("Subject for lesson {} received successful", lesson);
+        return subject;
     }
 }

@@ -9,8 +9,9 @@
 </head>
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
+<div class="text-center mb-2">Faculty</div>
 <div>
-    <table class="table table-bordered w-25 text-center mx-auto mt-5">
+    <table class="table table-bordered w-25 text-center mx-auto mt-2">
         <thead>
         <tr>
             <th scope="col">id</th>
@@ -23,10 +24,225 @@
         <tr>
             <td th:text="${faculty.id}"></td>
             <td th:text="${faculty.name}"></td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${faculty}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${faculty}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/faculties/update/{id}(id=${faculty.id})}" th:object="${faculty}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit faculty</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editFacultyName" name="name"
+                                                   placeholder="Name" required th:value="${faculty.name}" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/faculties/delete/',
+            id = ${faculty.id}, question = 'Are you sure you want to delete a faculty?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>
 </div>
+<div th:if="${not #lists.isEmpty(groups)}">
+    <div class="text-center mb-2">Groups</div>
+    <table class="table table-bordered text-center w-25 mx-auto mt-2">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="group: ${groups}">
+            <td th:text="${group.id}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/groups/'} + ${group.id}"
+                   th:text="${group.name}">
+                </a>
+            </td>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${group}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${group}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/groups/update/{id}(id=${group.id})}"
+                          th:object="${group}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit group</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editGroupName" name="name"
+                                                   placeholder="Name"
+                                                   required th:value="${group.name}" type="text">
+                                        </div>
+                                        <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
+                                        <div class="col">
+                                            <select class="form-control" th:field="*{facultyId}">
+                                                <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
+                                                        th:value="${faculty.id}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/groups/delete/',
+            id = ${group.id}, question = 'Are you sure you want to delete a group?')"></div>
+            </div>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${not #lists.isEmpty(teachers)}">
+    <div class="text-center mb-2">Teachers</div>
+    <table class="table table-bordered text-center w-25 mx-auto mt-2">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">First name</th>
+            <th scope="col">Last name</th>
+            <th scope="col">Middle name</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="teacher: ${teachers}">
+            <td th:text="${teacher.id}"></td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.firstName}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.lastName}">
+                </a>
+            </td>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/teachers/'} + ${teacher.id}"
+                   th:text="${teacher.middleName}">
+                </a>
+            </td>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${teacher}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${teacher}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/teachers/update/{id}(id=${teacher.id})}"
+                          th:object="${teacher}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit teacher</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editTeacherFirstName"
+                                                   name="firstName"
+                                                   placeholder="First name" required th:value="${teacher.firstName}"
+                                                   type="text">
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" id="editTeacherLastName"
+                                                   name="lastName" placeholder="Last name"
+                                                   required
+                                                   th:value="${teacher.lastName}" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col mt-1">
+                                            <input class="form-control" id="editTeacherMiddleName"
+                                                   name="middleName" placeholder="Middle name"
+                                                   required
+                                                   th:value="${teacher.middleName}" type="text">
+                                        </div>
+                                        <div class="col mt-1">
+                                            <select class="form-control" th:field="*{facultyId}">
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <option th:text="${faculty.name}" th:value="${faculty.id}">
+                                                    </option>
+                                                </div>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/teachers/delete/',
+            id = ${teacher.id}, question = 'Are you sure you want to delete a teacher?')"></div>
+            </div>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="text-center" th:unless="${not #lists.isEmpty(groups)}">0 groups in this faculty</div>
+<div class="text-center" th:unless="${not #lists.isEmpty(teachers)}">0 teachers in this faculty</div>
 </body>
 </html>

@@ -1,6 +1,4 @@
 delete
-from university;
-delete
 from audiences;
 delete
 from faculties;

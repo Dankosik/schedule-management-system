@@ -28,7 +28,6 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", faculty.getName());
-        params.put("university_id", faculty.getUniversityId());
 
         Number newId;
         try {
@@ -38,17 +37,17 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
                     ". Faculty with name: " + faculty.getName() + " is already exist");
         }
         LOGGER.info("Faculty created successful with id: {}", newId);
-        return new Faculty(newId.longValue(), faculty.getName(), faculty.getUniversityId());
+        return new Faculty(newId.longValue(), faculty.getName());
     }
 
     @Override
     protected Faculty update(Faculty faculty) {
         LOGGER.debug("Updating faculty: {}", faculty);
         try {
-            this.jdbcTemplate.update("UPDATE faculties SET name = ?, university_id = ? WHERE id = ?",
-                    faculty.getName(), faculty.getUniversityId(), faculty.getId());
+            this.jdbcTemplate.update("UPDATE faculties SET name = ? WHERE id = ?",
+                    faculty.getName(), faculty.getId());
             LOGGER.info("Faculty updated successful: {}", faculty);
-            return new Faculty(faculty.getId(), faculty.getName(), faculty.getUniversityId());
+            return new Faculty(faculty.getId(), faculty.getName());
         } catch (DuplicateKeyException e) {
             throw new DuplicateKeyException("Impossible to update faculty with id: " + faculty.getId() +
                     ". Faculty with name: " + faculty.getName() + " is already exist");
@@ -89,12 +88,5 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
         }
         LOGGER.info("Successful saved all faculties");
         return result;
-    }
-
-    public List<Faculty> getFacultiesByUniversityId(Long id) {
-        LOGGER.debug("Getting faculties with university id: {}", id);
-        List<Faculty> faculties = this.jdbcTemplate.query("SELECT * FROM faculties WHERE university_id = ?", new FacultyRowMapper(), id);
-        LOGGER.info("Successful received faculties with university id: {}", id);
-        return faculties;
     }
 }

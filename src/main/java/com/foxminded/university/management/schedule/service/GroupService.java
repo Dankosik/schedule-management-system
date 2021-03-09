@@ -1,6 +1,8 @@
 package com.foxminded.university.management.schedule.service;
 
+import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
 
 import java.util.List;
@@ -10,7 +12,7 @@ public interface GroupService {
 
     Group getGroupById(Long id);
 
-    List<Group> getAllAGroups();
+    List<Group> getAllGroups();
 
     void deleteGroupById(Long id);
 
@@ -20,7 +22,13 @@ public interface GroupService {
 
     Student removeStudentFromGroup(Student student, Group group);
 
-    List<String> getGroupNamesForStudents(List<Student> students);
+    List<String> getGroupNamesWithPossibleNullForStudents(List<Student> students);
 
-    List<Group> getGroupsForStudents(List<Student> students);
+    List<Group> getGroupsWithPossibleNullForStudents(List<Student> students);
+
+    List<Group> getGroupsForFaculty(Faculty faculty);
+
+    List<String> getGroupNamesForLectures(List<Lecture> lectures);
+
+    List<Group> getGroupsForLectures(List<Lecture> lectures);
 }

@@ -23,9 +23,9 @@ public interface LessonService {
 
     Lesson removeSubjectFromLesson(Subject subject, Lesson lesson);
 
-    List<Duration> getDurationsForLessons(List<Lesson> lessons);
+    List<Duration> getDurationsWithPossibleNullForLessons(List<Lesson> lessons);
 
-    List<Time> getStartTimesForLessons(List<Lesson> lessons);
+    List<Time> getStartTimesWithPossibleNullForLessons(List<Lesson> lessons);
 
-    List<Lesson> getLessonsForLectures(List<Lecture> lectures);
+    List<Lesson> getLessonsWithPossibleNullForLectures(List<Lecture> lectures);
 }

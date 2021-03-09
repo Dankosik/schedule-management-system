@@ -8,22 +8,19 @@ public class Group implements BaseEntity<Long> {
     private Long id;
     private String name;
     private Long facultyId;
-    private Long universityId;
 
     public Group() {
     }
 
-    public Group(Long id, String name, Long facultyId, Long universityId) {
+    public Group(Long id, String name, Long facultyId) {
         this.id = id;
         this.name = name;
         this.facultyId = facultyId;
-        this.universityId = universityId;
     }
 
-    public Group(String name, Long facultyId, Long universityId) {
+    public Group(String name, Long facultyId) {
         this.name = name;
         this.facultyId = facultyId;
-        this.universityId = universityId;
     }
 
     public Long getId() {
@@ -50,26 +47,17 @@ public class Group implements BaseEntity<Long> {
         this.name = name;
     }
 
-    public Long getUniversityId() {
-        return universityId;
-    }
-
-    public void setUniversityId(Long universityId) {
-        this.universityId = universityId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
-        return Objects.equals(name, group.name) && Objects.equals(facultyId, group.facultyId)
-                && Objects.equals(universityId, group.universityId);
+        return Objects.equals(name, group.name) && Objects.equals(facultyId, group.facultyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, facultyId, universityId);
+        return Objects.hash(name, facultyId);
     }
 
     @Override
@@ -78,7 +66,6 @@ public class Group implements BaseEntity<Long> {
                 "id=" + id +
                 ", name='" + name +
                 ", facultyId=" + facultyId +
-                ", universityId=" + universityId +
                 '}';
     }
 }

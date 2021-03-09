@@ -10,10 +10,10 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/subjects/add}" th:object="${subject}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Name" type="text">
+                <input class="form-control" placeholder="Name" required th:field="*{name}" type="text">
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add subject</button>
         </div>
@@ -30,13 +30,174 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="subject: ${subjects}">
+        <tr th:each="subject, iter: ${subjects}">
             <td th:text="${subject.id}"></td>
-            <td th:text="${subject.name}"></td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <td>
+                <a style="text-decoration: none; color: black"
+                   th:href="@{'/subjects/'} + ${subject.id}"
+                   th:text="${subject.name}">
+                </a>
+            </td>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${subject}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                 id="addModalForServiceExceptionOnAdd" role="dialog" tabindex="-1"
+                 th:if="${serviceExceptionOnAdd !=null}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/subjects/add}" th:object="${subject}">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel1">Add subject</h5>
+                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="addSubjectNameForServiceExceptionOnAdd"
+                                                   name="name"
+                                                   placeholder="Name" required th:value="${newSubject.name}"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnAdd !=null}"
+                                        th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                    <button class="btn btn-light ml-1" disabled id="saveForServiceExceptionOnAdd"
+                                            type="submit">Save changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                 id="editModalForServiceExceptionOnUpdate" role="dialog" tabindex="-1"
+                 th:if="${serviceExceptionOnUpdate != null}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/subjects/update/{id}(id=${newSubject.id})}"
+                          th:object="${subject}">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabelForServiceExceptionOnUpdate">Edit
+                                        subject</h5>
+                                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editSubjectNameForServiceExceptionOnUpdate"
+                                                   name="name"
+                                                   placeholder="Name" required th:value="${newSubject.name}"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnUpdate != null}"
+                                        th:text="${serviceExceptionOnUpdate.getMessage()}"></h5>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                    <button class="btn btn-light ml-1" disabled id="saveForServiceExceptionOnUpdate"
+                                            type="submit">Save changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${subject}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/subjects/update/{id}(id=${subject.id})}"
+                          th:object="${subject}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit subject</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input class="form-control" id="editSubjectName" name="name"
+                                               placeholder="Name" required th:value="${subject.name}" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:insert="commons/trash-button :: trash-button(deletePath = '/subjects/delete/',
+            id = ${subject.id}, question = 'Are you sure you want to delete a subject?')"></div>
+            </div>
         </tr>
         </tbody>
     </table>
 </div>
+<script crossorigin="anonymous" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
+<script crossorigin="anonymous" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
+<script crossorigin="anonymous" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
+
+<script th:if="${serviceExceptionOnAdd != null}">
+    const addSubjectNameInputValueForServiceExceptionOnAdd = document.getElementById('addSubjectNameForServiceExceptionOnAdd').value;
+
+    $(document).ready(function () {
+        $('#addModalForServiceExceptionOnAdd').modal('show');
+    });
+
+    $("#addSubjectNameForServiceExceptionOnAdd").change(function () {
+        const saveButton = document.getElementById('saveForServiceExceptionOnAdd');
+        const addSubjectNameInput = document.getElementById('addSubjectNameForServiceExceptionOnAdd');
+        saveButton.disabled = addSubjectNameInput.value === addSubjectNameInputValueForServiceExceptionOnAdd;
+    });
+
+    $('#addModalForServiceExceptionOnAdd').on('hidden.bs.modal', function () {
+        window.location.replace('/subjects');
+    })
+</script>
+
+<script th:if="${serviceExceptionOnUpdate != null}">
+    const editSubjectNameInputValueForServiceExceptionOnUpdate = document.getElementById('editSubjectNameForServiceExceptionOnUpdate').value;
+
+    $(document).ready(function () {
+        $('#editModalForServiceExceptionOnUpdate').modal('show');
+    });
+
+    $("#editSubjectNameForServiceExceptionOnUpdate").change(function () {
+        const saveButton = document.getElementById('saveForServiceExceptionOnUpdate');
+        const editSubjectNameInput = document.getElementById('editSubjectNameForServiceExceptionOnUpdate');
+        saveButton.disabled = editSubjectNameInput.value === editSubjectNameInputValueForServiceExceptionOnUpdate;
+    });
+
+    $('#editModalForServiceExceptionOnUpdate').on('hidden.bs.modal', function () {
+        window.location.replace('/subjects');
+    })
+</script>
 </body>
 </html>

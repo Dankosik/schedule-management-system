@@ -28,7 +28,8 @@ public class FacultyServiceImpl implements FacultyService {
     private final GroupServiceImpl groupService;
     private final TeacherServiceImpl teacherService;
 
-    public FacultyServiceImpl(FacultyDao facultyDao, GroupDao groupDao, TeacherDao teacherDao, GroupServiceImpl groupService, TeacherServiceImpl teacherService) {
+    public FacultyServiceImpl(FacultyDao facultyDao, GroupDao groupDao, TeacherDao teacherDao, GroupServiceImpl groupService,
+                              TeacherServiceImpl teacherService) {
         this.facultyDao = facultyDao;
         this.groupDao = groupDao;
         this.teacherDao = teacherDao;
@@ -183,5 +184,23 @@ public class FacultyServiceImpl implements FacultyService {
                 .collect(Collectors.toList());
         LOGGER.info("Faculties for teachers {} received successful", teachers);
         return faculties;
+    }
+
+    @Override
+    public List<Faculty> getFacultiesForGroups(List<Group> groups) {
+        LOGGER.debug("Getting faculties for groups {}", groups);
+        List<Faculty> faculties = groups.stream()
+                .map(group -> getFacultyById(group.getFacultyId()))
+                .collect(Collectors.toList());
+        LOGGER.info("Faculties for groups {} received successful", groups);
+        return faculties;
+    }
+
+    @Override
+    public Faculty getFacultyForGroup(Group group) {
+        LOGGER.debug("Getting faculty for group {}", group);
+        Faculty faculty = getFacultyById(group.getFacultyId());
+        LOGGER.info("Faculty for group {} received successful", group);
+        return faculty;
     }
 }

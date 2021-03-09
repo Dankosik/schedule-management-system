@@ -13,7 +13,6 @@ public class GroupRowMapper implements RowMapper<Group> {
         group.setId(resultSet.getLong("id"));
         group.setName(resultSet.getString("name"));
         group.setFacultyId(resultSet.getLong("faculty_id"));
-        group.setUniversityId(resultSet.getLong("university_id"));
         return group;
     }
 }

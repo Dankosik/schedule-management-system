@@ -28,12 +28,12 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {FacultyServiceImpl.class})
 class FacultyServiceImplTest {
-    private final Faculty faculty = new Faculty(1L, "FAIT", 1L);
-    private final List<Faculty> faculties = List.of(faculty, new Faculty(2L, "FKFN", 1L));
-    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, 1L);
-    private final Group group = new Group(1L, "AB-81", null, 1L);
+    private final Faculty faculty = new Faculty(1L, "FAIT");
+    private final List<Faculty> faculties = List.of(faculty, new Faculty(2L, "FKFN"));
+    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null);
+    private final Group group = new Group(1L, "AB-81", null);
     @Autowired
     private FacultyServiceImpl facultyService;
     @MockBean
@@ -49,7 +49,7 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldSaveFaculty() {
-        when(facultyDao.save(new Faculty("FAIT", 1L))).thenReturn(faculty);
+        when(facultyDao.save(new Faculty("FAIT"))).thenReturn(faculty);
         Faculty actual = facultyService.saveFaculty(faculty);
 
         assertEquals(faculty, actual);
@@ -89,8 +89,8 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldSaveListOfFaculties() {
-        when(facultyDao.save(new Faculty("FAIT", 1L))).thenReturn(faculty);
-        when(facultyDao.save(new Faculty("FKFN", 1L))).thenReturn(faculties.get(1));
+        when(facultyDao.save(new Faculty("FAIT"))).thenReturn(faculty);
+        when(facultyDao.save(new Faculty("FKFN"))).thenReturn(faculties.get(1));
 
 
         List<Faculty> actual = facultyService.saveAllFaculties(faculties);
@@ -103,11 +103,11 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldAddGroupToFaculty() {
-        Group expected = new Group(1L, "AB-81", 1L, 1L);
+        Group expected = new Group(1L, "AB-81", 1L);
 
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
-        when(groupService.saveGroup(new Group("AB-81", 1L, 1L))).thenReturn(expected);
+        when(groupService.saveGroup(new Group("AB-81", 1L))).thenReturn(expected);
 
         Group actual = facultyService.addGroupToFaculty(group, faculty);
         assertEquals(expected, actual);
@@ -121,10 +121,9 @@ class FacultyServiceImplTest {
     void shouldRemoveGroupFromFaculty() {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(groupDao.getById(1L)).thenReturn(Optional.of(group));
-        when(groupService.saveGroup(new Group("AB-81", null, 1L)))
-                .thenReturn(group);
+        when(groupService.saveGroup(new Group("AB-81", null))).thenReturn(group);
 
-        Group actual = facultyService.removeGroupFromFaculty(new Group(1L, "AB-81", 1L, 1L), faculty);
+        Group actual = facultyService.removeGroupFromFaculty(new Group(1L, "AB-81", 1L), faculty);
         assertEquals(group, actual);
 
         verify(facultyDao, times(1)).getById(1L);
@@ -134,11 +133,11 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldAddTeacherToFaculty() {
-        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L);
+        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
 
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", 1L, 1L)))
+        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", 1L)))
                 .thenReturn(expected);
 
         Teacher actual = facultyService.addTeacherToFaculty(teacher, faculty);
@@ -153,11 +152,11 @@ class FacultyServiceImplTest {
     void shouldRemoveTeacherFromFaculty() {
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", null, 1L)))
+        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", null)))
                 .thenReturn(teacher);
 
         Teacher actual = facultyService.removeTeacherFromFaculty(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L), faculty);
+                new Teacher(1L, "John", "Jackson", "Jackson", 1L), faculty);
         assertEquals(teacher, actual);
 
         verify(facultyDao, times(1)).getById(1L);
@@ -167,7 +166,7 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfCreatedFacultyWithInputNameIsAlreadyExist() {
-        Faculty expected = new Faculty("FAIT", 1L);
+        Faculty expected = new Faculty("FAIT");
 
         when(facultyDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
@@ -178,7 +177,7 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfUpdatedFacultyWithInputNameIsAlreadyExist() {
-        Faculty expected = new Faculty(1L, "FAIT", 1L);
+        Faculty expected = new Faculty(1L, "FAIT");
 
         when(facultyDao.save(expected)).thenThrow(DuplicateKeyException.class);
 
@@ -294,7 +293,7 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfGroupIsAlreadyAddedToFaculty() {
-        Group expected = new Group(1L, "AB-81", 1L, 1L);
+        Group expected = new Group(1L, "AB-81", 1L);
 
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -308,7 +307,7 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfGroupIsAlreadyRemovedFromFaculty() {
-        Group expected = new Group(1L, "AB-81", null, 1L);
+        Group expected = new Group(1L, "AB-81", null);
 
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -322,7 +321,7 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfTeacherIsAlreadyAddedToFaculty() {
-        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", 1L, 1L);
+        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
 
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -337,7 +336,7 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfTeacherIsAlreadyRemovedFromFaculty() {
-        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", null, 1L);
+        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", null);
 
         when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
         when(teacherDao.getById(1L)).thenReturn(Optional.of(expected));
@@ -351,12 +350,12 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldReturnFacultyNamesForTeachers() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
-        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN", 1L)));
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
+        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN")));
 
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L),
-                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L, 1L));
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L));
 
         List<String> expected = List.of("FAIT", "FKFN");
 
@@ -368,20 +367,51 @@ class FacultyServiceImplTest {
 
     @Test
     void shouldReturnFacultiesForTeachers() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", 1L)));
-        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN", 1L)));
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
+        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN")));
 
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L, 1L),
-                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L, 1L));
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L));
 
         List<Faculty> expected = List.of(
-                new Faculty(1L, "FAIT", 1L),
-                new Faculty(2L, "FKFN", 1L));
+                new Faculty(1L, "FAIT"),
+                new Faculty(2L, "FKFN"));
 
         assertEquals(expected, facultyService.getFacultiesForTeachers(teachers));
 
         verify(facultyDao, times(2)).getById(1L);
         verify(facultyDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnFacultiesForGroups() {
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
+        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN")));
+
+        List<Group> groups = List.of(
+                new Group(1L, "AB-01", 1L),
+                new Group(2L, "CD-21", 2L));
+
+        List<Faculty> expected = List.of(
+                new Faculty(1L, "FAIT"),
+                new Faculty(2L, "FKFN"));
+
+        assertEquals(expected, facultyService.getFacultiesForGroups(groups));
+
+        verify(facultyDao, times(2)).getById(1L);
+        verify(facultyDao, times(2)).getById(2L);
+    }
+
+    @Test
+    void shouldReturnFacultyForGroup() {
+        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
+
+        Group group = new Group(1L, "AB-01", 1L);
+        Faculty expected = new Faculty(1L, "FAIT");
+
+        assertEquals(expected, facultyService.getFacultyForGroup(group));
+
+        verify(facultyDao, times(2)).getById(1L);
     }
 }

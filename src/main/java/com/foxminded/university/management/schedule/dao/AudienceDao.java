@@ -29,7 +29,6 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
         Map<String, Object> params = new HashMap<>();
         params.put("number", audience.getNumber());
         params.put("capacity", audience.getCapacity());
-        params.put("university_id", audience.getUniversityId());
 
         Number newId;
         try {
@@ -39,17 +38,17 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
                     ". Audience with number: " + audience.getNumber() + " is already exist");
         }
         LOGGER.info("Audience created successful with id: {}", newId);
-        return new Audience(newId.longValue(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
+        return new Audience(newId.longValue(), audience.getNumber(), audience.getCapacity());
     }
 
     @Override
     protected Audience update(Audience audience) {
         LOGGER.debug("Updating audience: {}", audience);
         try {
-            this.jdbcTemplate.update("UPDATE audiences SET number = ?, capacity = ?,  university_id = ? WHERE id = ?",
-                    audience.getNumber(), audience.getCapacity(), audience.getUniversityId(), audience.getId());
+            this.jdbcTemplate.update("UPDATE audiences SET number = ?, capacity = ? WHERE id = ?",
+                    audience.getNumber(), audience.getCapacity(), audience.getId());
             LOGGER.info("Audience updated successful: {}", audience);
-            return new Audience(audience.getId(), audience.getNumber(), audience.getCapacity(), audience.getUniversityId());
+            return new Audience(audience.getId(), audience.getNumber(), audience.getCapacity());
         } catch (DuplicateKeyException e) {
             throw new DuplicateKeyException("Impossible to update audience with id: " + audience.getId() +
                     ". Audience with number: " + audience.getNumber() + " is already exist");
@@ -90,12 +89,5 @@ public class AudienceDao extends AbstractDao<Audience> implements Dao<Audience, 
         }
         LOGGER.info("Successful saved all audiences");
         return result;
-    }
-
-    public List<Audience> getAudiencesByUniversityId(Long id) {
-        LOGGER.debug("Getting audiences with university id: {}", id);
-        List<Audience> audiences = this.jdbcTemplate.query("SELECT * FROM audiences WHERE university_id = ?", new AudienceRowMapper(), id);
-        LOGGER.info("Successful received audiences with university id: {}", id);
-        return audiences;
     }
 }

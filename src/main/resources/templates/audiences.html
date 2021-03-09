@@ -10,13 +10,13 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5">
+    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/audiences/add}" th:object="${audience}">
         <div class="form-row">
             <div class="col">
-                <input class="form-control" placeholder="Number" type="text"/>
+                <input class="form-control" placeholder="Number" required th:field="*{number}" type="text"/>
             </div>
             <div class="col">
-                <input class="form-control" placeholder="Capacity" type="text"/>
+                <input class="form-control" placeholder="Capacity" required th:field="*{capacity}" type="text"/>
             </div>
             <button class="btn btn-light ml-1 " type="submit">Add audience</button>
         </div>
@@ -34,14 +34,188 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="audience: ${audiences}">
+        <tr th:each="audience, iter: ${audiences}">
             <td th:text="${audience.id}"></td>
             <td th:text="${audience.number}"></td>
             <td th:text="${audience.capacity}"></td>
-            <div th:insert="commons/trash-and-edit-buttons :: trash-and-edit-buttons"></div>
+            <td>
+                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                        th:attrappend="data-target=${audience}"
+                        type="button">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                 id="addModalForExceptionOnAdd" role="dialog"
+                 tabindex="-1"
+                 th:if="${serviceExceptionOnAdd !=null}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/audiences/add}"
+                          th:object=" ${audience}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">Add audience</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="addNumberForExceptionOnAdd"
+                                                   name="number" placeholder="Number"
+                                                   required th:value="${newAudience.number}" type="text"/>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" id="addCapacityForExceptionOnAdd"
+                                                   name="capacity" placeholder="Capacity"
+                                                   required th:value="${newAudience.capacity}" type="text"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnAdd !=null}"
+                                    th:text="${serviceExceptionOnAdd.getMessage()}"></h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" disabled id="saveForExceptionOnAdd" type="submit">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                 id="editModalForExceptionOnUpdate" role="dialog"
+                 tabindex="-1"
+                 th:if="${serviceExceptionOnUpdate !=null}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/audiences/update/{id}(id=${newAudience.id})}"
+                          th:object=" ${audience}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel1">Edit audience</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editNumberForExceptionOnUpdate"
+                                                   name="number" placeholder="Number"
+                                                   required th:value="${newAudience.number}" type="text"/>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" id="editCapacityForExceptionOnUpdate"
+                                                   name="capacity" placeholder="Capacity"
+                                                   required th:value="${newAudience.capacity}" type="text"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnUpdate !=null}"
+                                    th:text="${serviceExceptionOnUpdate.getMessage()}"></h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" disabled id="saveForExceptionOnUpdate" type="submit">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+                 tabindex="-1"
+                 th:attrappend="id=${audience}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/audiences/update/{id}(id=${audience.id})}"
+                          th:object="${audience}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit audience</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editNumber"
+                                                   name="number" placeholder="Number"
+                                                   required th:value="${audience.number}" type="text"/>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" id="editCapacity"
+                                                   name="capacity" placeholder="Capacity"
+                                                   required th:value="${audience.capacity}" type="text"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div th:insert="commons/trash-button :: trash-button(deletePath = '/audiences/delete/',
+                id = ${audience.id}, question = 'Are you sure you want to delete a audience?')"></div>
         </tr>
         </tbody>
     </table>
 </div>
+<script crossorigin="anonymous" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
+<script crossorigin="anonymous" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
+<script crossorigin="anonymous" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        th:if="${serviceExceptionOnAdd !=null || serviceExceptionOnAdd !=null}"></script>
+
+<script th:if="${serviceExceptionOnUpdate !=null}">
+    const editNumberInputValueForExceptionOnUpdate = document.getElementById('editNumberForExceptionOnUpdate').value;
+
+    $(document).ready(function () {
+        $('#editModalForExceptionOnUpdate').modal('show');
+    });
+
+    $("#editNumberForExceptionOnUpdate").change(function () {
+        const saveButton = document.getElementById('saveForExceptionOnUpdate');
+        const addNumberInput = document.getElementById('editNumberForExceptionOnUpdate');
+        saveButton.disabled = addNumberInput.value === editNumberInputValueForExceptionOnUpdate;
+    });
+
+    $('#editModalForExceptionOnUpdate').on('hidden.bs.modal', function () {
+        window.location.replace('/audiences');
+    })
+</script>
+
+<script th:if="${serviceExceptionOnAdd !=null}">
+    const addNumberInputValueForExceptionOnAdd = document.getElementById('addNumberForExceptionOnAdd').value;
+
+    $(document).ready(function () {
+        $('#addModalForExceptionOnAdd').modal('show');
+    });
+
+    $("#addNumberForExceptionOnAdd").change(function () {
+        const saveButton = document.getElementById('saveForExceptionOnAdd');
+        const addNumberInput = document.getElementById('addNumberForExceptionOnAdd');
+        saveButton.disabled = addNumberInput.value === addNumberInputValueForExceptionOnAdd;
+    });
+
+    $('#addModalForExceptionOnAdd').on('hidden.bs.modal', function () {
+        window.location.replace('/audiences');
+    })
+</script>
 </body>
 </html>
