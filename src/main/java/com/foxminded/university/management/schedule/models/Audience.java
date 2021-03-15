@@ -2,9 +2,13 @@ package com.foxminded.university.management.schedule.models;
 
 import com.foxminded.university.management.schedule.dao.BaseEntity;
 
+import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
+@Table(name = "audiences")
 public class Audience implements BaseEntity<Long> {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer number;
     private Integer capacity;
