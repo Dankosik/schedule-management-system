@@ -1,54 +1,49 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.FacultyRowMapper;
 import com.foxminded.university.management.schedule.models.Faculty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FacultyDao.class);
-    private final JdbcTemplate jdbcTemplate;
+    private final EntityManager entityManager;
 
-    public FacultyDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public FacultyDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
     protected Faculty create(Faculty faculty) {
         LOGGER.debug("Creating faculty: {}", faculty);
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate);
-        simpleJdbcInsert.withTableName("faculties").usingGeneratedKeyColumns("id");
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", faculty.getName());
-
-        Number newId;
         try {
-            newId = simpleJdbcInsert.executeAndReturnKey(params);
-        } catch (DuplicateKeyException e) {
+            entityManager.persist(faculty);
+            entityManager.flush();
+        } catch (PersistenceException e) {
             throw new DuplicateKeyException("Impossible to create faculty with id: " + faculty.getId() +
                     ". Faculty with name: " + faculty.getName() + " is already exist");
         }
-        LOGGER.info("Faculty created successful with id: {}", newId);
-        return new Faculty(newId.longValue(), faculty.getName());
+        LOGGER.info("Faculty created successful with id: {}", faculty.getId());
+        return new Faculty(faculty.getId(), faculty.getName(), faculty.getGroups());
     }
 
     @Override
     protected Faculty update(Faculty faculty) {
         LOGGER.debug("Updating faculty: {}", faculty);
         try {
-            this.jdbcTemplate.update("UPDATE faculties SET name = ? WHERE id = ?",
-                    faculty.getName(), faculty.getId());
+            entityManager.merge(faculty);
+            entityManager.flush();
             LOGGER.info("Faculty updated successful: {}", faculty);
-            return new Faculty(faculty.getId(), faculty.getName());
-        } catch (DuplicateKeyException e) {
+            return new Faculty(faculty.getId(), faculty.getName(), faculty.getGroups());
+        } catch (PersistenceException e) {
             throw new DuplicateKeyException("Impossible to update faculty with id: " + faculty.getId() +
                     ". Faculty with name: " + faculty.getName() + " is already exist");
         }
@@ -57,16 +52,15 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
     @Override
     public Optional<Faculty> getById(Long id) {
         LOGGER.debug("Getting faculty by id: {}", id);
-        Optional<Faculty> faculty = this.jdbcTemplate.query("SELECT * FROM faculties WHERE id = ?", new FacultyRowMapper(), new Object[]{id})
-                .stream().findAny();
+        Faculty faculty = entityManager.find(Faculty.class, id);
         LOGGER.info("Received faculty by id: {}. Received faculty: {}", id, faculty);
-        return faculty;
+        return faculty != null ? Optional.of(faculty) : Optional.empty();
     }
 
     @Override
     public List<Faculty> getAll() {
         LOGGER.debug("Getting all faculties");
-        List<Faculty> faculties = this.jdbcTemplate.query("SELECT * FROM faculties", new FacultyRowMapper());
+        List<Faculty> faculties = entityManager.createQuery("from Faculty", Faculty.class).getResultList();
         LOGGER.info("Faculties received successful");
         return faculties;
     }
@@ -74,9 +68,13 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
     @Override
     public boolean deleteById(Long id) {
         LOGGER.debug("Deleting faculty with id: {}", id);
-        boolean isDeleted = this.jdbcTemplate.update("DELETE FROM faculties WHERE id = ?", id) == 1;
+        Faculty faculty = entityManager.find(Faculty.class, id);
+        if (faculty == null) {
+            return false;
+        }
+        entityManager.remove(faculty);
         LOGGER.info("Successful deleted faculty with id: {}", id);
-        return isDeleted;
+        return true;
     }
 
     @Override
