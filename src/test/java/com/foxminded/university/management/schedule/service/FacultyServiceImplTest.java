@@ -19,6 +19,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {FacultyServiceImpl.class})
 class FacultyServiceImplTest {
-    private final Faculty faculty = new Faculty(1L, "FAIT");
+    private final Faculty faculty = new Faculty(1L, "FAIT", Arrays.asList(new Group(1L, "QAS-92")));
     private final List<Faculty> faculties = List.of(faculty, new Faculty(2L, "FKFN"));
     private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null);
     private final Group group = new Group(1L, "AB-81", null);

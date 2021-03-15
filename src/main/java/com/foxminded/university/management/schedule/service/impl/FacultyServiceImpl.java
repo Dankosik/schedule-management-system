@@ -86,12 +86,12 @@ public class FacultyServiceImpl implements FacultyService {
         if (!isFacultyPresent)
             throw new ServiceException("Impossible to add group to faculty. Faculty with id: " + faculty.getId() + " is not exist");
 
-        boolean isGroupAlreadyAddedToFaculty = group.getFacultyId() != null && group.getFacultyId().equals(faculty.getId());
+        boolean isGroupAlreadyAddedToFaculty = group.getFaculty() != null && group.getFaculty().equals(faculty.getId());
         LOGGER.debug("Group is already added to faculty: {}", isGroupAlreadyAddedToFaculty);
         if (isGroupAlreadyAddedToFaculty)
             throw new ServiceException("Group with id: " + group.getId() + " is already added to faculty with id: " + faculty.getId());
 
-        group.setFacultyId(faculty.getId());
+        group.setFaculty(faculty);
         Group result = groupService.saveGroup(group);
         LOGGER.info("Successful adding group to faculty");
         return result;
@@ -110,12 +110,12 @@ public class FacultyServiceImpl implements FacultyService {
         if (!isFacultyPresent)
             throw new ServiceException("Impossible to remove group from faculty. Faculty with id: " + faculty.getId() + " is not exist");
 
-        boolean isGroupAlreadyRemovedFromFaculty = group.getFacultyId() == null;
+        boolean isGroupAlreadyRemovedFromFaculty = group.getFaculty() == null;
         LOGGER.debug("Group is already removed from faculty: {}", isGroupAlreadyRemovedFromFaculty);
         if (isGroupAlreadyRemovedFromFaculty)
             throw new ServiceException("Group with id: " + group.getId() + " is already removed from faculty with id: " + group.getId());
 
-        group.setFacultyId(null);
+        group.setFaculty(null);
         Group result = groupService.saveGroup(group);
         LOGGER.info("Successful removing group {} from faculty {}", group, faculty);
         return result;
@@ -190,7 +190,7 @@ public class FacultyServiceImpl implements FacultyService {
     public List<Faculty> getFacultiesForGroups(List<Group> groups) {
         LOGGER.debug("Getting faculties for groups {}", groups);
         List<Faculty> faculties = groups.stream()
-                .map(group -> getFacultyById(group.getFacultyId()))
+                .map(group -> getFacultyById(group.getFaculty().getId()))
                 .collect(Collectors.toList());
         LOGGER.info("Faculties for groups {} received successful", groups);
         return faculties;
@@ -199,7 +199,7 @@ public class FacultyServiceImpl implements FacultyService {
     @Override
     public Faculty getFacultyForGroup(Group group) {
         LOGGER.debug("Getting faculty for group {}", group);
-        Faculty faculty = getFacultyById(group.getFacultyId());
+        Faculty faculty = getFacultyById(group.getFaculty().getId());
         LOGGER.info("Faculty for group {} received successful", group);
         return faculty;
     }

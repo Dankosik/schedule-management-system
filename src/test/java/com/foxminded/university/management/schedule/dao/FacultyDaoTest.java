@@ -3,10 +3,12 @@ package com.foxminded.university.management.schedule.dao;
 import com.foxminded.university.management.schedule.models.Faculty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +18,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class FacultyDaoTest extends BaseDaoTest {
     private FacultyDao facultyDao;
+    @Autowired
+    private EntityManager entityManager;
 
     @BeforeEach
     void setUp() {
-        facultyDao = new FacultyDao(jdbcTemplate);
+        facultyDao = new FacultyDao(entityManager);
     }
 
     @Test

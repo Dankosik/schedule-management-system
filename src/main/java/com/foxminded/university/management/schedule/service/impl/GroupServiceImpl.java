@@ -37,10 +37,10 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group saveGroup(Group group) {
-        boolean isFacultyPresent = facultyDao.getById(group.getFacultyId()).isPresent();
+        boolean isFacultyPresent = facultyDao.getById(group.getFaculty().getId()).isPresent();
         LOGGER.debug("Audience is present: {}", isFacultyPresent);
         if (!isFacultyPresent)
-            throw new ServiceException("Group's faculty with id: " + group.getFacultyId() + " is not exist");
+            throw new ServiceException("Group's faculty with id: " + group.getFaculty().getId() + " is not exist");
         try {
             return groupDao.save(group);
         } catch (DuplicateKeyException e) {
