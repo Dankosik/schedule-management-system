@@ -162,18 +162,22 @@
                                             <select class="form-control" th:field="*{lessonId}">
                                                 <div th:each="lesson: ${allLessons}">
                                                     <div th:if="${lecture.lessonId == lesson.id}">
-                                                        <option th:text="'number: ' + ${lesson.number} +
+                                                        <div th:if="${subjectService.getSubjectForLesson(lesson) != null}">
+                                                            <option th:text="'number: ' + ${lesson.number} +
                                                     ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
                                                     ',    subject: '+ ${subjectService.getSubjectForLesson(lesson).getName()}"
-                                                                th:value="${lesson.id}"></option>
+                                                                    th:value="${lesson.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div th:each="lesson, iter: ${allLessons}">
                                                     <div th:if="${lecture.lessonId != lesson.id}">
-                                                        <option th:text="'number: ' + ${lesson.number} +
+                                                        <div th:if="${subjectService.getSubjectForLesson(lesson) != null}">
+                                                            <option th:text="'number: ' + ${lesson.number} +
                                                     ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
                                                     ',    subject: '+ ${subjectService.getSubjectForLesson(lesson).getName()}"
-                                                                th:value="${lesson.id}"></option>
+                                                                    th:value="${lesson.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </select>

@@ -21,11 +21,13 @@
             <div class="col mt-2">
                 <select class="form-control" th:field="*{lessonId}">
                     <div th:each="lesson, iter: ${allLessons}">
-                        <option th:text="'number: ' + ${lesson.number} +
+                        <div th:if="${subjectsForAllLessons.get(iter.index) != null}">
+                            <option th:text="'number: ' + ${lesson.number} +
                                                     ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${durationsForAllLessons.get(iter.index)} +
                                                     ',    subject: '+ ${subjectsForAllLessons.get(iter.index).getName()}"
-                                th:value="${lesson.id}">
-                        </option>
+                                    th:value="${lesson.id}">
+                            </option>
+                        </div>
                     </div>
                 </select>
             </div>
@@ -153,18 +155,22 @@
                                             <select class="form-control" th:field="*{lessonId}">
                                                 <div th:each="lesson: ${allLessons}">
                                                     <div th:if="${lecture.lessonId == lesson.id}">
-                                                        <option th:text="'number: ' + ${lesson.number} +
+                                                        <div th:if="${subjectService.getSubjectForLesson(lesson) != null}">
+                                                            <option th:text="'number: ' + ${lesson.number} +
                                                     ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
                                                     ',    subject: '+ ${subjectService.getSubjectForLesson(lesson).getName()}"
-                                                                th:value="${lesson.id}"></option>
+                                                                    th:value="${lesson.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div th:each="lesson, iter: ${allLessons}">
                                                     <div th:if="${lecture.lessonId != lesson.id}">
-                                                        <option th:text="'number: ' + ${lesson.number} +
+                                                        <div th:if="${subjectService.getSubjectForLesson(lesson) != null}">
+                                                            <option th:text="'number: ' + ${lesson.number} +
                                                     ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
                                                     ',    subject: '+ ${subjectService.getSubjectForLesson(lesson).getName()}"
-                                                                th:value="${lesson.id}"></option>
+                                                                    th:value="${lesson.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </select>
