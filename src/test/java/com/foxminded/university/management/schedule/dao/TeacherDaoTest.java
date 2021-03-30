@@ -1,56 +1,60 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.models.Faculty;
+import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
+@Transactional
 class TeacherDaoTest extends BaseDaoTest {
     private TeacherDao teacherDao;
+    @Autowired
+    private EntityManager entityManager;
+    private Faculty faculty;
+    private List<Lecture> lectures;
 
     @BeforeEach
     void setUp() {
-        teacherDao = new TeacherDao(jdbcTemplate);
+        teacherDao = new TeacherDao(entityManager);
+        faculty = entityManager.find(Teacher.class, 1000L).getFaculty();
+        lectures = entityManager.find(Teacher.class, 1000L).getLectures();
     }
 
     @Test
     void shouldCreateNewTeacher() {
-        Teacher teacher = new Teacher("John", "Jackson", "Jackson", 1000L);
-        Long teacherId = teacherDao.save(teacher).getId();
-        assertTrue(testUtils.existsById("teachers", teacherId));
+        Teacher actual = teacherDao.save(new Teacher("John", "Jackson", "Jackson", faculty, lectures));
+        Teacher expected = new Teacher(actual.getId(), "John", "Jackson", "Jackson", faculty, lectures);
 
-        Map<String, Object> map = testUtils.getEntry("teachers", teacherId);
-        Teacher actual = new Teacher((String) map.get("first_name"), (String) map.get("last_name"),
-                (String) map.get("middle_name"), (Long) map.get("faculty_id"));
-        assertEquals(teacher, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
     void shouldUpdateTeacher() {
-        Teacher teacher = new Teacher(1000L, "John", "Jackson", "Jackson", 1000L);
-        Long teacherId = teacherDao.save(teacher).getId();
-        assertTrue(testUtils.existsById("teachers", teacherId));
+        Teacher teacher = new Teacher(1000L, "John", "Jackson", "Jackson", faculty, lectures);
 
-        Map<String, Object> map = testUtils.getEntry("teachers", teacherId);
-        Teacher actual = new Teacher((Long) map.get("id"), (String) map.get("first_name"), (String) map.get("last_name"),
-                (String) map.get("middle_name"), (Long) map.get("faculty_id"));
+        assertNotEquals(teacher, entityManager.find(Teacher.class, teacher.getId()));
+
+       Teacher actual = teacherDao.save(teacher);
+
         assertEquals(teacher, actual);
     }
 
     @Test
     void shouldReturnTeacherWithIdOne() {
-        Map<String, Object> map = testUtils.getEntry("teachers", 1000L);
-        Teacher expected = new Teacher((Long) map.get("id"), (String) map.get("first_name"), (String) map.get("last_name"),
-                (String) map.get("middle_name"), (Long) map.get("faculty_id"));
         Teacher actual = teacherDao.getById(1000L).get();
+        Teacher expected = new Teacher(1000L, "Hillel", "St. Leger", "Lugard", faculty, lectures);
 
         assertEquals(expected, actual);
     }
@@ -58,8 +62,10 @@ class TeacherDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfTeachers() {
         List<Teacher> expected = List.of(
-                new Teacher(1000L, "Hillel", "St. Leger", "Lugard", 1000L),
-                new Teacher(1001L, "Lynsey", "Grzeszczak", "McPhillimey", 1001L));
+                new Teacher(1000L, "Hillel", "St. Leger", "Lugard", faculty, lectures),
+                new Teacher(1001L, "Lynsey", "Grzeszczak", "McPhillimey",
+                        entityManager.find(Teacher.class, 1001L).getFaculty(),
+                        entityManager.find(Teacher.class, 1001L).getLectures()));
         List<Teacher> actual = teacherDao.getAll();
 
         assertTrue(actual.containsAll(expected));
@@ -68,31 +74,24 @@ class TeacherDaoTest extends BaseDaoTest {
     @Test
     void shouldDeleteTeacher() {
         assertTrue(teacherDao.deleteById(1000L));
-        assertFalse(testUtils.existsById("teachers", 1000L));
+        assertFalse(teacherDao.getById(1000L).isPresent());
     }
 
     @Test
     void shouldSaveListOfTeachers() {
         List<Teacher> teachers = List.of(
-                new Teacher("John", "Jackson", "Jackson", 1000L),
-                new Teacher("Mike", "Conor", "Conor", 1001L));
+                new Teacher("John", "Jackson", "Jackson", faculty, null),
+                new Teacher("Mike", "Conor", "Conor", faculty, null));
 
         List<Teacher> expected = List.of(
-                new Teacher(1000L, "Hillel", "St. Leger", "Lugard", 1000L),
-                new Teacher(1001L, "Lynsey", "Grzeszczak", "McPhillimey", 1001L),
-                new Teacher(1L, "John", "Jackson", "Jackson", 1000L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 1001L));
+                new Teacher(1000L, "Hillel", "St. Leger", "Lugard", faculty, lectures),
+                new Teacher(1001L, "Lynsey", "Grzeszczak", "McPhillimey",
+                        entityManager.find(Teacher.class, 1001L).getFaculty(),
+                        entityManager.find(Teacher.class, 1001L).getLectures()),
+                new Teacher(1L, "John", "Jackson", "Jackson", faculty, null),
+                new Teacher(2L, "Mike", "Conor", "Conor", faculty, null));
         teacherDao.saveAll(teachers);
         List<Teacher> actual = teacherDao.getAll();
-
-        assertTrue(actual.containsAll(expected));
-    }
-
-    @Test
-    void shouldReturnListOfTeachersWithFacultyIdOne() {
-        List<Teacher> expected = List.of(
-                new Teacher(1000L, "Hillel", "St. Leger", "Lugard", 1000L));
-        List<Teacher> actual = teacherDao.getTeachersByFacultyId(1000L);
 
         assertTrue(actual.containsAll(expected));
     }

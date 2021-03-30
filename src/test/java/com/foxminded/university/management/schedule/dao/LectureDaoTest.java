@@ -1,72 +1,67 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.models.Lecture;
-import com.foxminded.university.management.schedule.models.Lesson;
+import com.foxminded.university.management.schedule.models.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.sql.Date;
-import java.sql.Time;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
+@Transactional
 class LectureDaoTest extends BaseDaoTest {
     private LectureDao lectureDao;
-    @MockBean
-    private LessonDao lessonDao;
+    @Autowired
+    private EntityManager entityManager;
+    private Audience audience;
+    private Group group;
+    private Lesson lesson;
+    private Teacher teacher;
 
     @BeforeEach
     void setUp() {
-        lectureDao = new LectureDao(jdbcTemplate, lessonDao);
+        lectureDao = new LectureDao(entityManager);
+        audience = entityManager.find(Lecture.class, 1000L).getAudience();
+        group = entityManager.find(Lecture.class, 1000L).getGroup();
+        lesson = entityManager.find(Lecture.class, 1000L).getLesson();
+        teacher = entityManager.find(Lecture.class, 1000L).getTeacher();
     }
 
     @Test
     void shouldCreateNewLecture() {
-        Lecture expected = new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)), 1000L, 1000L, 1000L, 1000L);
-        Lesson lesson = new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L);
-        when(lessonDao.getById(1000L)).thenReturn(java.util.Optional.of(lesson));
-
-        Long lectureId = lectureDao.save(expected).getId();
-        assertTrue(testUtils.existsById("lectures", lectureId));
-
-        Map<String, Object> map = testUtils.getEntry("lectures", lectureId);
-        Lecture actual = new Lecture(lesson.getNumber(), (Date) map.get("date"), (Long) map.get("audience_id"),
-                (Long) map.get("group_id"), (Long) map.get("lesson_id"), (Long) map.get("teacher_id"));
+        Lecture actual = lectureDao.save(new Lecture(777, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                audience, group, lesson, teacher));
+        Lecture expected = new Lecture(777, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                audience, group, lesson, teacher);
 
         assertEquals(expected, actual);
-
-        verify(lessonDao, times(1)).getById(1000L);
     }
 
     @Test
     void shouldUpdateLecture() {
-        Lecture lecture = new Lecture(1000L, 2, Date.valueOf(LocalDate.of(2020, 1, 1)), 1000L, 1000L, 1000L, 1000L);
-        Lesson lesson = new Lesson(1000L, 2, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L);
-        when(lessonDao.getById(1000L)).thenReturn(java.util.Optional.of(lesson));
-        Long lectureId = lectureDao.save(lecture).getId();
-        assertTrue(testUtils.existsById("lectures", lectureId));
+        Lecture lecture = new Lecture(1000L, 777, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                audience, group, lesson, teacher);
 
-        Map<String, Object> map = testUtils.getEntry("lectures", lectureId);
-        Lecture actual = new Lecture((Long) map.get("id"), (Integer) map.get("number"), (Date) map.get("date"),
-                (Long) map.get("audience_id"), (Long) map.get("group_id"), (Long) map.get("lesson_id"), (Long) map.get("teacher_id"));
+        assertNotEquals(lecture, entityManager.find(Lecture.class, lecture.getId()));
+
+        Lecture actual = lectureDao.save(lecture);
 
         assertEquals(lecture, actual);
     }
 
     @Test
     void shouldReturnLectureWithIdOne() {
-        Lecture expected = new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L);
+        Lecture expected = new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                audience, group, lesson, teacher);
         Lecture actual = lectureDao.getById(1000L).get();
 
         assertEquals(expected, actual);
@@ -75,10 +70,23 @@ class LectureDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfLecture() {
         List<Lecture> expected = List.of(
-                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
-                new Lecture(1001L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1001L, 1000L, 1001L, 1001L),
-                new Lecture(1002L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 1002L, 1000L, 1002L, 1000L),
-                new Lecture(1003L, 4, Date.valueOf(LocalDate.of(2021, 2, 1)), 1003L, 1000L, 1003L, 1001L));
+                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                        audience, group, lesson, teacher),
+                new Lecture(1001L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                        entityManager.find(Lecture.class, 1001L).getAudience(),
+                        entityManager.find(Lecture.class, 1001L).getGroup(),
+                        entityManager.find(Lecture.class, 1001L).getLesson(),
+                        entityManager.find(Lecture.class, 1001L).getTeacher()),
+                new Lecture(1002L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                        entityManager.find(Lecture.class, 1002L).getAudience(),
+                        entityManager.find(Lecture.class, 1002L).getGroup(),
+                        entityManager.find(Lecture.class, 1002L).getLesson(),
+                        entityManager.find(Lecture.class, 1002L).getTeacher()),
+                new Lecture(1003L, 4, Date.valueOf(LocalDate.of(2021, 2, 1)),
+                        entityManager.find(Lecture.class, 1003L).getAudience(),
+                        entityManager.find(Lecture.class, 1003L).getGroup(),
+                        entityManager.find(Lecture.class, 1003L).getLesson(),
+                        entityManager.find(Lecture.class, 1003L).getTeacher()));
         List<Lecture> actual = lectureDao.getAll();
 
         assertTrue(actual.containsAll(expected));
@@ -87,67 +95,36 @@ class LectureDaoTest extends BaseDaoTest {
     @Test
     void shouldDeleteLecture() {
         assertTrue(lectureDao.deleteById(1000L));
-        assertFalse(testUtils.existsById("lectures", 1000L));
+        assertFalse(lectureDao.getById(1000L).isPresent());
     }
 
     @Test
     void shouldSaveListOfLectures() {
-        Lesson lesson = new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L);
-        when(lessonDao.getById(1000L)).thenReturn(java.util.Optional.of(lesson));
-
         List<Lecture> lectures = List.of(
-                new Lecture(222, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
-                new Lecture(223, Date.valueOf(LocalDate.of(2021, 1, 2)), 1001L, 1000L, 1000L, 1001L));
+                new Lecture(222, Date.valueOf(LocalDate.of(2021, 1, 1)),  audience, group, lesson, teacher),
+                new Lecture(223, Date.valueOf(LocalDate.of(2021, 1, 2)),  audience, group, lesson, teacher));
 
         List<Lecture> expected = List.of(
-                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
-                new Lecture(1001L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1001L, 1000L, 1001L, 1001L),
-                new Lecture(1002L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 1002L, 1000L, 1002L, 1000L),
-                new Lecture(1003L, 4, Date.valueOf(LocalDate.of(2021, 2, 1)), 1003L, 1000L, 1003L, 1001L),
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
-                new Lecture(2L, 1, Date.valueOf(LocalDate.of(2021, 1, 2)), 1001L, 1000L, 1000L, 1001L));
+                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),  audience, group, lesson, teacher),
+                new Lecture(1001L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                        entityManager.find(Lecture.class, 1001L).getAudience(),
+                        entityManager.find(Lecture.class, 1001L).getGroup(),
+                        entityManager.find(Lecture.class, 1001L).getLesson(),
+                        entityManager.find(Lecture.class, 1001L).getTeacher()),
+                new Lecture(1002L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                        entityManager.find(Lecture.class, 1002L).getAudience(),
+                        entityManager.find(Lecture.class, 1002L).getGroup(),
+                        entityManager.find(Lecture.class, 1002L).getLesson(),
+                        entityManager.find(Lecture.class, 1002L).getTeacher()),
+                new Lecture(1003L, 4, Date.valueOf(LocalDate.of(2021, 2, 1)),
+                        entityManager.find(Lecture.class, 1003L).getAudience(),
+                        entityManager.find(Lecture.class, 1003L).getGroup(),
+                        entityManager.find(Lecture.class, 1003L).getLesson(),
+                        entityManager.find(Lecture.class, 1003L).getTeacher()),
+                new Lecture(1L, 222, Date.valueOf(LocalDate.of(2021, 1, 1)),  audience, group, lesson, teacher),
+                new Lecture(2L, 223, Date.valueOf(LocalDate.of(2021, 1, 2)),  audience, group, lesson, teacher));
         lectureDao.saveAll(lectures);
         List<Lecture> actual = lectureDao.getAll();
-
-        assertTrue(actual.containsAll(expected));
-
-        verify(lessonDao, times(2)).getById(1000L);
-    }
-
-    @Test
-    void shouldReturnListOfLecturesWithAudienceIdOne() {
-        List<Lecture> expected = List.of(
-                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L));
-        List<Lecture> actual = lectureDao.getLecturesByAudienceId(1000L);
-
-        assertTrue(actual.containsAll(expected));
-    }
-
-    @Test
-    void shouldReturnListOfLecturesWithLessonIdOne() {
-        List<Lecture> expected = List.of(
-                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L));
-        List<Lecture> actual = lectureDao.getLecturesByLessonId(1000L);
-
-        assertTrue(actual.containsAll(expected));
-    }
-
-    @Test
-    void shouldReturnListOfLecturesWithTeacherIdOne() {
-        List<Lecture> expected = List.of(
-                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
-                new Lecture(1002L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 1002L, 1000L, 1002L, 1000L));
-        List<Lecture> actual = lectureDao.getLecturesByTeacherId(1000L);
-
-        assertTrue(actual.containsAll(expected));
-    }
-
-    @Test
-    void shouldReturnListOfLecturesWithGroupIdOne() {
-        List<Lecture> expected = List.of(
-                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1000L, 1000L, 1000L, 1000L),
-                new Lecture(1002L, 3, Date.valueOf(LocalDate.of(2021, 1, 1)), 1002L, 1000L, 1002L, 1000L));
-        List<Lecture> actual = lectureDao.getLecturesByGroupId(1000L);
 
         assertTrue(actual.containsAll(expected));
     }
@@ -156,7 +133,6 @@ class LectureDaoTest extends BaseDaoTest {
     void shouldNotFindLectureNotExist() {
         assertFalse(lectureDao.getById(21L).isPresent());
     }
-
 
     @Test
     void shouldReturnFalseIfLectureNotExist() {

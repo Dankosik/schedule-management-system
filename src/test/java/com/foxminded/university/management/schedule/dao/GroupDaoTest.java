@@ -1,66 +1,74 @@
 package com.foxminded.university.management.schedule.dao;
 
+import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.models.Student;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
+@Transactional
 class GroupDaoTest extends BaseDaoTest {
     private GroupDao groupDao;
     @Autowired
-    private  EntityManager entityManager;
+    private EntityManager entityManager;
+    private Faculty faculty;
+    private List<Student> students;
+    private List<Lecture> lectures;
+
     @BeforeEach
     void setUp() {
         groupDao = new GroupDao(entityManager);
+        faculty = entityManager.find(Group.class, 1000L).getFaculty();
+        students = entityManager.find(Group.class, 1000L).getStudents();
+        lectures = entityManager.find(Group.class, 1000L).getLectures();
     }
 
     @Test
     void shouldCreateNewGroup() {
-        Group group = new Group("AB-81", 1000L);
-        Long groupId = groupDao.save(group).getId();
-        assertTrue(testUtils.existsById("groups", groupId));
+        Group actual = groupDao.save(new Group("AB-11", faculty, students, lectures));
+        Group expected = new Group(actual.getId(), "AB-11", faculty, students, lectures);
 
-        Map<String, Object> map = testUtils.getEntry("groups", groupId);
-        Group actual = new Group((String) map.get("name"), (Long) map.get("faculty_id"));
-        assertEquals(group, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
     void shouldUpdateGroup() {
-        Group group = new Group(1000L, "AB-81", 1000L);
-        Long groupId = groupDao.save(group).getId();
-        assertTrue(testUtils.existsById("groups", groupId));
+        Group group = new Group(1000L, "AB-81", faculty, students, lectures);
 
-        Map<String, Object> map = testUtils.getEntry("groups", groupId);
-        Group actual = new Group((Long) map.get("id"), (String) map.get("name"), (Long) map.get("faculty_id"));
+        assertNotEquals(group, entityManager.find(Group.class, group.getId()));
+
+        Group actual = groupDao.save(group);
+
         assertEquals(group, actual);
     }
 
     @Test
     void shouldReturnGroupWithIdOne() {
-        Map<String, Object> map = testUtils.getEntry("groups", 1000L);
-        Group expected = new Group((Long) map.get("id"), (String) map.get("name"), (Long) map.get("faculty_id"));
         Group actual = groupDao.getById(1000L).get();
-
+        Group expected = new Group(1000L, "AB-91", faculty, students, lectures);
         assertEquals(expected, actual);
     }
 
     @Test
     void shouldReturnListOfGroups() {
         List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L),
-                new Group(1001L, "BC-01", 1001L));
+                new Group(1000L, "AB-91", faculty, students, lectures),
+                new Group(1001L, "BC-01", entityManager.find(Group.class, 1001L).getFaculty(),
+                        entityManager.find(Group.class, 1001L).getStudents(), entityManager.find(Group.class, 1001L).getLectures()));
         List<Group> actual = groupDao.getAll();
 
         assertTrue(actual.containsAll(expected));
@@ -69,31 +77,23 @@ class GroupDaoTest extends BaseDaoTest {
     @Test
     void shouldDeleteGroup() {
         assertTrue(groupDao.deleteById(1000L));
-        assertFalse(testUtils.existsById("groups", 1000L));
+        assertFalse(groupDao.getById(1000L).isPresent());
     }
 
     @Test
     void shouldSaveListOfGroups() {
         List<Group> groups = List.of(
-                new Group("CD-71", 1000L),
-                new Group("IF-61", 1001L));
+                new Group("CD-71", faculty, null, null),
+                new Group("IF-61", faculty, null, null));
 
         List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L),
-                new Group(1001L, "BC-01", 1001L),
-                new Group(1L, "CD-71", 1000L),
-                new Group(2L, "IF-61", 1001L));
+                new Group(1000L, "AB-91",  faculty, students, lectures),
+                new Group(1001L, "BC-01", entityManager.find(Group.class, 1001L).getFaculty(),
+                        entityManager.find(Group.class, 1001L).getStudents(), entityManager.find(Group.class, 1001L).getLectures()),
+                new Group(1L, "CD-71", faculty, null, null),
+                new Group(2L, "IF-61", faculty, null, null));
         groupDao.saveAll(groups);
         List<Group> actual = groupDao.getAll();
-
-        assertTrue(actual.containsAll(expected));
-    }
-
-    @Test
-    void shouldReturnListOfGroupsWithFacultyIdOne() {
-        List<Group> expected = List.of(
-                new Group(1000L, "AB-91", 1000L));
-        List<Group> actual = groupDao.getGroupsByFacultyId(1000L);
 
         assertTrue(actual.containsAll(expected));
     }
@@ -109,12 +109,14 @@ class GroupDaoTest extends BaseDaoTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
-        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group("AB-91", 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group("AB-91", faculty, students, lectures)));
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
-        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group(1001L, "AB-91", 1000L)));
+        assertThrows(DuplicateKeyException.class, () -> groupDao.save(new Group(1001L, "AB-91", faculty, students, lectures)));
     }
 }

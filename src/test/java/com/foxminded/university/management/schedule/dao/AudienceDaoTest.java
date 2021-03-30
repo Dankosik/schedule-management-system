@@ -1,23 +1,34 @@
 package com.foxminded.university.management.schedule.dao;
 
 import com.foxminded.university.management.schedule.models.Audience;
+import com.foxminded.university.management.schedule.models.Lecture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
+@Transactional
 class AudienceDaoTest extends BaseDaoTest {
     private AudienceDao audienceDao;
+    private final Audience audience = new Audience(1L, 101, 45, null);
+    private final List<Lecture> lectures = List.of(new Lecture(1L, 101,
+                    Date.valueOf(LocalDate.of(2020, 1, 1)), audience, null, null, null),
+            new Lecture(2L, 102,
+                    Date.valueOf(LocalDate.of(2020, 2, 1)), audience, null, null, null));
+
     @Autowired
     private EntityManager entityManager;
 
@@ -28,31 +39,27 @@ class AudienceDaoTest extends BaseDaoTest {
 
     @Test
     void shouldCreateNewAudience() {
-        Audience expected = new Audience(310, 25);
-        Long audienceId = audienceDao.save(new Audience(310, 25)).getId();
-        assertTrue(testUtils.existsById("audiences", audienceId));
+        Audience actual = audienceDao.save(new Audience(310, 25, lectures));
+        Audience expected = new Audience(actual.getId(), 310, 25, lectures);
 
-        Map<String, Object> map = testUtils.getEntry("audiences", audienceId);
-        Audience actual = new Audience((Integer) map.get("number"), (Integer) map.get("capacity"));
         assertEquals(expected, actual);
     }
 
     @Test
     void shouldUpdateAudience() {
-        Audience audience = new Audience(1000L, 310, 25);
-        Long audienceId = audienceDao.save(audience).getId();
-        assertTrue(testUtils.existsById("audiences", audienceId));
+        Audience audience = new Audience(1000L, 402, 310, entityManager.find(Audience.class, 1000L).getLectures());
 
-        Map<String, Object> map = testUtils.getEntry("audiences", audienceId);
-        Audience actual = new Audience((Long) map.get("id"), (Integer) map.get("number"), (Integer) map.get("capacity"));
+        assertNotEquals(audience, entityManager.find(Audience.class, audience.getId()));
+
+        Audience actual = audienceDao.save(audience);
+
         assertEquals(audience, actual);
     }
 
     @Test
     void shouldReturnAudienceWithIdOne() {
-        Map<String, Object> map = testUtils.getEntry("audiences", 1000L);
-        Audience expected = new Audience((Long) map.get("id"), (Integer) map.get("number"), (Integer) map.get("capacity"));
         Audience actual = audienceDao.getById(1000L).get();
+        Audience expected = new Audience(1000L, 301, 50, entityManager.find(Audience.class, 1000L).getLectures());
 
         assertEquals(expected, actual);
     }
@@ -60,11 +67,11 @@ class AudienceDaoTest extends BaseDaoTest {
     @Test
     void shouldReturnListOfAudiences() {
         List<Audience> expected = List.of(
-                new Audience(1000L, 301, 50),
-                new Audience(1001L, 302, 75),
-                new Audience(1002L, 303, 100),
-                new Audience(1003L, 304, 30),
-                new Audience(1004L, 305, 55));
+                new Audience(1000L, 301, 50, entityManager.find(Audience.class, 1000L).getLectures()),
+                new Audience(1001L, 302, 75, entityManager.find(Audience.class, 1001L).getLectures()),
+                new Audience(1002L, 303, 100, entityManager.find(Audience.class, 1002L).getLectures()),
+                new Audience(1003L, 304, 30, entityManager.find(Audience.class, 1003L).getLectures()),
+                new Audience(1004L, 305, 55, entityManager.find(Audience.class, 1004L).getLectures()));
         List<Audience> actual = audienceDao.getAll();
 
         assertTrue(actual.containsAll(expected));
@@ -73,23 +80,23 @@ class AudienceDaoTest extends BaseDaoTest {
     @Test
     void shouldDeleteAudience() {
         assertTrue(audienceDao.deleteById(1000L));
-        assertFalse(testUtils.existsById("audiences", 1000L));
+        assertFalse(audienceDao.getById(1000L).isPresent());
     }
 
     @Test
     void shouldSaveListOfAudiences() {
         List<Audience> audiences = List.of(
-                new Audience(400, 15),
-                new Audience(401, 60));
+                new Audience(400, 15, lectures),
+                new Audience(401, 60, lectures));
 
         List<Audience> expected = List.of(
-                new Audience(1000L, 301, 50),
-                new Audience(1001L, 302, 75),
-                new Audience(1002L, 303, 100),
-                new Audience(1003L, 304, 30),
-                new Audience(1004L, 305, 55),
-                new Audience(1L, 400, 15),
-                new Audience(2L, 401, 60));
+                new Audience(1000L, 301, 50, entityManager.find(Audience.class, 1000L).getLectures()),
+                new Audience(1001L, 302, 75, entityManager.find(Audience.class, 1001L).getLectures()),
+                new Audience(1002L, 303, 100, entityManager.find(Audience.class, 1002L).getLectures()),
+                new Audience(1003L, 304, 30, entityManager.find(Audience.class, 1003L).getLectures()),
+                new Audience(1004L, 305, 55, entityManager.find(Audience.class, 1004L).getLectures()),
+                new Audience(1L, 400, 15, lectures),
+                new Audience(2L, 401, 60, lectures));
         audienceDao.saveAll(audiences);
         List<Audience> actual = audienceDao.getAll();
 
@@ -107,12 +114,13 @@ class AudienceDaoTest extends BaseDaoTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnCreate() {
-        assertThrows(DuplicateKeyException.class, () -> audienceDao.save(new Audience(301, 12)));
+        assertThrows(DuplicateKeyException.class, () -> audienceDao.save(new Audience(301, 12, lectures)));
     }
 
     @Test
     void shouldThrowExceptionIfUniquenessConstraintViolatedOnUpdate() {
-        assertThrows(DuplicateKeyException.class, () -> audienceDao.save(new Audience(1000L, 303, 12)));
+        assertThrows(DuplicateKeyException.class, () -> audienceDao.save(new Audience(1000L, 303, 12, lectures)));
     }
 }

@@ -22,8 +22,6 @@ class BaseDaoTest {
             .withPassword("sa");
 
     @Autowired
-    protected TestUtils testUtils;
-    @Autowired
     protected DataSource dataSource;
     @Autowired
     protected JdbcTemplate jdbcTemplate;
