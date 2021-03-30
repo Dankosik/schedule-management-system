@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.service;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
+import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -24,10 +25,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {StudentServiceImpl.class})
 class StudentServiceImplTest {
-    private final Student student = new Student(1L, "John", "Jackson", "Jackson", 1, null);
+    private final Group group = new Group(1L, "AB-01", null, null, null);
+    private final Student student = new Student(1L, "John", "Jackson", "Jackson", 1, group);
     private final List<Student> students = List.of(student,
-            new Student(2L, "Ferdinanda", "Casajuana", "Lambarton", 1, null),
-            new Student(3L, "Lindsey", "Syplus", "Slocket", 1, null));
+            new Student(2L, "Ferdinanda", "Casajuana", "Lambarton", 1, group),
+            new Student(3L, "Lindsey", "Syplus", "Slocket", 1, group));
     @Autowired
     private StudentServiceImpl studentService;
     @MockBean
@@ -37,13 +39,16 @@ class StudentServiceImplTest {
 
     @Test
     void shouldSaveStudent() {
-        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, null)))
+        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, group)))
                 .thenReturn(student);
+        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
+
         Student actual = studentService.saveStudent(student);
 
         assertEquals(student, actual);
 
         verify(studentDao, times(1)).save(student);
+        verify(groupDao, times(1)).getById(1L);
     }
 
     @Test
@@ -79,12 +84,13 @@ class StudentServiceImplTest {
 
     @Test
     void shouldSaveListOfStudents() {
-        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, null)))
+        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, group)))
                 .thenReturn(student);
-        when(studentDao.save(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, null)))
+        when(studentDao.save(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, group)))
                 .thenReturn(students.get(1));
-        when(studentDao.save(new Student("Lindsey", "Syplus", "Slocket", 1, null)))
+        when(studentDao.save(new Student("Lindsey", "Syplus", "Slocket", 1, group)))
                 .thenReturn(students.get(2));
+        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
 
         List<Student> actual = studentService.saveAllStudents(students);
 
@@ -93,6 +99,7 @@ class StudentServiceImplTest {
         verify(studentDao, times(1)).save(students.get(0));
         verify(studentDao, times(1)).save(students.get(1));
         verify(studentDao, times(1)).save(students.get(2));
+        verify(groupDao, times(3)).getById(1L);
     }
 
     @Test
@@ -107,7 +114,7 @@ class StudentServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfStudentGroupNotFound() {
-        Student expected = new Student(1L, "John", "Jackson", "Jackson", 1, 1L);
+        Student expected = new Student(1L, "John", "Jackson", "Jackson", 1, group);
 
         when(studentDao.getById(1L)).thenReturn(Optional.of(expected));
         when(groupDao.getById(1L)).thenReturn(Optional.empty());
