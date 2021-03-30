@@ -26,7 +26,7 @@
                        id="duration" required th:field="*{duration}">
             </div>
             <div class="col mt-1">
-                <select class="form-control" th:field="*{subjectId}">
+                <select class="form-control" th:field="*{subject}">
                     <option th:each="subject: ${allSubjects}" th:text="${subject.name}"
                             th:value="${subject.id}"></option>
                 </select>
@@ -101,15 +101,25 @@
                                                placeholder="Duration" th:value="${lesson.duration}">
                                     </div>
                                     <div class="col mt-1">
-                                        <select class="form-control" th:field="*{subjectId}">
+                                        <select class="form-control" th:field="*{subject}">
                                             <div th:each="subject: ${allSubjects}">
-                                                <div th:if="${lesson.subjectId == subject.id}">
-                                                    <option th:text="${subject.name}"
-                                                            th:value="${subject.id}"></option>
+                                                <div th:if="${lesson.subject != null}">
+                                                    <div th:if="${lesson.subject.id == subject.id}">
+                                                        <option th:text="${subject.name}"
+                                                                th:value="${subject.id}"></option>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div th:each="subject: ${allSubjects}">
-                                                <div th:if="${lesson.subjectId != subject.id}">
+                                                <div th:if="${lesson.subject != null}">
+                                                    <div th:if="${lesson.subject.id != subject.id}">
+                                                        <option th:text="${subject.name}"
+                                                                th:value="${subject.id}"></option>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div th:if="${lesson.subject == null}">
+                                                <div th:each="subject: ${allSubjects}">
                                                     <option th:text="${subject.name}"
                                                             th:value="${subject.id}"></option>
                                                 </div>
