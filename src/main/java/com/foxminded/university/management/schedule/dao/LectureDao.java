@@ -1,71 +1,56 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.LectureRowMapper;
 import com.foxminded.university.management.schedule.models.Lecture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AudienceDao.class);
-    private final JdbcTemplate jdbcTemplate;
-    private final LessonDao lessonDao;
+    private final EntityManager entityManager;
 
-    public LectureDao(JdbcTemplate jdbcTemplate, LessonDao lessonDao) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.lessonDao = lessonDao;
+    public LectureDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
     protected Lecture create(Lecture lecture) {
         LOGGER.debug("Creating lecture: {}", lecture);
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate);
-        simpleJdbcInsert.withTableName("lectures").usingGeneratedKeyColumns("id");
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("number", lessonDao.getById(lecture.getLessonId()).get().getNumber());
-        params.put("date", lecture.getDate());
-        params.put("audience_id", lecture.getAudienceId());
-        params.put("group_id", lecture.getGroupId());
-        params.put("lesson_id", lecture.getLessonId());
-        params.put("teacher_id", lecture.getTeacherId());
-
-        Number newId = simpleJdbcInsert.executeAndReturnKey(params);
-        LOGGER.info("Lecture created successful with id: {}", newId);
-        return new Lecture(newId.longValue(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getGroupId(), lecture.getLessonId(), lecture.getTeacherId());
+        entityManager.persist(lecture);
+        LOGGER.info("Lecture created successful with id: {}", lecture.getId());
+        return new Lecture(lecture.getId(), lecture.getNumber(), lecture.getDate(), lecture.getAudience(),
+                lecture.getGroup(), lecture.getLesson(), lecture.getTeacher());
     }
 
     @Override
     protected Lecture update(Lecture lecture) {
         LOGGER.debug("Updating lecture: {}", lecture);
-        this.jdbcTemplate.update("UPDATE lectures SET number = ?, date = ?,  audience_id = ?, lesson_id = ?, group_id = ?, " +
-                        "teacher_id=? WHERE id = ?",
-                lessonDao.getById(lecture.getLessonId()).get().getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getLessonId(), lecture.getGroupId(), lecture.getTeacherId(), lecture.getId());
+        entityManager.merge(lecture);
         LOGGER.info("Lecture updated successful: {}", lecture);
-        return new Lecture(lecture.getId(), lecture.getNumber(), lecture.getDate(), lecture.getAudienceId(),
-                lecture.getGroupId(), lecture.getLessonId(), lecture.getTeacherId());
+        return new Lecture(lecture.getId(), lecture.getNumber(), lecture.getDate(), lecture.getAudience(),
+                lecture.getGroup(), lecture.getLesson(), lecture.getTeacher());
     }
 
     @Override
     public Optional<Lecture> getById(Long id) {
         LOGGER.debug("Getting lecture by id: {}", id);
-        Optional<Lecture> lecture = this.jdbcTemplate.query("SELECT * FROM lectures WHERE id = ?", new LectureRowMapper(), new Object[]{id})
-                .stream().findAny();
+        Lecture lecture = entityManager.find(Lecture.class, id);
         LOGGER.info("Received lecture by id: {}. Received lecture: {}", id, lecture);
-        return lecture;
+        return lecture != null ? Optional.of(lecture) : Optional.empty();
     }
 
     @Override
     public List<Lecture> getAll() {
         LOGGER.debug("Getting all lectures");
-        List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures", new LectureRowMapper());
+        List<Lecture> lectures = entityManager.createQuery("select lecture from  Lecture lecture " +
+                "left join fetch lecture.group g left join fetch g.faculty left join fetch lecture.audience left join fetch lecture.lesson le " +
+                "left join fetch le.subject left join fetch lecture.teacher t left join fetch t.faculty", Lecture.class).getResultList();
         LOGGER.info("Lectures received successful");
         return lectures;
     }
@@ -73,9 +58,13 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
     @Override
     public boolean deleteById(Long id) {
         LOGGER.debug("Deleting lecture with id: {}", id);
-        boolean isDeleted = this.jdbcTemplate.update("DELETE FROM lectures WHERE id = ?", id) == 1;
+        Lecture lecture = entityManager.find(Lecture.class, id);
+        if (lecture == null) {
+            return false;
+        }
+        entityManager.remove(lecture);
         LOGGER.info("Successful deleted lecture with id: {}", id);
-        return isDeleted;
+        return true;
     }
 
     @Override
@@ -87,33 +76,5 @@ public class LectureDao extends AbstractDao<Lecture> implements Dao<Lecture, Lon
         }
         LOGGER.info("Successful saved all lectures");
         return result;
-    }
-
-    public List<Lecture> getLecturesByAudienceId(Long id) {
-        LOGGER.debug("Getting lectures with audience id: {}", id);
-        List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures WHERE audience_id = ?", new LectureRowMapper(), id);
-        LOGGER.info("Successful received lectures with audience id: {}", id);
-        return lectures;
-    }
-
-    public List<Lecture> getLecturesByLessonId(Long id) {
-        LOGGER.debug("Getting lectures with lesson id: {}", id);
-        List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures WHERE lesson_id = ?", new LectureRowMapper(), id);
-        LOGGER.info("Successful received lectures with lesson id: {}", id);
-        return lectures;
-    }
-
-    public List<Lecture> getLecturesByTeacherId(Long id) {
-        LOGGER.debug("Getting lectures with teacher id: {}", id);
-        List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures WHERE teacher_id = ?", new LectureRowMapper(), id);
-        LOGGER.debug("Getting lectures with teacher id: {}", id);
-        return lectures;
-    }
-
-    public List<Lecture> getLecturesByGroupId(Long id) {
-        LOGGER.debug("Getting lectures with group id: {}", id);
-        List<Lecture> lectures = this.jdbcTemplate.query("SELECT * FROM lectures WHERE group_id = ?", new LectureRowMapper(), id);
-        LOGGER.debug("Getting lectures with group id: {}", id);
-        return lectures;
     }
 }

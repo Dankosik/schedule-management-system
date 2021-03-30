@@ -7,6 +7,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +27,12 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
         LOGGER.debug("Creating faculty: {}", faculty);
         try {
             entityManager.persist(faculty);
-            entityManager.flush();
         } catch (PersistenceException e) {
             throw new DuplicateKeyException("Impossible to create faculty with id: " + faculty.getId() +
                     ". Faculty with name: " + faculty.getName() + " is already exist");
         }
         LOGGER.info("Faculty created successful with id: {}", faculty.getId());
-        return new Faculty(faculty.getId(), faculty.getName(), faculty.getGroups());
+        return new Faculty(faculty.getId(), faculty.getName(), faculty.getGroups(), faculty.getTeachers());
     }
 
     @Override
@@ -42,7 +42,7 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
             entityManager.merge(faculty);
             entityManager.flush();
             LOGGER.info("Faculty updated successful: {}", faculty);
-            return new Faculty(faculty.getId(), faculty.getName(), faculty.getGroups());
+            return new Faculty(faculty.getId(), faculty.getName(), faculty.getGroups(), faculty.getTeachers());
         } catch (PersistenceException e) {
             throw new DuplicateKeyException("Impossible to update faculty with id: " + faculty.getId() +
                     ". Faculty with name: " + faculty.getName() + " is already exist");
@@ -52,7 +52,18 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
     @Override
     public Optional<Faculty> getById(Long id) {
         LOGGER.debug("Getting faculty by id: {}", id);
-        Faculty faculty = entityManager.find(Faculty.class, id);
+        Faculty faculty;
+        try {
+            faculty = entityManager.createQuery("select f from  Faculty f left join fetch f.groups g where f.id =: id", Faculty.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            faculty = entityManager.createQuery("select f from  Faculty f left join fetch f.teachers g where f.id =: id", Faculty.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
         LOGGER.info("Received faculty by id: {}. Received faculty: {}", id, faculty);
         return faculty != null ? Optional.of(faculty) : Optional.empty();
     }
@@ -60,7 +71,7 @@ public class FacultyDao extends AbstractDao<Faculty> implements Dao<Faculty, Lon
     @Override
     public List<Faculty> getAll() {
         LOGGER.debug("Getting all faculties");
-        List<Faculty> faculties = entityManager.createQuery("from Faculty", Faculty.class).getResultList();
+        List<Faculty> faculties = entityManager.createQuery("select faculty from Faculty faculty", Faculty.class).getResultList();
         LOGGER.info("Faculties received successful");
         return faculties;
     }

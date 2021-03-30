@@ -1,54 +1,49 @@
 package com.foxminded.university.management.schedule.dao;
 
-import com.foxminded.university.management.schedule.dao.row_mappers.SubjectRowMapper;
 import com.foxminded.university.management.schedule.models.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubjectDao.class);
-    private final JdbcTemplate jdbcTemplate;
+    private final EntityManager entityManager;
 
-    public SubjectDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public SubjectDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
     protected Subject create(Subject subject) {
         LOGGER.debug("Creating subject: {}", subject);
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate);
-        simpleJdbcInsert.withTableName("subjects").usingGeneratedKeyColumns("id");
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", subject.getName());
-
-        Number newId;
         try {
-            newId = simpleJdbcInsert.executeAndReturnKey(params);
-        } catch (DuplicateKeyException e) {
+            entityManager.persist(subject);
+        } catch (PersistenceException e) {
             throw new DuplicateKeyException("Impossible to create subject with id: " + subject.getId() +
                     ". Subject with name: " + subject.getName() + " is already exist");
         }
-        LOGGER.info("Subject created successful with id: {}", newId);
-        return new Subject(newId.longValue(), subject.getName());
+        LOGGER.info("Subject created successful with id: {}", subject.getId());
+        return new Subject(subject.getId(), subject.getName(), subject.getLessons());
     }
 
     @Override
     protected Subject update(Subject subject) {
         LOGGER.debug("Updating subject: {}", subject);
         try {
-            this.jdbcTemplate.update("UPDATE subjects SET name = ? WHERE id = ?",
-                    subject.getName(), subject.getId());
+            entityManager.merge(subject);
+            entityManager.flush();
             LOGGER.info("Subject updated successful: {}", subject);
-            return new Subject(subject.getId(), subject.getName());
-        } catch (DuplicateKeyException e) {
+            return new Subject(subject.getId(), subject.getName(), subject.getLessons());
+        } catch (PersistenceException e) {
             throw new DuplicateKeyException("Impossible to update subject with id: " + subject.getId() +
                     ". Subject with name: " + subject.getName() + " is already exist");
         }
@@ -57,16 +52,15 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
     @Override
     public Optional<Subject> getById(Long id) {
         LOGGER.debug("Getting subject by id: {}", id);
-        Optional<Subject> subject = this.jdbcTemplate.query("SELECT * FROM subjects WHERE id = ?", new SubjectRowMapper(), new Object[]{id})
-                .stream().findAny();
+        Subject subject = entityManager.find(Subject.class, id);
         LOGGER.info("Received subject by id: {}. Received subject: {}", id, subject);
-        return subject;
+        return subject != null ? Optional.of(subject) : Optional.empty();
     }
 
     @Override
     public List<Subject> getAll() {
         LOGGER.debug("Getting all subjects");
-        List<Subject> subjects = this.jdbcTemplate.query("SELECT * FROM subjects", new SubjectRowMapper());
+        List<Subject> subjects = entityManager.createQuery("select subject from Subject subject", Subject.class).getResultList();
         LOGGER.info("Subjects received successful");
         return subjects;
     }
@@ -74,9 +68,13 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
     @Override
     public boolean deleteById(Long id) {
         LOGGER.debug("Deleting subject with id: {}", id);
-        boolean isDeleted = this.jdbcTemplate.update("DELETE FROM subjects WHERE id = ?", id) == 1;
+        Subject subject = entityManager.find(Subject.class, id);
+        if (subject == null) {
+            return false;
+        }
+        entityManager.remove(subject);
         LOGGER.info("Successful deleted subject with id: {}", id);
-        return isDeleted;
+        return true;
     }
 
     @Override
@@ -88,23 +86,5 @@ public class SubjectDao extends AbstractDao<Subject> implements Dao<Subject, Lon
         }
         LOGGER.info("Successful saved all subjects");
         return result;
-    }
-
-    public List<Subject> getSubjectsByTeacherId(Long id) {
-        LOGGER.debug("Getting subjects with teacher id: {}", id);
-        List<Subject> subjects = this.jdbcTemplate.query("SELECT * FROM subjects " +
-                "JOIN subjects_teachers ON subjects_teachers.subject_id = subjects.id " +
-                "WHERE subjects_teachers.teacher_id = ?", new SubjectRowMapper(), id);
-        LOGGER.info("Successful received subjects with teacher id: {}", id);
-        return subjects;
-    }
-
-    public List<Subject> getSubjectsByStudentId(Long id) {
-        LOGGER.debug("Getting subjects with student id: {}", id);
-        List<Subject> subjects = this.jdbcTemplate.query("SELECT * FROM subjects " +
-                "JOIN subjects_students ON subjects_students.subject_id = subjects.id " +
-                "WHERE subjects_students.student_id = ?", new SubjectRowMapper(), id);
-        LOGGER.info("Successful received student with teacher id: {}", id);
-        return subjects;
     }
 }

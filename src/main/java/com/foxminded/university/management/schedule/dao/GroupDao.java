@@ -7,10 +7,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Root;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,11 +17,9 @@ import java.util.Optional;
 public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupDao.class);
     private final EntityManager entityManager;
-    private final CriteriaBuilder criteriaBuilder;
 
     public GroupDao(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
     @Override
@@ -31,13 +27,12 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
         LOGGER.debug("Creating group: {}", group);
         try {
             entityManager.persist(group);
-            entityManager.flush();
-        } catch (DuplicateKeyException e) {
+        } catch (PersistenceException e) {
             throw new DuplicateKeyException("Impossible to create group with id: " + group.getId() +
                     ". Group with name: " + group.getName() + " is already exist");
         }
         LOGGER.info("Group created successful with id: {}", group.getId());
-        return new Group(group.getId(), group.getName(), group.getFaculty());
+        return new Group(group.getId(), group.getName(), group.getFaculty(), group.getStudents(), group.getLectures());
     }
 
     @Override
@@ -47,8 +42,8 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
             entityManager.merge(group);
             entityManager.flush();
             LOGGER.info("Group updated successful: {}", group);
-            return new Group(group.getId(), group.getName(), group.getFaculty());
-        } catch (DuplicateKeyException e) {
+            return new Group(group.getId(), group.getName(), group.getFaculty(), group.getStudents(), group.getLectures());
+        } catch (PersistenceException e) {
             throw new DuplicateKeyException("Impossible to update group with id: " + group.getId() +
                     ". Group with name: " + group.getName() + " is already exist");
         }
@@ -57,7 +52,20 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
     @Override
     public Optional<Group> getById(Long id) {
         LOGGER.debug("Getting group by id: {}", id);
-        Group group = entityManager.find(Group.class, id);
+        Group group;
+        try {
+            group = entityManager.createQuery("select g from Group g left join fetch g.lectures le " +
+                    "left join fetch le.teacher t left join fetch t.faculty left join fetch le.lesson l left join fetch l.subject " +
+                    "left join fetch le.audience  left join fetch g.faculty where g.id =: id", Group.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            group = entityManager.createQuery("select g from Group g left join fetch g.faculty left join fetch g.students where g.id =: id", Group.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
         LOGGER.info("Received group by id: {}. Received group: {}", id, group);
         return group != null ? Optional.of(group) : Optional.empty();
     }
@@ -65,7 +73,7 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
     @Override
     public List<Group> getAll() {
         LOGGER.debug("Getting all groups");
-        List<Group> groups = entityManager.createQuery("from Group", Group.class).getResultList();
+        List<Group> groups = entityManager.createQuery("select g from Group g join fetch g.faculty", Group.class).getResultList();
         LOGGER.info("Groups received successful");
         return groups;
     }
@@ -91,15 +99,5 @@ public class GroupDao extends AbstractDao<Group> implements Dao<Group, Long> {
         }
         LOGGER.info("Successful saved all groups");
         return result;
-    }
-
-    public List<Group> getGroupsByFacultyId(Long id) {
-        LOGGER.debug("Getting groups with faculty id: {}", id);
-        CriteriaQuery<Group> criteriaQuery = criteriaBuilder.createQuery(Group.class);
-        Root<Group> root = criteriaQuery.from(Group.class);
-        criteriaQuery.where(criteriaBuilder.equal(root.get("faculty_id"), id));
-        List<Group> groups = entityManager.createQuery(criteriaQuery).getResultList();
-        LOGGER.info("Successful received groups with faculty id: {}", id);
-        return groups;
     }
 }
