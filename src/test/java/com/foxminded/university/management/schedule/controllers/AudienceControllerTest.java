@@ -35,8 +35,6 @@ class AudienceControllerTest {
     @MockBean
     private AudienceServiceImpl audienceService;
     @MockBean
-    private LectureServiceImpl lectureService;
-    @MockBean
     private LessonServiceImpl lessonService;
     @MockBean
     private SubjectServiceImpl subjectService;
@@ -50,8 +48,8 @@ class AudienceControllerTest {
     @Test
     public void shouldReturnViewWithAllAudiences() throws Exception {
         List<Audience> audiences = List.of(
-                new Audience(1L, 301, 45),
-                new Audience(2L, 302, 55));
+                new Audience(1L, 301, 45, null),
+                new Audience(2L, 302, 55, null));
 
         when(audienceService.getAllAudiences()).thenReturn(audiences);
 
@@ -68,17 +66,22 @@ class AudienceControllerTest {
     public void shouldReturnViewWithOneAudience() throws Exception {
         when(durationFormatter.print(Duration.ofMinutes(90), Locale.getDefault())).thenReturn("1:30:00");
 
-        Audience audience = new Audience(1L, 301, 45);
+        Audience audience = new Audience(1L, 301, 45, null);
         when(audienceService.getAudienceById(1L)).thenReturn(audience);
 
         List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 2L, 1L));
-        when(lectureService.getLecturesForAudience(audience)).thenReturn(lectures);
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), audience, null, null, null),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), audience, null, null, null));
+        audience.setLectures(lectures);
 
         List<Lesson> lessons = List.of(
-                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null, lectures),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, lectures));
+
+        for (int i = 0; i < lectures.size(); i++) {
+            lectures.get(i).setLesson(lessons.get(i));
+        }
+
         when(lessonService.getLessonsWithPossibleNullForLectures(lectures)).thenReturn(lessons);
 
         List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
@@ -86,8 +89,13 @@ class AudienceControllerTest {
         List<String> formattedDurations = List.of("1:30", "1:30");
 
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math"),
-                new Subject(2L, "Art"));
+                new Subject(1L, "Math", lessons),
+                new Subject(2L, "Art", lessons));
+
+        for (int i = 0; i < lessons.size(); i++) {
+            lessons.get(i).setSubject(subjects.get(i));
+        }
+
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);
         List<String> subjectNames = List.of("Math", "Art");
         when(subjectService.getSubjectNamesForLessons(lessons)).thenReturn(subjectNames);
@@ -98,51 +106,66 @@ class AudienceControllerTest {
         when(lessonService.getStartTimesWithPossibleNullForLessons(lessons)).thenReturn(startTimes);
 
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L));
+                new Teacher(1L, "John", "Jackson", "Jackson", null, lectures),
+                new Teacher(2L, "Mike", "Conor", "Conor", null, lectures));
+
+        for (int i = 0; i < lectures.size(); i++) {
+            lectures.get(i).setTeacher(teachers.get(i));
+        }
+
         when(teacherService.getTeachersWithPossibleNullForLectures(lectures)).thenReturn(teachers);
 
         List<String> teacherNames = List.of("Jackson J. J.", "Conor M. C.");
         when(teacherService.getLastNamesWithInitialsWithPossibleNullForTeachers(teachers)).thenReturn(teacherNames);
 
         List<Audience> audiences = List.of(
-                new Audience(1L, 301, 45),
-                new Audience(2L, 302, 55));
+                new Audience(1L, 301, 45, lectures),
+                new Audience(2L, 302, 55, lectures));
+
+        for (int i = 0; i < lectures.size(); i++) {
+            lectures.get(i).setAudience(audiences.get(i));
+        }
+
         when(audienceService.getAudiencesWithPossibleNullForLectures(lectures)).thenReturn(audiences);
 
         List<Integer> audienceNumbers = List.of(301, 302);
         when(audienceService.getAudienceNumbersWithPossibleNullForAudiences(audiences)).thenReturn(audienceNumbers);
 
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L),
-                new Group(2L, "AB-11", 1L));
+                new Group(1L, "AB-01", null, null, lectures),
+                new Group(2L, "AB-11", null, null, lectures));
+
+        for (int i = 0; i < lectures.size(); i++) {
+            lectures.get(i).setGroup(groups.get(i));
+        }
+
         when(groupService.getGroupsForLectures(lectures)).thenReturn(groups);
 
         List<String> groupNames = List.of("AB-01", "AB-11");
         when(groupService.getGroupNamesForLectures(lectures)).thenReturn(groupNames);
 
         List<Teacher> allTeachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L),
-                new Teacher(3L, "John", "Conor", "John", 2L));
+                new Teacher(1L, "John", "Jackson", "Jackson", null, null),
+                new Teacher(2L, "Mike", "Conor", "Conor", null, null),
+                new Teacher(3L, "John", "Conor", "John", null, null));
         when(teacherService.getAllTeachers()).thenReturn(allTeachers);
 
         List<Audience> allAudiences = List.of(
-                new Audience(1L, 301, 45),
-                new Audience(2L, 302, 55),
-                new Audience(3L, 303, 65));
+                new Audience(1L, 301, 45, null),
+                new Audience(2L, 302, 55, null),
+                new Audience(3L, 303, 65, null));
         when(audienceService.getAllAudiences()).thenReturn(allAudiences);
 
         List<Group> allGroups = List.of(
-                new Group(1L, "AB-01", 1L),
-                new Group(2L, "AB-11", 1L),
-                new Group(3L, "AC-21", 1L));
+                new Group(1L, "AB-01", null, null, null),
+                new Group(2L, "AB-11", null, null, null),
+                new Group(3L, "AC-21", null, null, null));
         when(groupService.getAllGroups()).thenReturn(allGroups);
 
         List<Lesson> allLessons = List.of(
-                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
-                new Lesson(3L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null, null),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, null),
+                new Lesson(3L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null, null));
         when(lessonService.getAllLessons()).thenReturn(allLessons);
 
         List<Duration> durationsForAllLessons = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(90));
@@ -150,13 +173,10 @@ class AudienceControllerTest {
         List<String> formattedDurationsForAllLessons = List.of("1:30", "1:30", "1:30");
 
         List<Subject> allSubjects = List.of(
-                new Subject(1L, "Math"),
-                new Subject(2L, "Art"),
-                new Subject(2L, "Programming"));
+                new Subject(1L, "Math", null),
+                new Subject(2L, "Art", null),
+                new Subject(2L, "Programming", null));
         when(subjectService.getSubjectsWithPossibleNullForLessons(allLessons)).thenReturn(allSubjects);
-
-        when(subjectService.getSubjectForLesson(lessons.get(0))).thenReturn(subjects.get(0));
-        when(subjectService.getSubjectForLesson(lessons.get(1))).thenReturn(subjects.get(1));
 
         mockMvc.perform(get("/audiences/{id}", 1L))
                 .andExpect(status().isOk())
@@ -177,11 +197,9 @@ class AudienceControllerTest {
                 .andExpect(model().attribute("allLessons", allLessons))
                 .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
                 .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
-                .andExpect(model().attribute("subjectService", subjectService))
                 .andExpect(model().attribute("audience", audience));
 
         verify(audienceService, times(1)).getAudienceById(1L);
-        verify(lectureService, times(1)).getLecturesForAudience(audience);
         verify(lessonService, times(1)).getLessonsWithPossibleNullForLectures(lectures);
         verify(lessonService, times(1)).getDurationsWithPossibleNullForLessons(lessons);
         verify(lessonService, times(1)).getStartTimesWithPossibleNullForLessons(lessons);
@@ -200,21 +218,21 @@ class AudienceControllerTest {
 
     @Test
     public void shouldAddAudience() throws Exception {
-        Audience audience = new Audience(1L, 201, 25);
-        when(audienceService.saveAudience(new Audience(201, 25))).thenReturn(audience);
+        Audience audience = new Audience(1L, 201, 25, null);
+        when(audienceService.saveAudience(new Audience(201, 25, null))).thenReturn(audience);
         mockMvc.perform(
                 post("/audiences/add", 1L)
                         .flashAttr("audience", audience))
                 .andExpect(redirectedUrl("/audiences"))
                 .andExpect(view().name("redirect:/audiences"));
 
-        verify(audienceService, times(1)).saveAudience(new Audience(201, 25));
+        verify(audienceService, times(1)).saveAudience(new Audience(201, 25, null));
     }
 
     @Test
     public void shouldReturnFormWithErrorOnAddAudience() throws Exception {
-        Audience audience = new Audience(1L, 201, 25);
-        when(audienceService.saveAudience(new Audience(201, 25))).thenThrow(ServiceException.class);
+        Audience audience = new Audience(1L, 201, 25, null);
+        when(audienceService.saveAudience(new Audience(201, 25, null))).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/audiences/add", 1L)
                         .flashAttr("audience", audience))
@@ -226,13 +244,13 @@ class AudienceControllerTest {
                 .andExpect(redirectedUrl("/audiences"))
                 .andExpect(view().name("redirect:/audiences"));
 
-        verify(audienceService, times(1)).saveAudience(new Audience(201, 25));
+        verify(audienceService, times(1)).saveAudience(new Audience(201, 25, null));
     }
 
 
     @Test
     public void shouldUpdateAudience() throws Exception {
-        Audience audience = new Audience(1L, 201, 25);
+        Audience audience = new Audience(1L, 201, 25, null);
         when(audienceService.saveAudience(audience)).thenReturn(audience);
         mockMvc.perform(
                 post("/audiences/update/{id}", 1L)
@@ -245,7 +263,7 @@ class AudienceControllerTest {
 
     @Test
     public void shouldReturnFormWithErrorOnUpdateAudience() throws Exception {
-        Audience audience = new Audience(1L, 201, 25);
+        Audience audience = new Audience(1L, 201, 25, null);
         when(audienceService.saveAudience(audience)).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/audiences/update/{id}", 1L)
@@ -263,7 +281,7 @@ class AudienceControllerTest {
 
     @Test
     public void shouldDeleteAudience() throws Exception {
-        Audience audience = new Audience(1L, 201, 25);
+        Audience audience = new Audience(1L, 201, 25, null);
         doNothing().when(audienceService).deleteAudienceById(1L);
         mockMvc.perform(
                 post("/audiences/delete/{id}", 1L)

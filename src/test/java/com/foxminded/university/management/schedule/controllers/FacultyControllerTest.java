@@ -31,16 +31,12 @@ class FacultyControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private FacultyServiceImpl facultyService;
-    @MockBean
-    private GroupServiceImpl groupService;
-    @MockBean
-    private TeacherServiceImpl teacherService;
 
     @Test
     public void shouldReturnViewWithAllFaculties() throws Exception {
         List<Faculty> faculties = List.of(
-                new Faculty(1L, "FAIT"),
-                new Faculty(2L, "FKFN"));
+                new Faculty(1L, "FAIT", null, null),
+                new Faculty(2L, "FKFN", null, null));
 
         when(facultyService.getAllFaculties()).thenReturn(faculties);
 
@@ -55,20 +51,19 @@ class FacultyControllerTest {
 
     @Test
     public void shouldReturnViewWithOneFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "FAIT");
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
         when(facultyService.getFacultyById(1L)).thenReturn(faculty);
 
         List<Group> groups = List.of(
-                new Group(1L, "AG-01", 1L),
-                new Group(2L, "GD-02", 1L));
-        when(groupService.getGroupsForFaculty(faculty)).thenReturn(groups);
-
+                new Group(1L, "AG-01", faculty, null, null),
+                new Group(2L, "GD-02", faculty, null, null));
+        faculty.setGroups(groups);
         List<Teacher> teachers = List.of(
-                new Teacher("John", "Jackson", "Jackson", 1L),
-                new Teacher("Mike", "Conor", "Conor", 1L));
-        when(teacherService.getTeachersForFaculty(faculty)).thenReturn(teachers);
-
-        List<Faculty> allFaculties = List.of(new Faculty(1L, "FAIT"), new Faculty(2L, "FKFN"));
+                new Teacher("John", "Jackson", "Jackson", faculty, null),
+                new Teacher("Mike", "Conor", "Conor", faculty, null));
+        faculty.setTeachers(teachers);
+        List<Faculty> allFaculties = List.of(new Faculty(1L, "FAIT", groups, teachers),
+                new Faculty(2L, "FKFN", groups, teachers));
         when(facultyService.getAllFaculties()).thenReturn(allFaculties);
         mockMvc.perform(get("/faculties/{id}", 1L))
                 .andExpect(status().isOk())
@@ -81,28 +76,26 @@ class FacultyControllerTest {
                 .andExpect(model().attribute("faculty", faculty));
 
         verify(facultyService, times(1)).getFacultyById(1L);
-        verify(groupService, times(1)).getGroupsForFaculty(faculty);
-        verify(teacherService, times(1)).getTeachersForFaculty(faculty);
         verify(facultyService, times(1)).getAllFaculties();
     }
 
     @Test
     public void shouldAddFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "FAIT");
-        when(facultyService.saveFaculty(new Faculty("FAIT"))).thenReturn(faculty);
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
+        when(facultyService.saveFaculty(new Faculty("FAIT", null, null))).thenReturn(faculty);
         mockMvc.perform(
                 post("/faculties/add")
                         .flashAttr("faculty", faculty))
                 .andExpect(redirectedUrl("/faculties"))
                 .andExpect(view().name("redirect:/faculties"));
 
-        verify(facultyService, times(1)).saveFaculty(new Faculty("FAIT"));
+        verify(facultyService, times(1)).saveFaculty(new Faculty("FAIT", null, null));
     }
 
     @Test
     public void shouldReturnFormWithErrorOnAddFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "FAIT");
-        when(facultyService.saveFaculty(new Faculty("FAIT"))).thenThrow(ServiceException.class);
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
+        when(facultyService.saveFaculty(new Faculty("FAIT", null, null))).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/faculties/add")
                         .flashAttr("faculty", faculty))
@@ -114,12 +107,12 @@ class FacultyControllerTest {
                 .andExpect(redirectedUrl("/faculties"))
                 .andExpect(view().name("redirect:/faculties"));
 
-        verify(facultyService, times(1)).saveFaculty(new Faculty("FAIT"));
+        verify(facultyService, times(1)).saveFaculty(new Faculty("FAIT", null, null));
     }
 
     @Test
     public void shouldUpdateFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "FAIT");
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
         when(facultyService.saveFaculty(faculty)).thenReturn(faculty);
         mockMvc.perform(
                 post("/faculties/update/{id}", 1L)
@@ -132,7 +125,7 @@ class FacultyControllerTest {
 
     @Test
     public void shouldReturnFormWithErrorOnUpdateFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "FAIT");
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
         when(facultyService.saveFaculty(faculty)).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/faculties/update/{id}", 1L)
@@ -150,7 +143,7 @@ class FacultyControllerTest {
 
     @Test
     public void shouldDeleteFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "FAIT");
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
         doNothing().when(facultyService).deleteFacultyById(1L);
         mockMvc.perform(
                 post("/faculties/delete/{id}", 1L)

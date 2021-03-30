@@ -32,8 +32,6 @@ class TeacherControllerTest {
     @MockBean
     private FacultyServiceImpl facultyService;
     @MockBean
-    private LectureServiceImpl lectureService;
-    @MockBean
     private AudienceServiceImpl audienceService;
     @MockBean
     private LessonServiceImpl lessonService;
@@ -49,20 +47,20 @@ class TeacherControllerTest {
     @Test
     public void shouldReturnViewWithAllTeachers() throws Exception {
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L));
+                new Teacher(1L, "John", "Jackson", "Jackson", null, null),
+                new Teacher(2L, "Mike", "Conor", "Conor", null, null));
 
         when(teacherService.getAllTeachers()).thenReturn(teachers);
 
         List<Faculty> faculties = List.of(
-                new Faculty(1L, "FAIT"),
-                new Faculty(2L, "FKFN"));
+                new Faculty(1L, "FAIT", null, null),
+                new Faculty(2L, "FKFN", null, null));
         when(facultyService.getFacultiesForTeachers(teachers)).thenReturn(faculties);
 
         List<Faculty> allFaculties = List.of(
-                new Faculty(1L, "FAIT"),
-                new Faculty(2L, "FKFN"),
-                new Faculty(3L, "QNS"));
+                new Faculty(1L, "FAIT", null, null),
+                new Faculty(2L, "FKFN", null, null),
+                new Faculty(3L, "QNS", null, null));
         when(facultyService.getAllFaculties()).thenReturn(allFaculties);
 
         List<String> facultyNames = List.of("FAIT", "FKFN");
@@ -86,20 +84,22 @@ class TeacherControllerTest {
     @Test
     public void shouldReturnViewWithOneTeacher() throws Exception {
         when(durationFormatter.print(Duration.ofMinutes(90), Locale.getDefault())).thenReturn("1:30:00");
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, null);
         when(teacherService.getTeacherById(1L)).thenReturn(teacher);
 
-        Faculty faculty = new Faculty(1L, "FAIT");
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
+        teacher.setFaculty(faculty);
+        faculty.setTeachers(List.of(teacher));
         when(facultyService.getFacultyById(1L)).thenReturn(faculty);
 
         List<Lecture> lectures = List.of(
-                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), 1L, 1L, 1L, 1L),
-                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), 2L, 2L, 2L, 1L));
-        when(lectureService.getLecturesForTeacher(teacher)).thenReturn(lectures);
+                new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), null, null, null, teacher),
+                new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), null, null, null, teacher));
+        teacher.setLectures(lectures);
 
         List<Lesson> lessons = List.of(
-                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L));
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null, lectures),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, lectures));
         when(lessonService.getLessonsWithPossibleNullForLectures(lectures)).thenReturn(lessons);
 
         List<Duration> durations = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90));
@@ -115,54 +115,70 @@ class TeacherControllerTest {
         when(lessonService.getStartTimesWithPossibleNullForLessons(lessons)).thenReturn(startTimes);
 
         List<Audience> audiences = List.of(
-                new Audience(1L, 301, 45),
-                new Audience(2L, 302, 55));
+                new Audience(1L, 301, 45, lectures),
+                new Audience(2L, 302, 55, lectures));
+
+        for (int i = 0; i < lectures.size(); i++) {
+            lectures.get(0).setAudience(audiences.get(0));
+        }
+
         when(audienceService.getAudiencesWithPossibleNullForLectures(lectures)).thenReturn(audiences);
 
         List<Integer> audienceNumbers = List.of(301, 302);
         when(audienceService.getAudienceNumbersWithPossibleNullForAudiences(audiences)).thenReturn(audienceNumbers);
 
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math"),
-                new Subject(2L, "Art"));
+                new Subject(1L, "Math", null),
+                new Subject(2L, "Art", null));
+
+        for (int i = 0; i < lectures.size(); i++) {
+           subjects.get(0).setLessons(lessons);
+        }
+
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);
 
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L),
-                new Group(2L, "AB-11", 1L));
+                new Group(1L, "AB-01", faculty, null, lectures),
+                new Group(2L, "AB-11", faculty, null, lectures));
+
+        for (int i = 0; i < lectures.size(); i++) {
+            lectures.get(0).setGroup(groups.get(0));
+        }
+
+        faculty.setGroups(groups);
         when(groupService.getGroupsForLectures(lectures)).thenReturn(groups);
 
         List<String> groupNames = List.of("AB-01", "AB-11");
         when(groupService.getGroupNamesForLectures(lectures)).thenReturn(groupNames);
 
         List<Faculty> allFaculties = List.of(
-                new Faculty(1L, "FAIT"),
-                new Faculty(2L, "FKFN"),
-                new Faculty(3L, "FASW"));
+                new Faculty(1L, "FAIT", groups, null),
+                new Faculty(2L, "FKFN", groups, null),
+                new Faculty(3L, "FASW", groups, null));
         when(facultyService.getAllFaculties()).thenReturn(allFaculties);
 
         List<Teacher> allTeachers = List.of(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L),
-                new Teacher(2L, "Mike", "Conor", "Conor", 2L),
-                new Teacher(3L, "John", "Conor", "John", 2L));
+                new Teacher(1L, "John", "Jackson", "Jackson", faculty, lectures),
+                new Teacher(2L, "Mike", "Conor", "Conor", faculty, lectures),
+                new Teacher(3L, "John", "Conor", "John", faculty, lectures));
         when(teacherService.getAllTeachers()).thenReturn(allTeachers);
 
         List<Audience> allAudiences = List.of(
-                new Audience(1L, 301, 45),
-                new Audience(2L, 302, 55),
-                new Audience(3L, 303, 65));
+                new Audience(1L, 301, 45, lectures),
+                new Audience(2L, 302, 55, lectures),
+                new Audience(3L, 303, 65, lectures));
         when(audienceService.getAllAudiences()).thenReturn(allAudiences);
 
         List<Group> allGroups = List.of(
-                new Group(1L, "AB-01", 1L),
-                new Group(2L, "AB-11", 1L),
-                new Group(3L, "AC-21", 1L));
+                new Group(1L, "AB-01", faculty, null, lectures),
+                new Group(2L, "AB-11", faculty, null, lectures),
+                new Group(3L, "AC-21", faculty, null, lectures));
         when(groupService.getAllGroups()).thenReturn(allGroups);
 
         List<Lesson> allLessons = List.of(
-                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L),
-                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 2L),
-                new Lesson(3L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1L));
+                new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null, lectures),
+                new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, lectures),
+                new Lesson(3L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null, lectures));
         when(lessonService.getAllLessons()).thenReturn(allLessons);
 
         List<Duration> durationsForAllLessons = List.of(Duration.ofMinutes(90), Duration.ofMinutes(90), Duration.ofMinutes(90));
@@ -170,13 +186,10 @@ class TeacherControllerTest {
         List<String> formattedDurationsForAllLessons = List.of("1:30", "1:30", "1:30");
 
         List<Subject> allSubjects = List.of(
-                new Subject(1L, "Math"),
-                new Subject(2L, "Art"),
-                new Subject(2L, "Programming"));
+                new Subject(1L, "Math", lessons),
+                new Subject(2L, "Art", lessons),
+                new Subject(2L, "Programming", lessons));
         when(subjectService.getSubjectsWithPossibleNullForLessons(allLessons)).thenReturn(allSubjects);
-
-        when(subjectService.getSubjectForLesson(lessons.get(0))).thenReturn(subjects.get(0));
-        when(subjectService.getSubjectForLesson(lessons.get(1))).thenReturn(subjects.get(1));
 
         mockMvc.perform(get("/teachers/{id}", 1L))
                 .andExpect(status().isOk())
@@ -198,12 +211,9 @@ class TeacherControllerTest {
                 .andExpect(model().attribute("lecture", new Lecture()))
                 .andExpect(model().attribute("durationsForAllLessons", formattedDurationsForAllLessons))
                 .andExpect(model().attribute("subjectsForAllLessons", allSubjects))
-                .andExpect(model().attribute("subjectService", subjectService))
                 .andExpect(model().attribute("faculty", faculty));
 
         verify(teacherService, times(1)).getTeacherById(1L);
-        verify(facultyService, times(1)).getFacultyById(teacher.getFacultyId());
-        verify(lectureService, times(1)).getLecturesForTeacher(teacher);
         verify(lessonService, times(1)).getLessonsWithPossibleNullForLectures(lectures);
         verify(lessonService, times(1)).getDurationsWithPossibleNullForLessons(lessons);
         verify(lessonService, times(1)).getStartTimesWithPossibleNullForLessons(lessons);
@@ -224,8 +234,8 @@ class TeacherControllerTest {
 
     @Test
     public void shouldAddTeacher() throws Exception {
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
-        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", 1L)))
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, null);
+        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", null, null)))
                 .thenReturn(teacher);
         mockMvc.perform(
                 post("/teachers/add")
@@ -234,12 +244,12 @@ class TeacherControllerTest {
                 .andExpect(view().name("redirect:/teachers"));
 
         verify(teacherService, times(1))
-                .saveTeacher(new Teacher("John", "Jackson", "Jackson", 1L));
+                .saveTeacher(new Teacher("John", "Jackson", "Jackson", null, null));
     }
 
     @Test
     public void shouldUpdateTeacher() throws Exception {
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, null);
         when(teacherService.saveTeacher(teacher)).thenReturn(teacher);
         mockMvc.perform(
                 post("/teachers/update/{id}", 1L)
@@ -252,7 +262,7 @@ class TeacherControllerTest {
 
     @Test
     public void shouldDeleteTeacher() throws Exception {
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, null);
         doNothing().when(teacherService).deleteTeacherById(1L);
         mockMvc.perform(
                 post("/teachers/delete/{id}", 1L)
