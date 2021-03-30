@@ -4,7 +4,6 @@ import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
 import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
