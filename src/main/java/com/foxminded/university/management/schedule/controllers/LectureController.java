@@ -68,7 +68,6 @@ public class LectureController {
         model.addAttribute("allLessons", allLessons);
         model.addAttribute("durationsForAllLessons", StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(allLessons)));
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
-        model.addAttribute("subjectService", subjectService);
         return "lectures";
     }
 
@@ -80,12 +79,14 @@ public class LectureController {
 
     @PostMapping("/lectures/add")
     public String addLecture(@ModelAttribute Lecture lecture) {
+        lecture.setNumber(lecture.getLesson().getNumber());
         lectureService.saveLecture(lecture);
         return "redirect:/lectures";
     }
 
     @PostMapping("/lectures/update/{id}")
     public String updateLecture(@ModelAttribute Lecture lecture) {
+        lecture.setNumber(lecture.getLesson().getNumber());
         lectureService.saveLecture(lecture);
         return "redirect:/lectures";
     }

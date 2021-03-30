@@ -5,8 +5,6 @@ import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class FacultyController {
     private final FacultyServiceImpl facultyService;
-    private final GroupServiceImpl groupService;
-    private final TeacherServiceImpl teacherService;
 
-    public FacultyController(FacultyServiceImpl facultyService, GroupServiceImpl groupService,
-                             TeacherServiceImpl teacherService) {
+    public FacultyController(FacultyServiceImpl facultyService) {
         this.facultyService = facultyService;
-        this.groupService = groupService;
-        this.teacherService = teacherService;
     }
 
     @GetMapping("/faculties")
@@ -40,8 +33,8 @@ public class FacultyController {
         Faculty faculty = facultyService.getFacultyById(id);
         model.addAttribute("faculty", faculty);
 
-        model.addAttribute("groups", groupService.getGroupsForFaculty(faculty));
-        model.addAttribute("teachers", teacherService.getTeachersForFaculty(faculty));
+        model.addAttribute("groups", faculty.getGroups());
+        model.addAttribute("teachers", faculty.getTeachers());
 
         model.addAttribute("group", new Group());
         model.addAttribute("teacher", new Teacher());
