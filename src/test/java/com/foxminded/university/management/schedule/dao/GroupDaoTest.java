@@ -87,7 +87,7 @@ class GroupDaoTest extends BaseDaoTest {
                 new Group("IF-61", faculty, null, null));
 
         List<Group> expected = List.of(
-                new Group(1000L, "AB-91",  faculty, students, lectures),
+                new Group(1000L, "AB-91", faculty, students, lectures),
                 new Group(1001L, "BC-01", entityManager.find(Group.class, 1001L).getFaculty(),
                         entityManager.find(Group.class, 1001L).getStudents(), entityManager.find(Group.class, 1001L).getLectures()),
                 new Group(1L, "CD-71", faculty, null, null),

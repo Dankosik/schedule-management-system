@@ -22,13 +22,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 class AudienceDaoTest extends BaseDaoTest {
-    private AudienceDao audienceDao;
     private final Audience audience = new Audience(1L, 101, 45, null);
     private final List<Lecture> lectures = List.of(new Lecture(1L, 101,
                     Date.valueOf(LocalDate.of(2020, 1, 1)), audience, null, null, null),
             new Lecture(2L, 102,
                     Date.valueOf(LocalDate.of(2020, 2, 1)), audience, null, null, null));
-
+    private AudienceDao audienceDao;
     @Autowired
     private EntityManager entityManager;
 

@@ -86,7 +86,7 @@ class FacultyDaoTest extends BaseDaoTest {
 
         List<Faculty> expected = List.of(
                 new Faculty(1000L, "FAIT", groups, teachers),
-                new Faculty(1001L, "FKFN",entityManager.find(Faculty.class, 1001L).getGroups(),
+                new Faculty(1001L, "FKFN", entityManager.find(Faculty.class, 1001L).getGroups(),
                         entityManager.find(Faculty.class, 1001L).getTeachers()),
                 new Faculty(1L, "ABCD", null, null),
                 new Faculty(2L, "IFGH", null, null));

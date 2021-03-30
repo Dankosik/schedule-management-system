@@ -26,7 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -189,7 +190,7 @@ class SubjectServiceImplTest {
                 new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), null, null,
                         new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null), null),
                 new Lecture(2L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)), null, null,
-                        new Lesson(2L, 1, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90),subjects.get(1), null), null));
+                        new Lesson(2L, 1, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), subjects.get(1), null), null));
 
         List<Subject> expected = List.of(
                 new Subject(1L, "Math", null),

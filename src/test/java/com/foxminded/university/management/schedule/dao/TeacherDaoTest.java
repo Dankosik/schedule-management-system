@@ -46,7 +46,7 @@ class TeacherDaoTest extends BaseDaoTest {
 
         assertNotEquals(teacher, entityManager.find(Teacher.class, teacher.getId()));
 
-       Teacher actual = teacherDao.save(teacher);
+        Teacher actual = teacherDao.save(teacher);
 
         assertEquals(teacher, actual);
     }

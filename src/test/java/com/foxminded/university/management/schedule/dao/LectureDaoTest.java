@@ -101,11 +101,11 @@ class LectureDaoTest extends BaseDaoTest {
     @Test
     void shouldSaveListOfLectures() {
         List<Lecture> lectures = List.of(
-                new Lecture(222, Date.valueOf(LocalDate.of(2021, 1, 1)),  audience, group, lesson, teacher),
-                new Lecture(223, Date.valueOf(LocalDate.of(2021, 1, 2)),  audience, group, lesson, teacher));
+                new Lecture(222, Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher),
+                new Lecture(223, Date.valueOf(LocalDate.of(2021, 1, 2)), audience, group, lesson, teacher));
 
         List<Lecture> expected = List.of(
-                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),  audience, group, lesson, teacher),
+                new Lecture(1000L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher),
                 new Lecture(1001L, 2, Date.valueOf(LocalDate.of(2021, 1, 1)),
                         entityManager.find(Lecture.class, 1001L).getAudience(),
                         entityManager.find(Lecture.class, 1001L).getGroup(),
@@ -121,8 +121,8 @@ class LectureDaoTest extends BaseDaoTest {
                         entityManager.find(Lecture.class, 1003L).getGroup(),
                         entityManager.find(Lecture.class, 1003L).getLesson(),
                         entityManager.find(Lecture.class, 1003L).getTeacher()),
-                new Lecture(1L, 222, Date.valueOf(LocalDate.of(2021, 1, 1)),  audience, group, lesson, teacher),
-                new Lecture(2L, 223, Date.valueOf(LocalDate.of(2021, 1, 2)),  audience, group, lesson, teacher));
+                new Lecture(1L, 222, Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher),
+                new Lecture(2L, 223, Date.valueOf(LocalDate.of(2021, 1, 2)), audience, group, lesson, teacher));
         lectureDao.saveAll(lectures);
         List<Lecture> actual = lectureDao.getAll();
 

@@ -132,7 +132,7 @@ class TeacherControllerTest {
                 new Subject(2L, "Art", null));
 
         for (int i = 0; i < lectures.size(); i++) {
-           subjects.get(0).setLessons(lessons);
+            subjects.get(0).setLessons(lessons);
         }
 
         when(subjectService.getSubjectsForLectures(lectures)).thenReturn(subjects);

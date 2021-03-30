@@ -37,7 +37,7 @@ class LessonDaoTest extends BaseDaoTest {
 
     @Test
     void shouldCreateNewLesson() {
-        Lesson actual =lessonDao.save(new Lesson(1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, lectures));
+        Lesson actual = lessonDao.save(new Lesson(1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, lectures));
         Lesson expected = new Lesson(actual.getId(), 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, lectures);
 
         assertEquals(expected, actual);

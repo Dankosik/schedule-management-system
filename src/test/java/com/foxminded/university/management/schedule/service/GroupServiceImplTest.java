@@ -2,14 +2,12 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.GroupDao;
-import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

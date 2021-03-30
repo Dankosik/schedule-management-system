@@ -97,7 +97,7 @@ class LectureServiceImplTest {
 
     @Test
     void shouldDeleteLectureWithIdOne() {
-        when(lectureDao.getById(1L)).thenReturn(Optional.of(new Lecture(1L,1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        when(lectureDao.getById(1L)).thenReturn(Optional.of(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher)));
         when(lectureDao.deleteById(1L)).thenReturn(true);
 

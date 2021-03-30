@@ -132,7 +132,7 @@ class FacultyServiceImplTest {
 
         List<Faculty> expected = List.of(
                 new Faculty(1L, "FAIT", null, null),
-                new Faculty(2L, "FKFN",null, null));
+                new Faculty(2L, "FKFN", null, null));
 
         assertEquals(expected, facultyService.getFacultiesForGroups(groups));
     }

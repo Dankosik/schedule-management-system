@@ -5,8 +5,6 @@ import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
