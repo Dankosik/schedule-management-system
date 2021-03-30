@@ -159,23 +159,33 @@
                                     <div class="form-row">
                                         <label class="mt-3">add lesson: </label>
                                         <div class="col mt-2">
-                                            <select class="form-control" th:field="*{lessonId}">
+                                            <select class="form-control" th:field="*{lesson}">
                                                 <div th:each="lesson: ${allLessons}">
-                                                    <div th:if="${lecture.lessonId == lesson.id}">
-                                                        <div th:if="${subjectService.getSubjectForLesson(lesson) != null}">
-                                                            <option th:text="'number: ' + ${lesson.number} +
+                                                    <div th:if="${lesson.subject != null}">
+                                                        <div th:if="${lecture.lesson != null}">
+                                                            <option th:if="${lecture.lesson.id == lesson.id}" th:text="'number: ' + ${lesson.number} +
                                                     ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
-                                                    ',    subject: '+ ${subjectService.getSubjectForLesson(lesson).getName()}"
+                                                    ',    subject: '+ ${lesson.subject.getName()}"
                                                                     th:value="${lesson.id}"></option>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div th:each="lesson, iter: ${allLessons}">
-                                                    <div th:if="${lecture.lessonId != lesson.id}">
-                                                        <div th:if="${subjectService.getSubjectForLesson(lesson) != null}">
+                                                    <div th:if="${lesson.subject != null}">
+                                                        <div th:if="${lecture.lesson != null}">
+                                                            <option th:if="${lecture.lesson.id != lesson.id}" th:text="'number: ' + ${lesson.number} +
+                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
+                                                    ',    subject: '+ ${lesson.subject.getName()}"
+                                                                    th:value="${lesson.id}"></option>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div th:if="${lecture.lesson == null}">
+                                                    <div th:each="lesson: ${allLessons}">
+                                                        <div th:if="${lesson.subject != null}">
                                                             <option th:text="'number: ' + ${lesson.number} +
                                                     ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
-                                                    ',    subject: '+ ${subjectService.getSubjectForLesson(lesson).getName()}"
+                                                    ',    subject: '+ ${lesson.subject.getName()}"
                                                                     th:value="${lesson.id}"></option>
                                                         </div>
                                                     </div>
@@ -186,35 +196,31 @@
                                     <div class="form-row">
                                         <label class="mt-3">add audience number: </label>
                                         <div class="col mt-2">
-                                            <select class="form-control" th:field="*{audienceId}">
+                                            <select class="form-control" th:field="*{audience}">
                                                 <div th:each="audience: ${allAudiences}">
-                                                    <div th:if="${lecture.audienceId == audience.id}">
-                                                        <option th:text="${audience.number}"
-                                                                th:value="${audience.id}"></option>
-                                                    </div>
+                                                    <option th:if="${lecture.audience.number == audience.number}"
+                                                            th:text="${lecture.audience.number}"
+                                                            th:value="${audience.id}"></option>
                                                 </div>
                                                 <div th:each="audience: ${allAudiences}">
-                                                    <div th:if="${lecture.audienceId != audience.id}">
-                                                        <option th:text="${audience.number}"
-                                                                th:value="${audience.id}"></option>
-                                                    </div>
+                                                    <option th:if="${lecture.audience.number != audience.number}"
+                                                            th:text="${audience.number}"
+                                                            th:value="${audience.id}"></option>
                                                 </div>
                                             </select>
                                         </div>
                                         <label class="mt-3 ml-2">add group: </label>
                                         <div class="col mt-2">
-                                            <select class="form-control" th:field="*{groupId}">
+                                            <select class="form-control" th:field="*{group}">
                                                 <div th:each="group: ${allGroups}">
-                                                    <div th:if="${lecture.groupId == group.id}">
-                                                        <option th:text="${group.name}"
-                                                                th:value="${group.id}"></option>
-                                                    </div>
+                                                    <option th:if="${lecture.group.name == group.name}"
+                                                            th:text="${group.name}"
+                                                            th:value="${group.id}"></option>
                                                 </div>
                                                 <div th:each="group: ${allGroups}">
-                                                    <div th:if="${lecture.groupId != group.id}">
-                                                        <option th:text="${group.name}"
-                                                                th:value="${group.id}"></option>
-                                                    </div>
+                                                    <option th:if="${lecture.group.name != group.name}"
+                                                            th:text="${group.name}"
+                                                            th:value="${group.id}"></option>
                                                 </div>
                                             </select>
                                         </div>
@@ -222,15 +228,23 @@
                                     <div class="form-row">
                                         <label class="mt-3">add teacher: </label>
                                         <div class="col mt-2">
-                                            <select class="form-control" th:field="*{teacherId}">
+                                            <select class="form-control" th:field="*{teacher}">
                                                 <div th:each="teacher: ${allTeachers}">
-                                                    <div th:if="${lecture.teacherId == teacher.id}">
-                                                        <option th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                                    <div th:if="${lecture.teacher != null}">
+                                                        <option th:if="${lecture.teacher.id == teacher.id}"
+                                                                th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
                                                                 th:value="${teacher.id}"></option>
                                                     </div>
                                                 </div>
                                                 <div th:each="teacher: ${allTeachers}">
-                                                    <div th:if="${lecture.teacherId != teacher.id}">
+                                                    <div th:if="${lecture.teacher != null}">
+                                                        <option th:if="${lecture.teacher.id != teacher.id}"
+                                                                th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                                                th:value="${teacher.id}"></option>
+                                                    </div>
+                                                </div>
+                                                <div th:if="${lecture.teacher == null}">
+                                                    <div th:each="teacher: ${allTeachers}">
                                                         <option th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
                                                                 th:value="${teacher.id}"></option>
                                                     </div>

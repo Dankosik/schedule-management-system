@@ -117,9 +117,23 @@
                                         </div>
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
                                         <div class="col">
-                                            <select class="form-control" th:field="*{facultyId}">
-                                                <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
-                                                        th:value="${faculty.id}"></option>
+                                            <select class="form-control" th:field="*{faculty}">
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <div th:if="${group.faculty != null}">
+                                                        <div th:if="${group.faculty.id == faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <div th:if="${group.faculty != null}">
+                                                        <div th:if="${group.faculty.id != faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </select>
                                         </div>
                                     </div>
@@ -218,10 +232,22 @@
                                                    th:value="${teacher.middleName}" type="text">
                                         </div>
                                         <div class="col mt-1">
-                                            <select class="form-control" th:field="*{facultyId}">
+                                            <select class="form-control" th:field="*{faculty}">
                                                 <div th:each="faculty: ${allFaculties}">
-                                                    <option th:text="${faculty.name}" th:value="${faculty.id}">
-                                                    </option>
+                                                    <div th:if="${teacher.faculty != null}">
+                                                        <div th:if="${teacher.faculty.id == faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div th:each="faculty: ${allFaculties}">
+                                                    <div th:if="${teacher.faculty != null}">
+                                                        <div th:if="${teacher.faculty.id != faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </select>
                                         </div>
