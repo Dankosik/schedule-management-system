@@ -33,7 +33,6 @@ public class TeacherDao extends AbstractDao<Teacher> implements Dao<Teacher, Lon
     protected Teacher update(Teacher teacher) {
         LOGGER.debug("Updating teacher: {}", teacher);
         entityManager.merge(teacher);
-        entityManager.flush();
         LOGGER.info("Teacher updated successful: {}", teacher);
         return new Teacher(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
                 teacher.getFaculty(), teacher.getLectures());

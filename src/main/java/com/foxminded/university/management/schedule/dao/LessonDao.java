@@ -33,7 +33,6 @@ public class LessonDao extends AbstractDao<Lesson> implements Dao<Lesson, Long> 
     protected Lesson update(Lesson lesson) {
         LOGGER.debug("Updating lesson: {}", lesson);
         entityManager.merge(lesson);
-        entityManager.flush();
         return new Lesson(lesson.getId(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(),
                 lesson.getSubject(), lesson.getLectures());
     }

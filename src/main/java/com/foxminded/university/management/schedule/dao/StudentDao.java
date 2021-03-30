@@ -34,7 +34,6 @@ public class StudentDao extends AbstractDao<Student> implements Dao<Student, Lon
     protected Student update(Student student) {
         LOGGER.debug("Updating student: {}", student);
         entityManager.merge(student);
-        entityManager.flush();
         LOGGER.info("Student updated successful: {}", student);
         return new Student(student.getId(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
                 student.getCourseNumber(), student.getGroup());
