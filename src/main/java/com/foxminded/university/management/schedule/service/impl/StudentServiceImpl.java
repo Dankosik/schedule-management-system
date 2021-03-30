@@ -3,7 +3,6 @@ package com.foxminded.university.management.schedule.service.impl;
 import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
-import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.StudentService;
 import org.slf4j.Logger;
@@ -28,13 +27,13 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student saveStudent(Student student) {
-        boolean isGroupPresent = groupDao.getById(student.getGroupId()).isPresent();
+        boolean isGroupPresent = groupDao.getById(student.getGroup().getId()).isPresent();
         LOGGER.debug("Group is present: {}", isGroupPresent);
-        LOGGER.debug("Student group id: {}", student.getGroupId());
-        if (isGroupPresent || student.getGroupId() == null) {
+        LOGGER.debug("Student group id: {}", student.getGroup());
+        if (isGroupPresent || student.getGroup() == null) {
             return studentDao.save(student);
         }
-        throw new ServiceException("Student's group with id: " + student.getGroupId() + " is not exist");
+        throw new ServiceException("Student's group with id: " + student.getGroup() + " is not exist");
     }
 
     @Override
@@ -62,13 +61,5 @@ public class StudentServiceImpl implements StudentService {
         List<Student> result = new ArrayList<>();
         students.forEach(student -> result.add(saveStudent(student)));
         return result;
-    }
-
-    @Override
-    public List<Student> getStudentsForGroup(Group group) {
-        LOGGER.debug("Getting students for group {}", group);
-        List<Student> students = studentDao.getStudentsByGroupId(group.getId());
-        LOGGER.info("Students for group {} received successful", group);
-        return students;
     }
 }

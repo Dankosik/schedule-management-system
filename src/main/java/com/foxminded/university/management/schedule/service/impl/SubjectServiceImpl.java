@@ -20,11 +20,9 @@ import java.util.List;
 public class SubjectServiceImpl implements SubjectService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubjectServiceImpl.class);
     private final SubjectDao subjectDao;
-    private final LessonServiceImpl lessonService;
 
-    public SubjectServiceImpl(SubjectDao subjectDao, LessonServiceImpl lessonService) {
+    public SubjectServiceImpl(SubjectDao subjectDao) {
         this.subjectDao = subjectDao;
-        this.lessonService = lessonService;
     }
 
     @Override
@@ -72,10 +70,10 @@ public class SubjectServiceImpl implements SubjectService {
                 result.add(null);
                 continue;
             }
-            if (lesson.getSubjectId() == 0) {
+            if (lesson.getSubject() == null) {
                 result.add(null);
             } else {
-                result.add(getSubjectById(lesson.getSubjectId()).getName());
+                result.add(lesson.getSubject().getName());
             }
         }
         LOGGER.info("Subject names for lessons {} received successful", lessons);
@@ -87,14 +85,14 @@ public class SubjectServiceImpl implements SubjectService {
         LOGGER.debug("Getting subjects for lectures {}", lectures);
         List<Subject> result = new ArrayList<>();
         for (Lecture lecture : lectures) {
-            if (lecture.getLessonId() == 0) {
+            if (lecture.getLesson() == null) {
                 result.add(null);
                 continue;
             }
-            if (lessonService.getLessonById(lecture.getLessonId()).getSubjectId() == 0) {
+            if (lecture.getLesson().getSubject() == null) {
                 result.add(null);
             } else {
-                result.add(getSubjectById(lessonService.getLessonById(lecture.getLessonId()).getSubjectId()));
+                result.add(lecture.getLesson().getSubject());
             }
         }
         LOGGER.info("Subject for lectures {} received successful", lectures);
@@ -114,26 +112,13 @@ public class SubjectServiceImpl implements SubjectService {
                 result.add(null);
                 continue;
             }
-            if (lessonService.getLessonById(lesson.getId()).getSubjectId() == 0) {
+            if (lesson.getSubject() == null) {
                 result.add(null);
             } else {
-                result.add(getSubjectById(lessonService.getLessonById(lesson.getId()).getSubjectId()));
+                result.add(lesson.getSubject());
             }
         }
         LOGGER.info("Subject for lessons {} received successful", lessons);
         return result;
-    }
-
-    public Subject getSubjectForLesson(Lesson lesson) {
-        LOGGER.debug("Getting subject for lesson {}", lesson);
-        if (lesson.getId() == 0) {
-            return null;
-        }
-        if (lessonService.getLessonById(lesson.getId()).getSubjectId() == 0) {
-            return null;
-        }
-        Subject subject = getSubjectById(lessonService.getLessonById(lesson.getId()).getSubjectId());
-        LOGGER.info("Subject for lesson {} received successful", lesson);
-        return subject;
     }
 }

@@ -16,10 +16,6 @@ public interface AudienceService {
 
     List<Audience> saveAllAudiences(List<Audience> audiences);
 
-    Lecture addLectureToAudience(Lecture lecture, Audience audience);
-
-    Lecture removeLectureFromAudience(Lecture lecture, Audience audience);
-
     List<Integer> getAudienceNumbersWithPossibleNullForAudiences(List<Audience> audiences);
 
     List<Audience> getAudiencesWithPossibleNullForLectures(List<Lecture> lectures);

@@ -3,7 +3,6 @@ package com.foxminded.university.management.schedule.service.impl;
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
-import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.TeacherService;
@@ -29,13 +28,13 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Teacher saveTeacher(Teacher teacher) {
-        boolean isFacultyPresent = facultyDao.getById(teacher.getFacultyId()).isPresent();
+        boolean isFacultyPresent = facultyDao.getById(teacher.getFaculty().getId()).isPresent();
         LOGGER.debug("Faculty is present: {}", isFacultyPresent);
-        LOGGER.debug("Teacher faculty id: {}", teacher.getFacultyId());
-        if (isFacultyPresent || teacher.getFacultyId() == null) {
+        LOGGER.debug("Teacher faculty id: {}", teacher.getFaculty().getId());
+        if (isFacultyPresent || teacher.getFaculty().getId() == null) {
             return teacherDao.save(teacher);
         }
-        throw new ServiceException("Teacher's faculty with id: " + teacher.getFacultyId() + " is not exists");
+        throw new ServiceException("Teacher's faculty with id: " + teacher.getFaculty().getId() + " is not exists");
     }
 
     @Override
@@ -88,21 +87,13 @@ public class TeacherServiceImpl implements TeacherService {
         LOGGER.debug("Getting teachers for lectures {}", lectures);
         List<Teacher> result = new ArrayList<>();
         for (Lecture lecture : lectures) {
-            if (lecture.getTeacherId() == 0) {
+            if (lecture.getTeacher() == null) {
                 result.add(null);
             } else {
-                result.add(getTeacherById(lecture.getTeacherId()));
+                result.add(lecture.getTeacher());
             }
         }
         LOGGER.info("Teachers for lectures {} received successful", lectures);
         return result;
-    }
-
-    @Override
-    public List<Teacher> getTeachersForFaculty(Faculty faculty) {
-        LOGGER.debug("Getting teachers for faculty {}", faculty);
-        List<Teacher> teachers = teacherDao.getTeachersByFacultyId(faculty.getId());
-        LOGGER.info("Teachers for faculty {} received successful", faculty);
-        return teachers;
     }
 }

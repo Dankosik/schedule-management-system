@@ -2,9 +2,7 @@ package com.foxminded.university.management.schedule.service.impl;
 
 import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.dao.GroupDao;
-import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
-import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
@@ -24,15 +22,11 @@ import java.util.stream.Collectors;
 public class GroupServiceImpl implements GroupService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupServiceImpl.class);
     private final GroupDao groupDao;
-    private final StudentDao studentDao;
     private final FacultyDao facultyDao;
-    private final StudentServiceImpl studentService;
 
-    public GroupServiceImpl(GroupDao groupDao, StudentDao studentDao, FacultyDao facultyDao, StudentServiceImpl studentService) {
+    public GroupServiceImpl(GroupDao groupDao, FacultyDao facultyDao) {
         this.groupDao = groupDao;
-        this.studentDao = studentDao;
         this.facultyDao = facultyDao;
-        this.studentService = studentService;
     }
 
     @Override
@@ -76,61 +70,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Student addStudentToGroup(Student student, Group group) {
-        LOGGER.debug("Adding student {} to group {}", student, group);
-        boolean isStudentPresent = studentDao.getById(student.getId()).isPresent();
-        LOGGER.debug("Student is present: {}", isStudentPresent);
-        if (!isStudentPresent)
-            throw new ServiceException("Impossible to add student to group. Student with id: " + student.getId() + " is not exist");
-
-        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
-        LOGGER.debug("Group is present: {}", isGroupPresent);
-        if (!isGroupPresent)
-            throw new ServiceException("Impossible to add student to group. Group with id: " + group.getId() + " is not exist");
-
-        boolean isStudentAlreadyAddedToGroup = student.getGroupId() != null && student.getGroupId().equals(group.getId());
-        LOGGER.debug("Student is already added to group: {}", isStudentAlreadyAddedToGroup);
-        if (isStudentAlreadyAddedToGroup)
-            throw new ServiceException("Student with id: " + student.getId() + " is already added to group with id: " + group.getId());
-
-        student.setGroupId(group.getId());
-        Student result = studentService.saveStudent(student);
-        LOGGER.info("Successful adding lecture to audience");
-        return result;
-    }
-
-    @Override
-    public Student removeStudentFromGroup(Student student, Group group) {
-        LOGGER.debug("Removing student {} from group {}", student, group);
-        boolean isStudentPresent = studentDao.getById(student.getId()).isPresent();
-        LOGGER.debug("Student is present: {}", isStudentPresent);
-        if (!isStudentPresent)
-            throw new ServiceException("Impossible to remove student from group. Student with id: " + student.getId() + " is not exist");
-        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
-        LOGGER.debug("Group is present: {}", isGroupPresent);
-        if (!isGroupPresent)
-            throw new ServiceException("Impossible to remove student from group. Group with id: " + group.getId() + " is not exist");
-
-        boolean isStudentAlreadyRemovedFromGroup = student.getGroupId() == null;
-        LOGGER.debug("Student is already removed from group: {}", isStudentAlreadyRemovedFromGroup);
-        if (isStudentAlreadyRemovedFromGroup)
-            throw new ServiceException("Student with id: " + student.getId() + "is already removed from group with id: " + group.getId());
-
-        student.setGroupId(null);
-        Student result = studentService.saveStudent(student);
-        LOGGER.info("Successful removing student {} from group {}", student, group);
-        return result;
-    }
-
-    @Override
     public List<String> getGroupNamesWithPossibleNullForStudents(List<Student> students) {
         LOGGER.debug("Getting group names for students {}", students);
         List<String> result = new ArrayList<>();
         for (Student student : students) {
-            if (student.getGroupId() == 0) {
+            if (student.getGroup() == null) {
                 result.add(null);
             } else {
-                result.add(getGroupById(student.getGroupId()).getName());
+                result.add(student.getGroup().getName());
             }
         }
         LOGGER.info("Group names for students {} received successful", students);
@@ -142,10 +89,10 @@ public class GroupServiceImpl implements GroupService {
         LOGGER.debug("Getting groups for students {}", students);
         List<Group> result = new ArrayList<>();
         for (Student student : students) {
-            if (student.getGroupId() == 0) {
+            if (student.getGroup() == null) {
                 result.add(null);
             } else {
-                result.add(getGroupById(student.getGroupId()));
+                result.add(student.getGroup());
             }
         }
         LOGGER.info("Groups for students {} received successful", students);
@@ -153,20 +100,13 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Group> getGroupsForFaculty(Faculty faculty) {
-        LOGGER.debug("Getting groups for faculty {}", faculty);
-        List<Group> groups = groupDao.getGroupsByFacultyId(faculty.getId());
-        LOGGER.info("Groups for faculty {} received successful", faculty);
-        return groups;
-    }
-
-    @Override
     public List<String> getGroupNamesForLectures(List<Lecture> lectures) {
         LOGGER.debug("Getting group names for lectures {}", lectures);
-        List<String> result = new ArrayList<>();
-        lectures.forEach(lecture -> result.add(getGroupById(lecture.getGroupId()).getName()));
+        List<String> groupNames = lectures.stream()
+                .map(lecture -> lecture.getGroup().getName())
+                .collect(Collectors.toList());
         LOGGER.info("Group names for lectures {} received successful", lectures);
-        return result;
+        return groupNames;
     }
 
     @Override
@@ -174,7 +114,7 @@ public class GroupServiceImpl implements GroupService {
         LOGGER.debug("Getting groups for lectures {}", lectures);
         List<Group> groups = lectures
                 .stream()
-                .map(student -> getGroupById(student.getGroupId()))
+                .map(Lecture::getGroup)
                 .collect(Collectors.toList());
         LOGGER.info("Groups for lectures {} received successful", lectures);
         return groups;

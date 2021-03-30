@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 
@@ -20,6 +19,4 @@ public interface TeacherService {
     List<String> getLastNamesWithInitialsWithPossibleNullForTeachers(List<Teacher> teachers);
 
     List<Teacher> getTeachersWithPossibleNullForLectures(List<Lecture> lectures);
-
-    List<Teacher> getTeachersForFaculty(Faculty faculty);
 }
