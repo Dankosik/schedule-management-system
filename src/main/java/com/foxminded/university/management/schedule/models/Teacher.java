@@ -2,25 +2,37 @@ package com.foxminded.university.management.schedule.models;
 
 import com.foxminded.university.management.schedule.dao.BaseEntity;
 
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "teachers")
 public class Teacher extends Person implements BaseEntity<Long> {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long facultyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "faculty_id", nullable = false)
+    private Faculty faculty;
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    private List<Lecture> lectures;
 
     public Teacher() {
 
     }
 
-    public Teacher(Long id, String firstName, String lastName, String middleName, Long facultyId) {
+    public Teacher(Long id, String firstName, String lastName, String middleName, Faculty faculty, List<Lecture> lectures) {
         super(firstName, lastName, middleName);
         this.id = id;
-        this.facultyId = facultyId;
+        this.faculty = faculty;
+        this.lectures = lectures;
     }
 
-    public Teacher(String firstName, String lastName, String middleName, Long facultyId) {
+    public Teacher(String firstName, String lastName, String middleName, Faculty faculty, List<Lecture> lectures) {
         super(firstName, lastName, middleName);
-        this.facultyId = facultyId;
+        this.faculty = faculty;
+        this.lectures = lectures;
     }
 
     public Long getId() {
@@ -31,12 +43,20 @@ public class Teacher extends Person implements BaseEntity<Long> {
         this.id = id;
     }
 
-    public Long getFacultyId() {
-        return facultyId;
+    public Faculty getFaculty() {
+        return faculty;
     }
 
-    public void setFacultyId(Long facultyId) {
-        this.facultyId = facultyId;
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    public List<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(List<Lecture> lectures) {
+        this.lectures = lectures;
     }
 
     @Override
@@ -45,19 +65,19 @@ public class Teacher extends Person implements BaseEntity<Long> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Teacher teacher = (Teacher) o;
-        return Objects.equals(facultyId, teacher.facultyId);
+        return Objects.equals(faculty, teacher.faculty) && Objects.equals(lectures, teacher.lectures);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), facultyId);
+        return Objects.hash(super.hashCode(), faculty, lectures);
     }
 
     @Override
     public String toString() {
         return "Teacher{" +
                 "id=" + id +
-                ", facultyId=" + facultyId +
+                ", faculty=" + faculty +
                 '}';
     }
 }

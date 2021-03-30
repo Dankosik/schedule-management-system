@@ -2,41 +2,55 @@ package com.foxminded.university.management.schedule.models;
 
 import com.foxminded.university.management.schedule.dao.BaseEntity;
 
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
+@Entity
+@Table(name = "lectures")
 public class Lecture implements BaseEntity<Long> {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer number;
     private Date date;
-    private Long audienceId;
-    private Long groupId;
-    private Long lessonId;
-    private Long teacherId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "audience_id")
+    private Audience audience;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private Group group;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     public Lecture() {
 
     }
 
-    public Lecture(Long id, Integer number, Date date, Long audienceId, Long groupId, Long lessonId, Long teacherId) {
+    public Lecture(Long id, Integer number, Date date, Audience audience, Group group, Lesson lesson, Teacher teacher) {
         this.id = id;
         this.number = number;
         this.date = date;
-        this.audienceId = audienceId;
-        this.groupId = groupId;
-        this.lessonId = lessonId;
-        this.teacherId = teacherId;
+        this.audience = audience;
+        this.group = group;
+        this.lesson = lesson;
+        this.teacher = teacher;
     }
 
-    public Lecture(Integer number, Date date, Long audienceId, Long groupId, Long lessonId, Long teacherId) {
+    public Lecture(Integer number, Date date, Audience audience, Group group, Lesson lesson, Teacher teacher) {
         this.number = number;
         this.date = date;
-        this.audienceId = audienceId;
-        this.groupId = groupId;
-        this.lessonId = lessonId;
-        this.teacherId = teacherId;
+        this.audience = audience;
+        this.group = group;
+        this.lesson = lesson;
+        this.teacher = teacher;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -53,30 +67,6 @@ public class Lecture implements BaseEntity<Long> {
         this.number = number;
     }
 
-    public Long getAudienceId() {
-        return audienceId;
-    }
-
-    public void setAudienceId(Long audienceId) {
-        this.audienceId = audienceId;
-    }
-
-    public Long getLessonId() {
-        return lessonId;
-    }
-
-    public void setLessonId(Long lessonId) {
-        this.lessonId = lessonId;
-    }
-
-    public Long getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(Long teacherId) {
-        this.teacherId = teacherId;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -85,12 +75,36 @@ public class Lecture implements BaseEntity<Long> {
         this.date = date;
     }
 
-    public Long getGroupId() {
-        return groupId;
+    public Audience getAudience() {
+        return audience;
     }
 
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
+    public void setAudience(Audience audience) {
+        this.audience = audience;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Lesson getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
     @Override
@@ -99,13 +113,13 @@ public class Lecture implements BaseEntity<Long> {
         if (o == null || getClass() != o.getClass()) return false;
         Lecture lecture = (Lecture) o;
         return Objects.equals(number, lecture.number) && Objects.equals(date, lecture.date) &&
-                Objects.equals(audienceId, lecture.audienceId) && Objects.equals(lessonId, lecture.lessonId)
-                && Objects.equals(teacherId, lecture.teacherId) && Objects.equals(groupId, lecture.groupId);
+                Objects.equals(audience, lecture.audience) && Objects.equals(group, lecture.group) &&
+                Objects.equals(lesson, lecture.lesson) && Objects.equals(teacher, lecture.teacher);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, date, audienceId, groupId, lessonId, teacherId);
+        return Objects.hash(number, date, group, lesson, teacher);
     }
 
     @Override
@@ -114,10 +128,10 @@ public class Lecture implements BaseEntity<Long> {
                 "id=" + id +
                 ", number=" + number +
                 ", date=" + date +
-                ", audienceId=" + audienceId +
-                ", groupId=" + groupId +
-                ", lessonId=" + lessonId +
-                ", teacherId=" + teacherId +
+                ", audience=" + audience +
+                ", group=" + group +
+                ", lesson=" + lesson +
+                ", teacher=" + teacher +
                 '}';
     }
 }
