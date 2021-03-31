@@ -1,7 +1,6 @@
 package com.foxminded.university.management.schedule.models;
 
 import com.foxminded.university.management.schedule.dao.BaseEntity;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -17,7 +16,6 @@ public class Lesson implements BaseEntity<Long> {
     private Long id;
     private Integer number;
     private Time startTime;
-    @Column(name = "duration", columnDefinition = "interval")
     private Duration duration;
     @ManyToOne
     @JoinColumn(name = "subject_id")
