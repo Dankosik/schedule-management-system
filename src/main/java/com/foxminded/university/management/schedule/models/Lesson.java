@@ -1,7 +1,6 @@
 package com.foxminded.university.management.schedule.models;
 
 import com.foxminded.university.management.schedule.dao.BaseEntity;
-import com.vladmihalcea.hibernate.type.interval.PostgreSQLIntervalType;
 import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
@@ -12,7 +11,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "lessons")
-@TypeDef(typeClass = PostgreSQLIntervalType.class, defaultForType = Duration.class)
 public class Lesson implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
