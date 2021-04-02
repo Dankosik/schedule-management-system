@@ -40,8 +40,8 @@ class LessonControllerTest {
     public void shouldReturnViewWithAllLessons() throws Exception {
         when(durationFormatter.print(Duration.ofMinutes(90), Locale.getDefault())).thenReturn("1:30:00");
         List<Lesson> lessons = List.of(
-                new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), 1000L),
-                new Lesson(1001L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1001L));
+                new Lesson(1000L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), null, null),
+                new Lesson(1001L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, null));
 
         when(lessonService.getAllLessons()).thenReturn(lessons);
 
@@ -51,14 +51,14 @@ class LessonControllerTest {
         List<String> formattedDurations = List.of("1:30", "1:30");
 
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math"),
-                new Subject(2L, "Art"));
+                new Subject(1L, "Math", null),
+                new Subject(2L, "Art", null));
         when(subjectService.getSubjectsWithPossibleNullForLessons(lessons)).thenReturn(subjects);
 
         List<Subject> allSubjects = List.of(
-                new Subject(1L, "Math"),
-                new Subject(2L, "Art"),
-                new Subject(3L, "Programming"));
+                new Subject(1L, "Math", null),
+                new Subject(2L, "Art", null),
+                new Subject(3L, "Programming", null));
         when(subjectService.getAllSubjects()).thenReturn(allSubjects);
 
         List<String> subjectNames = List.of("Math", "Art");
@@ -83,9 +83,9 @@ class LessonControllerTest {
 
     @Test
     public void shouldAddLesson() throws Exception {
-        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1L);
+        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, null);
         when(lessonService.saveLesson(new Lesson(2, Time.valueOf(LocalTime.of(10, 10, 0)),
-                Duration.ofMinutes(90), 1L))).thenReturn(lesson);
+                Duration.ofMinutes(90), null, null))).thenReturn(lesson);
         mockMvc.perform(
                 post("/lessons/add")
                         .flashAttr("lesson", lesson))
@@ -93,12 +93,12 @@ class LessonControllerTest {
                 .andExpect(view().name("redirect:/lessons"));
 
         verify(lessonService, times(1)).saveLesson(new Lesson(2,
-                Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1L));
+                Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, null));
     }
 
     @Test
     public void shouldUpdateLesson() throws Exception {
-        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), 1L);
+        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, null);
         when(lessonService.saveLesson(lesson)).thenReturn(lesson);
         mockMvc.perform(
                 post("/lessons/update/{id}", 1L)
@@ -112,7 +112,7 @@ class LessonControllerTest {
     @Test
     public void shouldDeleteLesson() throws Exception {
         Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)),
-                Duration.ofMinutes(90), 1L);
+                Duration.ofMinutes(90), null, null);
         doNothing().when(lessonService).deleteLessonById(1L);
         mockMvc.perform(
                 post("/lessons/delete/{id}", 1L)

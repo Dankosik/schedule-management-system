@@ -4,6 +4,7 @@ import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
 import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import com.foxminded.university.management.schedule.service.data.generation.utils.ReceivingIdUtils;
+import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,12 +12,17 @@ import java.util.List;
 
 @Service
 public class StudentDataGenerator implements DataGenerator<Student> {
+    private final GroupServiceImpl groupService;
     private final List<String> firstNames =
             List.of("John", "Liam", "Mason", "Jacob", "William", "Ethan", "Michael", "Daniel", "Edward", "Mark",
                     "Mary", "Patricia", "Linda", "Barbara", "Elizabeth", "Jennifer", "Maria", "Susan", "Lisa", "Carol");
     private final List<String> lastNames =
             List.of("Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor",
                     "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson");
+
+    public StudentDataGenerator(GroupServiceImpl groupService) {
+        this.groupService = groupService;
+    }
 
     @Override
     public List<Student> generateData() {
@@ -32,7 +38,7 @@ public class StudentDataGenerator implements DataGenerator<Student> {
             student.setLastName(lastName);
             student.setMiddleName(middleName);
             student.setCourseNumber(RandomUtils.random(1, 4));
-            student.setGroupId(groupIds.get(RandomUtils.random(0, groupIds.size() - 1)));
+            student.setGroup(groupService.getGroupById(groupIds.get(RandomUtils.random(0, groupIds.size() - 1))));
             result.add(student);
 
         }

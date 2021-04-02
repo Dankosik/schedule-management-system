@@ -32,22 +32,22 @@ class StudentControllerTest {
     @Test
     public void shouldReturnViewWithAllStudents() throws Exception {
         List<Student> students = List.of(
-                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L),
-                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, 1L),
-                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, 2L));
+                new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, null),
+                new Student(2L, "Lindsey", "Syplus", "Slocket", 1, null),
+                new Student(3L, "Minetta", "Funcheon", "Sayle", 2, null));
         when(studentService.getAllStudents()).thenReturn(students);
 
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L),
-                new Group(1L, "AB-01", 1L),
-                new Group(2L, "CD-21", 1L));
+                new Group(1L, "AB-01", null, null, null),
+                new Group(1L, "AB-01", null, null, null),
+                new Group(2L, "CD-21", null, null, null));
         when(groupService.getGroupsWithPossibleNullForStudents(students)).thenReturn(groups);
 
         List<Group> allGroups = List.of(
-                new Group(1L, "AB-01", 1L),
-                new Group(2L, "CD-21", 1L),
-                new Group(3L, "CD-22", 1L),
-                new Group(4L, "FB-01", 2L));
+                new Group(1L, "AB-01", null, null, null),
+                new Group(2L, "CD-21", null, null, null),
+                new Group(3L, "CD-22", null, null, null),
+                new Group(4L, "FB-01", null, null, null));
         when(groupService.getAllGroups()).thenReturn(allGroups);
 
         List<String> groupNames = List.of("AB-01", "AB-01", "CD-21");
@@ -70,8 +70,8 @@ class StudentControllerTest {
 
     @Test
     public void shouldAddStudent() throws Exception {
-        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L);
-        when(studentService.saveStudent(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, 1L)))
+        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, null);
+        when(studentService.saveStudent(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, null)))
                 .thenReturn(student);
         mockMvc.perform(
                 post("/students/add")
@@ -80,12 +80,12 @@ class StudentControllerTest {
                 .andExpect(view().name("redirect:/students"));
 
         verify(studentService, times(1))
-                .saveStudent(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, 1L));
+                .saveStudent(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, null));
     }
 
     @Test
     public void shouldUpdateStudent() throws Exception {
-        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L);
+        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, null);
         when(studentService.saveStudent(student)).thenReturn(student);
         mockMvc.perform(
                 post("/students/update/{id}", 1L)
@@ -98,7 +98,7 @@ class StudentControllerTest {
 
     @Test
     public void shouldDeleteStudent() throws Exception {
-        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, 1L);
+        Student student = new Student(1L, "Ferdinanda", "Casajuana", "Lambarton", 1, null);
         doNothing().when(studentService).deleteStudentById(1L);
         mockMvc.perform(
                 post("/students/delete/{id}", 1L)

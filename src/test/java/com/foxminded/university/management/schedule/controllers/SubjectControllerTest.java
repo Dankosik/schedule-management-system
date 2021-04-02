@@ -31,8 +31,8 @@ class SubjectControllerTest {
     @Test
     public void shouldReturnViewWithAllSubjects() throws Exception {
         List<Subject> subjects = List.of(
-                new Subject(1L, "Math"),
-                new Subject(2L, "Art"));
+                new Subject(1L, "Math", null),
+                new Subject(2L, "Art", null));
 
         when(subjectService.getAllSubjects()).thenReturn(subjects);
 
@@ -45,7 +45,7 @@ class SubjectControllerTest {
 
     @Test
     public void shouldReturnViewWithOneSubject() throws Exception {
-        Subject subject = new Subject(1L, "Math");
+        Subject subject = new Subject(1L, "Math", null);
         when(subjectService.getSubjectById(1L)).thenReturn(subject);
 
         mockMvc.perform(get("/subjects/{id}", 1L))
@@ -56,21 +56,21 @@ class SubjectControllerTest {
 
     @Test
     public void shouldAddSubject() throws Exception {
-        Subject subject = new Subject(1L, "Art");
-        when(subjectService.saveSubject(new Subject("Art"))).thenReturn(subject);
+        Subject subject = new Subject(1L, "Art", null);
+        when(subjectService.saveSubject(new Subject("Art", null))).thenReturn(subject);
         mockMvc.perform(
                 post("/subjects/add")
                         .flashAttr("subject", subject))
                 .andExpect(redirectedUrl("/subjects"))
                 .andExpect(view().name("redirect:/subjects"));
 
-        verify(subjectService, times(1)).saveSubject(new Subject("Art"));
+        verify(subjectService, times(1)).saveSubject(new Subject("Art", null));
     }
 
     @Test
     public void shouldReturnFormWithErrorOnAddSubject() throws Exception {
-        Subject subject = new Subject(1L, "Art");
-        when(subjectService.saveSubject(new Subject("Art"))).thenThrow(ServiceException.class);
+        Subject subject = new Subject(1L, "Art", null);
+        when(subjectService.saveSubject(new Subject("Art", null))).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/subjects/add")
                         .flashAttr("subject", subject))
@@ -82,12 +82,12 @@ class SubjectControllerTest {
                 .andExpect(redirectedUrl("/subjects"))
                 .andExpect(view().name("redirect:/subjects"));
 
-        verify(subjectService, times(1)).saveSubject(new Subject("Art"));
+        verify(subjectService, times(1)).saveSubject(new Subject("Art", null));
     }
 
     @Test
     public void shouldUpdateSubject() throws Exception {
-        Subject subject = new Subject(1L, "Art");
+        Subject subject = new Subject(1L, "Art", null);
         when(subjectService.saveSubject(subject)).thenReturn(subject);
         mockMvc.perform(
                 post("/subjects/update/{id}", 1L)
@@ -100,7 +100,7 @@ class SubjectControllerTest {
 
     @Test
     public void shouldReturnFormWithErrorOnUpdateSubject() throws Exception {
-        Subject subject = new Subject(1L, "Art");
+        Subject subject = new Subject(1L, "Art", null);
         when(subjectService.saveSubject(subject)).thenThrow(ServiceException.class);
         mockMvc.perform(
                 post("/subjects/update/{id}", 1L)
@@ -118,7 +118,7 @@ class SubjectControllerTest {
 
     @Test
     public void shouldDeleteSubject() throws Exception {
-        Subject subject = new Subject(1L, "Art");
+        Subject subject = new Subject(1L, "Art", null);
         doNothing().when(subjectService).deleteSubjectById(1L);
         mockMvc.perform(
                 post("/subjects/delete/{id}", 1L)

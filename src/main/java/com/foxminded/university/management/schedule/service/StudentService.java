@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 
 import java.util.List;
@@ -15,6 +14,4 @@ public interface StudentService {
     void deleteStudentById(Long id);
 
     List<Student> saveAllStudents(List<Student> students);
-
-    List<Student> getStudentsForGroup(Group group);
 }

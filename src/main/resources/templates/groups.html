@@ -17,7 +17,7 @@
             </div>
             <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
             <div class="col">
-                <select class="form-control" th:field="*{facultyId}">
+                <select class="form-control" th:field="*{faculty}">
                     <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
                             th:value="${faculty.id}"></option>
                 </select>
@@ -80,17 +80,21 @@
                                         </div>
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
                                         <div class="col">
-                                            <select class="form-control" th:field="*{facultyId}">
+                                            <select class="form-control" th:field="*{faculty}">
                                                 <div th:each="faculty: ${allFaculties}">
-                                                    <div th:if="${newGroup.facultyId == faculty.id}">
-                                                        <option th:text="${faculty.name}"
-                                                                th:value="${faculty.id}"></option>
+                                                    <div th:if="${newGroup.faculty != null}">
+                                                        <div th:if="${newGroup.faculty.id == faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div th:each="faculty: ${allFaculties}">
-                                                    <div th:if="${newGroup.facultyId != faculty.id}">
-                                                        <option th:text="${faculty.name}"
-                                                                th:value="${faculty.id}"></option>
+                                                    <div th:if="${newGroup.faculty != null}">
+                                                        <div th:if="${newGroup.faculty.id != faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </select>
@@ -132,17 +136,21 @@
                                         </div>
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
                                         <div class="col">
-                                            <select class="form-control" th:field="*{facultyId}">
+                                            <select class="form-control" th:field="*{faculty}">
                                                 <div th:each="faculty: ${allFaculties}">
-                                                    <div th:if="${newGroup.facultyId == faculty.id}">
-                                                        <option th:text="${faculty.name}"
-                                                                th:value="${faculty.id}"></option>
+                                                    <div th:if="${newGroup.faculty != null}">
+                                                        <div th:if="${newGroup.faculty.id == faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div th:each="faculty: ${allFaculties}">
-                                                    <div th:if="${newGroup.facultyId != faculty.id}">
-                                                        <option th:text="${faculty.name}"
-                                                                th:value="${faculty.id}"></option>
+                                                    <div th:if="${newGroup.faculty != null}">
+                                                        <div th:if="${newGroup.faculty.id != faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </select>
@@ -184,17 +192,21 @@
                                         </div>
                                         <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
                                         <div class="col">
-                                            <select class="form-control" th:field="*{facultyId}">
+                                            <select class="form-control" th:field="*{faculty}">
                                                 <div th:each="faculty: ${allFaculties}">
-                                                    <div th:if="${group.facultyId == faculty.id}">
-                                                        <option th:text="${faculty.name}"
-                                                                th:value="${faculty.id}"></option>
+                                                    <div th:if="${group.faculty != null}">
+                                                        <div th:if="${group.faculty.id == faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div th:each="faculty: ${allFaculties}">
-                                                    <div th:if="${group.facultyId != faculty.id}">
-                                                        <option th:text="${faculty.name}"
-                                                                th:value="${faculty.id}"></option>
+                                                    <div th:if="${group.faculty != null}">
+                                                        <div th:if="${group.faculty.id != faculty.id}">
+                                                            <option th:text="${faculty.name}"
+                                                                    th:value="${faculty.id}"></option>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </select>

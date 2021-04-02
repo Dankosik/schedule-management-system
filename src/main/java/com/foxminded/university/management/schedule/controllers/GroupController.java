@@ -17,21 +17,15 @@ import java.util.List;
 @Controller
 public class GroupController {
     private final GroupServiceImpl groupService;
-    private final StudentServiceImpl studentService;
-    private final LectureServiceImpl lectureService;
     private final LessonServiceImpl lessonService;
     private final SubjectServiceImpl subjectService;
     private final AudienceServiceImpl audienceService;
     private final TeacherServiceImpl teacherService;
     private final FacultyServiceImpl facultyService;
 
-    public GroupController(GroupServiceImpl groupService, StudentServiceImpl studentService,
-                           LectureServiceImpl lectureService, LessonServiceImpl lessonService,
-                           SubjectServiceImpl subjectService, AudienceServiceImpl audienceService, TeacherServiceImpl teacherService,
-                           FacultyServiceImpl facultyService) {
+    public GroupController(GroupServiceImpl groupService, LessonServiceImpl lessonService, SubjectServiceImpl subjectService,
+                           AudienceServiceImpl audienceService, TeacherServiceImpl teacherService, FacultyServiceImpl facultyService) {
         this.groupService = groupService;
-        this.studentService = studentService;
-        this.lectureService = lectureService;
         this.lessonService = lessonService;
         this.subjectService = subjectService;
         this.audienceService = audienceService;
@@ -54,9 +48,10 @@ public class GroupController {
         Group group = groupService.getGroupById(id);
         model.addAttribute("group", group);
 
-        model.addAttribute("students", studentService.getStudentsForGroup(group));
+        List<Student> students = group.getStudents();
+        model.addAttribute("students", students);
 
-        List<Lecture> lectures = lectureService.getLecturesForGroup(group);
+        List<Lecture> lectures = group.getLectures();
         model.addAttribute("lectures", lectures);
 
         List<Lesson> lessons = lessonService.getLessonsWithPossibleNullForLectures(lectures);
@@ -89,8 +84,7 @@ public class GroupController {
         model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
         model.addAttribute("faculties", facultyService.getAllFaculties());
-        model.addAttribute("faculty", facultyService.getFacultyForGroup(group));
-        model.addAttribute("subjectService", subjectService);
+        model.addAttribute("faculty", group.getFaculty());
         return "group";
     }
 

@@ -1,8 +1,10 @@
 package com.foxminded.university.management.schedule.models;
 
 
+import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
+@MappedSuperclass
 public abstract class Person {
     private String firstName;
     private String lastName;

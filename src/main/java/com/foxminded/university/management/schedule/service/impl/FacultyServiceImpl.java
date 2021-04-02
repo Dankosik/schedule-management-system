@@ -1,16 +1,14 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.dao.FacultyDao;
-import com.foxminded.university.management.schedule.dao.GroupDao;
-import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.service.FacultyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,48 +20,39 @@ import java.util.stream.Collectors;
 @Transactional
 public class FacultyServiceImpl implements FacultyService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FacultyServiceImpl.class);
-    private final FacultyDao facultyDao;
-    private final GroupDao groupDao;
-    private final TeacherDao teacherDao;
-    private final GroupServiceImpl groupService;
-    private final TeacherServiceImpl teacherService;
+    private final FacultyRepository facultyRepository;
 
-    public FacultyServiceImpl(FacultyDao facultyDao, GroupDao groupDao, TeacherDao teacherDao, GroupServiceImpl groupService,
-                              TeacherServiceImpl teacherService) {
-        this.facultyDao = facultyDao;
-        this.groupDao = groupDao;
-        this.teacherDao = teacherDao;
-        this.groupService = groupService;
-        this.teacherService = teacherService;
+    public FacultyServiceImpl(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
     }
 
     @Override
     public Faculty saveFaculty(Faculty faculty) {
         try {
-            return facultyDao.save(faculty);
-        } catch (DuplicateKeyException e) {
+            return facultyRepository.saveAndFlush(faculty);
+        } catch (DataIntegrityViolationException e) {
             throw new ServiceException("Faculty with name: " + faculty.getName() + " is already exist");
         }
     }
 
     @Override
     public Faculty getFacultyById(Long id) {
-        boolean isFacultyPresent = facultyDao.getById(id).isPresent();
+        boolean isFacultyPresent = facultyRepository.findById(id).isPresent();
         LOGGER.debug("Faculty is present: {}", isFacultyPresent);
         if (isFacultyPresent) {
-            return facultyDao.getById(id).get();
+            return facultyRepository.findById(id).get();
         }
         throw new ServiceException("Faculty with id: " + id + " is not found");
     }
 
     @Override
     public List<Faculty> getAllFaculties() {
-        return facultyDao.getAll();
+        return facultyRepository.findAll();
     }
 
     @Override
     public void deleteFacultyById(Long id) {
-        facultyDao.deleteById(getFacultyById(id).getId());
+        facultyRepository.deleteById(getFacultyById(id).getId());
     }
 
     @Override
@@ -74,113 +63,20 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Group addGroupToFaculty(Group group, Faculty faculty) {
-        LOGGER.debug("Adding group {} to faculty {}", group, faculty);
-        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
-        LOGGER.debug("Group is present: {}", isGroupPresent);
-        if (!isGroupPresent)
-            throw new ServiceException("Impossible to add group to faculty. Group with id: " + group.getId() + " is not exist");
-
-        boolean isFacultyPresent = facultyDao.getById(faculty.getId()).isPresent();
-        LOGGER.debug("Faculty is present: {}", isFacultyPresent);
-        if (!isFacultyPresent)
-            throw new ServiceException("Impossible to add group to faculty. Faculty with id: " + faculty.getId() + " is not exist");
-
-        boolean isGroupAlreadyAddedToFaculty = group.getFacultyId() != null && group.getFacultyId().equals(faculty.getId());
-        LOGGER.debug("Group is already added to faculty: {}", isGroupAlreadyAddedToFaculty);
-        if (isGroupAlreadyAddedToFaculty)
-            throw new ServiceException("Group with id: " + group.getId() + " is already added to faculty with id: " + faculty.getId());
-
-        group.setFacultyId(faculty.getId());
-        Group result = groupService.saveGroup(group);
-        LOGGER.info("Successful adding group to faculty");
-        return result;
-    }
-
-    @Override
-    public Group removeGroupFromFaculty(Group group, Faculty faculty) {
-        LOGGER.debug("Removing group {} from faculty {}", group, faculty);
-        boolean isGroupPresent = groupDao.getById(group.getId()).isPresent();
-        LOGGER.debug("Group is present: {}", isGroupPresent);
-        if (!isGroupPresent)
-            throw new ServiceException("Impossible to remove group from faculty. Group with id: " + group.getId() + " is not exist");
-
-        boolean isFacultyPresent = facultyDao.getById(faculty.getId()).isPresent();
-        LOGGER.debug("Faculty is present: {}", isFacultyPresent);
-        if (!isFacultyPresent)
-            throw new ServiceException("Impossible to remove group from faculty. Faculty with id: " + faculty.getId() + " is not exist");
-
-        boolean isGroupAlreadyRemovedFromFaculty = group.getFacultyId() == null;
-        LOGGER.debug("Group is already removed from faculty: {}", isGroupAlreadyRemovedFromFaculty);
-        if (isGroupAlreadyRemovedFromFaculty)
-            throw new ServiceException("Group with id: " + group.getId() + " is already removed from faculty with id: " + group.getId());
-
-        group.setFacultyId(null);
-        Group result = groupService.saveGroup(group);
-        LOGGER.info("Successful removing group {} from faculty {}", group, faculty);
-        return result;
-    }
-
-    @Override
-    public Teacher addTeacherToFaculty(Teacher teacher, Faculty faculty) {
-        LOGGER.debug("Adding teacher {} to faculty {}", teacher, faculty);
-        boolean isTeacherPresent = teacherDao.getById(teacher.getId()).isPresent();
-        LOGGER.debug("Teacher is present: {}", isTeacherPresent);
-        if (!isTeacherPresent)
-            throw new ServiceException("Impossible to add teacher to faculty. Teacher with id: " + teacher.getId() + " is not exist");
-
-        boolean isFacultyPresent = facultyDao.getById(faculty.getId()).isPresent();
-        LOGGER.debug("Faculty is present: {}", isFacultyPresent);
-        if (!isFacultyPresent)
-            throw new ServiceException("Impossible to add teacher to faculty. Faculty with id: " + faculty.getId() + " is not exist");
-
-        boolean isTeacherAlreadyAddedToFaculty = teacher.getFacultyId() != null && teacher.getFacultyId().equals(faculty.getId());
-        LOGGER.debug("Teacher is already added to faculty: {}", isTeacherAlreadyAddedToFaculty);
-        if (isTeacherAlreadyAddedToFaculty)
-            throw new ServiceException("Teacher with id: " + teacher.getId() + " is already added to faculty with id: " + faculty.getId());
-
-        teacher.setFacultyId(faculty.getId());
-        Teacher result = teacherService.saveTeacher(teacher);
-        LOGGER.info("Successful adding teacher {} to faculty {}", teacher, faculty);
-        return result;
-    }
-
-    @Override
-    public Teacher removeTeacherFromFaculty(Teacher teacher, Faculty faculty) {
-        LOGGER.debug("Removing teacher {} from faculty {}", teacher, faculty);
-        boolean isTeacherPresent = teacherDao.getById(teacher.getId()).isPresent();
-        if (!isTeacherPresent)
-            throw new ServiceException("Impossible to remove teacher from faculty cause teacher with id: " + teacher.getId() + " is not exist");
-
-        boolean isFacultyPresent = facultyDao.getById(faculty.getId()).isPresent();
-        if (!isFacultyPresent)
-            throw new ServiceException("Impossible to remove teacher from faculty cause faculty with id: " + faculty.getId() + " is not exist");
-
-        boolean isTeacherAlreadyRemovedFromFaculty = teacher.getFacultyId() == null;
-        LOGGER.debug("Teacher is already removed from faculty: {}", isTeacherAlreadyRemovedFromFaculty);
-        if (isTeacherAlreadyRemovedFromFaculty)
-            throw new ServiceException("Teacher with id: " + teacher.getId() + " is already removed from faculty with id: " + teacher.getId());
-
-        teacher.setFacultyId(null);
-        Teacher result = teacherService.saveTeacher(teacher);
-        LOGGER.info("Successful removing teacher {} from faculty {}", teacher, faculty);
-        return result;
-    }
-
-    @Override
     public List<String> getFacultyNamesForTeachers(List<Teacher> teachers) {
         LOGGER.debug("Getting faculty names for teachers {}", teachers);
-        List<String> result = new ArrayList<>();
-        teachers.forEach(teacher -> result.add(getFacultyById(teacher.getFacultyId()).getName()));
+        List<String> facultyNames = teachers.stream()
+                .map(teacher -> teacher.getFaculty().getName())
+                .collect(Collectors.toList());
         LOGGER.info("Faculty names for teachers {} received successful", teachers);
-        return result;
+        return facultyNames;
     }
 
     @Override
     public List<Faculty> getFacultiesForTeachers(List<Teacher> teachers) {
         LOGGER.debug("Getting faculties for teachers {}", teachers);
         List<Faculty> faculties = teachers.stream()
-                .map(teacher -> getFacultyById(teacher.getFacultyId()))
+                .map(Teacher::getFaculty)
                 .collect(Collectors.toList());
         LOGGER.info("Faculties for teachers {} received successful", teachers);
         return faculties;
@@ -190,17 +86,9 @@ public class FacultyServiceImpl implements FacultyService {
     public List<Faculty> getFacultiesForGroups(List<Group> groups) {
         LOGGER.debug("Getting faculties for groups {}", groups);
         List<Faculty> faculties = groups.stream()
-                .map(group -> getFacultyById(group.getFacultyId()))
+                .map(Group::getFaculty)
                 .collect(Collectors.toList());
         LOGGER.info("Faculties for groups {} received successful", groups);
         return faculties;
-    }
-
-    @Override
-    public Faculty getFacultyForGroup(Group group) {
-        LOGGER.debug("Getting faculty for group {}", group);
-        Faculty faculty = getFacultyById(group.getFacultyId());
-        LOGGER.info("Faculty for group {} received successful", group);
-        return faculty;
     }
 }

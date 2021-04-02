@@ -1,21 +1,17 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.dao.FacultyDao;
-import com.foxminded.university.management.schedule.dao.GroupDao;
-import com.foxminded.university.management.schedule.dao.TeacherDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -30,388 +26,135 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {FacultyServiceImpl.class})
 class FacultyServiceImplTest {
-    private final Faculty faculty = new Faculty(1L, "FAIT");
-    private final List<Faculty> faculties = List.of(faculty, new Faculty(2L, "FKFN"));
-    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null);
-    private final Group group = new Group(1L, "AB-81", null);
+    private final Faculty faculty = new Faculty(1L, "FAIT", null, null);
+    private final List<Faculty> faculties = List.of(faculty, new Faculty(2L, "FKFN", null, null));
     @Autowired
     private FacultyServiceImpl facultyService;
     @MockBean
-    private FacultyDao facultyDao;
-    @MockBean
-    private GroupDao groupDao;
-    @MockBean
-    private TeacherDao teacherDao;
-    @MockBean
-    private GroupServiceImpl groupService;
-    @MockBean
-    private TeacherServiceImpl teacherService;
+    private FacultyRepository facultyRepository;
 
     @Test
     void shouldSaveFaculty() {
-        when(facultyDao.save(new Faculty("FAIT"))).thenReturn(faculty);
+        when(facultyRepository.saveAndFlush(new Faculty("FAIT", null, null))).thenReturn(faculty);
         Faculty actual = facultyService.saveFaculty(faculty);
 
         assertEquals(faculty, actual);
 
-        verify(facultyDao, times(1)).save(faculty);
+        verify(facultyRepository, times(1)).saveAndFlush(faculty);
     }
 
     @Test
     void shouldReturnFacultyWithIdOne() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
         Faculty actual = facultyService.getFacultyById(1L);
 
         assertEquals(faculty, actual);
 
-        verify(facultyDao, times(2)).getById(1L);
+        verify(facultyRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldReturnListOfFaculties() {
-        when(facultyDao.getAll()).thenReturn(faculties);
+        when(facultyRepository.findAll()).thenReturn(faculties);
 
         assertEquals(faculties, facultyService.getAllFaculties());
 
-        verify(facultyDao, times(1)).getAll();
+        verify(facultyRepository, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteFacultyWithIdOne() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(facultyDao.deleteById(1L)).thenReturn(true);
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
 
         facultyService.deleteFacultyById(1L);
 
-        verify(facultyDao, times(1)).deleteById(1L);
-        verify(facultyDao, times(2)).getById(1L);
+        verify(facultyRepository, times(1)).deleteById(1L);
+        verify(facultyRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldSaveListOfFaculties() {
-        when(facultyDao.save(new Faculty("FAIT"))).thenReturn(faculty);
-        when(facultyDao.save(new Faculty("FKFN"))).thenReturn(faculties.get(1));
+        when(facultyRepository.saveAndFlush(new Faculty("FAIT", null, null))).thenReturn(faculty);
+        when(facultyRepository.saveAndFlush(new Faculty("FKFN", null, null))).thenReturn(faculties.get(1));
 
 
         List<Faculty> actual = facultyService.saveAllFaculties(faculties);
 
         assertEquals(faculties, actual);
 
-        verify(facultyDao, times(1)).save(faculties.get(0));
-        verify(facultyDao, times(1)).save(faculties.get(1));
+        verify(facultyRepository, times(1)).saveAndFlush(faculties.get(0));
+        verify(facultyRepository, times(1)).saveAndFlush(faculties.get(1));
     }
 
     @Test
-    void shouldAddGroupToFaculty() {
-        Group expected = new Group(1L, "AB-81", 1L);
+    void shouldThrowExceptionIfFacultyWithInputIdNotFound() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
 
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
-        when(groupService.saveGroup(new Group("AB-81", 1L))).thenReturn(expected);
+        assertThrows(ServiceException.class, () -> facultyService.getFacultyById(1L));
 
-        Group actual = facultyService.addGroupToFaculty(group, faculty);
-        assertEquals(expected, actual);
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupService, times(1)).saveGroup(expected);
+        verify(facultyRepository, times(1)).findById(1L);
+        verify(facultyRepository, never()).save(faculty);
     }
 
     @Test
-    void shouldRemoveGroupFromFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
-        when(groupService.saveGroup(new Group("AB-81", null))).thenReturn(group);
+    void shouldThrowExceptionIfUpdatedAudienceWithInputNumberIsAlreadyExist() {
+        Faculty expected = new Faculty(1L, "FAIT", null, null);
 
-        Group actual = facultyService.removeGroupFromFaculty(new Group(1L, "AB-81", 1L), faculty);
-        assertEquals(group, actual);
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupService, times(1)).saveGroup(group);
-    }
-
-    @Test
-    void shouldAddTeacherToFaculty() {
-        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
-
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", 1L)))
-                .thenReturn(expected);
-
-        Teacher actual = facultyService.addTeacherToFaculty(teacher, faculty);
-        assertEquals(expected, actual);
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(teacherDao, times(1)).getById(1L);
-        verify(teacherService, times(1)).saveTeacher(expected);
-    }
-
-    @Test
-    void shouldRemoveTeacherFromFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-        when(teacherService.saveTeacher(new Teacher("John", "Jackson", "Jackson", null)))
-                .thenReturn(teacher);
-
-        Teacher actual = facultyService.removeTeacherFromFaculty(
-                new Teacher(1L, "John", "Jackson", "Jackson", 1L), faculty);
-        assertEquals(teacher, actual);
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(teacherDao, times(1)).getById(1L);
-        verify(teacherService, times(1)).saveTeacher(teacher);
-    }
-
-    @Test
-    void shouldThrowExceptionIfCreatedFacultyWithInputNameIsAlreadyExist() {
-        Faculty expected = new Faculty("FAIT");
-
-        when(facultyDao.save(expected)).thenThrow(DuplicateKeyException.class);
+        when(facultyRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(ServiceException.class, () -> facultyService.saveFaculty(expected));
 
-        verify(facultyDao, times(1)).save(expected);
-    }
-
-    @Test
-    void shouldThrowExceptionIfUpdatedFacultyWithInputNameIsAlreadyExist() {
-        Faculty expected = new Faculty(1L, "FAIT");
-
-        when(facultyDao.save(expected)).thenThrow(DuplicateKeyException.class);
-
-        assertThrows(ServiceException.class, () -> facultyService.saveFaculty(expected));
-
-        verify(facultyDao, times(1)).save(expected);
+        verify(facultyRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.empty());
+        when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> facultyService.getFacultyById(1L));
 
-        verify(facultyDao, times(1)).getById(1L);
-        verify(facultyDao, never()).save(faculty);
-    }
-
-    @Test
-    void shouldThrowExceptionIfFacultyNotPresentInAddingGroupToFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.empty());
-        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
-
-        assertThrows(ServiceException.class, () -> facultyService.addGroupToFaculty(group, faculty));
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupService, never()).saveGroup(group);
-    }
-
-    @Test
-    void shouldThrowExceptionIfGroupNotPresentInAddingGroupToFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(groupDao.getById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(ServiceException.class, () -> facultyService.addGroupToFaculty(group, faculty));
-
-        verify(facultyDao, never()).getById(1L);
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupService, never()).saveGroup(group);
-    }
-
-    @Test
-    void shouldThrowExceptionIfFacultyNotPresentInRemovingGroupFromFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.empty());
-        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
-
-        assertThrows(ServiceException.class, () -> facultyService.removeGroupFromFaculty(group, faculty));
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupService, never()).saveGroup(group);
-    }
-
-    @Test
-    void shouldThrowExceptionIfGroupNotPresentInRemovingGroupFromFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(groupDao.getById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(ServiceException.class, () -> facultyService.removeGroupFromFaculty(group, faculty));
-
-        verify(facultyDao, never()).getById(1L);
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupService, never()).saveGroup(group);
-    }
-
-    @Test
-    void shouldThrowExceptionIfFacultyNotPresentInAddingTeacherToFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.empty());
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-
-        assertThrows(ServiceException.class, () -> facultyService.addTeacherToFaculty(teacher, faculty));
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(teacherDao, times(1)).getById(1L);
-        verify(teacherService, never()).saveTeacher(teacher);
-    }
-
-    @Test
-    void shouldThrowExceptionIfTeacherNotPresentInAddingTeacherToFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(teacherDao.getById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(ServiceException.class, () -> facultyService.addTeacherToFaculty(teacher, faculty));
-
-        verify(facultyDao, never()).getById(1L);
-        verify(teacherDao, times(1)).getById(1L);
-        verify(teacherService, never()).saveTeacher(teacher);
-    }
-
-    @Test
-    void shouldThrowExceptionIfFacultyNotPresentInRemovingTeacherFromFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.empty());
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-
-        assertThrows(ServiceException.class, () -> facultyService.removeTeacherFromFaculty(teacher, faculty));
-        verify(facultyDao, times(1)).getById(1L);
-        verify(teacherDao, times(1)).getById(1L);
-        verify(teacherService, never()).saveTeacher(teacher);
-    }
-
-    @Test
-    void shouldThrowExceptionIfTeacherNotPresentInRemovingTeacherFromFaculty() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(teacherDao.getById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(ServiceException.class, () -> facultyService.removeTeacherFromFaculty(teacher, faculty));
-
-        verify(facultyDao, never()).getById(1L);
-        verify(teacherDao, times(1)).getById(1L);
-        verify(teacherService, never()).saveTeacher(teacher);
-    }
-
-    @Test
-    void shouldThrowExceptionIfGroupIsAlreadyAddedToFaculty() {
-        Group expected = new Group(1L, "AB-81", 1L);
-
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
-
-        assertThrows(ServiceException.class, () -> facultyService.addGroupToFaculty(expected, faculty));
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupService, never()).saveGroup(expected);
-    }
-
-    @Test
-    void shouldThrowExceptionIfGroupIsAlreadyRemovedFromFaculty() {
-        Group expected = new Group(1L, "AB-81", null);
-
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
-
-        assertThrows(ServiceException.class, () -> facultyService.removeGroupFromFaculty(expected, faculty));
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupService, never()).saveGroup(expected);
-    }
-
-    @Test
-    void shouldThrowExceptionIfTeacherIsAlreadyAddedToFaculty() {
-        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", 1L);
-
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(expected));
-
-        assertThrows(ServiceException.class,
-                () -> facultyService.addTeacherToFaculty(expected, faculty));
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(teacherDao, times(1)).getById(1L);
-        verify(teacherService, never()).saveTeacher(expected);
-    }
-
-    @Test
-    void shouldThrowExceptionIfTeacherIsAlreadyRemovedFromFaculty() {
-        Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson", null);
-
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(expected));
-
-        assertThrows(ServiceException.class, () -> facultyService.removeTeacherFromFaculty(expected, faculty));
-
-        verify(facultyDao, times(1)).getById(1L);
-        verify(teacherDao, times(1)).getById(1L);
-        verify(teacherService, never()).saveTeacher(expected);
+        verify(facultyRepository, times(1)).findById(1L);
+        verify(facultyRepository, never()).save(faculty);
     }
 
     @Test
     void shouldReturnFacultyNamesForTeachers() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
-        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN")));
-
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L),
-                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L));
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard",
+                        new Faculty(1L, "FAIT", null, null), null),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey",
+                        new Faculty(2L, "FKFN", null, null), null));
 
         List<String> expected = List.of("FAIT", "FKFN");
 
         assertEquals(expected, facultyService.getFacultyNamesForTeachers(teachers));
-
-        verify(facultyDao, times(2)).getById(1L);
-        verify(facultyDao, times(2)).getById(2L);
     }
 
     @Test
     void shouldReturnFacultiesForTeachers() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
-        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN")));
-
         List<Teacher> teachers = List.of(
-                new Teacher(1L, "Hillel", "St. Leger", "Lugard", 1L),
-                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey", 2L));
+                new Teacher(1L, "Hillel", "St. Leger", "Lugard",
+                        new Faculty(1L, "FAIT", null, null), null),
+                new Teacher(2L, "Lynsey", "Grzeszczak", "McPhillimey",
+                        new Faculty(2L, "FKFN", null, null), null));
 
         List<Faculty> expected = List.of(
-                new Faculty(1L, "FAIT"),
-                new Faculty(2L, "FKFN"));
+                new Faculty(1L, "FAIT", null, null),
+                new Faculty(2L, "FKFN", null, null));
 
         assertEquals(expected, facultyService.getFacultiesForTeachers(teachers));
-
-        verify(facultyDao, times(2)).getById(1L);
-        verify(facultyDao, times(2)).getById(2L);
     }
 
     @Test
     void shouldReturnFacultiesForGroups() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
-        when(facultyDao.getById(2L)).thenReturn(Optional.of(new Faculty(2L, "FKFN")));
-
         List<Group> groups = List.of(
-                new Group(1L, "AB-01", 1L),
-                new Group(2L, "CD-21", 2L));
+                new Group(1L, "AB-01", new Faculty(1L, "FAIT", null, null), null, null),
+                new Group(2L, "CD-21", new Faculty(2L, "FKFN", null, null), null, null));
 
         List<Faculty> expected = List.of(
-                new Faculty(1L, "FAIT"),
-                new Faculty(2L, "FKFN"));
+                new Faculty(1L, "FAIT", null, null),
+                new Faculty(2L, "FKFN", null, null));
 
         assertEquals(expected, facultyService.getFacultiesForGroups(groups));
-
-        verify(facultyDao, times(2)).getById(1L);
-        verify(facultyDao, times(2)).getById(2L);
-    }
-
-    @Test
-    void shouldReturnFacultyForGroup() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT")));
-
-        Group group = new Group(1L, "AB-01", 1L);
-        Faculty expected = new Faculty(1L, "FAIT");
-
-        assertEquals(expected, facultyService.getFacultyForGroup(group));
-
-        verify(facultyDao, times(2)).getById(1L);
     }
 }

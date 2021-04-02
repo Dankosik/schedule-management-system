@@ -38,13 +38,13 @@ INSERT INTO subjects (id, name)
 VALUES (1002, 'Programming');
 
 INSERT INTO lessons (id, number, start_time, duration, subject_id)
-VALUES (1000, 1, '8:30:00', '1 hour 30 minute', 1000);
+VALUES (1000, 1, '8:30:00', 5400000000000, 1000);
 INSERT INTO lessons (id, number, start_time, duration, subject_id)
-VALUES (1001, 2, '10:10:00', '1 hour 30 minute', 1001);
+VALUES (1001, 2, '10:10:00', 5400000000000, 1001);
 INSERT INTO lessons (id, number, start_time, duration, subject_id)
-VALUES (1002, 3, '11:50:00', '1 hour 30 minute', 1002);
+VALUES (1002, 3, '11:50:00', 5400000000000, 1002);
 INSERT INTO lessons (id, number, start_time, duration, subject_id)
-VALUES (1003, 4, '13:20:00', '1 hour 30 minute', 1002);
+VALUES (1003, 4, '13:20:00', 5400000000000, 1002);
 
 INSERT INTO teachers (id, first_name, last_name, middle_name, faculty_id)
 VALUES (1000, 'Hillel', 'St. Leger', 'Lugard', 1000);

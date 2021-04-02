@@ -20,17 +20,14 @@ import java.util.List;
 @Controller
 public class AudienceController {
     private final AudienceServiceImpl audienceService;
-    private final LectureServiceImpl lectureService;
     private final LessonServiceImpl lessonService;
     private final SubjectServiceImpl subjectService;
     private final TeacherServiceImpl teacherService;
     private final GroupServiceImpl groupService;
 
-    public AudienceController(AudienceServiceImpl audienceService, LectureServiceImpl lectureService,
-                              LessonServiceImpl lessonService, SubjectServiceImpl subjectService,
+    public AudienceController(AudienceServiceImpl audienceService, LessonServiceImpl lessonService, SubjectServiceImpl subjectService,
                               TeacherServiceImpl teacherService, GroupServiceImpl groupService) {
         this.audienceService = audienceService;
-        this.lectureService = lectureService;
         this.lessonService = lessonService;
         this.subjectService = subjectService;
         this.teacherService = teacherService;
@@ -48,7 +45,8 @@ public class AudienceController {
     public String showOneAudience(@PathVariable("id") Long id, Model model) {
         Audience audience = audienceService.getAudienceById(id);
         model.addAttribute("audience", audience);
-        List<Lecture> lectures = lectureService.getLecturesForAudience(audience);
+
+        List<Lecture> lectures = audience.getLectures();
         model.addAttribute("lectures", lectures);
 
         List<Lesson> lessons = lessonService.getLessonsWithPossibleNullForLectures(lectures);
@@ -79,7 +77,6 @@ public class AudienceController {
         List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(allLessons));
         model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
-        model.addAttribute("subjectService", subjectService);
         return "audience";
     }
 

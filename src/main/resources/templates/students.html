@@ -28,7 +28,7 @@
             </div>
             <label class="mt-2 ml-3 mr-1">add group: </label>
             <div class="col mt-1">
-                <select class="form-control" th:field="*{groupId}">
+                <select class="form-control" th:field="*{group}">
                     <option th:each="group: ${allGroups}" th:text="${group.name}"
                             th:value="${group.id}"></option>
                 </select>
@@ -86,51 +86,57 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div>
-                                    <div class="form-row">
-                                        <div class="col">
-                                            <input class="form-control" id="editStudentFirstName"
-                                                   name="firstName"
-                                                   placeholder="First name" required th:value="${student.firstName}"
-                                                   type="text">
-                                        </div>
-                                        <div class="col">
-                                            <input class="form-control" id="editStudentLastName"
-                                                   name="lastName"
-                                                   placeholder="Last name" required th:value="${student.lastName}"
-                                                   type="text">
-                                        </div>
-                                        <div class="col">
-                                            <input class="form-control" id="editStudentMiddleName"
-                                                   name="middleName" placeholder="Middle name"
-                                                   required
-                                                   th:value="${student.middleName}" type="text">
-                                        </div>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input class="form-control" id="editStudentFirstName"
+                                               name="firstName"
+                                               placeholder="First name" required th:value="${student.firstName}"
+                                               type="text">
                                     </div>
-                                    <div class="form-row">
-                                        <div class="col mt-1">
-                                            <input class="form-control" id="editStudentCourseNumber"
-                                                   name="courseNumber" placeholder="Course number"
-                                                   required
-                                                   th:value="${student.courseNumber}" type="text">
-                                        </div>
-                                        <label class="mt-2 ml-3 mr-1">add group: </label>
-                                        <div class="col mt-1">
-                                            <select class="form-control" th:field="*{groupId}">
-                                                <div th:each="group: ${allGroups}">
-                                                    <div th:if="${student.groupId == group.id}">
-                                                        <option th:text="${group.name}"
-                                                                th:value="${group.id}"></option>
-                                                    </div>
+                                    <div class="col">
+                                        <input class="form-control" id="editStudentLastName"
+                                               name="lastName"
+                                               placeholder="Last name" required th:value="${student.lastName}"
+                                               type="text">
+                                    </div>
+                                    <div class="col">
+                                        <input class="form-control" id="editStudentMiddleName"
+                                               name="middleName" placeholder="Middle name"
+                                               required
+                                               th:value="${student.middleName}" type="text">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col mt-1">
+                                        <input class="form-control" id="editStudentCourseNumber"
+                                               name="courseNumber" placeholder="Course number"
+                                               required
+                                               th:value="${student.courseNumber}" type="text">
+                                    </div>
+                                    <label class="mt-2 ml-3 mr-1">add group: </label>
+                                    <div class="col mt-1">
+                                        <select class="form-control" th:field="*{group}">
+                                            <div th:each="group: ${allGroups}">
+                                                <div th:if="${student.group != null}">
+                                                    <option th:if="${student.group.name == group.name}"
+                                                            th:text="${group.name}"
+                                                            th:value="${group.id}"></option>
                                                 </div>
-                                                <div th:each="group: ${allGroups}">
-                                                    <div th:if="${student.groupId != group.id}">
-                                                        <option th:text="${group.name}"
-                                                                th:value="${group.id}"></option>
-                                                    </div>
+                                            </div>
+                                            <div th:each="group: ${allGroups}">
+                                                <div th:if="${student.group != null}">
+                                                    <option th:if="${student.group.name != group.name}"
+                                                            th:text="${group.name}"
+                                                            th:value="${group.id}"></option>
                                                 </div>
-                                            </select>
-                                        </div>
+                                            </div>
+                                            <div th:if="${student.group == null}">
+                                                <div th:each="group: ${allGroups}">
+                                                    <option th:text="${group.name}"
+                                                            th:value="${group.id}"></option>
+                                                </div>
+                                            </div>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

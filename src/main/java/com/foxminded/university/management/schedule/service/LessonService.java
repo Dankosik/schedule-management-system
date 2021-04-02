@@ -2,7 +2,6 @@ package com.foxminded.university.management.schedule.service;
 
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
-import com.foxminded.university.management.schedule.models.Subject;
 
 import java.sql.Time;
 import java.time.Duration;
@@ -18,10 +17,6 @@ public interface LessonService {
     void deleteLessonById(Long id);
 
     List<Lesson> saveAllLessons(List<Lesson> lessons);
-
-    Lesson addSubjectToLesson(Subject subject, Lesson lesson);
-
-    Lesson removeSubjectFromLesson(Subject subject, Lesson lesson);
 
     List<Duration> getDurationsWithPossibleNullForLessons(List<Lesson> lessons);
 

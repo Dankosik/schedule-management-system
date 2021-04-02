@@ -17,19 +17,9 @@ public interface FacultyService {
 
     List<Faculty> saveAllFaculties(List<Faculty> faculties);
 
-    Group addGroupToFaculty(Group group, Faculty faculty);
-
-    Group removeGroupFromFaculty(Group group, Faculty faculty);
-
-    Teacher addTeacherToFaculty(Teacher teacher, Faculty faculty);
-
-    Teacher removeTeacherFromFaculty(Teacher teacher, Faculty faculty);
-
     List<String> getFacultyNamesForTeachers(List<Teacher> teachers);
 
     List<Faculty> getFacultiesForTeachers(List<Teacher> teachers);
 
     List<Faculty> getFacultiesForGroups(List<Group> groups);
-
-    Faculty getFacultyForGroup(Group group);
 }

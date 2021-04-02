@@ -1,28 +1,33 @@
 package com.foxminded.university.management.schedule.models;
 
-import com.foxminded.university.management.schedule.dao.BaseEntity;
-
+import javax.persistence.*;
 import java.util.Objects;
 
-public class Student extends Person implements BaseEntity<Long> {
+@Entity
+@Table(name = "students")
+public class Student extends Person {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer courseNumber;
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     public Student() {
     }
 
-    public Student(Long id, String firstName, String lastName, String middleName, Integer courseNumber, Long groupId) {
+    public Student(Long id, String firstName, String lastName, String middleName, Integer courseNumber, Group group) {
         super(firstName, lastName, middleName);
         this.id = id;
         this.courseNumber = courseNumber;
-        this.groupId = groupId;
+        this.group = group;
     }
 
-    public Student(String firstName, String lastName, String middleName, Integer courseNumber, Long groupId) {
+    public Student(String firstName, String lastName, String middleName, Integer courseNumber, Group group) {
         super(firstName, lastName, middleName);
         this.courseNumber = courseNumber;
-        this.groupId = groupId;
+        this.group = group;
     }
 
     public Long getId() {
@@ -33,12 +38,12 @@ public class Student extends Person implements BaseEntity<Long> {
         this.id = id;
     }
 
-    public Long getGroupId() {
-        return groupId;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public Integer getCourseNumber() {
@@ -55,12 +60,12 @@ public class Student extends Person implements BaseEntity<Long> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Student student = (Student) o;
-        return Objects.equals(courseNumber, student.courseNumber) && Objects.equals(groupId, student.groupId);
+        return Objects.equals(courseNumber, student.courseNumber) && Objects.equals(group, student.group);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), courseNumber, groupId);
+        return Objects.hash(super.hashCode(), courseNumber, group);
     }
 
     @Override
@@ -68,7 +73,7 @@ public class Student extends Person implements BaseEntity<Long> {
         return "Student{" +
                 "id=" + id +
                 ", courseNumber=" + courseNumber +
-                ", groupId=" + groupId +
+                ", group=" + group +
                 '}';
     }
 }

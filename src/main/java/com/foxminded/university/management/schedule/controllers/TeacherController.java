@@ -20,19 +20,17 @@ public class TeacherController {
     private final TeacherServiceImpl teacherService;
     private final FacultyServiceImpl facultyService;
     private final AudienceServiceImpl audienceService;
-    private final LectureServiceImpl lectureService;
     private final LessonServiceImpl lessonService;
     private final SubjectServiceImpl subjectService;
     private final GroupServiceImpl groupService;
 
 
     public TeacherController(TeacherServiceImpl teacherService, FacultyServiceImpl facultyService,
-                             AudienceServiceImpl audienceService, LectureServiceImpl lectureService,
-                             LessonServiceImpl lessonService, SubjectServiceImpl subjectService, GroupServiceImpl groupService) {
+                             AudienceServiceImpl audienceService, LessonServiceImpl lessonService,
+                             SubjectServiceImpl subjectService, GroupServiceImpl groupService) {
         this.teacherService = teacherService;
         this.facultyService = facultyService;
         this.audienceService = audienceService;
-        this.lectureService = lectureService;
         this.lessonService = lessonService;
         this.subjectService = subjectService;
         this.groupService = groupService;
@@ -54,9 +52,9 @@ public class TeacherController {
     public String showOneTeacher(@PathVariable("id") Long id, Model model) {
         Teacher teacher = teacherService.getTeacherById(id);
         model.addAttribute("teacher", teacher);
-        model.addAttribute("faculty", facultyService.getFacultyById(teacher.getFacultyId()));
+        model.addAttribute("faculty", teacher.getFaculty());
 
-        List<Lecture> lectures = lectureService.getLecturesForTeacher(teacher);
+        List<Lecture> lectures = teacher.getLectures();
         model.addAttribute("lectures", lectures);
 
         List<Lesson> lessons = lessonService.getLessonsWithPossibleNullForLectures(lectures);
@@ -86,7 +84,6 @@ public class TeacherController {
         List<String> formattedDurationsForAllLessons = StringUtils.formatListOfDurations(lessonService.getDurationsWithPossibleNullForLessons(allLessons));
         model.addAttribute("durationsForAllLessons", formattedDurationsForAllLessons);
         model.addAttribute("subjectsForAllLessons", subjectService.getSubjectsWithPossibleNullForLessons(allLessons));
-        model.addAttribute("subjectService", subjectService);
         return "teacher";
     }
 

@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
@@ -18,15 +17,9 @@ public interface GroupService {
 
     List<Group> saveAllGroups(List<Group> groups);
 
-    Student addStudentToGroup(Student student, Group group);
-
-    Student removeStudentFromGroup(Student student, Group group);
-
     List<String> getGroupNamesWithPossibleNullForStudents(List<Student> students);
 
     List<Group> getGroupsWithPossibleNullForStudents(List<Student> students);
-
-    List<Group> getGroupsForFaculty(Faculty faculty);
 
     List<String> getGroupNamesForLectures(List<Lecture> lectures);
 
