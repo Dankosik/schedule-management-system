@@ -1,14 +1,14 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.repository.SubjectRepository;
 import com.foxminded.university.management.schedule.service.SubjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,39 +19,39 @@ import java.util.List;
 @Transactional
 public class SubjectServiceImpl implements SubjectService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubjectServiceImpl.class);
-    private final SubjectDao subjectDao;
+    private final SubjectRepository subjectRepository;
 
-    public SubjectServiceImpl(SubjectDao subjectDao) {
-        this.subjectDao = subjectDao;
+    public SubjectServiceImpl(SubjectRepository subjectRepository) {
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
     public Subject saveSubject(Subject subject) {
         try {
-            return subjectDao.save(subject);
-        } catch (DuplicateKeyException e) {
+            return subjectRepository.saveAndFlush(subject);
+        } catch (DataIntegrityViolationException e) {
             throw new ServiceException("Subject with name: " + subject.getName() + " is already exist");
         }
     }
 
     @Override
     public Subject getSubjectById(Long id) {
-        boolean isSubjectPresent = subjectDao.getById(id).isPresent();
+        boolean isSubjectPresent = subjectRepository.findById(id).isPresent();
         LOGGER.debug("Audience is present: {}", isSubjectPresent);
         if (isSubjectPresent) {
-            return subjectDao.getById(id).get();
+            return subjectRepository.findById(id).get();
         }
         throw new ServiceException("Subject with id: " + id + " is not found");
     }
 
     @Override
     public List<Subject> getAllSubjects() {
-        return subjectDao.getAll();
+        return subjectRepository.findAll();
     }
 
     @Override
     public void deleteSubjectById(Long id) {
-        subjectDao.deleteById(getSubjectById(id).getId());
+        subjectRepository.deleteById(getSubjectById(id).getId());
     }
 
     @Override

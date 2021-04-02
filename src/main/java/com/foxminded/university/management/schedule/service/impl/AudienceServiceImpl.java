@@ -1,13 +1,13 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.dao.AudienceDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.repository.AudienceRepository;
 import com.foxminded.university.management.schedule.service.AudienceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,39 +18,40 @@ import java.util.List;
 @Transactional
 public class AudienceServiceImpl implements AudienceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AudienceServiceImpl.class);
-    private final AudienceDao audienceDao;
+    private final AudienceRepository audienceRepository;
 
-    public AudienceServiceImpl(AudienceDao audienceDao) {
-        this.audienceDao = audienceDao;
+    public AudienceServiceImpl(AudienceRepository audienceRepository) {
+        this.audienceRepository = audienceRepository;
     }
+
 
     @Override
     public Audience saveAudience(Audience audience) {
         try {
-            return audienceDao.save(audience);
-        } catch (DuplicateKeyException e) {
+            return audienceRepository.saveAndFlush(audience);
+        } catch (DataIntegrityViolationException e) {
             throw new ServiceException("Audience with number: " + audience.getNumber() + " is already exists");
         }
     }
 
     @Override
     public Audience getAudienceById(Long id) {
-        boolean isAudiencePresent = audienceDao.getById(id).isPresent();
+        boolean isAudiencePresent = audienceRepository.findById(id).isPresent();
         LOGGER.debug("Audience is present: {}", isAudiencePresent);
         if (isAudiencePresent) {
-            return audienceDao.getById(id).get();
+            return audienceRepository.findById(id).get();
         }
         throw new ServiceException("Audience with id: " + id + " is not found");
     }
 
     @Override
     public List<Audience> getAllAudiences() {
-        return audienceDao.getAll();
+        return audienceRepository.findAll();
     }
 
     @Override
     public void deleteAudienceById(Long id) {
-        audienceDao.deleteById(getAudienceById(id).getId());
+        audienceRepository.deleteById(getAudienceById(id).getId());
     }
 
     @Override

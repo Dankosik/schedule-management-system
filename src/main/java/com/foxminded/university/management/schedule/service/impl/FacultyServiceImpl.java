@@ -1,14 +1,14 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.service.FacultyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,39 +20,39 @@ import java.util.stream.Collectors;
 @Transactional
 public class FacultyServiceImpl implements FacultyService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FacultyServiceImpl.class);
-    private final FacultyDao facultyDao;
+    private final FacultyRepository facultyRepository;
 
-    public FacultyServiceImpl(FacultyDao facultyDao) {
-        this.facultyDao = facultyDao;
+    public FacultyServiceImpl(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
     }
 
     @Override
     public Faculty saveFaculty(Faculty faculty) {
         try {
-            return facultyDao.save(faculty);
-        } catch (DuplicateKeyException e) {
+            return facultyRepository.saveAndFlush(faculty);
+        } catch (DataIntegrityViolationException e) {
             throw new ServiceException("Faculty with name: " + faculty.getName() + " is already exist");
         }
     }
 
     @Override
     public Faculty getFacultyById(Long id) {
-        boolean isFacultyPresent = facultyDao.getById(id).isPresent();
+        boolean isFacultyPresent = facultyRepository.findById(id).isPresent();
         LOGGER.debug("Faculty is present: {}", isFacultyPresent);
         if (isFacultyPresent) {
-            return facultyDao.getById(id).get();
+            return facultyRepository.findById(id).get();
         }
         throw new ServiceException("Faculty with id: " + id + " is not found");
     }
 
     @Override
     public List<Faculty> getAllFaculties() {
-        return facultyDao.getAll();
+        return facultyRepository.findAll();
     }
 
     @Override
     public void deleteFacultyById(Long id) {
-        facultyDao.deleteById(getFacultyById(id).getId());
+        facultyRepository.deleteById(getFacultyById(id).getId());
     }
 
     @Override

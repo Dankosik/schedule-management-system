@@ -1,10 +1,10 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.dao.LessonDao;
-import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
+import com.foxminded.university.management.schedule.repository.LessonRepository;
+import com.foxminded.university.management.schedule.repository.SubjectRepository;
 import com.foxminded.university.management.schedule.service.LessonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,41 +21,41 @@ import java.util.List;
 public class LessonServiceImpl implements LessonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LessonServiceImpl.class);
 
-    private final LessonDao lessonDao;
-    private final SubjectDao subjectDao;
+    private final LessonRepository lessonRepository;
+    private final SubjectRepository subjectRepository;
 
-    public LessonServiceImpl(LessonDao lessonDao, SubjectDao subjectDao) {
-        this.lessonDao = lessonDao;
-        this.subjectDao = subjectDao;
+    public LessonServiceImpl(LessonRepository lessonRepository, SubjectRepository subjectRepository) {
+        this.lessonRepository = lessonRepository;
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
     public Lesson saveLesson(Lesson lesson) {
-        boolean isSubjectPresent = subjectDao.getById(lesson.getSubject().getId()).isPresent();
+        boolean isSubjectPresent = subjectRepository.findById(lesson.getSubject().getId()).isPresent();
         LOGGER.debug("Subject is present: {}", isSubjectPresent);
         if (!isSubjectPresent)
             throw new ServiceException("Lesson subject with id: " + lesson.getSubject().getId() + " is not exist");
-        return lessonDao.save(lesson);
+        return lessonRepository.save(lesson);
     }
 
     @Override
     public Lesson getLessonById(Long id) {
-        boolean isLessonPresent = lessonDao.getById(id).isPresent();
+        boolean isLessonPresent = lessonRepository.findById(id).isPresent();
         LOGGER.debug("Lesson is present: {}", isLessonPresent);
         if (isLessonPresent) {
-            return lessonDao.getById(id).get();
+            return lessonRepository.findById(id).get();
         }
         throw new ServiceException("Lesson with id: " + id + " is not found");
     }
 
     @Override
     public List<Lesson> getAllLessons() {
-        return lessonDao.getAll();
+        return lessonRepository.findAll();
     }
 
     @Override
     public void deleteLessonById(Long id) {
-        lessonDao.deleteById(getLessonById(id).getId());
+        lessonRepository.deleteById(getLessonById(id).getId());
     }
 
     @Override

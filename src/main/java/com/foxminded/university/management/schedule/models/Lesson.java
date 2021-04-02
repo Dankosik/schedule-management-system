@@ -1,7 +1,5 @@
 package com.foxminded.university.management.schedule.models;
 
-import com.foxminded.university.management.schedule.dao.BaseEntity;
-
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.Duration;
@@ -10,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "lessons")
-public class Lesson implements BaseEntity<Long> {
+public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,14 +1,12 @@
 package com.foxminded.university.management.schedule.models;
 
-import com.foxminded.university.management.schedule.dao.BaseEntity;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "audiences")
-public class Audience implements BaseEntity<Long> {
+public class Audience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,7 +31,6 @@ public class Audience implements BaseEntity<Long> {
         this.lectures = lectures;
     }
 
-    @Override
     public Long getId() {
         return id;
     }

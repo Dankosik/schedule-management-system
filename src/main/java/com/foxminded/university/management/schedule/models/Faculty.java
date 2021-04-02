@@ -1,6 +1,7 @@
 package com.foxminded.university.management.schedule.models;
 
-import com.foxminded.university.management.schedule.dao.BaseEntity;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "faculties")
-public class Faculty implements BaseEntity<Long> {
+public class Faculty{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,6 +17,7 @@ public class Faculty implements BaseEntity<Long> {
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Group> groups;
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Teacher> teachers;
 
     public Faculty(Long id, String name, List<Group> groups, List<Teacher> teachers) {
@@ -35,7 +37,6 @@ public class Faculty implements BaseEntity<Long> {
 
     }
 
-    @Override
     public Long getId() {
         return id;
     }

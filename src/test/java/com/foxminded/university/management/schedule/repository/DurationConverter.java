@@ -1,8 +1,7 @@
-package com.foxminded.university.management.schedule.dao;
+package com.foxminded.university.management.schedule.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

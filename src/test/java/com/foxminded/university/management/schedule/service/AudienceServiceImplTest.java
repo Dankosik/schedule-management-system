@@ -1,16 +1,16 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.dao.AudienceDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
+import com.foxminded.university.management.schedule.repository.AudienceRepository;
 import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -36,95 +36,94 @@ class AudienceServiceImplTest {
     @Autowired
     private AudienceServiceImpl audienceService;
     @MockBean
-    private AudienceDao audienceDao;
+    private AudienceRepository audienceRepository;
 
     @Test
     void shouldSaveAudience() {
-        when(audienceDao.save(new Audience(202, 45, null))).thenReturn(audience);
+        when(audienceRepository.saveAndFlush(new Audience(202, 45, null))).thenReturn(audience);
         Audience actual = audienceService.saveAudience(audience);
 
         assertEquals(audience, actual);
 
-        verify(audienceDao, times(1)).save(audience);
+        verify(audienceRepository, times(1)).saveAndFlush(audience);
     }
 
     @Test
     void shouldReturnAudienceWithIdOne() {
-        when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
+        when(audienceRepository.findById(1L)).thenReturn(Optional.of(audience));
         Audience actual = audienceService.getAudienceById(1L);
 
         assertEquals(audience, actual);
 
-        verify(audienceDao, times(2)).getById(1L);
+        verify(audienceRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldReturnListOfAudiences() {
-        when(audienceDao.getAll()).thenReturn(audiences);
+        when(audienceRepository.findAll()).thenReturn(audiences);
 
         assertEquals(audiences, audienceService.getAllAudiences());
 
-        verify(audienceDao, times(1)).getAll();
+        verify(audienceRepository, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteAudienceWithIdOne() {
-        when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
-        when(audienceDao.deleteById(1L)).thenReturn(true);
+        when(audienceRepository.findById(1L)).thenReturn(Optional.of(audience));
 
         audienceService.deleteAudienceById(1L);
 
-        verify(audienceDao, times(1)).deleteById(1L);
-        verify(audienceDao, times(2)).getById(1L);
+        verify(audienceRepository, times(1)).deleteById(1L);
+        verify(audienceRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldSaveListOfAudiences() {
-        when(audienceDao.save(new Audience(202, 45, null))).thenReturn(audience);
-        when(audienceDao.save(new Audience(203, 50, null))).thenReturn(audiences.get(1));
-        when(audienceDao.save(new Audience(204, 55, null))).thenReturn(audiences.get(2));
-        when(audienceDao.save(new Audience(205, 60, null))).thenReturn(audiences.get(3));
+        when(audienceRepository.saveAndFlush(new Audience(202, 45, null))).thenReturn(audience);
+        when(audienceRepository.saveAndFlush(new Audience(203, 50, null))).thenReturn(audiences.get(1));
+        when(audienceRepository.saveAndFlush(new Audience(204, 55, null))).thenReturn(audiences.get(2));
+        when(audienceRepository.saveAndFlush(new Audience(205, 60, null))).thenReturn(audiences.get(3));
 
         List<Audience> actual = audienceService.saveAllAudiences(audiences);
 
         assertEquals(audiences, actual);
 
-        verify(audienceDao, times(1)).save(audiences.get(0));
-        verify(audienceDao, times(1)).save(audiences.get(1));
-        verify(audienceDao, times(1)).save(audiences.get(2));
-        verify(audienceDao, times(1)).save(audiences.get(3));
+        verify(audienceRepository, times(1)).saveAndFlush(audiences.get(0));
+        verify(audienceRepository, times(1)).saveAndFlush(audiences.get(1));
+        verify(audienceRepository, times(1)).saveAndFlush(audiences.get(2));
+        verify(audienceRepository, times(1)).saveAndFlush(audiences.get(3));
     }
 
     @Test
     void shouldThrowExceptionIfCreatedAudienceWithInputNumberIsAlreadyExist() {
         Audience expected = new Audience(202, 45, null);
 
-        when(audienceDao.save(expected)).thenThrow(DuplicateKeyException.class);
+        when(audienceRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(ServiceException.class, () -> audienceService.saveAudience(expected));
 
-        verify(audienceDao, times(1)).save(expected);
+        verify(audienceRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void shouldThrowExceptionIfUpdatedAudienceWithInputNumberIsAlreadyExist() {
         Audience expected = new Audience(1L, 202, 45, null);
 
-        when(audienceDao.save(expected)).thenThrow(DuplicateKeyException.class);
+        when(audienceRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(ServiceException.class, () -> audienceService.saveAudience(expected));
 
-        verify(audienceDao, times(1)).save(expected);
+        verify(audienceRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
-        when(audienceDao.getById(1L)).thenReturn(Optional.empty());
+        when(audienceRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> audienceService.getAudienceById(1L));
 
-        verify(audienceDao, times(1)).getById(1L);
-        verify(audienceDao, never()).save(audience);
+        verify(audienceRepository, times(1)).findById(1L);
+        verify(audienceRepository, never()).save(audience);
     }
 
     @Test
