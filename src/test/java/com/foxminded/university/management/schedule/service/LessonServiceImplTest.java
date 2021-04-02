@@ -1,11 +1,11 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.dao.LessonDao;
-import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.repository.LessonRepository;
+import com.foxminded.university.management.schedule.repository.SubjectRepository;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,82 +41,81 @@ class LessonServiceImplTest {
     @Autowired
     private LessonServiceImpl lessonService;
     @MockBean
-    private LessonDao lessonDao;
+    private LessonRepository lessonRepository;
     @MockBean
-    private SubjectDao subjectDao;
+    private SubjectRepository subjectRepository;
 
     @Test
     void shouldSaveLesson() {
-        when(lessonDao.save(new Lesson(1, Time.valueOf(LocalTime.of(8, 30, 0)),
+        when(lessonRepository.save(new Lesson(1, Time.valueOf(LocalTime.of(8, 30, 0)),
                 Duration.ofMinutes(90), subject, null))).thenReturn(lesson);
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
+        when(subjectRepository.findById(1L)).thenReturn(Optional.of(subject));
 
         Lesson actual = lessonService.saveLesson(lesson);
 
         assertEquals(lesson, actual);
 
-        verify(lessonDao, times(1)).save(lesson);
-        verify(subjectDao, times(1)).getById(1L);
+        verify(lessonRepository, times(1)).save(lesson);
+        verify(subjectRepository, times(1)).findById(1L);
     }
 
     @Test
     void shouldReturnLessonWithIdOne() {
-        when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
+        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
         Lesson actual = lessonService.getLessonById(1L);
 
         assertEquals(lesson, actual);
 
-        verify(lessonDao, times(2)).getById(1L);
+        verify(lessonRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldReturnListOfLessons() {
-        when(lessonDao.getAll()).thenReturn(lessons);
+        when(lessonRepository.findAll()).thenReturn(lessons);
 
         assertEquals(lessons, lessonService.getAllLessons());
 
-        verify(lessonDao, times(1)).getAll();
+        verify(lessonRepository, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteLessonWithIdOne() {
-        when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
-        when(lessonDao.deleteById(1L)).thenReturn(true);
+        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
 
         lessonService.deleteLessonById(1L);
 
-        verify(lessonDao, times(1)).deleteById(1L);
-        verify(lessonDao, times(2)).getById(1L);
+        verify(lessonRepository, times(1)).deleteById(1L);
+        verify(lessonRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldSaveListOfLessons() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
-        when(lessonDao.save(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null)))
+        when(subjectRepository.findById(1L)).thenReturn(Optional.of(subject));
+        when(lessonRepository.save(new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null)))
                 .thenReturn(lesson);
-        when(lessonDao.save(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), subject, null)))
+        when(lessonRepository.save(new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), subject, null)))
                 .thenReturn(lessons.get(1));
-        when(lessonDao.save(new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), subject, null)))
+        when(lessonRepository.save(new Lesson(3L, 3, Time.valueOf(LocalTime.of(11, 50, 0)), Duration.ofMinutes(90), subject, null)))
                 .thenReturn(lessons.get(2));
 
         List<Lesson> actual = lessonService.saveAllLessons(lessons);
 
         assertEquals(lessons, actual);
 
-        verify(lessonDao, times(1)).save(lessons.get(0));
-        verify(lessonDao, times(1)).save(lessons.get(1));
-        verify(lessonDao, times(1)).save(lessons.get(2));
-        verify(subjectDao, times(3)).getById(1L);
+        verify(lessonRepository, times(1)).save(lessons.get(0));
+        verify(lessonRepository, times(1)).save(lessons.get(1));
+        verify(lessonRepository, times(1)).save(lessons.get(2));
+        verify(subjectRepository, times(3)).findById(1L);
     }
 
     @Test
     void shouldThrowExceptionIfLessonWithInputIdNotFound() {
-        when(lessonDao.getById(1L)).thenReturn(Optional.empty());
+        when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> lessonService.getLessonById(1L));
 
-        verify(lessonDao, times(1)).getById(1L);
-        verify(lessonDao, never()).save(lesson);
+        verify(lessonRepository, times(1)).findById(1L);
+        verify(lessonRepository, never()).save(lesson);
     }
 
     @Test

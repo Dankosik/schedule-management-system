@@ -1,19 +1,17 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.dao.LessonDao;
-import com.foxminded.university.management.schedule.dao.SubjectDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
+import com.foxminded.university.management.schedule.repository.SubjectRepository;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -42,100 +40,95 @@ class SubjectServiceImplTest {
     @Autowired
     private SubjectServiceImpl subjectService;
     @MockBean
-    private SubjectDao subjectDao;
-    @MockBean
-    private LessonDao lessonDao;
-    @MockBean
-    private LessonServiceImpl lessonService;
+    private SubjectRepository subjectRepository;
 
     @Test
     void shouldSaveSubject() {
-        when(subjectDao.save(new Subject("Math", null))).thenReturn(subject);
+        when(subjectRepository.saveAndFlush(new Subject("Math", null))).thenReturn(subject);
 
         Subject actual = subjectService.saveSubject(subject);
 
         assertEquals(subject, actual);
 
-        verify(subjectDao, times(1)).save(subject);
+        verify(subjectRepository, times(1)).saveAndFlush(subject);
     }
 
     @Test
     void shouldReturnSubjectWithIdOne() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
+        when(subjectRepository.findById(1L)).thenReturn(Optional.of(subject));
 
         Subject actual = subjectService.getSubjectById(1L);
 
         assertEquals(subject, actual);
 
-        verify(subjectDao, times(2)).getById(1L);
+        verify(subjectRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldReturnListOfSubjects() {
-        when(subjectDao.getAll()).thenReturn(subjects);
+        when(subjectRepository.findAll()).thenReturn(subjects);
 
         assertEquals(subjects, subjectService.getAllSubjects());
 
-        verify(subjectDao, times(1)).getAll();
+        verify(subjectRepository, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteStudentWithIdOne() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.of(subject));
-        when(subjectDao.deleteById(1L)).thenReturn(true);
+        when(subjectRepository.findById(1L)).thenReturn(Optional.of(subject));
 
         subjectService.deleteSubjectById(1L);
 
-        verify(subjectDao, times(1)).deleteById(1L);
-        verify(subjectDao, times(2)).getById(1L);
+        verify(subjectRepository, times(1)).deleteById(1L);
+        verify(subjectRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldSaveListOfAudiences() {
-        when(subjectDao.save(new Subject("Math", null)))
+        when(subjectRepository.saveAndFlush(new Subject("Math", null)))
                 .thenReturn(subject);
-        when(subjectDao.save(new Subject("Art", null)))
+        when(subjectRepository.saveAndFlush(new Subject("Art", null)))
                 .thenReturn(subjects.get(1));
-        when(subjectDao.save(new Subject("Programming", null)))
+        when(subjectRepository.saveAndFlush(new Subject("Programming", null)))
                 .thenReturn(subjects.get(2));
 
         List<Subject> actual = subjectService.saveAllSubjects(subjects);
 
         assertEquals(subjects, actual);
 
-        verify(subjectDao, times(1)).save(subjects.get(0));
-        verify(subjectDao, times(1)).save(subjects.get(1));
-        verify(subjectDao, times(1)).save(subjects.get(2));
+        verify(subjectRepository, times(1)).saveAndFlush(subjects.get(0));
+        verify(subjectRepository, times(1)).saveAndFlush(subjects.get(1));
+        verify(subjectRepository, times(1)).saveAndFlush(subjects.get(2));
     }
 
     @Test
     void shouldThrowExceptionIfCreatedSubjectWithInputNameIsAlreadyExist() {
         Subject expected = new Subject("Math", null);
-        when(subjectDao.save(expected)).thenThrow(DuplicateKeyException.class);
+        when(subjectRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
 
-        verify(subjectDao, times(1)).save(expected);
+        verify(subjectRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void shouldThrowExceptionIfUpdatedSubjectWithInputNameIsAlreadyExist() {
         Subject expected = new Subject(1L, "Math", null);
-        when(subjectDao.save(expected)).thenThrow(DuplicateKeyException.class);
+        when(subjectRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
 
-        verify(subjectDao, times(1)).save(expected);
+        verify(subjectRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void shouldThrowExceptionIfSubjectWithInputIdNotFound() {
-        when(subjectDao.getById(1L)).thenReturn(Optional.empty());
+        when(subjectRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> subjectService.getSubjectById(1L));
 
-        verify(subjectDao, times(1)).getById(1L);
-        verify(subjectDao, never()).save(subject);
+        verify(subjectRepository, times(1)).findById(1L);
+        verify(subjectRepository, never()).save(subject);
     }
 
     @Test

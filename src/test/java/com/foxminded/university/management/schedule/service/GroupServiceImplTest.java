@@ -1,19 +1,19 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.dao.FacultyDao;
-import com.foxminded.university.management.schedule.dao.GroupDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
+import com.foxminded.university.management.schedule.repository.FacultyRepository;
+import com.foxminded.university.management.schedule.repository.GroupRepository;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -35,125 +35,123 @@ class GroupServiceImplTest {
     private final List<Group> groups = List.of(group,
             new Group(2L, "BC-02", new Faculty(1L, "FAIT", null, null), null, null),
             new Group(3L, "CD-03", new Faculty(1L, "FAIT", null, null), null, null));
-    private final Student student = new Student(1L, "John", "Jackson", "Jackson", 1, null);
     @Autowired
     private GroupServiceImpl groupService;
 
     @MockBean
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
     @MockBean
-    private FacultyDao facultyDao;
+    private FacultyRepository facultyRepository;
 
     @Test
     void shouldSaveGroup() {
-        when(groupDao.save(new Group("AB-01", new Faculty(1L, "FAIT", null, null), null, null))).thenReturn(group);
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", null, null)));
+        when(groupRepository.saveAndFlush(new Group("AB-01", new Faculty(1L, "FAIT", null, null), null, null))).thenReturn(group);
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", null, null)));
 
         Group actual = groupService.saveGroup(new Group("AB-01", new Faculty(1L, "FAIT", null, null), null, null));
 
         assertEquals(group, actual);
 
-        verify(groupDao, times(1)).save(group);
-        verify(facultyDao, times(1)).getById(1L);
+        verify(groupRepository, times(1)).saveAndFlush(group);
+        verify(facultyRepository, times(1)).findById(1L);
     }
 
     @Test
     void shouldReturnGroupWithIdOne() {
-        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(group));
 
         Group actual = groupService.getGroupById(1L);
 
         assertEquals(group, actual);
 
-        verify(groupDao, times(2)).getById(1L);
+        verify(groupRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldReturnListOfGroups() {
-        when(groupDao.getAll()).thenReturn(groups);
+        when(groupRepository.findAll()).thenReturn(groups);
 
         assertEquals(groups, groupService.getAllGroups());
 
-        verify(groupDao, times(1)).getAll();
+        verify(groupRepository, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteGroupWithIdOne() {
-        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
-        when(groupDao.deleteById(1L)).thenReturn(true);
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(group));
 
         groupService.deleteGroupById(1L);
 
-        verify(groupDao, times(1)).deleteById(1L);
-        verify(groupDao, times(2)).getById(1L);
+        verify(groupRepository, times(1)).deleteById(1L);
+        verify(groupRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldSaveListOfGroups() {
         Faculty faculty = new Faculty(1L, "FAIT", null, null);
-        when(groupDao.save(new Group("AB-01", faculty, null, null)))
+        when(groupRepository.saveAndFlush(new Group("AB-01", faculty, null, null)))
                 .thenReturn(new Group("AB-01", faculty, null, null));
-        when(groupDao.save(new Group("BC-02", faculty, null, null)))
+        when(groupRepository.saveAndFlush(new Group("BC-02", faculty, null, null)))
                 .thenReturn(new Group("BC-02", faculty, null, null));
-        when(groupDao.save(new Group("CD-03", faculty, null, null)))
+        when(groupRepository.saveAndFlush(new Group("CD-03", faculty, null, null)))
                 .thenReturn(new Group("CD-03", faculty, null, null));
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
 
         List<Group> actual = groupService.saveAllGroups(groups);
 
         assertEquals(groups, actual);
 
-        verify(groupDao, times(1)).save(groups.get(0));
-        verify(groupDao, times(1)).save(groups.get(1));
-        verify(groupDao, times(1)).save(groups.get(2));
+        verify(groupRepository, times(1)).saveAndFlush(groups.get(0));
+        verify(groupRepository, times(1)).saveAndFlush(groups.get(1));
+        verify(groupRepository, times(1)).saveAndFlush(groups.get(2));
     }
 
     @Test
     void shouldThrowExceptionIfUpdatedGroupWithInputNameIsAlreadyExist() {
         Group expected = new Group("AB-01", new Faculty(1L, "FAIT", null, null), null, null);
 
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", null, null)));
-        when(groupDao.save(expected)).thenThrow(DuplicateKeyException.class);
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", null, null)));
+        when(groupRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
 
-        verify(groupDao, times(1)).save(expected);
-        verify(facultyDao, times(1)).getById(1L);
+        verify(groupRepository, times(1)).saveAndFlush(expected);
+        verify(facultyRepository, times(1)).findById(1L);
     }
 
     @Test
     void shouldThrowExceptionIfCreatedGroupWithInputNameIsAlreadyExist() {
         Group expected = new Group("AB-01", new Faculty(1L, "FAIT", null, null), null, null);
 
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(new Faculty("FAIT", null, null)));
-        when(groupDao.save(expected)).thenThrow(DuplicateKeyException.class);
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(new Faculty("FAIT", null, null)));
+        when(groupRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
         assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
 
-        verify(facultyDao, times(1)).getById(1L);
+        verify(facultyRepository, times(1)).findById(1L);
     }
 
     @Test
     void shouldThrowExceptionIfGroupWithInputIdNotFound() {
-        when(groupDao.getById(1L)).thenReturn(Optional.empty());
+        when(groupRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> groupService.getGroupById(1L));
 
-        verify(groupDao, times(1)).getById(1L);
-        verify(groupDao, never()).save(group);
+        verify(groupRepository, times(1)).findById(1L);
+        verify(groupRepository, never()).save(group);
     }
 
     @Test
     void shouldThrowExceptionIfGroupFacultyNotFound() {
         Group expected = new Group(1L, "AB-01", new Faculty(1L, "FAIT", null, null), null, null);
 
-        when(groupDao.getById(1L)).thenReturn(Optional.of(expected));
-        when(facultyDao.getById(1L)).thenReturn(Optional.empty());
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(expected));
+        when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
 
-        verify(facultyDao, times(1)).getById(1L);
-        verify(groupDao, never()).save(expected);
+        verify(facultyRepository, times(1)).findById(1L);
+        verify(groupRepository, never()).save(expected);
     }
 
     @Test

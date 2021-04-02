@@ -1,11 +1,14 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.dao.*;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.repository.AudienceRepository;
+import com.foxminded.university.management.schedule.repository.LectureRepository;
+import com.foxminded.university.management.schedule.repository.LessonRepository;
+import com.foxminded.university.management.schedule.repository.TeacherRepository;
 import com.foxminded.university.management.schedule.service.impl.LectureServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,109 +48,106 @@ class LectureServiceImplTest {
     @Autowired
     private LectureServiceImpl lectureService;
     @MockBean
-    private LectureDao lectureDao;
+    private LectureRepository lectureRepository;
     @MockBean
-    private LessonDao lessonDao;
+    private LessonRepository lessonRepository;
     @MockBean
-    private TeacherDao teacherDao;
+    private TeacherRepository teacherRepository;
     @MockBean
-    private AudienceDao audienceDao;
-    @MockBean
-    private GroupDao groupDao;
+    private AudienceRepository audienceRepository;
 
     @Test
     void shouldSaveLecture() {
-        when(lectureDao.save(lecture)).thenReturn(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        when(lectureRepository.save(lecture)).thenReturn(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher));
-        when(teacherDao.getById(1L))
+        when(teacherRepository.findById(1L))
                 .thenReturn(Optional.of(teacher));
-        when(audienceDao.getById(1L))
+        when(audienceRepository.findById(1L))
                 .thenReturn(Optional.of(audience));
-        when(lessonDao.getById(1L))
+        when(lessonRepository.findById(1L))
                 .thenReturn(Optional.of(lesson));
         Lecture actual = lectureService.saveLecture(lecture);
 
         assertEquals(lecture, actual);
 
-        verify(teacherDao, times(1)).getById(1L);
-        verify(audienceDao, times(1)).getById(1L);
-        verify(lessonDao, times(1)).getById(1L);
-        verify(lectureDao, times(1)).save(lecture);
+        verify(teacherRepository, times(1)).findById(1L);
+        verify(audienceRepository, times(1)).findById(1L);
+        verify(lessonRepository, times(1)).findById(1L);
+        verify(lectureRepository, times(1)).save(lecture);
     }
 
     @Test
     void shouldReturnLectureWithIdOne() {
-        when(lectureDao.getById(1L)).thenReturn(Optional.of(lecture));
+        when(lectureRepository.findById(1L)).thenReturn(Optional.of(lecture));
 
         Lecture actual = lectureService.getLectureById(1L);
 
         assertEquals(lecture, actual);
 
-        verify(lectureDao, times(2)).getById(1L);
+        verify(lectureRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldReturnListOfLectures() {
-        when(lectureDao.getAll()).thenReturn(lectures);
+        when(lectureRepository.findAll()).thenReturn(lectures);
 
         assertEquals(lectures, lectureService.getAllLectures());
 
-        verify(lectureDao, times(1)).getAll();
+        verify(lectureRepository, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteLectureWithIdOne() {
-        when(lectureDao.getById(1L)).thenReturn(Optional.of(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        when(lectureRepository.findById(1L)).thenReturn(Optional.of(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher)));
-        when(lectureDao.deleteById(1L)).thenReturn(true);
 
         lectureService.deleteLectureById(1L);
 
-        verify(lectureDao, times(1)).deleteById(1L);
-        verify(lectureDao, times(2)).getById(1L);
+        verify(lectureRepository, times(1)).deleteById(1L);
+        verify(lectureRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldSaveListOfLessons() {
-        when(lectureDao.save(lecture)).thenReturn(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        when(lectureRepository.save(lecture)).thenReturn(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher));
-        when(teacherDao.getById(1L))
+        when(teacherRepository.findById(1L))
                 .thenReturn(Optional.of(teacher));
-        when(audienceDao.getById(1L))
+        when(audienceRepository.findById(1L))
                 .thenReturn(Optional.of(audience));
-        when(lessonDao.getById(1L))
+        when(lessonRepository.findById(1L))
                 .thenReturn(Optional.of(lesson));
 
-        when(lectureDao.save(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        when(lectureRepository.save(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher))).thenReturn(lecture);
-        when(lectureDao.save(new Lecture(2, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        when(lectureRepository.save(new Lecture(2, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher))).thenReturn(lectures.get(1));
-        when(lectureDao.save(new Lecture(3, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        when(lectureRepository.save(new Lecture(3, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher))).thenReturn(lectures.get(2));
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-        when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
-        when(lessonDao.getById(1L)).thenReturn(Optional.of(lesson));
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(audienceRepository.findById(1L)).thenReturn(Optional.of(audience));
+        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
 
         List<Lecture> actual = lectureService.saveAllLectures(lectures);
 
         assertEquals(lectures, actual);
 
-        verify(teacherDao, times(3)).getById(1L);
-        verify(audienceDao, times(3)).getById(1L);
-        verify(lessonDao, times(3)).getById(1L);
-        verify(lectureDao, times(1)).save(lectures.get(0));
-        verify(lectureDao, times(1)).save(lectures.get(1));
-        verify(lectureDao, times(1)).save(lectures.get(2));
+        verify(teacherRepository, times(3)).findById(1L);
+        verify(audienceRepository, times(3)).findById(1L);
+        verify(lessonRepository, times(3)).findById(1L);
+        verify(lectureRepository, times(1)).save(lectures.get(0));
+        verify(lectureRepository, times(1)).save(lectures.get(1));
+        verify(lectureRepository, times(1)).save(lectures.get(2));
     }
 
     @Test
     void shouldThrowExceptionIfLectureWithInputIdNotFound() {
-        when(lectureDao.getById(1L)).thenReturn(Optional.empty());
+        when(lectureRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> lectureService.getLectureById(1L));
 
-        verify(lectureDao, times(1)).getById(1L);
-        verify(lectureDao, never()).save(lecture);
+        verify(lectureRepository, times(1)).findById(1L);
+        verify(lectureRepository, never()).save(lecture);
     }
 
     @Test
@@ -155,13 +155,13 @@ class LectureServiceImplTest {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher);
 
-        when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
-        when(teacherDao.getById(1L)).thenReturn(Optional.empty());
+        when(lectureRepository.findById(1L)).thenReturn(Optional.of(expected));
+        when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> lectureService.saveLecture(expected));
 
-        verify(teacherDao, times(1)).getById(1L);
-        verify(lectureDao, never()).save(expected);
+        verify(teacherRepository, times(1)).findById(1L);
+        verify(lectureRepository, never()).save(expected);
     }
 
     @Test
@@ -169,17 +169,17 @@ class LectureServiceImplTest {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher);
 
-        when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-        when(audienceDao.getById(1L)).thenReturn(Optional.of(audience));
-        when(lessonDao.getById(1L)).thenReturn(Optional.empty());
+        when(lectureRepository.findById(1L)).thenReturn(Optional.of(expected));
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(audienceRepository.findById(1L)).thenReturn(Optional.of(audience));
+        when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> lectureService.saveLecture(expected));
 
-        verify(teacherDao, times(1)).getById(1L);
-        verify(audienceDao, times(1)).getById(1L);
-        verify(lessonDao, times(1)).getById(1L);
-        verify(lectureDao, never()).save(expected);
+        verify(teacherRepository, times(1)).findById(1L);
+        verify(audienceRepository, times(1)).findById(1L);
+        verify(lessonRepository, times(1)).findById(1L);
+        verify(lectureRepository, never()).save(expected);
     }
 
     @Test
@@ -187,14 +187,14 @@ class LectureServiceImplTest {
         Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
                 audience, null, lesson, teacher);
 
-        when(lectureDao.getById(1L)).thenReturn(Optional.of(expected));
-        when(teacherDao.getById(1L)).thenReturn(Optional.of(teacher));
-        when(audienceDao.getById(1L)).thenReturn(Optional.empty());
+        when(lectureRepository.findById(1L)).thenReturn(Optional.of(expected));
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(audienceRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> lectureService.saveLecture(expected));
 
-        verify(teacherDao, times(1)).getById(1L);
-        verify(audienceDao, times(1)).getById(1L);
-        verify(lectureDao, never()).save(expected);
+        verify(teacherRepository, times(1)).findById(1L);
+        verify(audienceRepository, times(1)).findById(1L);
+        verify(lectureRepository, never()).save(expected);
     }
 }

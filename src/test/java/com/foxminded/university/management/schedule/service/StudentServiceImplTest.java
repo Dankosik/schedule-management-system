@@ -1,10 +1,10 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.dao.GroupDao;
-import com.foxminded.university.management.schedule.dao.StudentDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
+import com.foxminded.university.management.schedule.repository.GroupRepository;
+import com.foxminded.university.management.schedule.repository.StudentRepository;
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,95 +33,94 @@ class StudentServiceImplTest {
     @Autowired
     private StudentServiceImpl studentService;
     @MockBean
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
     @MockBean
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @Test
     void shouldSaveStudent() {
-        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, group)))
+        when(studentRepository.save(new Student("John", "Jackson", "Jackson", 1, group)))
                 .thenReturn(student);
-        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(group));
 
         Student actual = studentService.saveStudent(student);
 
         assertEquals(student, actual);
 
-        verify(studentDao, times(1)).save(student);
-        verify(groupDao, times(1)).getById(1L);
+        verify(studentRepository, times(1)).save(student);
+        verify(groupRepository, times(1)).findById(1L);
     }
 
     @Test
     void shouldReturnStudentWithIdOne() {
-        when(studentDao.getById(1L)).thenReturn(Optional.of(student));
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
 
         Student actual = studentService.getStudentById(1L);
 
         assertEquals(student, actual);
 
-        verify(studentDao, times(2)).getById(1L);
+        verify(studentRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldReturnListOfStudents() {
-        when(studentDao.getAll()).thenReturn(students);
+        when(studentRepository.findAll()).thenReturn(students);
 
         assertEquals(students, studentService.getAllStudents());
 
-        verify(studentDao, times(1)).getAll();
+        verify(studentRepository, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteStudentWithIdOne() {
-        when(studentDao.getById(1L)).thenReturn(Optional.of(student));
-        when(studentDao.deleteById(1L)).thenReturn(true);
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
 
         studentService.deleteStudentById(1L);
 
-        verify(studentDao, times(1)).deleteById(1L);
-        verify(studentDao, times(2)).getById(1L);
+        verify(studentRepository, times(1)).deleteById(1L);
+        verify(studentRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldSaveListOfStudents() {
-        when(studentDao.save(new Student("John", "Jackson", "Jackson", 1, group)))
+        when(studentRepository.save(new Student("John", "Jackson", "Jackson", 1, group)))
                 .thenReturn(student);
-        when(studentDao.save(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, group)))
+        when(studentRepository.save(new Student("Ferdinanda", "Casajuana", "Lambarton", 1, group)))
                 .thenReturn(students.get(1));
-        when(studentDao.save(new Student("Lindsey", "Syplus", "Slocket", 1, group)))
+        when(studentRepository.save(new Student("Lindsey", "Syplus", "Slocket", 1, group)))
                 .thenReturn(students.get(2));
-        when(groupDao.getById(1L)).thenReturn(Optional.of(group));
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(group));
 
         List<Student> actual = studentService.saveAllStudents(students);
 
         assertEquals(students, actual);
 
-        verify(studentDao, times(1)).save(students.get(0));
-        verify(studentDao, times(1)).save(students.get(1));
-        verify(studentDao, times(1)).save(students.get(2));
-        verify(groupDao, times(3)).getById(1L);
+        verify(studentRepository, times(1)).save(students.get(0));
+        verify(studentRepository, times(1)).save(students.get(1));
+        verify(studentRepository, times(1)).save(students.get(2));
+        verify(groupRepository, times(3)).findById(1L);
     }
 
     @Test
     void shouldThrowExceptionIfStudentWithInputIdNotFound() {
-        when(studentDao.getById(1L)).thenReturn(Optional.empty());
+        when(studentRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> studentService.getStudentById(1L));
 
-        verify(studentDao, times(1)).getById(1L);
-        verify(studentDao, never()).save(student);
+        verify(studentRepository, times(1)).findById(1L);
+        verify(studentRepository, never()).save(student);
     }
 
     @Test
     void shouldThrowExceptionIfStudentGroupNotFound() {
         Student expected = new Student(1L, "John", "Jackson", "Jackson", 1, group);
 
-        when(studentDao.getById(1L)).thenReturn(Optional.of(expected));
-        when(groupDao.getById(1L)).thenReturn(Optional.empty());
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(expected));
+        when(groupRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> studentService.saveStudent(expected));
 
-        verify(groupDao, times(1)).getById(1L);
-        verify(studentDao, never()).save(expected);
+        verify(groupRepository, times(1)).findById(1L);
+        verify(studentRepository, never()).save(expected);
     }
 }

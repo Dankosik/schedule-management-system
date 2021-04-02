@@ -1,16 +1,17 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.dao.FacultyDao;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -30,70 +31,90 @@ class FacultyServiceImplTest {
     @Autowired
     private FacultyServiceImpl facultyService;
     @MockBean
-    private FacultyDao facultyDao;
+    private FacultyRepository facultyRepository;
 
     @Test
     void shouldSaveFaculty() {
-        when(facultyDao.save(new Faculty("FAIT", null, null))).thenReturn(faculty);
+        when(facultyRepository.saveAndFlush(new Faculty("FAIT", null, null))).thenReturn(faculty);
         Faculty actual = facultyService.saveFaculty(faculty);
 
         assertEquals(faculty, actual);
 
-        verify(facultyDao, times(1)).save(faculty);
+        verify(facultyRepository, times(1)).saveAndFlush(faculty);
     }
 
     @Test
     void shouldReturnFacultyWithIdOne() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
         Faculty actual = facultyService.getFacultyById(1L);
 
         assertEquals(faculty, actual);
 
-        verify(facultyDao, times(2)).getById(1L);
+        verify(facultyRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldReturnListOfFaculties() {
-        when(facultyDao.getAll()).thenReturn(faculties);
+        when(facultyRepository.findAll()).thenReturn(faculties);
 
         assertEquals(faculties, facultyService.getAllFaculties());
 
-        verify(facultyDao, times(1)).getAll();
+        verify(facultyRepository, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteFacultyWithIdOne() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.of(faculty));
-        when(facultyDao.deleteById(1L)).thenReturn(true);
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
 
         facultyService.deleteFacultyById(1L);
 
-        verify(facultyDao, times(1)).deleteById(1L);
-        verify(facultyDao, times(2)).getById(1L);
+        verify(facultyRepository, times(1)).deleteById(1L);
+        verify(facultyRepository, times(2)).findById(1L);
     }
 
     @Test
     void shouldSaveListOfFaculties() {
-        when(facultyDao.save(new Faculty("FAIT", null, null))).thenReturn(faculty);
-        when(facultyDao.save(new Faculty("FKFN", null, null))).thenReturn(faculties.get(1));
+        when(facultyRepository.saveAndFlush(new Faculty("FAIT", null, null))).thenReturn(faculty);
+        when(facultyRepository.saveAndFlush(new Faculty("FKFN", null, null))).thenReturn(faculties.get(1));
 
 
         List<Faculty> actual = facultyService.saveAllFaculties(faculties);
 
         assertEquals(faculties, actual);
 
-        verify(facultyDao, times(1)).save(faculties.get(0));
-        verify(facultyDao, times(1)).save(faculties.get(1));
+        verify(facultyRepository, times(1)).saveAndFlush(faculties.get(0));
+        verify(facultyRepository, times(1)).saveAndFlush(faculties.get(1));
+    }
+
+    @Test
+    void shouldThrowExceptionIfFacultyWithInputIdNotFound() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ServiceException.class, () -> facultyService.getFacultyById(1L));
+
+        verify(facultyRepository, times(1)).findById(1L);
+        verify(facultyRepository, never()).save(faculty);
+    }
+
+    @Test
+    void shouldThrowExceptionIfUpdatedAudienceWithInputNumberIsAlreadyExist() {
+        Faculty expected = new Faculty(1L, "FAIT", null, null);
+
+        when(facultyRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
+
+        assertThrows(ServiceException.class, () -> facultyService.saveFaculty(expected));
+
+        verify(facultyRepository, times(1)).saveAndFlush(expected);
     }
 
     @Test
     void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
-        when(facultyDao.getById(1L)).thenReturn(Optional.empty());
+        when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ServiceException.class, () -> facultyService.getFacultyById(1L));
 
-        verify(facultyDao, times(1)).getById(1L);
-        verify(facultyDao, never()).save(faculty);
+        verify(facultyRepository, times(1)).findById(1L);
+        verify(facultyRepository, never()).save(faculty);
     }
 
     @Test
