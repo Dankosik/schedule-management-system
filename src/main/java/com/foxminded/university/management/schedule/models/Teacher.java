@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "teachers")
-public class Teacher extends Person{
+public class Teacher extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

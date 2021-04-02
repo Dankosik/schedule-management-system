@@ -10,15 +10,15 @@ import java.time.temporal.ChronoUnit;
 
 @Converter(autoApply = true)
 public class DurationConverter implements AttributeConverter<Duration, Long> {
-     
+
     Logger log = LoggerFactory.getLogger(DurationConverter.class.getSimpleName());
- 
+
     @Override
     public Long convertToDatabaseColumn(Duration attribute) {
         log.info("Convert to Long");
         return attribute.toNanos();
     }
- 
+
     @Override
     public Duration convertToEntityAttribute(Long duration) {
         log.info("Convert to Duration");
