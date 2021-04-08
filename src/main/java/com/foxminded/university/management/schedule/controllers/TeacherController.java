@@ -8,11 +8,14 @@ import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -94,13 +97,26 @@ public class TeacherController {
     }
 
     @PostMapping("/teachers/add")
-    public String addStudent(@ModelAttribute Teacher teacher) {
+    public String addStudent(@Valid @ModelAttribute Teacher teacher, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnAdd", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("teacherWithErrors",
+                    new Teacher(teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(), teacher.getFaculty(), teacher.getLectures()));
+            return "redirect:/teachers";
+        }
         teacherService.saveTeacher(teacher);
         return "redirect:/teachers";
     }
 
     @PostMapping("/teachers/update/{id}")
-    public String updateTeacher(@ModelAttribute Teacher teacher) {
+    public String updateTeacher(@Valid @ModelAttribute Teacher teacher, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnUpdate", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("teacherWithErrors",
+                    new Teacher(teacher.getId(), teacher.getFirstName(), teacher.getLastName(), teacher.getMiddleName(),
+                            teacher.getFaculty(), teacher.getLectures()));
+            return "redirect:/teachers";
+        }
         teacherService.saveTeacher(teacher);
         return "redirect:/teachers";
     }

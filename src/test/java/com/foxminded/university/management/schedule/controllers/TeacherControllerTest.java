@@ -10,7 +10,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
+import javax.validation.Validator;
+import javax.validation.executable.ValidateOnExecution;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
@@ -43,6 +47,8 @@ class TeacherControllerTest {
     private GroupServiceImpl groupService;
     @MockBean
     private DurationFormatter durationFormatter;
+    @MockBean
+    private BindingResult bindingResult;
 
     @Test
     public void shouldReturnViewWithAllTeachers() throws Exception {
@@ -271,5 +277,39 @@ class TeacherControllerTest {
                 .andExpect(view().name("redirect:/teachers"));
 
         verify(teacherService, times(1)).deleteTeacherById(1L);
+    }
+
+    @Test
+    public void shouldRedirectToTeachersWithValidErrorsOnAdd() throws Exception {
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("faculty", "name",
+                "Must not contain digits and spaces, all letters must be capital")));
+        mockMvc.perform(
+                post("/teachers/add")
+                        .flashAttr("fieldErrors", bindingResult.getFieldErrors())
+                        .flashAttr("teacherWithErrorsOnAdd",new Teacher(teacher.getFirstName(), teacher.getLastName(),
+                                teacher.getMiddleName(), teacher.getFaculty(), teacher.getLectures())))
+                .andExpect(redirectedUrl("/teachers"))
+                .andExpect(view().name("redirect:/teachers"));
+
+        verify(teacherService, never()).saveTeacher(teacher);
+    }
+
+    @Test
+    public void shouldRedirectToTeachersWithValidErrorsOnUpdate() throws Exception {
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("teacher", "name",
+                "Must not contain digits and spaces, all letters must be capital")));
+        mockMvc.perform(
+                post("/teachers/update/{id}", 1L)
+                        .flashAttr("fieldErrorsOnUpdate", bindingResult.getFieldErrors())
+                        .flashAttr("teacherWithErrorsOnAdd", new Teacher(teacher.getId(), teacher.getFirstName(),
+                                teacher.getLastName(), teacher.getMiddleName(), teacher.getFaculty(), teacher.getLectures())))
+                .andExpect(redirectedUrl("/teachers"))
+                .andExpect(view().name("redirect:/teachers"));
+
+        verify(teacherService, never()).saveTeacher(teacher);
     }
 }

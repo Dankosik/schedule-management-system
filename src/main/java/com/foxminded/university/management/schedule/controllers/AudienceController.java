@@ -9,12 +9,14 @@ import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -87,7 +89,13 @@ public class AudienceController {
     }
 
     @PostMapping("/audiences/add")
-    public String addAudience(@ModelAttribute Audience audience, RedirectAttributes redirectAttributes) {
+    public String addAudience(@Valid @ModelAttribute Audience audience, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrors", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("audienceWithErrors",
+                    new Audience(audience.getNumber(), audience.getCapacity(), audience.getLectures()));
+            return "redirect:/audiences";
+        }
         try {
             audienceService.saveAudience(audience);
         } catch (ServiceException e) {
@@ -100,7 +108,13 @@ public class AudienceController {
     }
 
     @PostMapping("/audiences/update/{id}")
-    public String updateAudience(@ModelAttribute Audience audience, RedirectAttributes redirectAttributes) {
+    public String updateAudience(@Valid @ModelAttribute Audience audience, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnUpdate", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("audienceWithErrors",
+                    new Audience(audience.getId(), audience.getNumber(), audience.getCapacity(), audience.getLectures()));
+            return "redirect:/audiences";
+        }
         try {
             audienceService.saveAudience(audience);
         } catch (ServiceException e) {

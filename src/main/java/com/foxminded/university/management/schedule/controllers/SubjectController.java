@@ -5,11 +5,14 @@ import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 public class SubjectController {
@@ -39,7 +42,12 @@ public class SubjectController {
     }
 
     @PostMapping("/subjects/add")
-    public String addSubject(@ModelAttribute Subject subject, RedirectAttributes redirectAttributes) {
+    public String addSubject(@Valid @ModelAttribute Subject subject, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnAdd", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("subjectWithErrors", new Subject(subject.getName(), subject.getLessons()));
+            return "redirect:/subjects";
+        }
         try {
             subjectService.saveSubject(subject);
         } catch (ServiceException e) {
@@ -52,7 +60,12 @@ public class SubjectController {
     }
 
     @PostMapping("/subjects/update/{id}")
-    public String updateSubject(@ModelAttribute Subject subject, RedirectAttributes redirectAttributes) {
+    public String updateSubject(@Valid @ModelAttribute Subject subject, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnUpdate", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("subjectWithErrors", new Subject(subject.getId(), subject.getName(), subject.getLessons()));
+            return "redirect:/subjects";
+        }
         try {
             subjectService.saveSubject(subject);
         } catch (ServiceException e) {

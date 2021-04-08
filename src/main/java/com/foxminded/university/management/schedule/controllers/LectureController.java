@@ -8,11 +8,14 @@ import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -78,14 +81,26 @@ public class LectureController {
     }
 
     @PostMapping("/lectures/add")
-    public String addLecture(@ModelAttribute Lecture lecture) {
+    public String addLecture(@Valid @ModelAttribute Lecture lecture, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnAdd", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("lectureWithErrors",
+                    new Lecture(lecture.getNumber(), lecture.getDate(), lecture.getAudience(), lecture.getGroup(), lecture.getLesson(), lecture.getTeacher()));
+            return "redirect:/lectures";
+        }
         lecture.setNumber(lecture.getLesson().getNumber());
         lectureService.saveLecture(lecture);
         return "redirect:/lectures";
     }
 
     @PostMapping("/lectures/update/{id}")
-    public String updateLecture(@ModelAttribute Lecture lecture) {
+    public String updateLecture(@Valid @ModelAttribute Lecture lecture, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnUpdate", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("lectureWithErrors",
+                    new Lecture(lecture.getId(), lecture.getNumber(), lecture.getDate(), lecture.getAudience(), lecture.getGroup(), lecture.getLesson(), lecture.getTeacher()));
+            return "redirect:/lectures";
+        }
         lecture.setNumber(lecture.getLesson().getNumber());
         lectureService.saveLecture(lecture);
         return "redirect:/lectures";

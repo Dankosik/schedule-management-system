@@ -6,11 +6,14 @@ import com.foxminded.university.management.schedule.service.impl.LessonServiceIm
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -42,13 +45,25 @@ public class LessonController {
     }
 
     @PostMapping("/lessons/add")
-    public String addLesson(@ModelAttribute Lesson lesson) {
+    public String addLesson(@Valid @ModelAttribute Lesson lesson, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnAdd", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("lessonWithErrors",
+                    new Lesson(lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(), lesson.getSubject(), lesson.getLectures()));
+            return "redirect:/lessons";
+        }
         lessonService.saveLesson(lesson);
         return "redirect:/lessons";
     }
 
     @PostMapping("/lessons/update/{id}")
-    public String updateLesson(@ModelAttribute Lesson lesson) {
+    public String updateLesson(@Valid @ModelAttribute Lesson lesson, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnUpdate", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("lessonWithErrors",
+                    new Lesson(lesson.getId(), lesson.getNumber(), lesson.getStartTime(), lesson.getDuration(), lesson.getSubject(), lesson.getLectures()));
+            return "redirect:/lessons";
+        }
         lessonService.saveLesson(lesson);
         return "redirect:/lessons";
     }
