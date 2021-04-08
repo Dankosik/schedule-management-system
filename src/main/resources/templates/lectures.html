@@ -14,8 +14,8 @@
         <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lectures/add}" th:object="${lecture}">
             <div class="form-row">
                 <div class="col">
-                    <input class="form-control" placeholder="Date" required th:field="*{date}" type="date"
-                           max="9999-12-31">
+                    <input class="form-control" max="9999-12-31" placeholder="Date" required th:field="*{date}"
+                           type="date">
                 </div>
             </div>
             <div class="form-row">
@@ -67,12 +67,12 @@
         <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lectures/add}" th:object="${lecture}">
             <div class="form-row">
                 <div class="col">
-                    <input class="form-control" placeholder="Date" required id="lectureWithDateErrorOnAdd" name="date"
-                           th:value="${lectureWithErrors.date}" type="date" max="9999-12-31">
+                    <input class="form-control" id="lectureWithDateErrorOnAdd" max="9999-12-31" name="date" placeholder="Date"
+                           required th:value="${lectureWithErrors.date}" type="date">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'date'}"
-                             th:text="${fieldError.getDefaultMessage()}"
-                             style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'date'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
             </div>
@@ -205,8 +205,8 @@
                             <div>
                                 <div class="form-row">
                                     <div class="col">
-                                        <input class="form-control" id="editLectureDate" name="date"
-                                               placeholder="Date" required th:value="${lecture.date}" max="9999-12-31"
+                                        <input class="form-control" id="editLectureDate" max="9999-12-31"
+                                               name="date" placeholder="Date" required th:value="${lecture.date}"
                                                type="date">
                                     </div>
                                 </div>
@@ -352,14 +352,14 @@
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="col">
-                            <input class="form-control" placeholder="Date" max="9999-12-31" required
-                                   id="lectureWithDateErrorOnUpdate"
-                                   name="date"
+                            <input class="form-control" id="lectureWithDateErrorOnUpdate" max="9999-12-31" name="date"
+                                   placeholder="Date"
+                                   required
                                    th:value="${lectureWithErrors.date}" type="date">
                             <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
-                                <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'date'}"
-                                     th:text="${fieldError.getDefaultMessage()}"
-                                     style="color: red"></div>
+                                <div class="alert alert-danger mt-2" style="color: red"
+                                     th:if="${fieldError.getField() == 'date'}"
+                                     th:text="${fieldError.getDefaultMessage()}"></div>
                             </div>
                         </div>
                     </div>

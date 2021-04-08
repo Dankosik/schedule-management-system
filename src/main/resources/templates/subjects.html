@@ -22,11 +22,11 @@
         <div th:if="${fieldErrorsOnAdd != null}">
             <div class="form-row">
                 <div class="col">
-                    <input class="form-control" placeholder="Name" required id="subjectWithNameError" name="name"
+                    <input class="form-control" id="subjectWithNameError" name="name" placeholder="Name" required
                            th:value="${subjectWithErrors.name}" type="text">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'name'}"
-                             th:text="${fieldError.getDefaultMessage()}" style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'name'}" th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
                 <div>
@@ -193,8 +193,8 @@
                                            placeholder="Name" required th:value="${subjectWithErrors.name}"
                                            type="text">
                                     <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
-                                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'name'}"
-                                             th:text="${fieldError.getDefaultMessage()}" style="color: red"></div>
+                                        <div class="alert alert-danger mt-2" style="color: red"
+                                             th:if="${fieldError.getField() == 'name'}" th:text="${fieldError.getDefaultMessage()}"></div>
                                     </div>
                                 </div>
                             </div>

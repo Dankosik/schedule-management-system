@@ -7,7 +7,8 @@ import org.mockito.Mock;
 
 import javax.validation.ConstraintValidatorContext;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GroupNameValidatorTest {
     private GroupNameValidator groupNameValidator;

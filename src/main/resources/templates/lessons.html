@@ -33,9 +33,9 @@
             <div class="form-row">
                 Duration:
                 <div class="col mt-1">
-                    <input class="form-control html-duration-picker" data-duration="01:30" data-hide-seconds
-                           id="duration" required th:field="*{duration}" data-duration-max="03:00"
-                           data-duration-min="00:30">
+                    <input class="form-control html-duration-picker" data-duration="01:30" data-duration-max="03:00"
+                           data-duration-min="00:30" data-hide-seconds id="duration" required
+                           th:field="*{duration}">
                 </div>
                 <div class="col mt-1">
                     <select class="form-control" th:field="*{subject}">
@@ -49,36 +49,36 @@
         <div th:if="${fieldErrorsOnAdd != null}">
             <div class="form-row">
                 <div class="col">
-                    <input class="form-control" placeholder="Number" required id="lessonWithNumberError" name="number"
+                    <input class="form-control" id="lessonWithNumberError" name="number" placeholder="Number" required
                            th:value="${lessonWithErrors.number}" type="number">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'number'}"
-                             th:text="${fieldError.getDefaultMessage()}"
-                             style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'number'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
                 Start time
                 <div class="col">
-                    <input class="form-control" placeholder="Start time" required id="lessonWithStartTimeError"
-                           name="startTime"
+                    <input class="form-control" id="lessonWithStartTimeError" name="startTime" placeholder="Start time"
+                           required
                            th:value="${lessonWithErrors.startTime}" type="time">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'startTime'}"
-                             th:text="${fieldError.getDefaultMessage()}"
-                             style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'startTime'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
             </div>
             <div class="form-row">
                 Duration
                 <div class="col mt-1">
-                    <input class="form-control html-duration-picker" data-hide-seconds
-                           id="lessonWithDurationError" name="duration"
-                           th:value="${lessonWithErrors.duration}" data-duration-max="03:00" data-duration-min="00:30">
+                    <input class="form-control html-duration-picker" data-duration-max="03:00"
+                           data-duration-min="00:30" data-hide-seconds
+                           id="lessonWithDurationError" name="duration" th:value="${lessonWithErrors.duration}">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'duration'}"
-                             th:text="${fieldError.getDefaultMessage()}"
-                             style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'duration'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
 
@@ -208,7 +208,7 @@
     <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
          id="editModalForErrorOnUpdateOnValidate" role="dialog"
          tabindex="-1"
-          th:if="${fieldErrorsOnUpdate !=null}">
+         th:if="${fieldErrorsOnUpdate !=null}">
         <div class="modal-dialog">
             <form method="post" th:action="@{/lessons/update/{id}(id=${lessonWithErrors.id})}"
                   th:object="${lesson}">
@@ -222,37 +222,39 @@
                     <div class="modal-body">
                         <div class="form-row">
                             <div class="col">
-                                <input class="form-control" placeholder="Number" required id="lessonWithNumberErrorOnUpdateOnValidate"
-                                       name="number"
+                                <input class="form-control" id="lessonWithNumberErrorOnUpdateOnValidate" name="number"
+                                       placeholder="Number"
+                                       required
                                        th:value="${lessonWithErrors.number}" type="number">
                                 <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
-                                    <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'number'}"
-                                         th:text="${fieldError.getDefaultMessage()}"
-                                         style="color: red"></div>
+                                    <div class="alert alert-danger mt-2" style="color: red"
+                                         th:if="${fieldError.getField() == 'number'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
                                 </div>
                             </div>
                             Start time
                             <div class="col">
-                                <input class="form-control" placeholder="Start time" required
-                                       id="lessonWithStartTimeErrorOnUpdateOnValidate"
-                                       name="startTime"
+                                <input class="form-control" id="lessonWithStartTimeErrorOnUpdateOnValidate" name="startTime"
+                                       placeholder="Start time"
+                                       required
                                        th:value="${lessonWithErrors.startTime}" type="time">
                                 <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
-                                    <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'startTime'}"
-                                         th:text="${fieldError.getDefaultMessage()}"
-                                         style="color: red"></div>
+                                    <div class="alert alert-danger mt-2" style="color: red"
+                                         th:if="${fieldError.getField() == 'startTime'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-row">
                             Duration
                             <div class="col mt-1">
-                                <input class="form-control" id="lessonWithDurationErrorOnUpdateOnValidate" name="duration"
+                                <input class="form-control" id="lessonWithDurationErrorOnUpdateOnValidate"
+                                       name="duration"
                                        placeholder="Duration" th:value="${lessonWithErrors.duration}">
                                 <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
-                                    <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'duration'}"
-                                         th:text="${fieldError.getDefaultMessage()}"
-                                         style="color: red"></div>
+                                    <div class="alert alert-danger mt-2" style="color: red"
+                                         th:if="${fieldError.getField() == 'duration'}"
+                                         th:text="${fieldError.getDefaultMessage()}"></div>
                                 </div>
                             </div>
 

@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.ConstraintValidatorContext;
-
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

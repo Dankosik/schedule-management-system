@@ -13,8 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import javax.validation.Validator;
-import javax.validation.executable.ValidateOnExecution;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
@@ -242,7 +240,7 @@ class LectureControllerTest {
         mockMvc.perform(
                 post("/lectures/add")
                         .flashAttr("fieldErrorsOnAdd", bindingResult.getFieldErrors())
-                        .flashAttr("lectureWithErrors",  new Lecture(lecture.getNumber(), lecture.getDate(),
+                        .flashAttr("lectureWithErrors", new Lecture(lecture.getNumber(), lecture.getDate(),
                                 lecture.getAudience(), lecture.getGroup(), lecture.getLesson(), lecture.getTeacher())))
                 .andExpect(redirectedUrl("/lectures"))
                 .andExpect(view().name("redirect:/lectures"));
@@ -260,7 +258,7 @@ class LectureControllerTest {
         mockMvc.perform(
                 post("/lectures/update/{id}", 1L)
                         .flashAttr("fieldErrorsOnUpdate", bindingResult.getFieldErrors())
-                        .flashAttr("lectureWithErrors",  new Lecture(lecture.getNumber(), lecture.getDate(),
+                        .flashAttr("lectureWithErrors", new Lecture(lecture.getNumber(), lecture.getDate(),
                                 lecture.getAudience(), lecture.getGroup(), lecture.getLesson(), lecture.getTeacher())))
                 .andExpect(redirectedUrl("/lectures"))
                 .andExpect(view().name("redirect:/lectures"));

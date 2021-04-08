@@ -1,7 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
-import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.hamcrest.Matchers;
@@ -16,8 +15,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import javax.validation.Validator;
-import javax.validation.executable.ValidateOnExecution;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -135,6 +132,7 @@ class SubjectControllerTest {
 
         verify(subjectService, times(1)).deleteSubjectById(1L);
     }
+
     @Test
     public void shouldRedirectToFSubjectsWithValidErrorsOnAdd() throws Exception {
         Subject subject = new Subject(1L, "Art", null);
@@ -160,7 +158,7 @@ class SubjectControllerTest {
         mockMvc.perform(
                 post("/subjects/update/{id}", 1L)
                         .flashAttr("fieldErrors", bindingResult.getFieldErrors())
-                        .flashAttr("subjectWithErrorsOnAdd", new Subject(subject.getId() ,subject.getName(), subject.getLessons())))
+                        .flashAttr("subjectWithErrorsOnAdd", new Subject(subject.getId(), subject.getName(), subject.getLessons())))
                 .andExpect(redirectedUrl("/subjects"))
                 .andExpect(view().name("redirect:/subjects"));
 

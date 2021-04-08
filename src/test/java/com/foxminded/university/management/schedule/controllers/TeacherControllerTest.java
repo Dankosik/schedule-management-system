@@ -13,8 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import javax.validation.Validator;
-import javax.validation.executable.ValidateOnExecution;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.Duration;
@@ -288,7 +286,7 @@ class TeacherControllerTest {
         mockMvc.perform(
                 post("/teachers/add")
                         .flashAttr("fieldErrors", bindingResult.getFieldErrors())
-                        .flashAttr("teacherWithErrorsOnAdd",new Teacher(teacher.getFirstName(), teacher.getLastName(),
+                        .flashAttr("teacherWithErrorsOnAdd", new Teacher(teacher.getFirstName(), teacher.getLastName(),
                                 teacher.getMiddleName(), teacher.getFaculty(), teacher.getLectures())))
                 .andExpect(redirectedUrl("/teachers"))
                 .andExpect(view().name("redirect:/teachers"));

@@ -38,32 +38,32 @@
         <div th:if="${fieldErrorsOnAdd != null}">
             <div class="form-row">
                 <div class="col">
-                    <input class="form-control" placeholder="First name" required id="teacherWithFirstNameError"
-                           name="firstName" th:value="${teacherWithErrors.firstName}" type="text">
+                    <input class="form-control" id="teacherWithFirstNameError" name="firstName" placeholder="First name"
+                           required th:value="${teacherWithErrors.firstName}" type="text">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'firstName'}"
-                             th:text="${fieldError.getDefaultMessage()}"
-                             style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'firstName'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
                 <div class="col">
-                    <input class="form-control" placeholder="Last name" required id="teacherWithLastNameError"
-                           name="lastName" th:value="${teacherWithErrors.lastName}" type="text">
+                    <input class="form-control" id="teacherWithLastNameError" name="lastName" placeholder="Last name"
+                           required th:value="${teacherWithErrors.lastName}" type="text">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'lastName'}"
-                             th:text="${fieldError.getDefaultMessage()}"
-                             style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'lastName'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
             </div>
             <div class="form-row">
                 <div class="col mt-1">
-                    <input class="form-control" placeholder="Middle name" required id="teacherWithMiddleNameError"
-                           name="middleName" th:value="${teacherWithErrors.middleName}" type="text">
+                    <input class="form-control" id="teacherWithMiddleNameError" name="middleName" placeholder="Middle name"
+                           required th:value="${teacherWithErrors.middleName}" type="text">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'middleName'}"
-                             th:text="${fieldError.getDefaultMessage()}"
-                             style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'middleName'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
                 <div class="col mt-1">
@@ -222,13 +222,14 @@
                                     <div class="col">
                                         <input class="form-control" id="editTeacherFirstNameOnErrorOnValidate"
                                                name="firstName"
-                                               placeholder="First name" required th:value="${teacherWithErrors.firstName}"
+                                               placeholder="First name" required
+                                               th:value="${teacherWithErrors.firstName}"
                                                type="text">
                                         <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
                                             <div class="alert alert-danger mt-2"
+                                                 style="color: red"
                                                  th:if="${fieldError.getField() == 'firstName'}"
-                                                 th:text="${fieldError.getDefaultMessage()}"
-                                                 style="color: red"></div>
+                                                 th:text="${fieldError.getDefaultMessage()}"></div>
                                         </div>
                                     </div>
                                     <div class="col">
@@ -238,9 +239,9 @@
                                                type="text">
                                         <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
                                             <div class="alert alert-danger mt-2"
+                                                 style="color: red"
                                                  th:if="${fieldError.getField() == 'lastName'}"
-                                                 th:text="${fieldError.getDefaultMessage()}"
-                                                 style="color: red"></div>
+                                                 th:text="${fieldError.getDefaultMessage()}"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -251,9 +252,10 @@
                                                required
                                                th:value="${teacherWithErrors.middleName}" type="text">
                                         <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
-                                            <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'middleName'}"
-                                                 th:text="${fieldError.getDefaultMessage()}"
-                                                 style="color: red"></div>
+                                            <div class="alert alert-danger mt-2"
+                                                 style="color: red"
+                                                 th:if="${fieldError.getField() == 'middleName'}"
+                                                 th:text="${fieldError.getDefaultMessage()}"></div>
                                         </div>
                                     </div>
                                     <label class="mt-2 ml-3 mr-1">Edit faculty: </label>

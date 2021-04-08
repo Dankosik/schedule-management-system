@@ -24,10 +24,12 @@
         <form class="w-25 mx-auto mt-5" method="post" th:action="@{/faculties/add}" th:object="${faculty}">
             <div class="form-row">
                 <div class="col">
-                    <input class="form-control" placeholder="Name" required id="facultyWithNameError" name="name" th:value="${facultyWithErrors.name}" type="text">
+                    <input class="form-control" id="facultyWithNameError" name="name" placeholder="Name" required
+                           th:value="${facultyWithErrors.name}" type="text">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
-                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'name'}" th:text="${fieldError.getDefaultMessage()}"
-                             style="color: red"></div>
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'name'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
                 <div>
@@ -156,8 +158,10 @@
                                                    placeholder="Name"
                                                    required th:value="${facultyWithErrors.name}" type="text">
                                             <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
-                                                <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'name'}" th:text="${fieldError.getDefaultMessage()}"
-                                                     style="color: red"></div>
+                                                <div class="alert alert-danger mt-2"
+                                                     style="color: red"
+                                                     th:if="${fieldError.getField() == 'name'}"
+                                                     th:text="${fieldError.getDefaultMessage()}"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -167,7 +171,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
-                                <button class="btn btn-light ml-1"  id="saveForErrorOnValidate" type="submit">
+                                <button class="btn btn-light ml-1" id="saveForErrorOnValidate" type="submit">
                                     Save changes
                                 </button>
                             </div>

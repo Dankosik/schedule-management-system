@@ -4,7 +4,6 @@ import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
-import org.checkerframework.checker.formatter.qual.InvalidFormat;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import javax.validation.Validator;
-import javax.validation.constraintvalidation.SupportedValidationTarget;
-import javax.validation.constraintvalidation.ValidationTarget;
-import javax.validation.executable.ExecutableType;
-import javax.validation.executable.ValidateOnExecution;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -127,7 +121,7 @@ class StudentControllerTest {
         mockMvc.perform(
                 post("/students/add")
                         .flashAttr("fieldErrorsOnAdd", bindingResult.getFieldErrors())
-                        .flashAttr("studentWithErrors",  new Student(student.getFirstName(), student.getLastName(),
+                        .flashAttr("studentWithErrors", new Student(student.getFirstName(), student.getLastName(),
                                 student.getMiddleName(), student.getCourseNumber(), student.getGroup())))
                 .andExpect(redirectedUrl("/students"))
                 .andExpect(view().name("redirect:/students"));
@@ -143,8 +137,8 @@ class StudentControllerTest {
         mockMvc.perform(
                 post("/students/update/{id}", 1L)
                         .flashAttr("fieldErrorsOnUpdate", bindingResult.getFieldErrors())
-                        .flashAttr("studentWithErrors",  new Student(student.getId(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
-                student.getCourseNumber(), student.getGroup())))
+                        .flashAttr("studentWithErrors", new Student(student.getId(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
+                                student.getCourseNumber(), student.getGroup())))
                 .andExpect(redirectedUrl("/students"))
                 .andExpect(view().name("redirect:/students"));
 
