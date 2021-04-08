@@ -13,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -44,6 +46,8 @@ class AudienceControllerTest {
     private GroupServiceImpl groupService;
     @MockBean
     private DurationFormatter durationFormatter;
+    @MockBean
+    private BindingResult bindingResult;
 
     @Test
     public void shouldReturnViewWithAllAudiences() throws Exception {
@@ -221,12 +225,43 @@ class AudienceControllerTest {
         Audience audience = new Audience(1L, 201, 25, null);
         when(audienceService.saveAudience(new Audience(201, 25, null))).thenReturn(audience);
         mockMvc.perform(
-                post("/audiences/add", 1L)
+                post("/audiences/add")
                         .flashAttr("audience", audience))
                 .andExpect(redirectedUrl("/audiences"))
                 .andExpect(view().name("redirect:/audiences"));
 
         verify(audienceService, times(1)).saveAudience(new Audience(201, 25, null));
+    }
+
+    @Test
+    public void shouldRedirectToAudiencesWithValidErrorsOnAdd() throws Exception {
+        Audience audience = new Audience(1L, 1001, 25, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("audience", "number", "Must be no more than 999")));
+        mockMvc.perform(
+                post("/audiences/add")
+                        .flashAttr("fieldErrors", bindingResult.getFieldErrors())
+                        .flashAttr("audienceWithErrors", new Audience(audience.getNumber(), audience.getCapacity(), audience.getLectures())))
+                .andExpect(redirectedUrl("/audiences"))
+                .andExpect(view().name("redirect:/audiences"));
+
+        verify(audienceService, never()).saveAudience(new Audience(201, 25, null));
+    }
+
+    @Test
+    public void shouldRedirectToAudiencesWithValidErrorsOnUpdate() throws Exception {
+        Audience audience = new Audience(1L, 1001, 25, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("audience", "number", "Must be no more than 999")));
+        mockMvc.perform(
+                post("/audiences/update/{id}", 1L)
+                        .flashAttr("fieldErrorsOnUpdate", bindingResult.getFieldErrors())
+                        .flashAttr("audienceWithErrors", new Audience(audience.getId(), audience.getNumber(),
+                                audience.getCapacity(), audience.getLectures())))
+                .andExpect(redirectedUrl("/audiences"))
+                .andExpect(view().name("redirect:/audiences"));
+
+        verify(audienceService, never()).saveAudience(new Audience(201, 25, null));
     }
 
     @Test

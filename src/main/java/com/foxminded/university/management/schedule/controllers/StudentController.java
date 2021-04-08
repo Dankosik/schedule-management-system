@@ -5,11 +5,14 @@ import com.foxminded.university.management.schedule.service.impl.GroupServiceImp
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -40,13 +43,26 @@ public class StudentController {
     }
 
     @PostMapping("/students/add")
-    public String addStudent(@ModelAttribute Student student) {
+    public String addStudent(@Valid @ModelAttribute Student student, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnAdd", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("studentWithErrors",
+                    new Student(student.getFirstName(), student.getLastName(), student.getMiddleName(), student.getCourseNumber(), student.getGroup()));
+            return "redirect:/students";
+        }
         studentService.saveStudent(student);
         return "redirect:/students";
     }
 
     @PostMapping("/students/update/{id}")
-    public String updateStudent(@ModelAttribute Student student) {
+    public String updateStudent(@Valid @ModelAttribute Student student, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnUpdate", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("studentWithErrors",
+                    new Student(student.getId(), student.getFirstName(), student.getLastName(), student.getMiddleName(),
+                            student.getCourseNumber(), student.getGroup()));
+            return "redirect:/students";
+        }
         studentService.saveStudent(student);
         return "redirect:/students";
     }

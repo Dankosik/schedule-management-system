@@ -1,6 +1,12 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.models.validators.DurationConstraint;
+import com.foxminded.university.management.schedule.models.validators.StartTime;
+
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.sql.Time;
 import java.time.Duration;
 import java.util.List;
@@ -12,8 +18,13 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @Min(value = 1, message = "Must be at least 1")
+    @Max(value = 8, message = "Must be no more than 8")
     private Integer number;
+    @StartTime
     private Time startTime;
+    @DurationConstraint
     private Duration duration;
     @ManyToOne
     @JoinColumn(name = "subject_id")

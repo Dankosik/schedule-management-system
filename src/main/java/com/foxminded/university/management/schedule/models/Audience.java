@@ -1,6 +1,9 @@
 package com.foxminded.university.management.schedule.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,7 +13,13 @@ public class Audience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @Min(value = 1, message = "Must be at least 1")
+    @Max(value = 999, message = "Must be no more than 999")
     private Integer number;
+    @NotNull
+    @Min(value = 1, message = "must be at least 1")
+    @Max(value = 999, message = "must be no more than 999")
     private Integer capacity;
     @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY)
     private List<Lecture> lectures;

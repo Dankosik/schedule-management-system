@@ -14,6 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.util.List;
 
@@ -29,6 +31,8 @@ class FacultyControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private FacultyServiceImpl facultyService;
+    @MockBean
+    private BindingResult bindingResult;
 
     @Test
     public void shouldReturnViewWithAllFaculties() throws Exception {
@@ -150,5 +154,37 @@ class FacultyControllerTest {
                 .andExpect(view().name("redirect:/faculties"));
 
         verify(facultyService, times(1)).deleteFacultyById(1L);
+    }
+
+    @Test
+    public void shouldRedirectToFacultiesWithValidErrorsOnAdd() throws Exception {
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("faculty", "name",
+                "Must not contain digits and spaces, all letters must be capital")));
+        mockMvc.perform(
+                post("/faculties/add")
+                        .flashAttr("fieldErrors", bindingResult.getFieldErrors())
+                        .flashAttr("facultyWithErrorsOnAdd", new Faculty(faculty.getName(), faculty.getGroups(), faculty.getTeachers())))
+                .andExpect(redirectedUrl("/faculties"))
+                .andExpect(view().name("redirect:/faculties"));
+
+        verify(facultyService, never()).saveFaculty(faculty);
+    }
+
+    @Test
+    public void shouldRedirectToFacultiesWithValidErrorsOnUpdate() throws Exception {
+        Faculty faculty = new Faculty(1L, "FAIT", null, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("faculty", "name",
+                "Must not contain digits and spaces, all letters must be capital")));
+        mockMvc.perform(
+                post("/faculties/update/{id}", 1L)
+                        .flashAttr("fieldErrors", bindingResult.getFieldErrors())
+                        .flashAttr("facultyWithErrorsOnAdd", new Faculty(faculty.getId(), faculty.getName(), faculty.getGroups(), faculty.getTeachers())))
+                .andExpect(redirectedUrl("/faculties"))
+                .andExpect(view().name("redirect:/faculties"));
+
+        verify(facultyService, never()).saveFaculty(faculty);
     }
 }

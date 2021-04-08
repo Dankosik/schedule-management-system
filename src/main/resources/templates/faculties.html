@@ -10,14 +10,34 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/faculties/add}" th:object="${faculty}">
-        <div class="form-row">
-            <div class="col">
-                <input class="form-control" placeholder="Name" required th:field="*{name}" type="text">
+    <div th:unless="${not #lists.isEmpty(fieldErrorsOnAdd)}">
+        <form class="w-25 mx-auto mt-5" method="post" th:action="@{/faculties/add}" th:object="${faculty}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" placeholder="Name" required th:field="*{name}" type="text">
+                </div>
+                <button class="btn btn-light ml-1 " type="submit">Add faculty</button>
             </div>
-            <button class="btn btn-light ml-1 " type="submit">Add faculty</button>
-        </div>
-    </form>
+        </form>
+    </div>
+    <div th:if="${fieldErrorsOnAdd != null}">
+        <form class="w-25 mx-auto mt-5" method="post" th:action="@{/faculties/add}" th:object="${faculty}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" id="facultyWithNameError" name="name" placeholder="Name" required
+                           th:value="${facultyWithErrors.name}" type="text">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'name'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-light ml-1 " type="submit">Add faculty</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 <div>
     <table class="table table-bordered w-25 text-center mx-auto mt-5">
@@ -116,6 +136,50 @@
                     </form>
                 </div>
             </div>
+
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                 id="editModalForErrorOnUpdateOnValidate" role="dialog" tabindex="-1"
+                 th:if="${fieldErrorsOnUpdate !=null}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/faculties/update/{id}(id=${facultyWithErrors.id})}"
+                          th:object="${faculty}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel3">Edit faculty</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div th:if="${fieldErrorsOnUpdate != null}">
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="editNameForErrorOnValidate" name="name"
+                                                   placeholder="Name"
+                                                   required th:value="${facultyWithErrors.name}" type="text">
+                                            <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                                <div class="alert alert-danger mt-2"
+                                                     style="color: red"
+                                                     th:if="${fieldError.getField() == 'name'}"
+                                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnUpdate !=null}"
+                                    th:text="${serviceExceptionOnUpdate.getMessage()}"></h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" id="saveForErrorOnValidate" type="submit">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
                  tabindex="-1"
                  th:attrappend="id=${faculty}">
@@ -177,6 +241,17 @@
     });
 
     $('#editModalForExceptionOnUpdate').on('hidden.bs.modal', function () {
+        window.location.replace('/faculties');
+    })
+</script>
+
+<script th:if="${fieldErrorsOnUpdate != null}">
+    $(document).ready(function () {
+        debugger
+        $('#editModalForErrorOnUpdateOnValidate').modal('show');
+    });
+
+    $('#editModalForErrorOnUpdateOnValidate').on('hidden.bs.modal', function () {
         window.location.replace('/faculties');
     })
 </script>

@@ -7,11 +7,14 @@ import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 public class FacultyController {
@@ -49,7 +52,13 @@ public class FacultyController {
     }
 
     @PostMapping("/faculties/add")
-    public String addFaculty(@ModelAttribute Faculty faculty, RedirectAttributes redirectAttributes) {
+    public String addFaculty(@Valid @ModelAttribute Faculty faculty, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnAdd", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("facultyWithErrors",
+                    new Faculty(faculty.getName(), faculty.getGroups(), faculty.getTeachers()));
+            return "redirect:/faculties";
+        }
         try {
             facultyService.saveFaculty(faculty);
         } catch (ServiceException e) {
@@ -62,7 +71,13 @@ public class FacultyController {
     }
 
     @PostMapping("/faculties/update/{id}")
-    public String updateFaculty(@ModelAttribute Faculty faculty, RedirectAttributes redirectAttributes) {
+    public String updateFaculty(@Valid @ModelAttribute Faculty faculty, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnUpdate", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("facultyWithErrors",
+                    new Faculty(faculty.getId(), faculty.getName(), faculty.getGroups(), faculty.getTeachers()));
+            return "redirect:/faculties";
+        }
         try {
             facultyService.saveFaculty(faculty);
         } catch (ServiceException e) {

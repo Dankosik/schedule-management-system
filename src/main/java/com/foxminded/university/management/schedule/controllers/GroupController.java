@@ -6,12 +6,14 @@ import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -95,7 +97,13 @@ public class GroupController {
     }
 
     @PostMapping("/groups/add")
-    public String addGroup(@ModelAttribute Group group, RedirectAttributes redirectAttributes) {
+    public String addGroup(@Valid @ModelAttribute Group group, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnAdd", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("groupWithErrors",
+                    new Group(group.getName(), group.getFaculty(), group.getStudents(), group.getLectures()));
+            return "redirect:/groups";
+        }
         try {
             groupService.saveGroup(group);
         } catch (ServiceException e) {
@@ -109,7 +117,13 @@ public class GroupController {
     }
 
     @PostMapping("/groups/update/{id}")
-    public String updateGroup(@ModelAttribute Group group, RedirectAttributes redirectAttributes) {
+    public String updateGroup(@Valid @ModelAttribute Group group, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("fieldErrorsOnUpdate", bindingResult.getFieldErrors());
+            redirectAttributes.addFlashAttribute("groupWithErrors",
+                    new Group(group.getId(), group.getName(), group.getFaculty(), group.getStudents(), group.getLectures()));
+            return "redirect:/groups";
+        }
         try {
             groupService.saveGroup(group);
         } catch (ServiceException e) {

@@ -12,7 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
+import javax.validation.Validator;
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -35,6 +38,10 @@ class LessonControllerTest {
     private SubjectServiceImpl subjectService;
     @MockBean
     private DurationFormatter durationFormatter;
+    @MockBean
+    private BindingResult bindingResult;
+    @MockBean
+    private Validator mockValidator;
 
     @Test
     public void shouldReturnViewWithAllLessons() throws Exception {
@@ -121,5 +128,40 @@ class LessonControllerTest {
                 .andExpect(view().name("redirect:/lessons"));
 
         verify(lessonService, times(1)).deleteLessonById(1L);
+    }
+
+    @Test
+    public void shouldRedirectToLessonsWithValidErrorsOnAdd() throws Exception {
+        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)),
+                Duration.ofMinutes(90), null, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("lesson", "startTime", "Start Time Error")));
+        mockMvc.perform(
+                post("/lessons/add")
+                        .flashAttr("fieldErrorsOnAdd", bindingResult.getFieldErrors())
+                        .flashAttr("lessonWithErrors", new Lesson(lesson.getNumber(), lesson.getStartTime(),
+                                lesson.getDuration(), lesson.getSubject(), lesson.getLectures())))
+                .andExpect(redirectedUrl("/lessons"))
+                .andExpect(view().name("redirect:/lessons"));
+
+        verify(lessonService, never()).saveLesson(lesson);
+    }
+
+    @Test
+    public void shouldRedirectToLessonsWithValidErrorsOnUpdate() throws Exception {
+        Lesson lesson = new Lesson(1L, 2, Time.valueOf(LocalTime.of(10, 10, 0)),
+                Duration.ofMinutes(90), null, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("lesson", "startTime", "Start Time Error")));
+        mockMvc.perform(
+                post("/lessons/update/{id}", 1L)
+                        .flashAttr("fieldErrorsOnUpdate", bindingResult.getFieldErrors())
+                        .flashAttr("lessonWithErrors", new Lesson(lesson.getId(), lesson.getNumber(),
+                                lesson.getStartTime(), lesson.getDuration(), lesson.getSubject(), lesson.getLectures())))
+                .andExpect(redirectedUrl("/lessons"))
+                .andExpect(view().name("redirect:/lessons"));
+
+        verify(lessonService, never()).saveLesson(lesson);
+
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -43,6 +45,8 @@ class LectureControllerTest {
     private GroupServiceImpl groupService;
     @MockBean
     private DurationFormatter durationFormatter;
+    @MockBean
+    private BindingResult bindingResult;
 
     @Test
     public void shouldReturnViewWithAllLectures() throws Exception {
@@ -180,10 +184,10 @@ class LectureControllerTest {
 
     @Test
     public void shouldAddLecture() throws Exception {
-        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2021, 1, 1)),
                 null, null, new Lesson(1L, 111, Time.valueOf(LocalTime.of(10, 10, 0)),
                 Duration.ofMinutes(90), null, null), null);
-        when(lectureService.saveLecture(new Lecture(111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        when(lectureService.saveLecture(new Lecture(111, Date.valueOf(LocalDate.of(2021, 1, 1)),
                 null, null, new Lesson(1L, 111, Time.valueOf(LocalTime.of(10, 10, 0)),
                 Duration.ofMinutes(90), null, null), null))).thenReturn(lecture);
         mockMvc.perform(
@@ -193,13 +197,13 @@ class LectureControllerTest {
                 .andExpect(view().name("redirect:/lectures"));
 
         verify(lectureService, times(1)).saveLecture(new Lecture(111,
-                Date.valueOf(LocalDate.of(2020, 1, 1)), null, null,
+                Date.valueOf(LocalDate.of(2021, 1, 1)), null, null,
                 new Lesson(1L, 111, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, null), null));
     }
 
     @Test
     public void shouldUpdateLecture() throws Exception {
-        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2021, 1, 1)),
                 null, null, new Lesson(1L, 111, Time.valueOf(LocalTime.of(10, 10, 0)),
                 Duration.ofMinutes(90), null, null), null);
         when(lectureService.saveLecture(lecture)).thenReturn(lecture);
@@ -224,5 +228,41 @@ class LectureControllerTest {
                 .andExpect(view().name("redirect:/lectures"));
 
         verify(lectureService, times(1)).deleteLectureById(1L);
+    }
+
+    @Test
+    public void shouldRedirectToLecturesWithValidErrorsOnAdd() throws Exception {
+        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                null, null, new Lesson(1L, 111, Time.valueOf(LocalTime.of(10, 10, 0)),
+                Duration.ofMinutes(90), null, null), null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("lecture", "date", "Year Error")));
+        mockMvc.perform(
+                post("/lectures/add")
+                        .flashAttr("fieldErrorsOnAdd", bindingResult.getFieldErrors())
+                        .flashAttr("lectureWithErrors", new Lecture(lecture.getNumber(), lecture.getDate(),
+                                lecture.getAudience(), lecture.getGroup(), lecture.getLesson(), lecture.getTeacher())))
+                .andExpect(redirectedUrl("/lectures"))
+                .andExpect(view().name("redirect:/lectures"));
+
+        verify(lectureService, never()).saveLecture(lecture);
+    }
+
+    @Test
+    public void shouldRedirectToLecturesWithValidErrorsOnUpdate() throws Exception {
+        Lecture lecture = new Lecture(1L, 111, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                null, null, new Lesson(1L, 111, Time.valueOf(LocalTime.of(10, 10, 0)),
+                Duration.ofMinutes(90), null, null), null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("lecture", "date", "Year Error")));
+        mockMvc.perform(
+                post("/lectures/update/{id}", 1L)
+                        .flashAttr("fieldErrorsOnUpdate", bindingResult.getFieldErrors())
+                        .flashAttr("lectureWithErrors", new Lecture(lecture.getNumber(), lecture.getDate(),
+                                lecture.getAudience(), lecture.getGroup(), lecture.getLesson(), lecture.getTeacher())))
+                .andExpect(redirectedUrl("/lectures"))
+                .andExpect(view().name("redirect:/lectures"));
+
+        verify(lectureService, never()).saveLecture(lecture);
     }
 }

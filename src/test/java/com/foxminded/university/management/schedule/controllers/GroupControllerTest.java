@@ -13,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -46,6 +48,8 @@ class GroupControllerTest {
     private FacultyServiceImpl facultyService;
     @MockBean
     private DurationFormatter durationFormatter;
+    @MockBean
+    private BindingResult bindingResult;
 
     @Test
     public void shouldReturnViewWithAllGroups() throws Exception {
@@ -293,5 +297,37 @@ class GroupControllerTest {
                 .andExpect(view().name("redirect:/groups"));
 
         verify(groupService, times(1)).deleteGroupById(1L);
+    }
+
+    @Test
+    public void shouldRedirectToGroupsWithValidErrorsOnAdd() throws Exception {
+        Group group = new Group(1L, "AB-01", null, null, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("group", "name", "Group name Error")));
+        mockMvc.perform(
+                post("/groups/add")
+                        .flashAttr("fieldErrorsOnAdd", bindingResult.getFieldErrors())
+                        .flashAttr("groupWithErrors", new Group(group.getName(), group.getFaculty(),
+                                group.getStudents(), group.getLectures())))
+                .andExpect(redirectedUrl("/groups"))
+                .andExpect(view().name("redirect:/groups"));
+
+        verify(groupService, never()).saveGroup(group);
+    }
+
+    @Test
+    public void shouldRedirectToGroupsWithValidErrorsOnUpdate() throws Exception {
+        Group group = new Group(1L, "AB-01", null, null, null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("group", "name", "Group name Error")));
+        mockMvc.perform(
+                post("/groups/update/{id}", 1L)
+                        .flashAttr("fieldErrorsOnUpdate", bindingResult.getFieldErrors())
+                        .flashAttr("groupWithErrors", new Group(group.getName(), group.getFaculty(),
+                                group.getStudents(), group.getLectures())))
+                .andExpect(redirectedUrl("/groups"))
+                .andExpect(view().name("redirect:/groups"));
+
+        verify(groupService, never()).saveGroup(group);
     }
 }

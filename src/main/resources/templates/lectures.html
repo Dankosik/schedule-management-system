@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="https://thymeleaf.org">
 <head>
     <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" th:rel="stylesheet">
@@ -10,271 +10,418 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lectures/add}" th:object="${lecture}">
-        <div class="form-row">
-            <div class="col">
-                <input class="form-control" placeholder="Date" required th:field="*{date}" type="date">
-            </div>
-        </div>
-        <div class="form-row">
-            <label class="mt-3">add lesson: </label>
-            <div class="col mt-2">
-                <select class="form-control" th:field="*{lesson}">
-                    <div th:each="lesson, iter: ${allLessons}">
-                        <div th:if="${subjectsForAllLessons.get(iter.index) != null}">
-                            <option th:text="'number: ' + ${lesson.number} +
-                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${durationsForAllLessons.get(iter.index)} +
-                                                    ',    subject: '+ ${subjectsForAllLessons.get(iter.index).getName()}"
-                                    th:value="${lesson.id}">
-                            </option>
-                        </div>
-                    </div>
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <label class="mt-3">add audience number: </label>
-            <div class="col mt-2">
-                <select class="form-control" th:field="*{audience}">
-                    <option th:each="audience: ${allAudiences}" th:text="${audience.number}"
-                            th:value="${audience.id}"></option>
-                </select>
-            </div>
-            <label class="mt-3 ml-2">add group: </label>
-            <div class="col mt-2">
-                <select class="form-control" th:field="*{group}">
-                    <option th:each="group: ${allGroups}" th:text="${group.name}"
-                            th:value="${group.id}"></option>
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <label class="mt-3">add teacher: </label>
-            <div class="col mt-2">
-                <select class="form-control" th:field="*{teacher}">
-                    <option th:each="teacher: ${allTeachers}"
-                            th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
-                            th:value="${teacher.id}"></option>
-                </select>
-            </div>
-            <button class="btn btn-light ml-1 mt-1" type="submit">Add lecture</button>
-        </div>
-    </form>
-</div>
-<div>
-    <table class="table table-bordered w-25 text-center mx-auto mt-5">
-        <thead>
-        <tr>
-            <th scope="col">id</th>
-            <th scope="col">Number</th>
-            <th scope="col">Group</th>
-            <th scope="col">Date</th>
-            <th scope="col">Audience</th>
-            <th scope="col">Start time</th>
-            <th scope="col">Duration</th>
-            <th scope="col">Subject</th>
-            <th scope="col">Teacher</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="lecture, iter: ${lectures}">
-            <td th:text="${lecture.id}"></td>
-            <td th:text="${lecture.number}"></td>
-            <td>
-                <a style="text-decoration: none; color: black"
-                   th:href="@{'/groups/'} + ${groups.get(iter.index).getId()}"
-                   th:text="${groupNames.get(iter.index)}">
-                </a>
-            </td>
-            <td th:text="${lecture.date}"></td>
-            <td>
-                <a style="text-decoration: none; color: black"
-                   th:href="@{'/audiences/'} + ${audiences.get(iter.index).getId()}"
-                   th:if="${audienceNumbers.get(iter.index) !=null}"
-                   th:text="${audienceNumbers.get(iter.index)}">
-                </a>
-                <div th:unless="${audienceNumbers.get(iter.index) != null}">Deleted or not added yet</div>
-            </td>
-            <td>
-                <div th:if="${startTimes.get(iter.index) !=null}" th:text="${startTimes.get(iter.index)}"></div>
-                <div th:unless="${startTimes.get(iter.index) != null}">Deleted or not added yet</div>
-            </td>
-            <td>
-                <div th:if="${durations.get(iter.index) !=null}" th:text="${durations.get(iter.index)}"></div>
-                <div th:unless="${durations.get(iter.index) != null}">Deleted or not added yet</div>
-            </td>
-            <td>
-                <a style="text-decoration: none; color: black"
-                   th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
-                   th:if="${subjects.get(iter.index) !=null}"
-                   th:text="${subjectNames.get(iter.index)}">
-                </a>
-                <div th:unless="${subjectNames.get(iter.index) != null}">Deleted or not added yet</div>
-            </td>
-            <td>
-                <a style="text-decoration: none; color: black"
-                   th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
-                   th:if="${teachers.get(iter.index) !=null}"
-                   th:text="${teacherNames.get(iter.index)}">
-                </a>
-                <div th:unless="${teacherNames.get(iter.index) != null}">Deleted or not added yet</div>
-            </td>
-            <td>
-                <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
-                        th:attrappend="data-target=${lecture}"
-                        type="button">
-                    <i class="fas fa-edit"></i>
-                </button>
-            </td>
-            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
-                 tabindex="-1"
-                 th:attrappend="id=${lecture}">
-                <div class="modal-dialog" role="document">
-                    <form method="post" th:action="@{/lectures/update/{id}(id=${lecture.id})}"
-                          th:object="${lecture}">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Edit lecture</h5>
-                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div>
-                                    <div class="form-row">
-                                        <div class="col">
-                                            <input class="form-control" id="editLectureDate" name="date"
-                                                   placeholder="Date" required th:value="${lecture.date}" type="date">
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <label class="mt-3">add lesson: </label>
-                                        <div class="col mt-2">
-                                            <select class="form-control" th:field="*{lesson}">
-                                                <div th:each="lesson: ${allLessons}">
-                                                    <div th:if="${lesson.subject != null}">
-                                                        <div th:if="${lecture.lesson != null}">
-                                                            <option th:if="${lecture.lesson.id == lesson.id}" th:text="'number: ' + ${lesson.number} +
-                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
-                                                    ',    subject: '+ ${lesson.subject.getName()}"
-                                                                    th:value="${lesson.id}"></option>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div th:each="lesson, iter: ${allLessons}">
-                                                    <div th:if="${lesson.subject != null}">
-                                                        <div th:if="${lecture.lesson != null}">
-                                                            <option th:if="${lecture.lesson.id != lesson.id}" th:text="'number: ' + ${lesson.number} +
-                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
-                                                    ',    subject: '+ ${lesson.subject.getName()}"
-                                                                    th:value="${lesson.id}"></option>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div th:if="${lecture.lesson == null}">
-                                                    <div th:each="lesson: ${allLessons}">
-                                                        <div th:if="${lesson.subject != null}">
-                                                            <option th:text="'number: ' + ${lesson.number} +
-                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
-                                                    ',    subject: '+ ${lesson.subject.getName()}"
-                                                                    th:value="${lesson.id}"></option>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <label class="mt-3">add audience number: </label>
-                                    <div class="col mt-2">
-                                        <select class="form-control" th:field="*{audience}">
-                                            <div th:each="audience: ${allAudiences}">
-                                                <div th:if="${lecture.audience != null}">
-                                                    <option th:if="${lecture.audience.number == audience.number}"
-                                                            th:text="${lecture.audience.number}"
-                                                            th:value="${audience.id}"></option>
-                                                </div>
-                                            </div>
-                                            <div th:each="audience: ${allAudiences}">
-                                                <div th:if="${lecture.audience != null}">
-                                                    <option th:if="${lecture.audience.number != audience.number}"
-                                                            th:text="${audience.number}"
-                                                            th:value="${audience.id}"></option>
-                                                </div>
-                                            </div>
-                                            <div th:if="${lecture.audience == null}">
-                                                <div th:each="audience: ${allAudiences}">
-                                                    <option th:text="${audience.number}"
-                                                            th:value="${audience.id}"></option>
-                                                </div>
-                                            </div>
-                                        </select>
-                                    </div>
-                                    <label class="mt-3 ml-2">add group: </label>
-                                    <div class="col mt-2">
-                                        <select class="form-control" th:field="*{group}">
-                                            <div th:each="group: ${allGroups}">
-                                                <div th:if="${lecture.group != null}">
-                                                    <option th:if="${lecture.group.name == group.name}"
-                                                            th:text="${group.name}"
-                                                            th:value="${group.id}"></option>
-                                                </div>
-                                            </div>
-                                            <div th:each="group: ${allGroups}">
-                                                <div th:if="${lecture.group != null}">
-                                                    <option th:if="${lecture.group.name != group.name}"
-                                                            th:text="${group.name}"
-                                                            th:value="${group.id}"></option>
-                                                </div>
-                                            </div>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <label class="mt-3">add teacher: </label>
-                                    <div class="col mt-2">
-                                        <select class="form-control" th:field="*{teacher}">
-                                            <div th:each="teacher: ${allTeachers}">
-                                                <div th:if="${lecture.teacher != null}">
-                                                    <option th:if="${lecture.teacher.id == teacher.id}"
-                                                            th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
-                                                            th:value="${teacher.id}"></option>
-                                                </div>
-                                            </div>
-                                            <div th:each="teacher: ${allTeachers}">
-                                                <div th:if="${lecture.teacher != null}">
-                                                    <option th:if="${lecture.teacher.id != teacher.id}"
-                                                            th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
-                                                            th:value="${teacher.id}"></option>
-                                                </div>
-                                            </div>
-                                            <div th:if="${lecture.teacher == null}">
-                                                <div th:each="teacher: ${allTeachers}">
-                                                    <option th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
-                                                            th:value="${teacher.id}"></option>
-                                                </div>
-                                            </div>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
-                                <button class="btn btn-light ml-1" type="submit">Save changes</button>
-                            </div>
-                        </div>
-                    </form>
+    <div th:unless="${not #lists.isEmpty(fieldErrorsOnAdd)}">
+        <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lectures/add}" th:object="${lecture}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" max="9999-12-31" placeholder="Date" required th:field="*{date}"
+                           type="date">
                 </div>
             </div>
-            <div th:insert="commons/trash-button :: trash-button(deletePath = '/lectures/delete/',
+            <div class="form-row">
+                <label class="mt-3">add lesson: </label>
+                <div class="col mt-2">
+                    <select class="form-control" th:field="*{lesson}">
+                        <div th:each="lesson, iter: ${allLessons}">
+                            <div th:if="${subjectsForAllLessons.get(iter.index) != null}">
+                                <option th:text="'number: ' + ${lesson.number} +
+                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${durationsForAllLessons.get(iter.index)} +
+                                                    ',    subject: '+ ${subjectsForAllLessons.get(iter.index).getName()}"
+                                        th:value="${lesson.id}">
+                                </option>
+                            </div>
+                        </div>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="mt-3">add audience number: </label>
+                <div class="col mt-2">
+                    <select class="form-control" th:field="*{audience}">
+                        <option th:each="audience: ${allAudiences}" th:text="${audience.number}"
+                                th:value="${audience.id}"></option>
+                    </select>
+                </div>
+                <label class="mt-3 ml-2">add group: </label>
+                <div class="col mt-2">
+                    <select class="form-control" th:field="*{group}">
+                        <option th:each="group: ${allGroups}" th:text="${group.name}"
+                                th:value="${group.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="mt-3">add teacher: </label>
+                <div class="col mt-2">
+                    <select class="form-control" th:field="*{teacher}">
+                        <option th:each="teacher: ${allTeachers}"
+                                th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                th:value="${teacher.id}"></option>
+                    </select>
+                </div>
+                <button class="btn btn-light ml-1 mt-1" type="submit">Add lecture</button>
+            </div>
+        </form>
+    </div>
+    <div th:if="${fieldErrorsOnAdd != null}">
+        <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lectures/add}" th:object="${lecture}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" id="lectureWithDateErrorOnAdd" max="9999-12-31" name="date" placeholder="Date"
+                           required th:value="${lectureWithErrors.date}" type="date">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'date'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="mt-3">Edit lesson: </label>
+                <div class="col mt-2">
+                    <select class="form-control" th:field="*{lesson}">
+                        <div th:each="lesson, iter: ${allLessons}">
+                            <div th:if="${subjectsForAllLessons.get(iter.index) != null}">
+                                <option th:text="'number: ' + ${lesson.number} +
+                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${durationsForAllLessons.get(iter.index)} +
+                                                    ',    subject: '+ ${subjectsForAllLessons.get(iter.index).getName()}"
+                                        th:value="${lesson.id}">
+                                </option>
+                            </div>
+                        </div>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="mt-3">Edit audience number: </label>
+                <div class="col mt-2">
+                    <select class="form-control" th:field="*{audience}">
+                        <option th:each="audience: ${allAudiences}" th:text="${audience.number}"
+                                th:value="${audience.id}"></option>
+                    </select>
+                </div>
+                <label class="mt-3 ml-2">Edit group: </label>
+                <div class="col mt-2">
+                    <select class="form-control" th:field="*{group}">
+                        <option th:each="group: ${allGroups}" th:text="${group.name}"
+                                th:value="${group.id}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="mt-3">Edit teacher: </label>
+                <div class="col mt-2">
+                    <select class="form-control" th:field="*{teacher}">
+                        <option th:each="teacher: ${allTeachers}"
+                                th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                th:value="${teacher.id}"></option>
+                    </select>
+                </div>
+                <button class="btn btn-light ml-1 mt-1" type="submit">Add lecture</button>
+            </div>
+        </form>
+    </div>
+</div>
+<table class="table table-bordered w-25 text-center mx-auto mt-5">
+    <thead>
+    <tr>
+        <th scope="col">id</th>
+        <th scope="col">Number</th>
+        <th scope="col">Group</th>
+        <th scope="col">Date</th>
+        <th scope="col">Audience</th>
+        <th scope="col">Start time</th>
+        <th scope="col">Duration</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Teacher</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="lecture, iter: ${lectures}">
+        <td th:text="${lecture.id}"></td>
+        <td th:text="${lecture.number}"></td>
+        <td>
+            <a style="text-decoration: none; color: black"
+               th:href="@{'/groups/'} + ${groups.get(iter.index).getId()}"
+               th:text="${groupNames.get(iter.index)}">
+            </a>
+        </td>
+        <td th:text="${lecture.date}"></td>
+        <td>
+            <a style="text-decoration: none; color: black"
+               th:href="@{'/audiences/'} + ${audiences.get(iter.index).getId()}"
+               th:if="${audienceNumbers.get(iter.index) !=null}"
+               th:text="${audienceNumbers.get(iter.index)}">
+            </a>
+            <div th:unless="${audienceNumbers.get(iter.index) != null}">Deleted or not added yet</div>
+        </td>
+        <td>
+            <div th:if="${startTimes.get(iter.index) !=null}" th:text="${startTimes.get(iter.index)}"></div>
+            <div th:unless="${startTimes.get(iter.index) != null}">Deleted or not added yet</div>
+        </td>
+        <td>
+            <div th:if="${durations.get(iter.index) !=null}" th:text="${durations.get(iter.index)}"></div>
+            <div th:unless="${durations.get(iter.index) != null}">Deleted or not added yet</div>
+        </td>
+        <td>
+            <a style="text-decoration: none; color: black"
+               th:href="@{'/subjects/'} + ${subjects.get(iter.index).getId()}"
+               th:if="${subjects.get(iter.index) !=null}"
+               th:text="${subjectNames.get(iter.index)}">
+            </a>
+            <div th:unless="${subjectNames.get(iter.index) != null}">Deleted or not added yet</div>
+        </td>
+        <td>
+            <a style="text-decoration: none; color: black"
+               th:href="@{'/teachers/'} + ${teachers.get(iter.index).getId()}"
+               th:if="${teachers.get(iter.index) !=null}"
+               th:text="${teacherNames.get(iter.index)}">
+            </a>
+            <div th:unless="${teacherNames.get(iter.index) != null}">Deleted or not added yet</div>
+        </td>
+        <td>
+            <button class="btn btn-light" data-target="#editModal" data-toggle="modal"
+                    th:attrappend="data-target=${lecture}"
+                    type="button">
+                <i class="fas fa-edit"></i>
+            </button>
+        </td>
+        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
+             tabindex="-1"
+             th:attrappend="id=${lecture}">
+            <div class="modal-dialog" role="document">
+                <form method="post" th:action="@{/lectures/update/{id}(id=${lecture.id})}"
+                      th:object="${lecture}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit lecture</h5>
+                            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input class="form-control" id="editLectureDate" max="9999-12-31"
+                                               name="date" placeholder="Date" required th:value="${lecture.date}"
+                                               type="date">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <label class="mt-3">Edit lesson: </label>
+                                    <div class="col mt-2">
+                                        <select class="form-control" th:field="*{lesson}">
+                                            <div th:each="lesson: ${allLessons}">
+                                                <div th:if="${lesson.subject != null}">
+                                                    <div th:if="${lecture.lesson != null}">
+                                                        <option th:if="${lecture.lesson.id == lesson.id}" th:text="'number: ' + ${lesson.number} +
+                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
+                                                    ',    subject: '+ ${lesson.subject.getName()}"
+                                                                th:value="${lesson.id}"></option>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div th:each="lesson, iter: ${allLessons}">
+                                                <div th:if="${lesson.subject != null}">
+                                                    <div th:if="${lecture.lesson != null}">
+                                                        <option th:if="${lecture.lesson.id != lesson.id}" th:text="'number: ' + ${lesson.number} +
+                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
+                                                    ',    subject: '+ ${lesson.subject.getName()}"
+                                                                th:value="${lesson.id}"></option>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div th:if="${lecture.lesson == null}">
+                                                <div th:each="lesson: ${allLessons}">
+                                                    <div th:if="${lesson.subject != null}">
+                                                        <option th:text="'number: ' + ${lesson.number} +
+                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${lesson.getDuration()} +
+                                                    ',    subject: '+ ${lesson.subject.getName()}"
+                                                                th:value="${lesson.id}"></option>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="mt-3">Edit audience number: </label>
+                                <div class="col mt-2">
+                                    <select class="form-control" th:field="*{audience}">
+                                        <div th:each="audience: ${allAudiences}">
+                                            <div th:if="${lecture.audience != null}">
+                                                <option th:if="${lecture.audience.number == audience.number}"
+                                                        th:text="${lecture.audience.number}"
+                                                        th:value="${audience.id}"></option>
+                                            </div>
+                                        </div>
+                                        <div th:each="audience: ${allAudiences}">
+                                            <div th:if="${lecture.audience != null}">
+                                                <option th:if="${lecture.audience.number != audience.number}"
+                                                        th:text="${audience.number}"
+                                                        th:value="${audience.id}"></option>
+                                            </div>
+                                        </div>
+                                        <div th:if="${lecture.audience == null}">
+                                            <div th:each="audience: ${allAudiences}">
+                                                <option th:text="${audience.number}"
+                                                        th:value="${audience.id}"></option>
+                                            </div>
+                                        </div>
+                                    </select>
+                                </div>
+                                <label class="mt-3 ml-2">Edit group: </label>
+                                <div class="col mt-2">
+                                    <select class="form-control" th:field="*{group}">
+                                        <div th:each="group: ${allGroups}">
+                                            <div th:if="${lecture.group != null}">
+                                                <option th:if="${lecture.group.name == group.name}"
+                                                        th:text="${group.name}"
+                                                        th:value="${group.id}"></option>
+                                            </div>
+                                        </div>
+                                        <div th:each="group: ${allGroups}">
+                                            <div th:if="${lecture.group != null}">
+                                                <option th:if="${lecture.group.name != group.name}"
+                                                        th:text="${group.name}"
+                                                        th:value="${group.id}"></option>
+                                            </div>
+                                        </div>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="mt-3">Edit teacher: </label>
+                                <div class="col mt-2">
+                                    <select class="form-control" th:field="*{teacher}">
+                                        <div th:each="teacher: ${allTeachers}">
+                                            <div th:if="${lecture.teacher != null}">
+                                                <option th:if="${lecture.teacher.id == teacher.id}"
+                                                        th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                                        th:value="${teacher.id}"></option>
+                                            </div>
+                                        </div>
+                                        <div th:each="teacher: ${allTeachers}">
+                                            <div th:if="${lecture.teacher != null}">
+                                                <option th:if="${lecture.teacher.id != teacher.id}"
+                                                        th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                                        th:value="${teacher.id}"></option>
+                                            </div>
+                                        </div>
+                                        <div th:if="${lecture.teacher == null}">
+                                            <div th:each="teacher: ${allTeachers}">
+                                                <option th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                                        th:value="${teacher.id}"></option>
+                                            </div>
+                                        </div>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                            <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div th:insert="commons/trash-button :: trash-button(deletePath = '/lectures/delete/',
             id = ${lecture.id}, question = 'Are you sure you want to delete a lecture?')"></div>
-</div>
-</tr>
-</tbody>
+    </tr>
+    </tbody>
 </table>
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModalForErrorOnUpdateOnValidate"
+     role="dialog"
+     tabindex="-1"
+     th:if="${fieldErrorsOnUpdate !=null}">
+    <div class="modal-dialog" role="document">
+        <form method="post" th:action="@{/lectures/update/{id}(id=${lectureWithErrors.id})}"
+              th:object="${lecture}">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel1">Edit lecture</h5>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="col">
+                            <input class="form-control" id="lectureWithDateErrorOnUpdate" max="9999-12-31" name="date"
+                                   placeholder="Date"
+                                   required
+                                   th:value="${lectureWithErrors.date}" type="date">
+                            <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                <div class="alert alert-danger mt-2" style="color: red"
+                                     th:if="${fieldError.getField() == 'date'}"
+                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="mt-3">Edit lesson: </label>
+                        <div class="col mt-2">
+                            <select class="form-control" th:field="*{lesson}">
+                                <div th:each="lesson, iter: ${allLessons}">
+                                    <div th:if="${subjectsForAllLessons.get(iter.index) != null}">
+                                        <option th:text="'number: ' + ${lesson.number} +
+                                                    ',   start time: '+ ${lesson.startTime} + ',   duration: '+ ${durationsForAllLessons.get(iter.index)} +
+                                                    ',    subject: '+ ${subjectsForAllLessons.get(iter.index).getName()}"
+                                                th:value="${lesson.id}">
+                                        </option>
+                                    </div>
+                                </div>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="mt-3">Edit audience number: </label>
+                        <div class="col mt-2">
+                            <select class="form-control" th:field="*{audience}">
+                                <option th:each="audience: ${allAudiences}" th:text="${audience.number}"
+                                        th:value="${audience.id}"></option>
+                            </select>
+                        </div>
+                        <label class="mt-3 ml-2">Edit group: </label>
+                        <div class="col mt-2">
+                            <select class="form-control" th:field="*{group}">
+                                <option th:each="group: ${allGroups}" th:text="${group.name}"
+                                        th:value="${group.id}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="mt-3">Edit teacher: </label>
+                        <div class="col mt-2">
+                            <select class="form-control" th:field="*{teacher}">
+                                <option th:each="teacher: ${allTeachers}"
+                                        th:text="${teacher.firstName} + ' ' + ${teacher.lastName} + ' ' + ${teacher.middleName}"
+                                        th:value="${teacher.id}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                        <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+<script th:if="${fieldErrorsOnUpdate != null}">
+    $(document).ready(function () {
+        $('#editModalForErrorOnUpdateOnValidate').modal('show');
+    });
+
+    $('#editModalForErrorOnUpdateOnValidate').on('hidden.bs.modal', function () {
+        window.location.replace('/lectures');
+    })
+</script>
 </body>
 </html>

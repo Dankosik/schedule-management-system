@@ -7,18 +7,54 @@
     <meta charset="UTF-8">
     <title>FoxmindedUniversity</title>
 </head>
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/audiences/add}" th:object="${audience}">
-        <div class="form-row">
-            <div class="col">
-                <input class="form-control" placeholder="Number" required th:field="*{number}" type="text"/>
+        <div th:unless="${not #lists.isEmpty(fieldErrors)}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" placeholder="Number" required th:field="*{number}" type="number"/>
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Capacity" required th:field="*{capacity}" type="number"/>
+                </div>
+                <button class="btn btn-light ml-1" type="submit">Add audience</button>
             </div>
-            <div class="col">
-                <input class="form-control" placeholder="Capacity" required th:field="*{capacity}" type="text"/>
+        </div>
+        <div th:if="${fieldErrors != null}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" id="audienceWithNumberErrorOnAdd" name="number" placeholder="Number"
+                           required
+                           th:value="${audienceWithErrors.number}" type="number"/>
+                    <div th:each="fieldError, iter: ${fieldErrors}">
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'number'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <input class="form-control" id="audienceWithCapacityErrorOnAdd" name="capacity" placeholder="Capacity"
+                           required
+                           th:value="${audienceWithErrors.capacity}" type="number"/>
+                    <div th:each="fieldError, iter: ${fieldErrors}">
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'capacity'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-light ml-1 col-auto" type="submit">Add audience</button>
+                </div>
             </div>
-            <button class="btn btn-light ml-1 " type="submit">Add audience</button>
         </div>
     </form>
 </div>
@@ -65,12 +101,12 @@
                                         <div class="col">
                                             <input class="form-control" id="addNumberForExceptionOnAdd"
                                                    name="number" placeholder="Number"
-                                                   required th:value="${newAudience.number}" type="text"/>
+                                                   required th:value="${newAudience.number}" type="number"/>
                                         </div>
                                         <div class="col">
                                             <input class="form-control" id="addCapacityForExceptionOnAdd"
                                                    name="capacity" placeholder="Capacity"
-                                                   required th:value="${newAudience.capacity}" type="text"/>
+                                                   required th:value="${newAudience.capacity}" type="number"/>
                                         </div>
                                     </div>
                                 </div>
@@ -102,17 +138,17 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div>
+                                <div th:unless="${not #lists.isEmpty(fieldErrors)}">
                                     <div class="form-row">
                                         <div class="col">
                                             <input class="form-control" id="editNumberForExceptionOnUpdate"
                                                    name="number" placeholder="Number"
-                                                   required th:value="${newAudience.number}" type="text"/>
+                                                   required th:value="${newAudience.number}" type="number"/>
                                         </div>
                                         <div class="col">
                                             <input class="form-control" id="editCapacityForExceptionOnUpdate"
                                                    name="capacity" placeholder="Capacity"
-                                                   required th:value="${newAudience.capacity}" type="text"/>
+                                                   required th:value="${newAudience.capacity}" type="number"/>
                                         </div>
                                     </div>
                                 </div>
@@ -129,6 +165,62 @@
                     </form>
                 </div>
             </div>
+            <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+                 id="editModalForErrorOnUpdateOnValidate" role="dialog"
+                 tabindex="-1"
+                 th:if="${fieldErrorsOnUpdate !=null}">
+                <div class="modal-dialog" role="document">
+                    <form method="post" th:action="@{/audiences/update/{id}(id=${audienceWithErrors.id})}"
+                          th:object=" ${audience}">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel3">Edit audience</h5>
+                                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div th:if="${fieldErrorsOnUpdate != null}">
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input class="form-control" id="audienceWithNumberErrorOnUpdate" name="number"
+                                                   placeholder="Number" required
+                                                   th:value="${audienceWithErrors.number}" type="number"/>
+                                            <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                                <div class="alert alert-danger mt-2"
+                                                     style="color: red"
+                                                     th:if="${fieldError.getField() == 'number'}"
+                                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <input class="form-control" id="audienceWithCapacityErrorOnUpdate" name="capacity"
+                                                   placeholder="Capacity"
+                                                   required
+                                                   th:value="${audienceWithErrors.capacity}" type="number"/>
+                                            <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                                <div class="alert alert-danger mt-2"
+                                                     style="color: red"
+                                                     th:if="${fieldError.getField() == 'capacity'}"
+                                                     th:text="${fieldError.getDefaultMessage()}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnUpdate !=null}"
+                                    th:text="${serviceExceptionOnUpdate.getMessage()}"></h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                                <button class="btn btn-light ml-1" id="saveForErrorOnUpdateOnValidate" type="submit">
+                                    Save changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
                  tabindex="-1"
                  th:attrappend="id=${audience}">
@@ -148,12 +240,12 @@
                                         <div class="col">
                                             <input class="form-control" id="editNumber"
                                                    name="number" placeholder="Number"
-                                                   required th:value="${audience.number}" type="text"/>
+                                                   required th:value="${audience.number}" type="number"/>
                                         </div>
                                         <div class="col">
                                             <input class="form-control" id="editCapacity"
                                                    name="capacity" placeholder="Capacity"
-                                                   required th:value="${audience.capacity}" type="text"/>
+                                                   required th:value="${audience.capacity}" type="number"/>
                                         </div>
                                     </div>
                                 </div>
@@ -186,6 +278,7 @@
     const editNumberInputValueForExceptionOnUpdate = document.getElementById('editNumberForExceptionOnUpdate').value;
 
     $(document).ready(function () {
+        debugger
         $('#editModalForExceptionOnUpdate').modal('show');
     });
 
@@ -196,6 +289,16 @@
     });
 
     $('#editModalForExceptionOnUpdate').on('hidden.bs.modal', function () {
+        window.location.replace('/audiences');
+    })
+</script>
+
+<script th:if="${fieldErrorsOnUpdate != null}">
+    $(document).ready(function () {
+        $('#editModalForErrorOnUpdateOnValidate').modal('show');
+    });
+
+    $('#editModalForErrorOnUpdateOnValidate').on('hidden.bs.modal', function () {
         window.location.replace('/audiences');
     })
 </script>

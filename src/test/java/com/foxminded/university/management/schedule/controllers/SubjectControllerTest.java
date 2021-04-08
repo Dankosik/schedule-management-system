@@ -12,6 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.util.List;
 
@@ -27,6 +29,8 @@ class SubjectControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private SubjectServiceImpl subjectService;
+    @MockBean
+    private BindingResult bindingResult;
 
     @Test
     public void shouldReturnViewWithAllSubjects() throws Exception {
@@ -128,4 +132,37 @@ class SubjectControllerTest {
 
         verify(subjectService, times(1)).deleteSubjectById(1L);
     }
+
+    @Test
+    public void shouldRedirectToFSubjectsWithValidErrorsOnAdd() throws Exception {
+        Subject subject = new Subject(1L, "Art", null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("subject", "name",
+                "Error name")));
+        mockMvc.perform(
+                post("/subjects/add")
+                        .flashAttr("fieldErrors", bindingResult.getFieldErrors())
+                        .flashAttr("subjectWithErrorsOnAdd", new Subject(subject.getName(), subject.getLessons())))
+                .andExpect(redirectedUrl("/subjects"))
+                .andExpect(view().name("redirect:/subjects"));
+
+        verify(subjectService, never()).saveSubject(subject);
+    }
+
+    @Test
+    public void shouldRedirectToSubjectsWithValidErrorsOnUpdate() throws Exception {
+        Subject subject = new Subject(1L, "Art", null);
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(new FieldError("subject", "name",
+                "Error name")));
+        mockMvc.perform(
+                post("/subjects/update/{id}", 1L)
+                        .flashAttr("fieldErrors", bindingResult.getFieldErrors())
+                        .flashAttr("subjectWithErrorsOnAdd", new Subject(subject.getId(), subject.getName(), subject.getLessons())))
+                .andExpect(redirectedUrl("/subjects"))
+                .andExpect(view().name("redirect:/subjects"));
+
+        verify(subjectService, never()).saveSubject(subject);
+    }
+
 }

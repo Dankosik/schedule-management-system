@@ -11,27 +11,75 @@
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/teachers/add}" th:object="${teacher}">
-        <div class="form-row">
-            <div class="col">
-                <input class="form-control" placeholder="First name" required th:field="*{firstName}" type="text">
+        <div th:unless="${not #lists.isEmpty(fieldErrorsOnAdd)}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" placeholder="First name" required th:field="*{firstName}" type="text">
+                </div>
+                <div class="col">
+                    <input class="form-control" placeholder="Last name" required th:field="*{lastName}" type="text">
+                </div>
             </div>
-            <div class="col">
-                <input class="form-control" placeholder="Last name" required th:field="*{lastName}" type="text">
+            <div class="form-row">
+                <div class="col mt-1">
+                    <input class="form-control" placeholder="Middle name" required th:field="*{middleName}" type="text">
+                </div>
+                <div class="col mt-1">
+                    <select class="form-control" th:field="*{faculty}">
+                        <div th:each="faculty: ${allFaculties}">
+                            <option th:text="${faculty.name}" th:value="${faculty.id}">
+                            </option>
+                        </div>
+                    </select>
+                </div>
+                <button class="btn btn-light ml-1 mt-1" type="submit">Add teacher</button>
             </div>
         </div>
-        <div class="form-row">
-            <div class="col mt-1">
-                <input class="form-control" placeholder="Middle name" required th:field="*{middleName}" type="text">
-            </div>
-            <div class="col mt-1">
-                <select class="form-control" th:field="*{faculty}">
-                    <div th:each="faculty: ${allFaculties}">
-                        <option th:text="${faculty.name}" th:value="${faculty.id}">
-                        </option>
+        <div th:if="${fieldErrorsOnAdd != null}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" id="teacherWithFirstNameError" name="firstName" placeholder="First name"
+                           required th:value="${teacherWithErrors.firstName}" type="text">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'firstName'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
-                </select>
+                </div>
+                <div class="col">
+                    <input class="form-control" id="teacherWithLastNameError" name="lastName" placeholder="Last name"
+                           required th:value="${teacherWithErrors.lastName}" type="text">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'lastName'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
+                    </div>
+                </div>
             </div>
-            <button class="btn btn-light ml-1 mt-1" type="submit">Add teacher</button>
+            <div class="form-row">
+                <div class="col mt-1">
+                    <input class="form-control" id="teacherWithMiddleNameError" name="middleName" placeholder="Middle name"
+                           required th:value="${teacherWithErrors.middleName}" type="text">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" style="color: red"
+                             th:if="${fieldError.getField() == 'middleName'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
+                    </div>
+                </div>
+                <div class="col mt-1">
+                    <select class="form-control" th:field="*{faculty}">
+                        <option th:text="${teacherWithErrors.faculty.name}"
+                                th:value="${teacherWithErrors.faculty.id}"></option>
+                        <div th:each="faculty: ${allFaculties}">
+                            <option th:if="${teacherWithErrors.faculty.name != faculty.name}"
+                                    th:value="${faculty.id}"></option>
+                        </div>
+                    </select>
+                </div>
+                <div>
+                    <button class="btn btn-light ml-1 mt-1" type="submit">Add teacher</button>
+                </div>
+            </div>
         </div>
     </form>
 </div>
@@ -154,6 +202,100 @@
         </tr>
         </tbody>
     </table>
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+         id="editModalForErrorOnUpdateOnValidate" role="dialog" tabindex="-1"
+         th:if="${fieldErrorsOnUpdate !=null}">
+        <div class="modal-dialog" role="document">
+            <form method="post" th:action="@{/teachers/update/{id}(id=${teacherWithErrors.id})}"
+                  th:object="${teacher}">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel3">Edit student</h5>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div th:if="${fieldErrorsOnUpdate != null}">
+                            <div class="form-row">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input class="form-control" id="editTeacherFirstNameOnErrorOnValidate"
+                                               name="firstName"
+                                               placeholder="First name" required
+                                               th:value="${teacherWithErrors.firstName}"
+                                               type="text">
+                                        <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                            <div class="alert alert-danger mt-2"
+                                                 style="color: red"
+                                                 th:if="${fieldError.getField() == 'firstName'}"
+                                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <input class="form-control" id="editTeacherLastNameOnErrorOnValidate"
+                                               name="lastName"
+                                               placeholder="Last name" required th:value="${teacherWithErrors.lastName}"
+                                               type="text">
+                                        <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                            <div class="alert alert-danger mt-2"
+                                                 style="color: red"
+                                                 th:if="${fieldError.getField() == 'lastName'}"
+                                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input class="form-control" id="editTeacherMiddleNameOnErrorOnValidate"
+                                               name="middleName" placeholder="Middle name"
+                                               required
+                                               th:value="${teacherWithErrors.middleName}" type="text">
+                                        <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                            <div class="alert alert-danger mt-2"
+                                                 style="color: red"
+                                                 th:if="${fieldError.getField() == 'middleName'}"
+                                                 th:text="${fieldError.getDefaultMessage()}"></div>
+                                        </div>
+                                    </div>
+                                    <label class="mt-2 ml-3 mr-1">Edit faculty: </label>
+                                    <div class="col mt-1">
+                                        <select class="form-control" th:field="*{faculty}">
+                                            <option th:text="${teacherWithErrors.faculty.name}"
+                                                    th:value="${teacherWithErrors.faculty.id}"></option>
+                                            <div th:each="faculty: ${allFaculties}">
+                                                <option th:if="${teacherWithErrors.faculty.name != faculty.name}"
+                                                        th:text="${faculty.name}"
+                                                        th:value="${faculty.id}"></option>
+                                            </div>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h5 class="mt-2" style="color: red" th:if="${serviceExceptionOnUpdate !=null}"
+                            th:text="${serviceExceptionOnUpdate.getMessage()}"></h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                        <button class="btn btn-light ml-1" id="saveForErrorOnValidate" type="submit">
+                            Save changes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+<script th:if="${fieldErrorsOnUpdate != null}">
+    $(document).ready(function () {
+        debugger
+        $('#editModalForErrorOnUpdateOnValidate').modal('show');
+    });
+
+    $('#editModalForErrorOnUpdateOnValidate').on('hidden.bs.modal', function () {
+        window.location.replace('/teachers');
+    })
+</script>
 </body>
 </html>
