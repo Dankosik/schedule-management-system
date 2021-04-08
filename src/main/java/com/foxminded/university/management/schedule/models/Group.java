@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.models.validators.GroupName;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -13,6 +14,7 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @GroupName
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id")

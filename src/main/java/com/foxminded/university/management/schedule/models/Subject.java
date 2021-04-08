@@ -1,5 +1,7 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.models.validators.SubjectName;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +12,7 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @SubjectName
     private String name;
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<Lesson> lessons;

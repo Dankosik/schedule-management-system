@@ -1,5 +1,7 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.models.validators.CurrentYear;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
@@ -11,6 +13,7 @@ public class Lecture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer number;
+    @CurrentYear
     private Date date;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audience_id")

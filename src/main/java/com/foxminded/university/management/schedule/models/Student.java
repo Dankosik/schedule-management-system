@@ -1,6 +1,8 @@
 package com.foxminded.university.management.schedule.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.Objects;
 
 @Entity
@@ -9,6 +11,8 @@ public class Student extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Min(value = 1, message = "Must be at least 1")
+    @Max(value = 4, message = "Must be no more than 4")
     private Integer courseNumber;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")

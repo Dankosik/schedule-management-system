@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.foxminded.university.management.schedule.models.validators.FacultyName;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -13,6 +14,7 @@ public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @FacultyName
     private String name;
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Group> groups;

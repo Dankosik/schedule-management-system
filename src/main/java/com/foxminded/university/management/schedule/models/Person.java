@@ -1,13 +1,18 @@
 package com.foxminded.university.management.schedule.models;
 
 
+import com.foxminded.university.management.schedule.models.validators.HumanName;
+
 import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
 public abstract class Person {
+    @HumanName
     private String firstName;
+    @HumanName
     private String lastName;
+    @HumanName
     private String middleName;
 
     public Person() {
