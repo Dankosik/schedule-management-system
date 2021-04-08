@@ -10,21 +10,52 @@
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
-    <form class="w-25 mx-auto mt-5" method="post" th:action="@{/groups/add}" th:object="${group}">
-        <div class="form-row">
-            <div class="col">
-                <input class="form-control" placeholder="Name" required th:field="*{name}" type="text">
+    <div th:unless="${not #lists.isEmpty(fieldErrorsOnAdd)}">
+        <form class="w-25 mx-auto mt-5" method="post" th:action="@{/groups/add}" th:object="${group}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" placeholder="Name" required th:field="*{name}" type="text">
+                </div>
+                <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
+                <div class="col">
+                    <select class="form-control" th:field="*{faculty}">
+                        <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
+                                th:value="${faculty.id}"></option>
+                    </select>
+                </div>
+                <button class="btn btn-light ml-1 " type="submit">Add group</button>
             </div>
-            <label class="mt-2 ml-4 mr-1">Select a Faculty:</label>
-            <div class="col">
-                <select class="form-control" th:field="*{faculty}">
-                    <option th:each="faculty: ${allFaculties}" th:text="${faculty.name}"
-                            th:value="${faculty.id}"></option>
-                </select>
+        </form>
+    </div>
+
+    <div th:if="${fieldErrorsOnAdd != null}">
+        <form class="w-25 mx-auto mt-5" method="post" th:action="@{/groups/add}" th:object="${group}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" placeholder="Name" required id="groupWithNameError" name="name"
+                           th:value="${groupWithErrors.name}" type="text">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'name'}"
+                             th:text="${fieldError.getDefaultMessage()}"
+                             style="color: red"></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <select class="form-control" th:field="*{faculty}">
+                        <option th:text="${groupWithErrors.faculty.name}"
+                                th:value="${groupWithErrors.faculty.id}"></option>
+                        <div th:each="faculty: ${allFaculties}">
+                            <option th:if="${groupWithErrors.faculty.name != faculty.name}" th:text="${faculty.name}"
+                                    th:value="${faculty.id}"></option>
+                        </div>
+                    </select>
+                </div>
+                <div>
+                    <button class="btn btn-light ml-1 " type="submit">Add group</button>
+                </div>
             </div>
-            <button class="btn btn-light ml-1 " type="submit">Add group</button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 <div>
     <table class="table table-bordered w-25 text-center mx-auto mt-5">
@@ -227,6 +258,52 @@
         </tr>
         </tbody>
     </table>
+
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+         id="editModalForErrorOnUpdateOnValidate" role="dialog"
+         tabindex="-1"
+         th:if="${fieldErrorsOnUpdate !=null}">
+        <div class="modal-dialog">
+            <form method="post" th:action="@{/groups/update/{id}(id=${groupWithErrors.id})}"
+                  th:object="${group}">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel3">Edit lesson</h5>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="col">
+                                <input class="form-control" placeholder="Name" required id="groupWithNameErrorOnUpdateOnValidate" name="name"
+                                       th:value="${groupWithErrors.name}" type="text">
+                                <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                    <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'name'}"
+                                         th:text="${fieldError.getDefaultMessage()}"
+                                         style="color: red"></div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <select class="form-control" th:field="*{faculty}">
+                                    <option th:text="${groupWithErrors.faculty.name}"
+                                            th:value="${groupWithErrors.faculty.id}"></option>
+                                    <div th:each="faculty: ${allFaculties}">
+                                        <option th:if="${groupWithErrors.faculty.name != faculty.name}" th:text="${faculty.name}"
+                                                th:value="${faculty.id}"></option>
+                                    </div>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                        <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 <script crossorigin="anonymous" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
         src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -270,6 +347,17 @@
     });
 
     $('#editModalForExceptionOnUpdate').on('hidden.bs.modal', function () {
+        window.location.replace('/groups');
+    })
+</script>
+
+<script th:if="${fieldErrorsOnUpdate != null}">
+    $(document).ready(function () {
+        debugger
+        $('#editModalForErrorOnUpdateOnValidate').modal('show');
+    });
+
+    $('#editModalForErrorOnUpdateOnValidate').on('hidden.bs.modal', function () {
         window.location.replace('/groups');
     })
 </script>

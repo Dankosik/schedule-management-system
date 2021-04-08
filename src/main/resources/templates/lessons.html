@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="https://thymeleaf.org">
 <head>
     <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" th:rel="stylesheet">
@@ -8,30 +8,94 @@
     <meta charset="UTF-8">
     <title>FoxmindedUniversity</title>
 </head>
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
 <body>
 <div th:replace="commons/navbar :: navbar"></div>
 <div>
     <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lessons/add}" th:object="${lesson}">
-        <div class="form-row">
-            <div class="col">
-                <input class="form-control" placeholder="Number" required th:field="*{number}" type="text">
+        <div th:unless="${not #lists.isEmpty(fieldErrorsOnAdd)}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" placeholder="Number" required th:field="*{number}" type="number">
+                </div>
+                Start time:
+                <div class="col">
+                    <input class="form-control" id="startTime" placeholder="Start time" required th:field="*{startTime}"
+                           type="time">
+                </div>
             </div>
-            <div class="col">
-                <input class="form-control" placeholder="Start time" required th:field="*{startTime}" type="time">
+            <div class="form-row">
+                Duration:
+                <div class="col mt-1">
+                    <input class="form-control html-duration-picker" data-duration="01:30" data-hide-seconds
+                           id="duration" required th:field="*{duration}" data-duration-max="03:00"
+                           data-duration-min="00:30">
+                </div>
+                <div class="col mt-1">
+                    <select class="form-control" th:field="*{subject}">
+                        <option th:each="subject: ${allSubjects}" th:text="${subject.name}"
+                                th:value="${subject.id}"></option>
+                    </select>
+                </div>
+                <button class="btn btn-light ml-1 mt-1" type="submit">Add lesson</button>
             </div>
         </div>
-        <div class="form-row">
-            <div class="col mt-1">
-                <input class="form-control html-duration-picker" data-duration="01:30" data-hide-seconds
-                       id="duration" required th:field="*{duration}">
+        <div th:if="${fieldErrorsOnAdd != null}">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control" placeholder="Number" required id="lessonWithNumberError" name="number"
+                           th:value="${lessonWithErrors.number}" type="number">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'number'}"
+                             th:text="${fieldError.getDefaultMessage()}"
+                             style="color: red"></div>
+                    </div>
+                </div>
+                Start time
+                <div class="col">
+                    <input class="form-control" placeholder="Start time" required id="lessonWithStartTimeError"
+                           name="startTime"
+                           th:value="${lessonWithErrors.startTime}" type="time">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'startTime'}"
+                             th:text="${fieldError.getDefaultMessage()}"
+                             style="color: red"></div>
+                    </div>
+                </div>
             </div>
-            <div class="col mt-1">
-                <select class="form-control" th:field="*{subject}">
-                    <option th:each="subject: ${allSubjects}" th:text="${subject.name}"
-                            th:value="${subject.id}"></option>
-                </select>
+            <div class="form-row">
+                Duration
+                <div class="col mt-1">
+                    <input class="form-control html-duration-picker" data-hide-seconds
+                           id="lessonWithDurationError" name="duration"
+                           th:value="${lessonWithErrors.duration}" data-duration-max="03:00" data-duration-min="00:30">
+                    <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
+                        <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'duration'}"
+                             th:text="${fieldError.getDefaultMessage()}"
+                             style="color: red"></div>
+                    </div>
+                </div>
+
+                <div class="col mt-1">
+                    <select class="form-control" th:field="*{subject}">
+                        <option th:text="${lessonWithErrors.subject.name}"
+                                th:value="${lessonWithErrors.subject.id}"></option>
+                        <div th:each="subject: ${allSubjects}">
+                            <option th:if="${lessonWithErrors.subject.name != subject.name}" th:text="${subject.name}"
+                                    th:value="${subject.id}"></option>
+                        </div>
+                    </select>
+                </div>
+                <div>
+                    <button class="btn btn-light ml-1 mt-1" type="submit">Add lesson</button>
+                </div>
             </div>
-            <button class="btn btn-light ml-1 mt-1" type="submit">Add lesson</button>
         </div>
     </form>
 </div>
@@ -72,7 +136,7 @@
             <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="editModal" role="dialog"
                  tabindex="-1"
                  th:attrappend="id=${lesson}">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                     <form method="post" th:action="@{/lessons/update/{id}(id=${lesson.id})}"
                           th:object="${lesson}">
                         <div class="modal-content">
@@ -86,7 +150,7 @@
                                 <div class="form-row">
                                     <div class="col">
                                         <input class="form-control" id="editLessonNumber" name="number"
-                                               placeholder="Number" required th:value="${lesson.number}" type="text">
+                                               placeholder="Number" required th:value="${lesson.number}" type="number">
                                     </div>
                                     <div class="col">
                                         <input class="form-control" id="editLessonStartTime"
@@ -141,7 +205,91 @@
         </tr>
         </tbody>
     </table>
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
+         id="editModalForErrorOnUpdateOnValidate" role="dialog"
+         tabindex="-1"
+          th:if="${fieldErrorsOnUpdate !=null}">
+        <div class="modal-dialog">
+            <form method="post" th:action="@{/lessons/update/{id}(id=${lessonWithErrors.id})}"
+                  th:object="${lesson}">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel3">Edit lesson</h5>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="col">
+                                <input class="form-control" placeholder="Number" required id="lessonWithNumberErrorOnUpdateOnValidate"
+                                       name="number"
+                                       th:value="${lessonWithErrors.number}" type="number">
+                                <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                    <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'number'}"
+                                         th:text="${fieldError.getDefaultMessage()}"
+                                         style="color: red"></div>
+                                </div>
+                            </div>
+                            Start time
+                            <div class="col">
+                                <input class="form-control" placeholder="Start time" required
+                                       id="lessonWithStartTimeErrorOnUpdateOnValidate"
+                                       name="startTime"
+                                       th:value="${lessonWithErrors.startTime}" type="time">
+                                <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                    <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'startTime'}"
+                                         th:text="${fieldError.getDefaultMessage()}"
+                                         style="color: red"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            Duration
+                            <div class="col mt-1">
+                                <input class="form-control" id="lessonWithDurationErrorOnUpdateOnValidate" name="duration"
+                                       placeholder="Duration" th:value="${lessonWithErrors.duration}">
+                                <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
+                                    <div class="alert alert-danger mt-2" th:if="${fieldError.getField() == 'duration'}"
+                                         th:text="${fieldError.getDefaultMessage()}"
+                                         style="color: red"></div>
+                                </div>
+                            </div>
+
+                            <div class="col mt-1">
+                                <select class="form-control" th:field="*{subject}">
+                                    <option th:text="${lessonWithErrors.subject.name}"
+                                            th:value="${lessonWithErrors.subject.id}"></option>
+                                    <div th:each="subject: ${allSubjects}">
+                                        <option th:if="${lessonWithErrors.subject.name != subject.name}"
+                                                th:text="${subject.name}"
+                                                th:value="${subject.id}"></option>
+                                    </div>
+                                </select>
+                            </div>
+                            <div>
+                                <button class="btn btn-light ml-1 mt-1" type="submit">Add lesson</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                        <button class="btn btn-light ml-1" type="submit">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html-duration-picker/dist/html-duration-picker.min.js"></script>
+<script th:if="${fieldErrorsOnUpdate != null}">
+    $(document).ready(function () {
+        $('#editModalForErrorOnUpdateOnValidate').modal('show');
+    });
+
+    $('#editModalForErrorOnUpdateOnValidate').on('hidden.bs.modal', function () {
+        window.location.replace('/lessons');
+    })
+</script>
 </body>
 </html>
