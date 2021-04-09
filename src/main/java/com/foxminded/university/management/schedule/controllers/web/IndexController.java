@@ -1,4 +1,4 @@
-package com.foxminded.university.management.schedule.controllers;
+package com.foxminded.university.management.schedule.controllers.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

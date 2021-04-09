@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers;
 
+import com.foxminded.university.management.schedule.controllers.web.IndexController;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

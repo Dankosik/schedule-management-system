@@ -1,4 +1,4 @@
-package com.foxminded.university.management.schedule.controllers.utils;
+package com.foxminded.university.management.schedule.controllers.web.utils;
 
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;

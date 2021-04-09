@@ -1,6 +1,6 @@
-package com.foxminded.university.management.schedule.controllers;
+package com.foxminded.university.management.schedule.controllers.web;
 
-import com.foxminded.university.management.schedule.controllers.utils.StringUtils;
+import com.foxminded.university.management.schedule.controllers.web.utils.StringUtils;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;

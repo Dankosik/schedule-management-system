@@ -1,4 +1,4 @@
-package com.foxminded.university.management.schedule.controllers.utils;
+package com.foxminded.university.management.schedule.controllers.web.utils;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

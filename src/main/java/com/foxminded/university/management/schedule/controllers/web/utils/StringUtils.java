@@ -1,4 +1,4 @@
-package com.foxminded.university.management.schedule.controllers.utils;
+package com.foxminded.university.management.schedule.controllers.web.utils;
 
 import java.time.Duration;
 import java.util.List;

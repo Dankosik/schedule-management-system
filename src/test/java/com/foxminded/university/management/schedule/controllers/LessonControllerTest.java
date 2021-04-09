@@ -1,6 +1,7 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.controllers.utils.DurationFormatter;
+import com.foxminded.university.management.schedule.controllers.web.utils.DurationFormatter;
+import com.foxminded.university.management.schedule.controllers.web.LessonController;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;

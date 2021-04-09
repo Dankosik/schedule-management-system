@@ -1,4 +1,4 @@
-package com.foxminded.university.management.schedule.controllers;
+package com.foxminded.university.management.schedule.controllers.web;
 
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
