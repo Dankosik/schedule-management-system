@@ -13,6 +13,6 @@ public class DurationConstraintValidator implements ConstraintValidator<Duration
         int lowBoard = 1800;
         int upperBoard = 7200;
         long durationInSeconds = value.getSeconds();
-        return durationInSeconds > lowBoard && durationInSeconds < upperBoard;
+        return durationInSeconds >= lowBoard && durationInSeconds <= upperBoard;
     }
 }
