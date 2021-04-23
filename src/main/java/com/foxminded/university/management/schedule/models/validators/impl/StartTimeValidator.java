@@ -14,7 +14,7 @@ public class StartTimeValidator implements ConstraintValidator<StartTime, Time> 
         if (time == null) return false;
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm:ss");
-        LocalTime startTime = LocalTime.parse("08:30:00", format);
+        LocalTime startTime = LocalTime.parse("08:29:59", format);
         LocalTime endTime = LocalTime.parse("21:00:00", format);
         LocalTime targetTime = LocalTime.parse(time.toString(), format);
 
