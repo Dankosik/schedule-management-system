@@ -1,19 +1,40 @@
-version: '3.1'
+version: '3.8'
+
+volumes:
+  postgres_data:
+    driver: local
 
 services:
-
-  db:
-    image: postgres
-    restart: always
+  postgres:
+    image: postgres:alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: schedule-management-system
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
     ports:
-      - 5432:5432
-
-  adminer:
-    image: adminer
-    restart: always
+      - 5532:5432
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
     ports:
-      - 8090:8080
+      - 8080:8080
+    depends_on:
+      - postgres
+  db:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: inventory
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
