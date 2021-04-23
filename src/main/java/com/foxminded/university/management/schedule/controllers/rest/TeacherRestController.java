@@ -6,7 +6,6 @@ import com.foxminded.university.management.schedule.dto.teacher.TeacherAddDto;
 import com.foxminded.university.management.schedule.dto.teacher.TeacherDto;
 import com.foxminded.university.management.schedule.dto.teacher.TeacherUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.TeacherDtoUtils;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
@@ -40,13 +39,7 @@ public class TeacherRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTeacherById(@PathVariable("id") Long id) {
-        Teacher teacher;
-        try {
-            teacher = teacherService.getTeacherById(id);
-        } catch (ServiceException e) {
-            LOGGER.warn("Teacher with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Teacher with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
+        Teacher teacher = teacherService.getTeacherById(id);
         BaseTeacherDto teacherDto = new BaseTeacherDto();
         BeanUtils.copyProperties(teacher, teacherDto);
         return new ResponseEntity<>(teacherDto, HttpStatus.OK);
@@ -54,10 +47,6 @@ public class TeacherRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTeacher(@PathVariable("id") Long id) {
-        if (!teacherService.isTeacherWithIdExist(id)) {
-            LOGGER.warn("Teacher with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Teacher with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
         teacherService.deleteTeacherById(id);
         return ResponseEntity.noContent().build();
     }
@@ -77,12 +66,15 @@ public class TeacherRestController {
             return RestUtils.buildErrorResponseEntity("URI id: " + id + " and request id: " +
                     teacherUpdateDto.getId() + " should be the same", HttpStatus.BAD_REQUEST);
         }
+
         Optional<ResponseEntity<Object>> errorResponseEntity = getErrorResponseEntityIfTeacherFieldsHasErrors(teacherUpdateDto);
         if (errorResponseEntity.isPresent()) return errorResponseEntity.get();
+
         if (!teacherService.isTeacherWithIdExist(id)) {
             LOGGER.warn("Teacher with id: {} is not found", id);
             return RestUtils.buildErrorResponseEntity("Teacher with id: " + id + " is not found", HttpStatus.NOT_FOUND);
         }
+
         Teacher teacher = TeacherDtoUtils.mapTeacherDtoOnTeacher(teacherUpdateDto);
         teacherService.saveTeacher(teacher);
         return ResponseEntity.ok(teacher);

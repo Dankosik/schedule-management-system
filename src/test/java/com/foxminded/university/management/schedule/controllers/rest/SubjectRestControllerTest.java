@@ -2,7 +2,6 @@ package com.foxminded.university.management.schedule.controllers.rest;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -139,87 +138,6 @@ class SubjectRestControllerTest {
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 
         verify(subjectService, times(1)).deleteSubjectById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnGetSubjectById() throws Exception {
-        when(subjectService.getSubjectById(1L)).thenThrow(ServiceException.class);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/subjects/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Subject with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(subjectService, times(1)).getSubjectById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnDeleteSubjectById() throws Exception {
-        when(subjectService.isSubjectWithIdExist(1L)).thenReturn(false);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/v1/subjects/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Subject with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(subjectService, never()).deleteSubjectById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnCreateSubject() throws Exception {
-        Subject subject = new Subject("Math", null);
-
-        when(subjectService.saveSubject(subject)).thenThrow(ServiceException.class);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/subjects")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Math\"}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"Subject with name: Math is already exist\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
-        verify(subjectService, times(1)).saveSubject(subject);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfNameAlreadyExistOnUpdateSubject() throws Exception {
-        Subject subject = new Subject(1L, "Math", null);
-
-        when(subjectService.saveSubject(subject)).thenThrow(ServiceException.class);
-        when(subjectService.isSubjectWithIdExist(1L)).thenReturn(true);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/subjects/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"id\":1,\"name\":\"Math\"}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"Subject with name: Math is already exist\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
-        verify(subjectService, times(1)).saveSubject(subject);
     }
 
     @Test

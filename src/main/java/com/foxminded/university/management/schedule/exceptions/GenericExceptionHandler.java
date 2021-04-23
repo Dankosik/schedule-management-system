@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.foxminded.university.management.schedule.controllers.rest.errors.ErrorRequestBuilder;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,5 +55,21 @@ public class GenericExceptionHandler {
             if (!(i == requiredFields.size() - 1)) stringBuilder.append("->");
         }
         return stringBuilder.toString();
+    }
+
+    @ExceptionHandler(value = {EntityNotFoundException.class})
+    protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+        ErrorRequestBuilder errorRequestBuilder =
+                new ErrorRequestBuilder(new Date(), HttpStatus.NOT_FOUND, ex.getMessage(), HttpStatus.NOT_FOUND.value());
+
+        return new ResponseEntity<>(errorRequestBuilder, errorRequestBuilder.getError());
+    }
+
+    @ExceptionHandler(value = {UniqueConstraintException.class})
+    protected ResponseEntity<Object> handleUniqueConstraintException(UniqueConstraintException ex) {
+        ErrorRequestBuilder errorRequestBuilder =
+                new ErrorRequestBuilder(new Date(), HttpStatus.CONFLICT, ex.getMessage(), HttpStatus.CONFLICT.value());
+
+        return new ResponseEntity<>(errorRequestBuilder, errorRequestBuilder.getError());
     }
 }

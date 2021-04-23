@@ -6,7 +6,6 @@ import com.foxminded.university.management.schedule.dto.group.GroupAddDto;
 import com.foxminded.university.management.schedule.dto.group.GroupDto;
 import com.foxminded.university.management.schedule.dto.group.GroupUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.GroupDtoUtils;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
@@ -40,13 +39,7 @@ public class GroupRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getGroupById(@PathVariable("id") Long id) {
-        Group group;
-        try {
-            group = groupService.getGroupById(id);
-        } catch (ServiceException e) {
-            LOGGER.warn("Group with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Group with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
+        Group group = groupService.getGroupById(id);
         BaseGroupDto groupDto = new BaseGroupDto();
         BeanUtils.copyProperties(group, groupDto);
         return new ResponseEntity<>(groupDto, HttpStatus.OK);
@@ -54,10 +47,6 @@ public class GroupRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteGroup(@PathVariable("id") Long id) {
-        if (!groupService.isGroupWithIdExist(id)) {
-            LOGGER.warn("Group with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Group with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
         groupService.deleteGroupById(id);
         return ResponseEntity.noContent().build();
     }
@@ -67,12 +56,7 @@ public class GroupRestController {
         Optional<ResponseEntity<Object>> errorResponseEntity = getErrorResponseEntityIfGroupFieldsHasErrors(groupAddDto);
         if (errorResponseEntity.isPresent()) return errorResponseEntity.get();
         Group group = GroupDtoUtils.mapGroupDtoOnGroup(groupAddDto);
-        try {
-            groupService.saveGroup(group);
-        } catch (ServiceException e) {
-            return RestUtils.buildErrorResponseEntity("Group with name: " + group.getName() + " is already exist",
-                    HttpStatus.BAD_REQUEST);
-        }
+        groupService.saveGroup(group);
         return new ResponseEntity<>(group, HttpStatus.CREATED);
     }
 
@@ -83,19 +67,17 @@ public class GroupRestController {
             return RestUtils.buildErrorResponseEntity("URI id: " + id + " and request id: " +
                     groupUpdateDto.getId() + " should be the same", HttpStatus.BAD_REQUEST);
         }
+
         Optional<ResponseEntity<Object>> errorResponseEntity = getErrorResponseEntityIfGroupFieldsHasErrors(groupUpdateDto);
         if (errorResponseEntity.isPresent()) return errorResponseEntity.get();
+
         if (!groupService.isGroupWithIdExist(id)) {
             LOGGER.warn("Group with id: {} is not found", id);
             return RestUtils.buildErrorResponseEntity("Group with id: " + id + " is not found", HttpStatus.NOT_FOUND);
         }
+
         Group group = GroupDtoUtils.mapGroupDtoOnGroup(groupUpdateDto);
-        try {
-            groupService.saveGroup(group);
-        } catch (ServiceException e) {
-            return RestUtils.buildErrorResponseEntity("Group with name: " + group.getName() + " is already exist",
-                    HttpStatus.BAD_REQUEST);
-        }
+        groupService.saveGroup(group);
         return ResponseEntity.ok(group);
     }
 

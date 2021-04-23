@@ -2,7 +2,6 @@ package com.foxminded.university.management.schedule.controllers.rest;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -138,87 +137,6 @@ class FacultyRestControllerTest {
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 
         verify(facultyService, times(1)).deleteFacultyById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnGetFacultyById() throws Exception {
-        when(facultyService.getFacultyById(1L)).thenThrow(ServiceException.class);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/faculties/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Faculty with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(facultyService, times(1)).getFacultyById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnDeleteFacultyById() throws Exception {
-        when(facultyService.isFacultyWithIdExist(1L)).thenReturn(false);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/v1/faculties/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Faculty with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(facultyService, never()).deleteFacultyById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnCreateFaculty() throws Exception {
-        Faculty faculty = new Faculty("FAIT", null, null);
-
-        when(facultyService.saveFaculty(faculty)).thenThrow(ServiceException.class);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/faculties")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"FAIT\"}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"Faculty with name: FAIT is already exist\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
-        verify(facultyService, times(1)).saveFaculty(faculty);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfNameAlreadyExistOnUpdateFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "FAIT", null, null);
-
-        when(facultyService.saveFaculty(faculty)).thenThrow(ServiceException.class);
-        when(facultyService.isFacultyWithIdExist(1L)).thenReturn(true);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/faculties/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"FAIT\",\"id\":1}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"Faculty with name: FAIT is already exist\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
-        verify(facultyService, times(1)).saveFaculty(faculty);
     }
 
     @Test

@@ -6,7 +6,6 @@ import com.foxminded.university.management.schedule.dto.lecture.LectureAddDto;
 import com.foxminded.university.management.schedule.dto.lecture.LectureDto;
 import com.foxminded.university.management.schedule.dto.lecture.LectureUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.LectureDtoUtils;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.slf4j.Logger;
@@ -46,13 +45,7 @@ public class LectureRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getLectureById(@PathVariable("id") Long id) {
-        Lecture lecture;
-        try {
-            lecture = lectureService.getLectureById(id);
-        } catch (ServiceException e) {
-            LOGGER.warn("Lecture with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Lecture with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
+        Lecture lecture = lectureService.getLectureById(id);
         BaseLectureDto baseLectureDto = new BaseLectureDto();
         BeanUtils.copyProperties(lecture, baseLectureDto);
         return new ResponseEntity<>(baseLectureDto, HttpStatus.OK);
@@ -60,10 +53,6 @@ public class LectureRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteLecture(@PathVariable("id") Long id) {
-        if (!lectureService.isLectureWithIdExist(id)) {
-            LOGGER.warn("Lecture with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Lecture with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
         lectureService.deleteLectureById(id);
         return ResponseEntity.noContent().build();
     }
@@ -83,12 +72,15 @@ public class LectureRestController {
             return RestUtils.buildErrorResponseEntity("URI id: " + id + " and request id: " +
                     lectureUpdateDto.getId() + " should be the same", HttpStatus.BAD_REQUEST);
         }
+
         Optional<ResponseEntity<Object>> errorResponseEntity = getErrorResponseEntityIfLectureFieldsHasErrors(lectureUpdateDto);
         if (errorResponseEntity.isPresent()) return errorResponseEntity.get();
+
         if (!lectureService.isLectureWithIdExist(id)) {
             LOGGER.warn("Lecture with id: {} is not found", id);
             return RestUtils.buildErrorResponseEntity("Lecture with id: " + id + " is not found", HttpStatus.NOT_FOUND);
         }
+
         Lecture lecture = LectureDtoUtils.mapLectureDtoOnLecture(lectureUpdateDto);
         lectureService.saveLecture(lecture);
         return ResponseEntity.ok(lecture);

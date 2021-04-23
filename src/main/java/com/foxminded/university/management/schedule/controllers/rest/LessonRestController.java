@@ -6,7 +6,6 @@ import com.foxminded.university.management.schedule.dto.lesson.LessonAddDto;
 import com.foxminded.university.management.schedule.dto.lesson.LessonDto;
 import com.foxminded.university.management.schedule.dto.lesson.LessonUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.LessonDtoUtils;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
@@ -40,13 +39,7 @@ public class LessonRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getLessonById(@PathVariable("id") Long id) {
-        Lesson lesson;
-        try {
-            lesson = lessonService.getLessonById(id);
-        } catch (ServiceException e) {
-            LOGGER.warn("Lesson with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Lesson with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
+        Lesson lesson = lessonService.getLessonById(id);
         BaseLessonDto baseLessonDto = new BaseLessonDto();
         BeanUtils.copyProperties(lesson, baseLessonDto);
         return new ResponseEntity<>(baseLessonDto, HttpStatus.OK);
@@ -54,10 +47,6 @@ public class LessonRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteLesson(@PathVariable("id") Long id) {
-        if (!lessonService.isLessonWithIdExist(id)) {
-            LOGGER.warn("Lesson with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Lesson with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
         lessonService.deleteLessonById(id);
         return ResponseEntity.noContent().build();
     }
@@ -77,12 +66,15 @@ public class LessonRestController {
             return RestUtils.buildErrorResponseEntity("URI id: " + id + " and request id: " +
                     lessonUpdateDto.getId() + " should be the same", HttpStatus.BAD_REQUEST);
         }
+
         Optional<ResponseEntity<Object>> errorResponseEntity = getErrorResponseEntityIfLessonFieldsHasErrors(lessonUpdateDto);
         if (errorResponseEntity.isPresent()) return errorResponseEntity.get();
+
         if (!lessonService.isLessonWithIdExist(id)) {
             LOGGER.warn("Lesson with id: {} is not found", id);
             return RestUtils.buildErrorResponseEntity("Lesson with id: " + id + " is not found", HttpStatus.NOT_FOUND);
         }
+
         Lesson lesson = LessonDtoUtils.mapLessonDtoOnLesson(lessonUpdateDto);
         lessonService.saveLesson(lesson);
         return ResponseEntity.ok(lesson);

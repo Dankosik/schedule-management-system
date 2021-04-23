@@ -4,7 +4,6 @@ import com.foxminded.university.management.schedule.controllers.rest.utils.RestU
 import com.foxminded.university.management.schedule.dto.faculty.BaseFacultyDto;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyAddDto;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.slf4j.Logger;
@@ -34,13 +33,7 @@ public class FacultyRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getFacultyById(@PathVariable("id") Long id) {
-        Faculty faculty;
-        try {
-            faculty = facultyService.getFacultyById(id);
-        } catch (ServiceException e) {
-            LOGGER.warn("Faculty with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Faculty with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
+        Faculty faculty = facultyService.getFacultyById(id);
         BaseFacultyDto facultyDto = new BaseFacultyDto();
         BeanUtils.copyProperties(faculty, facultyDto);
         return ResponseEntity.ok(facultyDto);
@@ -48,10 +41,6 @@ public class FacultyRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteFaculty(@PathVariable("id") Long id) {
-        if (!facultyService.isFacultyWithIdExist(id)) {
-            LOGGER.warn("Faculty with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Faculty with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
         facultyService.deleteFacultyById(id);
         return ResponseEntity.noContent().build();
     }
@@ -60,13 +49,7 @@ public class FacultyRestController {
     public ResponseEntity<Object> addFaculty(@Valid @RequestBody FacultyAddDto facultyAddDto) {
         Faculty faculty = new Faculty();
         faculty.setName(facultyAddDto.getName());
-        try {
-            facultyService.saveFaculty(faculty);
-        } catch (ServiceException e) {
-            LOGGER.warn("Faculty with name: {} is already exist", faculty.getName());
-            return RestUtils.buildErrorResponseEntity("Faculty with name: " + faculty.getName() + " is already exist",
-                    HttpStatus.BAD_REQUEST);
-        }
+        facultyService.saveFaculty(faculty);
         return new ResponseEntity<>(faculty, HttpStatus.CREATED);
     }
 
@@ -85,13 +68,7 @@ public class FacultyRestController {
             return RestUtils.buildErrorResponseEntity("Faculty with id: " + id + " is not found", HttpStatus.NOT_FOUND);
         }
 
-        try {
-            facultyService.saveFaculty(faculty);
-        } catch (ServiceException e) {
-            LOGGER.warn("Faculty with name: {} is already exist", faculty.getName());
-            return RestUtils.buildErrorResponseEntity("Faculty with name: " + faculty.getName() + " is already exist",
-                    HttpStatus.BAD_REQUEST);
-        }
+        facultyService.saveFaculty(faculty);
         return ResponseEntity.ok(faculty);
     }
 }

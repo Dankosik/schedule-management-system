@@ -2,7 +2,6 @@ package com.foxminded.university.management.schedule.controllers.rest;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -140,87 +139,6 @@ class AudienceRestControllerTest {
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 
         verify(audienceService, times(1)).deleteAudienceById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnGetAudienceById() throws Exception {
-        when(audienceService.getAudienceById(1L)).thenThrow(ServiceException.class);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/audiences/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Audience with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(audienceService, times(1)).getAudienceById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnDeleteAudienceById() throws Exception {
-        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(false);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/v1/audiences/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Audience with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(audienceService, never()).deleteAudienceById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnCreateAudience() throws Exception {
-        Audience audience = new Audience(1, 1, null);
-
-        when(audienceService.saveAudience(audience)).thenThrow(ServiceException.class);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/audiences")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"number\":1,\"capacity\":1}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"Audience with number: 1 is already exist\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
-        verify(audienceService, times(1)).saveAudience(audience);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfNumberAlreadyExistOnUpdateAudience() throws Exception {
-        Audience audience = new Audience(1L, 1, 1, null);
-
-        when(audienceService.saveAudience(audience)).thenThrow(ServiceException.class);
-        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/audiences/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"number\":1,\"capacity\":1,\"id\":1}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"Audience with number: 1 is already exist\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
-        verify(audienceService, times(1)).saveAudience(audience);
     }
 
     @Test

@@ -6,7 +6,6 @@ import com.foxminded.university.management.schedule.dto.student.StudentAddDto;
 import com.foxminded.university.management.schedule.dto.student.StudentDto;
 import com.foxminded.university.management.schedule.dto.student.StudentUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.StudentDtoUtils;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
@@ -40,13 +39,7 @@ public class StudentRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getStudentById(@PathVariable("id") Long id) {
-        Student student;
-        try {
-            student = studentService.getStudentById(id);
-        } catch (ServiceException e) {
-            LOGGER.warn("Student with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Student with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
+        Student student = studentService.getStudentById(id);
         BaseStudentDto baseStudentDto = new BaseStudentDto();
         BeanUtils.copyProperties(student, baseStudentDto);
         return new ResponseEntity<>(baseStudentDto, HttpStatus.OK);
@@ -54,10 +47,6 @@ public class StudentRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteStudent(@PathVariable("id") Long id) {
-        if (!studentService.isStudentWithIdExist(id)) {
-            LOGGER.warn("Student with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Student with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
         studentService.deleteStudentById(id);
         return ResponseEntity.noContent().build();
     }
@@ -78,12 +67,15 @@ public class StudentRestController {
             return RestUtils.buildErrorResponseEntity("URI id: " + id + " and request id: " +
                     studentUpdateDto.getId() + " should be the same", HttpStatus.BAD_REQUEST);
         }
+
         Optional<ResponseEntity<Object>> errorResponseEntity = getErrorResponseEntityIfStudentFieldsHasErrors(studentUpdateDto);
         if (errorResponseEntity.isPresent()) return errorResponseEntity.get();
+
         if (!studentService.isStudentWithIdExist(id)) {
             LOGGER.warn("Student with id: {} is not found", id);
             return RestUtils.buildErrorResponseEntity("Student with id: " + id + " is not found", HttpStatus.NOT_FOUND);
         }
+
         Student student = StudentDtoUtils.mapStudentDtoOnStudent(studentUpdateDto);
         studentService.saveStudent(student);
         return ResponseEntity.ok(student);

@@ -4,7 +4,6 @@ import com.foxminded.university.management.schedule.controllers.rest.utils.RestU
 import com.foxminded.university.management.schedule.dto.subject.BaseSubjectDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectAddDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.slf4j.Logger;
@@ -34,13 +33,7 @@ public class SubjectRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getSubjectById(@PathVariable("id") Long id) {
-        Subject subject;
-        try {
-            subject = subjectService.getSubjectById(id);
-        } catch (ServiceException e) {
-            LOGGER.warn("Subject with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Subject with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
+        Subject subject = subjectService.getSubjectById(id);
         BaseSubjectDto subjectDto = new BaseSubjectDto();
         BeanUtils.copyProperties(subject, subjectDto);
         return ResponseEntity.ok(subjectDto);
@@ -48,10 +41,6 @@ public class SubjectRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteSubject(@PathVariable("id") Long id) {
-        if (!subjectService.isSubjectWithIdExist(id)) {
-            LOGGER.warn("Subject with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Subject with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
         subjectService.deleteSubjectById(id);
         return ResponseEntity.noContent().build();
     }
@@ -60,13 +49,7 @@ public class SubjectRestController {
     public ResponseEntity<Object> addSubject(@Valid @RequestBody SubjectAddDto subjectAddDto) {
         Subject subject = new Subject();
         subject.setName(subjectAddDto.getName());
-        try {
-            subjectService.saveSubject(subject);
-        } catch (ServiceException e) {
-            LOGGER.warn("Subject with name: {} is already exist", subject.getName());
-            return RestUtils.buildErrorResponseEntity("Subject with name: " + subject.getName() + " is already exist",
-                    HttpStatus.BAD_REQUEST);
-        }
+        subjectService.saveSubject(subject);
         return new ResponseEntity<>(subject, HttpStatus.CREATED);
     }
 
@@ -85,13 +68,7 @@ public class SubjectRestController {
             return RestUtils.buildErrorResponseEntity("Subject with id: " + id + " is not found", HttpStatus.NOT_FOUND);
         }
 
-        try {
-            subjectService.saveSubject(subject);
-        } catch (ServiceException e) {
-            LOGGER.warn("Subject with name: {} is already exist", subject.getName());
-            return RestUtils.buildErrorResponseEntity("Subject with name: " + subject.getName() + " is already exist",
-                    HttpStatus.BAD_REQUEST);
-        }
+        subjectService.saveSubject(subject);
         return ResponseEntity.ok(subject);
     }
 }

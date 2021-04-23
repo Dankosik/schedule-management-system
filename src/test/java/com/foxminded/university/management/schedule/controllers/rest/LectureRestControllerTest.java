@@ -2,7 +2,6 @@ package com.foxminded.university.management.schedule.controllers.rest;
 
 import com.foxminded.university.management.schedule.dto.lecture.LectureUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.LectureDtoUtils;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,24 +83,6 @@ class LectureRestControllerTest {
 
         JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-
-        verify(lectureService, times(1)).getLectureById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnGetLectureById() throws Exception {
-        when(lectureService.getLectureById(1L)).thenThrow(ServiceException.class);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/lectures/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Lecture with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
 
         verify(lectureService, times(1)).getLectureById(1L);
     }
@@ -269,24 +250,6 @@ class LectureRestControllerTest {
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 
         verify(lectureService, times(1)).deleteLectureById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnDeleteLectureById() throws Exception {
-        when(lectureService.isLectureWithIdExist(1L)).thenReturn(false);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/v1/lectures/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Lecture with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(lectureService, never()).deleteLectureById(1L);
     }
 
     @Test

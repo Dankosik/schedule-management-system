@@ -4,7 +4,6 @@ import com.foxminded.university.management.schedule.controllers.rest.utils.RestU
 import com.foxminded.university.management.schedule.dto.audience.AudienceAddDto;
 import com.foxminded.university.management.schedule.dto.audience.AudienceUpdateDto;
 import com.foxminded.university.management.schedule.dto.audience.BaseAudienceDto;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import org.slf4j.Logger;
@@ -34,13 +33,7 @@ public class AudienceRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getAudienceById(@PathVariable("id") Long id) {
-        Audience audience;
-        try {
-            audience = audienceService.getAudienceById(id);
-        } catch (ServiceException e) {
-            LOGGER.warn("Audience with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Audience with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
+        Audience audience = audienceService.getAudienceById(id);
         BaseAudienceDto audienceDto = new BaseAudienceDto();
         BeanUtils.copyProperties(audience, audienceDto);
         return ResponseEntity.ok(audienceDto);
@@ -48,10 +41,6 @@ public class AudienceRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteAudience(@PathVariable("id") Long id) {
-        if (!audienceService.isAudienceWithIdExist(id)) {
-            LOGGER.warn("Audience with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Audience with id: " + id + " is not found", HttpStatus.NOT_FOUND);
-        }
         audienceService.deleteAudienceById(id);
         return ResponseEntity.noContent().build();
     }
@@ -60,13 +49,7 @@ public class AudienceRestController {
     public ResponseEntity<Object> addAudience(@Valid @RequestBody AudienceAddDto audienceAddDto) {
         Audience audience = new Audience();
         BeanUtils.copyProperties(audienceAddDto, audience);
-        try {
-            audienceService.saveAudience(audience);
-        } catch (ServiceException e) {
-            LOGGER.warn("Audience with number: {} is already exist", audience.getNumber());
-            return RestUtils.buildErrorResponseEntity("Audience with number: " + audience.getNumber() + " is already exist",
-                    HttpStatus.BAD_REQUEST);
-        }
+        audienceService.saveAudience(audience);
         return new ResponseEntity<>(audience, HttpStatus.CREATED);
     }
 
@@ -84,13 +67,7 @@ public class AudienceRestController {
             LOGGER.warn("Audience with id: {} is not found", id);
             return RestUtils.buildErrorResponseEntity("Audience with id: " + id + " is not found", HttpStatus.NOT_FOUND);
         }
-        try {
-            audienceService.saveAudience(audience);
-        } catch (ServiceException e) {
-            LOGGER.warn("Audience with number: {} is already exist", audience.getNumber());
-            return RestUtils.buildErrorResponseEntity("Audience with number: " + audience.getNumber() + " is already exist",
-                    HttpStatus.BAD_REQUEST);
-        }
+        audienceService.saveAudience(audience);
         return ResponseEntity.ok(audience);
     }
 }

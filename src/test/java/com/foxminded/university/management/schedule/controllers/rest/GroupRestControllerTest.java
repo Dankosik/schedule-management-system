@@ -6,7 +6,6 @@ import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto
 import com.foxminded.university.management.schedule.dto.group.GroupAddDto;
 import com.foxminded.university.management.schedule.dto.group.GroupUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.GroupDtoUtils;
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
@@ -173,98 +172,6 @@ class GroupRestControllerTest {
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 
         verify(groupService, times(1)).deleteGroupById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnGetGroupById() throws Exception {
-        when(groupService.getGroupById(1L)).thenThrow(ServiceException.class);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/groups/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Group with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(groupService, times(1)).getGroupById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnDeleteGroupById() throws Exception {
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(false);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/v1/groups/1")
-                .accept(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Group with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(groupService, never()).deleteGroupById(1L);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseOnCreateGroup() throws Exception {
-        Faculty faculty = new Faculty();
-        faculty.setName("FAIT");
-        faculty.setId(1L);
-        Group group = new Group("AB-01", faculty, null, null);
-
-        when(facultyService.isFacultyWithIdExist(1L)).thenReturn(true);
-        when(groupService.saveGroup(group)).thenThrow(ServiceException.class);
-        when(facultyService.getFacultyById(1L)).thenReturn(faculty);
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/groups")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"Group with name: AB-01 is already exist\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
-        verify(groupService, times(1)).saveGroup(group);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfNameAlreadyExistOnUpdateGroup() throws Exception {
-        Faculty faculty = new Faculty();
-        faculty.setName("FAIT");
-        faculty.setId(1L);
-        Group group = new Group(1L, "AB-01", faculty, null, null);
-
-        when(facultyService.isFacultyWithIdExist(1L)).thenReturn(true);
-        when(groupService.saveGroup(group)).thenThrow(ServiceException.class);
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-        when(facultyService.getFacultyById(1L)).thenReturn(faculty);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/groups/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"AB-01\",\"id\":1,\"faculty\":{\"name\":\"FAIT\",\"id\":1}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"Group with name: AB-01 is already exist\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
-        verify(groupService, times(1)).saveGroup(group);
     }
 
     @Test
