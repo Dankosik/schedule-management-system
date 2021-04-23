@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foxminded.university.management.schedule.models.validators.DurationConstraint;
 import com.foxminded.university.management.schedule.models.validators.StartTime;
 
@@ -29,6 +30,7 @@ public class Lesson {
     @ManyToOne
     @JoinColumn(name = "subject_id")
     private Subject subject;
+    @JsonIgnore
     @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
     private List<Lecture> lectures;
 

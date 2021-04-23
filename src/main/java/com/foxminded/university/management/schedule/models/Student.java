@@ -1,5 +1,7 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -16,6 +18,7 @@ public class Student extends Person {
     private Integer courseNumber;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Group group;
 
     public Student() {

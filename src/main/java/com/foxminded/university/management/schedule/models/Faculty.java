@@ -1,5 +1,7 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.foxminded.university.management.schedule.models.validators.FacultyName;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -10,14 +12,17 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "faculties")
+@JsonPropertyOrder({"name"})
 public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @FacultyName
     private String name;
+    @JsonIgnore
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Group> groups;
+    @JsonIgnore
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Teacher> teachers;

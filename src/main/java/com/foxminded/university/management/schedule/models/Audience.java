@@ -1,5 +1,8 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -21,6 +24,7 @@ public class Audience {
     @Min(value = 1, message = "must be at least 1")
     @Max(value = 999, message = "must be no more than 999")
     private Integer capacity;
+    @JsonIgnore
     @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY)
     private List<Lecture> lectures;
 
@@ -34,6 +38,7 @@ public class Audience {
         this.lectures = lectures;
     }
 
+    @JsonCreator
     public Audience(Integer number, Integer capacity, List<Lecture> lectures) {
         this.number = number;
         this.capacity = capacity;

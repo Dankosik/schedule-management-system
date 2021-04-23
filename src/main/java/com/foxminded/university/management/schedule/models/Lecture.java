@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.foxminded.university.management.schedule.models.validators.CurrentYear;
 
 import javax.persistence.*;
@@ -17,14 +18,18 @@ public class Lecture {
     private Date date;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audience_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Audience audience;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "group_id")
     private Group group;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "lesson_id")
     private Lesson lesson;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
@@ -119,7 +124,7 @@ public class Lecture {
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, date, group, lesson, teacher);
+        return Objects.hash(number, date, audience, group, lesson, teacher);
     }
 
     @Override

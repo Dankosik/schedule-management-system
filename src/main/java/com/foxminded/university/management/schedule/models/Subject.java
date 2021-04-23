@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foxminded.university.management.schedule.models.validators.SubjectName;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class Subject {
     private Long id;
     @SubjectName
     private String name;
+    @JsonIgnore
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<Lesson> lessons;
 
