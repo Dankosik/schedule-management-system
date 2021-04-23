@@ -14,4 +14,6 @@ public interface StudentService {
     void deleteStudentById(Long id);
 
     List<Student> saveAllStudents(List<Student> students);
+
+    boolean isStudentWithIdExist(Long id);
 }

@@ -62,4 +62,8 @@ public class StudentServiceImpl implements StudentService {
         students.forEach(student -> result.add(saveStudent(student)));
         return result;
     }
+
+    public boolean isStudentWithIdExist(Long id) {
+        return studentRepository.findById(id).isPresent();
+    }
 }

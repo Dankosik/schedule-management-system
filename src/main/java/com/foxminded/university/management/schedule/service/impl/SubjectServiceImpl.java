@@ -121,4 +121,9 @@ public class SubjectServiceImpl implements SubjectService {
         LOGGER.info("Subject for lessons {} received successful", lessons);
         return result;
     }
+
+    @Override
+    public boolean isSubjectWithIdExist(Long id) {
+        return subjectRepository.findById(id).isPresent();
+    }
 }

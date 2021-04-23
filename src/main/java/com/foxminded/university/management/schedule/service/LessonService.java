@@ -23,4 +23,6 @@ public interface LessonService {
     List<Time> getStartTimesWithPossibleNullForLessons(List<Lesson> lessons);
 
     List<Lesson> getLessonsWithPossibleNullForLectures(List<Lecture> lectures);
+
+    boolean isLessonWithIdExist(Long id);
 }

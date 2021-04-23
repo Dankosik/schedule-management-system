@@ -91,4 +91,8 @@ public class FacultyServiceImpl implements FacultyService {
         LOGGER.info("Faculties for groups {} received successful", groups);
         return faculties;
     }
+    @Override
+    public boolean isFacultyWithIdExist(Long id) {
+        return facultyRepository.findById(id).isPresent();
+    }
 }

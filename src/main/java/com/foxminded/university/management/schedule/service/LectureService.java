@@ -14,4 +14,6 @@ public interface LectureService {
     void deleteLectureById(Long id);
 
     List<Lecture> saveAllLectures(List<Lecture> lectures);
+
+    boolean isLectureWithIdExist(Long id);
 }

@@ -119,4 +119,8 @@ public class GroupServiceImpl implements GroupService {
         LOGGER.info("Groups for lectures {} received successful", lectures);
         return groups;
     }
+
+    public boolean isGroupWithIdExist(Long id) {
+        return groupRepository.findById(id).isPresent();
+    }
 }

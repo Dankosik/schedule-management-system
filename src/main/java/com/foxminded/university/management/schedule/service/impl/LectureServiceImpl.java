@@ -79,4 +79,8 @@ public class LectureServiceImpl implements LectureService {
         lectures.forEach(lecture -> result.add(saveLecture(lecture)));
         return result;
     }
+    @Override
+    public boolean isLectureWithIdExist(Long id) {
+        return lectureRepository.findById(id).isPresent();
+    }
 }

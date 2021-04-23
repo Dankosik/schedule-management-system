@@ -19,4 +19,6 @@ public interface TeacherService {
     List<String> getLastNamesWithInitialsWithPossibleNullForTeachers(List<Teacher> teachers);
 
     List<Teacher> getTeachersWithPossibleNullForLectures(List<Lecture> lectures);
+
+    boolean isTeacherWithIdExist(Long id);
 }

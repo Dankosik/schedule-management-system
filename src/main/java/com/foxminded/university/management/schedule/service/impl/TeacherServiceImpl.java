@@ -96,4 +96,8 @@ public class TeacherServiceImpl implements TeacherService {
         LOGGER.info("Teachers for lectures {} received successful", lectures);
         return result;
     }
+
+    public boolean isTeacherWithIdExist(Long id) {
+        return teacherRepository.findById(id).isPresent();
+    }
 }

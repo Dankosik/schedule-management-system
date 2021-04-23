@@ -109,4 +109,8 @@ public class LessonServiceImpl implements LessonService {
         LOGGER.info("Lessons for lectures {} received successful", lectures);
         return result;
     }
+
+    public boolean isLessonWithIdExist(Long id) {
+        return lessonRepository.findById(id).isPresent();
+    }
 }

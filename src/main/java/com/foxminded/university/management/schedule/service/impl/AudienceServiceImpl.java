@@ -90,4 +90,8 @@ public class AudienceServiceImpl implements AudienceService {
         LOGGER.info("Audiences for lectures {} received successful", lectures);
         return result;
     }
+
+    public boolean isAudienceWithIdExist(Long id) {
+        return audienceRepository.findById(id).isPresent();
+    }
 }

@@ -22,4 +22,6 @@ public interface FacultyService {
     List<Faculty> getFacultiesForTeachers(List<Teacher> teachers);
 
     List<Faculty> getFacultiesForGroups(List<Group> groups);
+
+    boolean isFacultyWithIdExist(Long id);
 }

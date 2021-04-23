@@ -24,4 +24,6 @@ public interface GroupService {
     List<String> getGroupNamesForLectures(List<Lecture> lectures);
 
     List<Group> getGroupsForLectures(List<Lecture> lectures);
+
+    boolean isGroupWithIdExist(Long id);
 }

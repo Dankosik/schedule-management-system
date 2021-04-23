@@ -19,4 +19,6 @@ public interface AudienceService {
     List<Integer> getAudienceNumbersWithPossibleNullForAudiences(List<Audience> audiences);
 
     List<Audience> getAudiencesWithPossibleNullForLectures(List<Lecture> lectures);
+
+    boolean isAudienceWithIdExist(Long id);
 }
