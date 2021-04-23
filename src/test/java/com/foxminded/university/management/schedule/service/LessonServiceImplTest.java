@@ -24,8 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -190,5 +189,18 @@ class LessonServiceImplTest {
                 null, new Lesson(2L, 2, Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), subject, null));
 
         assertEquals(expected, lessonService.getLessonsWithPossibleNullForLectures(lectures));
+    }
+
+    @Test
+    void shouldReturnTrueIfLessonWithIdExist() {
+        when(lessonRepository.findById(1L)).thenReturn(Optional.of(new Lesson(2L, 2,
+                Time.valueOf(LocalTime.of(10, 10, 0)), Duration.ofMinutes(90), null, null)));
+        assertTrue(lessonService.isLessonWithIdExist(1L));
+    }
+
+    @Test
+    void shouldReturnFalseIfLessonWithIdNotExist() {
+        when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
+        assertFalse(lessonService.isLessonWithIdExist(1L));
     }
 }
