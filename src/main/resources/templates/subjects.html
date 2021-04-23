@@ -26,7 +26,8 @@
                            th:value="${subjectWithErrors.name}" type="text">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
                         <div class="alert alert-danger mt-2" style="color: red"
-                             th:if="${fieldError.getField() == 'name'}" th:text="${fieldError.getDefaultMessage()}"></div>
+                             th:if="${fieldError.getField() == 'name'}"
+                             th:text="${fieldError.getDefaultMessage()}"></div>
                     </div>
                 </div>
                 <div>
@@ -194,7 +195,8 @@
                                            type="text">
                                     <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
                                         <div class="alert alert-danger mt-2" style="color: red"
-                                             th:if="${fieldError.getField() == 'name'}" th:text="${fieldError.getDefaultMessage()}"></div>
+                                             th:if="${fieldError.getField() == 'name'}"
+                                             th:text="${fieldError.getDefaultMessage()}"></div>
                                     </div>
                                 </div>
                             </div>

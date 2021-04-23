@@ -31,6 +31,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {LectureDtoUtils.class})
 class LectureDtoUtilsTest {
+    private final Faculty faculty = new Faculty(1L, "FAIT", null, null);
+    private final Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(10, 10, 0)),
+            Duration.ofMinutes(90), new Subject(1L, "Math", null), null);
+    private final Audience audience = new Audience(1L, 1, 1, null);
+    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
+    private final Group group = new Group(1L, "AB-01", faculty, null, null);
     @MockBean
     private LessonServiceImpl lessonService;
     @MockBean
@@ -39,12 +45,6 @@ class LectureDtoUtilsTest {
     private TeacherServiceImpl teacherService;
     @MockBean
     private AudienceServiceImpl audienceService;
-    private final Faculty faculty = new Faculty(1L, "FAIT", null, null);
-    private final Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(10, 10, 0)),
-            Duration.ofMinutes(90), new Subject(1L, "Math", null), null);
-    private final Audience audience = new Audience(1L, 1, 1, null);
-    private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
-    private final Group group = new Group(1L, "AB-01", faculty, null, null);
 
     @Test
     void shouldReturnTrueIfSuchLessonFromLectureAddDtoExist() {

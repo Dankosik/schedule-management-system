@@ -67,7 +67,8 @@
         <form class="w-25 mx-auto mt-5" method="post" th:action="@{/lectures/add}" th:object="${lecture}">
             <div class="form-row">
                 <div class="col">
-                    <input class="form-control" id="lectureWithDateErrorOnAdd" max="9999-12-31" name="date" placeholder="Date"
+                    <input class="form-control" id="lectureWithDateErrorOnAdd" max="9999-12-31" name="date"
+                           placeholder="Date"
                            required th:value="${lectureWithErrors.date}" type="date">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
                         <div class="alert alert-danger mt-2" style="color: red"

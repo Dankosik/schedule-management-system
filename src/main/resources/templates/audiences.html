@@ -42,7 +42,8 @@
                     </div>
                 </div>
                 <div class="col">
-                    <input class="form-control" id="audienceWithCapacityErrorOnAdd" name="capacity" placeholder="Capacity"
+                    <input class="form-control" id="audienceWithCapacityErrorOnAdd" name="capacity"
+                           placeholder="Capacity"
                            required
                            th:value="${audienceWithErrors.capacity}" type="number"/>
                     <div th:each="fieldError, iter: ${fieldErrors}">
@@ -183,7 +184,8 @@
                                 <div th:if="${fieldErrorsOnUpdate != null}">
                                     <div class="form-row">
                                         <div class="col">
-                                            <input class="form-control" id="audienceWithNumberErrorOnUpdate" name="number"
+                                            <input class="form-control" id="audienceWithNumberErrorOnUpdate"
+                                                   name="number"
                                                    placeholder="Number" required
                                                    th:value="${audienceWithErrors.number}" type="number"/>
                                             <div th:each="fieldError, iter: ${fieldErrorsOnUpdate}">
@@ -194,7 +196,8 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <input class="form-control" id="audienceWithCapacityErrorOnUpdate" name="capacity"
+                                            <input class="form-control" id="audienceWithCapacityErrorOnUpdate"
+                                                   name="capacity"
                                                    placeholder="Capacity"
                                                    required
                                                    th:value="${audienceWithErrors.capacity}" type="number"/>

@@ -58,7 +58,8 @@
             </div>
             <div class="form-row">
                 <div class="col mt-1">
-                    <input class="form-control" id="teacherWithMiddleNameError" name="middleName" placeholder="Middle name"
+                    <input class="form-control" id="teacherWithMiddleNameError" name="middleName"
+                           placeholder="Middle name"
                            required th:value="${teacherWithErrors.middleName}" type="text">
                     <div th:each="fieldError, iter: ${fieldErrorsOnAdd}">
                         <div class="alert alert-danger mt-2" style="color: red"
