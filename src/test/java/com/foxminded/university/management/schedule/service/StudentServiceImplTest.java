@@ -17,8 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -122,5 +121,18 @@ class StudentServiceImplTest {
 
         verify(groupRepository, times(1)).findById(1L);
         verify(studentRepository, never()).save(expected);
+    }
+
+    @Test
+    void shouldReturnTrueIfStudentWithIdExist() {
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(new Student(1L, "John", "Jackson",
+                "Jackson", 1, null)));
+        assertTrue(studentService.isStudentWithIdExist(1L));
+    }
+
+    @Test
+    void shouldReturnFalseIfStudentWithIdNotExist() {
+        when(studentRepository.findById(1L)).thenReturn(Optional.empty());
+        assertFalse(studentService.isStudentWithIdExist(1L));
     }
 }

@@ -20,8 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -176,5 +175,17 @@ class AudienceServiceImplTest {
                         new Audience(3L, 204, 55, null), null, null, null));
 
         assertEquals(expected, audienceService.getAudiencesWithPossibleNullForLectures(input));
+    }
+
+    @Test
+    void shouldReturnTrueIfAudienceWithIdExist() {
+        when(audienceRepository.findById(1L)).thenReturn(Optional.of(new Audience(1L, 1, 1, null)));
+        assertTrue(audienceService.isAudienceWithIdExist(1L));
+    }
+
+    @Test
+    void shouldReturnFalseIfAudienceWithIdNotExist() {
+        when(audienceRepository.findById(1L)).thenReturn(Optional.empty());
+        assertFalse(audienceService.isAudienceWithIdExist(1L));
     }
 }

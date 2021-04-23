@@ -18,8 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -156,5 +155,17 @@ class FacultyServiceImplTest {
                 new Faculty(2L, "FKFN", null, null));
 
         assertEquals(expected, facultyService.getFacultiesForGroups(groups));
+    }
+
+    @Test
+    void shouldReturnTrueIfFacultyWithIdExist() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", null, null)));
+        assertTrue(facultyService.isFacultyWithIdExist(1L));
+    }
+
+    @Test
+    void shouldReturnFalseIfFacultyWithIdNotExist() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
+        assertFalse(facultyService.isFacultyWithIdExist(1L));
     }
 }

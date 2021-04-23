@@ -23,8 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -233,5 +232,17 @@ class GroupServiceImplTest {
                 new Group(2L, "CD-21", null, null, null));
 
         assertEquals(expected, groupService.getGroupsForLectures(lectures));
+    }
+
+    @Test
+    void shouldReturnTrueIfGroupWithIdExist() {
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(new Group(1L, "AB-01", null, null, null)));
+        assertTrue(groupService.isGroupWithIdExist(1L));
+    }
+
+    @Test
+    void shouldReturnFalseIfFacultyWithIdNotExist() {
+        when(groupRepository.findById(1L)).thenReturn(Optional.empty());
+        assertFalse(groupService.isGroupWithIdExist(1L));
     }
 }

@@ -21,8 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -170,5 +169,18 @@ class TeacherServiceImplTest {
         List<Teacher> expected = Arrays.asList(null, new Teacher(2L, "Mike", "Conor", "Conor", null, null));
 
         assertEquals(expected, teacherService.getTeachersWithPossibleNullForLectures(lectures));
+    }
+
+    @Test
+    void shouldReturnTrueIfTeacherWithIdExist() {
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(new Teacher(2L, "Mike", "Conor",
+                "Conor", null, null)));
+        assertTrue(teacherService.isTeacherWithIdExist(1L));
+    }
+
+    @Test
+    void shouldReturnFalseIfTeacherWithIdNotExist() {
+        when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
+        assertFalse(teacherService.isTeacherWithIdExist(1L));
     }
 }

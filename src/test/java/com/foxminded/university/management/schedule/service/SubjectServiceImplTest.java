@@ -24,8 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -203,5 +202,17 @@ class SubjectServiceImplTest {
         List<Subject> expected = Arrays.asList(null, new Subject(2L, "Art", null));
 
         assertEquals(expected, subjectService.getSubjectsForLectures(lectures));
+    }
+
+    @Test
+    void shouldReturnTrueIfSubjectWithIdExist() {
+        when(subjectRepository.findById(1L)).thenReturn(Optional.of(new Subject(2L, "Art", null)));
+        assertTrue(subjectService.isSubjectWithIdExist(1L));
+    }
+
+    @Test
+    void shouldReturnFalseIfSubjectWithIdNotExist() {
+        when(subjectRepository.findById(1L)).thenReturn(Optional.empty());
+        assertFalse(subjectService.isSubjectWithIdExist(1L));
     }
 }

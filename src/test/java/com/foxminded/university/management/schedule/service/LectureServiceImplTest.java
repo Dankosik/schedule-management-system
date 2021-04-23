@@ -26,8 +26,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -196,5 +195,18 @@ class LectureServiceImplTest {
         verify(teacherRepository, times(1)).findById(1L);
         verify(audienceRepository, times(1)).findById(1L);
         verify(lectureRepository, never()).save(expected);
+    }
+
+    @Test
+    void shouldReturnTrueIfLectureWithIdExist() {
+        when(lectureRepository.findById(1L)).thenReturn(Optional.of(new Lecture(3,
+                Date.valueOf(LocalDate.of(2020, 1, 1)), audience, null, lesson, teacher)));
+        assertTrue(lectureService.isLectureWithIdExist(1L));
+    }
+
+    @Test
+    void shouldReturnFalseIfLectureWithIdNotExist() {
+        when(lectureRepository.findById(1L)).thenReturn(Optional.empty());
+        assertFalse(lectureService.isLectureWithIdExist(1L));
     }
 }
