@@ -32,7 +32,7 @@ public class FacultyRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getFacultyById(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseFacultyDto> getFacultyById(@PathVariable("id") Long id) {
         Faculty faculty = facultyService.getFacultyById(id);
         BaseFacultyDto facultyDto = new BaseFacultyDto();
         BeanUtils.copyProperties(faculty, facultyDto);
@@ -46,7 +46,7 @@ public class FacultyRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addFaculty(@Valid @RequestBody FacultyAddDto facultyAddDto) {
+    public ResponseEntity<Faculty> addFaculty(@Valid @RequestBody FacultyAddDto facultyAddDto) {
         Faculty faculty = new Faculty();
         faculty.setName(facultyAddDto.getName());
         facultyService.saveFaculty(faculty);

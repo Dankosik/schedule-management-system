@@ -38,7 +38,7 @@ public class GroupRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getGroupById(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseGroupDto> getGroupById(@PathVariable("id") Long id) {
         Group group = groupService.getGroupById(id);
         BaseGroupDto groupDto = new BaseGroupDto();
         BeanUtils.copyProperties(group, groupDto);

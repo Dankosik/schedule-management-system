@@ -32,7 +32,7 @@ public class AudienceRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getAudienceById(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseAudienceDto> getAudienceById(@PathVariable("id") Long id) {
         Audience audience = audienceService.getAudienceById(id);
         BaseAudienceDto audienceDto = new BaseAudienceDto();
         BeanUtils.copyProperties(audience, audienceDto);
@@ -46,7 +46,7 @@ public class AudienceRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addAudience(@Valid @RequestBody AudienceAddDto audienceAddDto) {
+    public ResponseEntity<Audience> addAudience(@Valid @RequestBody AudienceAddDto audienceAddDto) {
         Audience audience = new Audience();
         BeanUtils.copyProperties(audienceAddDto, audience);
         audienceService.saveAudience(audience);

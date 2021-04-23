@@ -38,7 +38,7 @@ public class StudentRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getStudentById(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseStudentDto> getStudentById(@PathVariable("id") Long id) {
         Student student = studentService.getStudentById(id);
         BaseStudentDto baseStudentDto = new BaseStudentDto();
         BeanUtils.copyProperties(student, baseStudentDto);

@@ -32,7 +32,7 @@ public class SubjectRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getSubjectById(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseSubjectDto> getSubjectById(@PathVariable("id") Long id) {
         Subject subject = subjectService.getSubjectById(id);
         BaseSubjectDto subjectDto = new BaseSubjectDto();
         BeanUtils.copyProperties(subject, subjectDto);
@@ -46,7 +46,7 @@ public class SubjectRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addSubject(@Valid @RequestBody SubjectAddDto subjectAddDto) {
+    public ResponseEntity<Subject> addSubject(@Valid @RequestBody SubjectAddDto subjectAddDto) {
         Subject subject = new Subject();
         subject.setName(subjectAddDto.getName());
         subjectService.saveSubject(subject);

@@ -38,7 +38,7 @@ public class TeacherRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getTeacherById(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseTeacherDto> getTeacherById(@PathVariable("id") Long id) {
         Teacher teacher = teacherService.getTeacherById(id);
         BaseTeacherDto teacherDto = new BaseTeacherDto();
         BeanUtils.copyProperties(teacher, teacherDto);

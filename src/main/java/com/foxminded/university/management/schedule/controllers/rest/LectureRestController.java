@@ -44,7 +44,7 @@ public class LectureRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getLectureById(@PathVariable("id") Long id) {
+    public ResponseEntity<BaseLectureDto> getLectureById(@PathVariable("id") Long id) {
         Lecture lecture = lectureService.getLectureById(id);
         BaseLectureDto baseLectureDto = new BaseLectureDto();
         BeanUtils.copyProperties(lecture, baseLectureDto);
