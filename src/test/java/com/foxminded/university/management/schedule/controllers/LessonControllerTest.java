@@ -1,17 +1,17 @@
 package com.foxminded.university.management.schedule.controllers;
 
-import com.foxminded.university.management.schedule.controllers.web.utils.DurationFormatter;
 import com.foxminded.university.management.schedule.controllers.web.LessonController;
+import com.foxminded.university.management.schedule.controllers.web.utils.DurationFormatter;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(LessonController.class)
 class LessonControllerTest {
     @Autowired
