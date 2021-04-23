@@ -1,12 +1,13 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.repository.GroupRepository;
 import com.foxminded.university.management.schedule.service.GroupService;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,11 +35,11 @@ public class GroupServiceImpl implements GroupService {
         boolean isFacultyPresent = facultyRepository.findById(group.getFaculty().getId()).isPresent();
         LOGGER.debug("Audience is present: {}", isFacultyPresent);
         if (!isFacultyPresent)
-            throw new ServiceException("Group's faculty with id: " + group.getFaculty().getId() + " is not exist");
+            throw new EntityNotFoundException("Group's faculty with id: " + group.getFaculty().getId() + " is not exist");
         try {
             return groupRepository.saveAndFlush(group);
         } catch (DataIntegrityViolationException e) {
-            throw new ServiceException("Group with name: " + group.getName() + " is already exist");
+            throw new UniqueConstraintException("Group with name: " + group.getName() + " is already exist");
         }
     }
 
@@ -49,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
         if (isGroupPresent) {
             return groupRepository.findById(id).get();
         }
-        throw new ServiceException("Group with id: " + id + " is not found");
+        throw new EntityNotFoundException("Group with id: " + id + " is not found");
     }
 
     @Override
@@ -59,7 +60,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteGroupById(Long id) {
-        groupRepository.deleteById(getGroupById(id).getId());
+        boolean isGroupPresent = groupRepository.findById(id).isPresent();
+        LOGGER.debug("Group is present: {}", isGroupPresent);
+        if (isGroupPresent) {
+            groupRepository.deleteById(getGroupById(id).getId());
+        } else {
+            throw new EntityNotFoundException("Group with id: " + id + " is not found");
+        }
     }
 
     @Override

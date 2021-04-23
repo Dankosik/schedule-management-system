@@ -1,11 +1,11 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.repository.LessonRepository;
 import com.foxminded.university.management.schedule.repository.SubjectRepository;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,7 +84,7 @@ class LessonServiceImplTest {
         lessonService.deleteLessonById(1L);
 
         verify(lessonRepository, times(1)).deleteById(1L);
-        verify(lessonRepository, times(2)).findById(1L);
+        verify(lessonRepository, times(3)).findById(1L);
     }
 
     @Test
@@ -111,7 +111,7 @@ class LessonServiceImplTest {
     void shouldThrowExceptionIfLessonWithInputIdNotFound() {
         when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> lessonService.getLessonById(1L));
+        assertThrows(EntityNotFoundException.class, () -> lessonService.getLessonById(1L));
 
         verify(lessonRepository, times(1)).findById(1L);
         verify(lessonRepository, never()).save(lesson);
@@ -202,5 +202,14 @@ class LessonServiceImplTest {
     void shouldReturnFalseIfLessonWithIdNotExist() {
         when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
         assertFalse(lessonService.isLessonWithIdExist(1L));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionIfgLessonNotExistOnDelete() {
+        when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> lessonService.deleteLessonById(1L));
+
+        verify(lessonRepository, times(1)).findById(1L);
+        verify(lessonRepository, never()).deleteById(1L);
     }
 }

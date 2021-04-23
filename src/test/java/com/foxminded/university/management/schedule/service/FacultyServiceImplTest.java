@@ -1,10 +1,11 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.repository.FacultyRepository;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,7 +69,7 @@ class FacultyServiceImplTest {
         facultyService.deleteFacultyById(1L);
 
         verify(facultyRepository, times(1)).deleteById(1L);
-        verify(facultyRepository, times(2)).findById(1L);
+        verify(facultyRepository, times(3)).findById(1L);
     }
 
     @Test
@@ -89,7 +90,7 @@ class FacultyServiceImplTest {
     void shouldThrowExceptionIfFacultyWithInputIdNotFound() {
         when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> facultyService.getFacultyById(1L));
+        assertThrows(EntityNotFoundException.class, () -> facultyService.getFacultyById(1L));
 
         verify(facultyRepository, times(1)).findById(1L);
         verify(facultyRepository, never()).save(faculty);
@@ -101,7 +102,7 @@ class FacultyServiceImplTest {
 
         when(facultyRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(ServiceException.class, () -> facultyService.saveFaculty(expected));
+        assertThrows(UniqueConstraintException.class, () -> facultyService.saveFaculty(expected));
 
         verify(facultyRepository, times(1)).saveAndFlush(expected);
     }
@@ -110,7 +111,7 @@ class FacultyServiceImplTest {
     void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
         when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> facultyService.getFacultyById(1L));
+        assertThrows(EntityNotFoundException.class, () -> facultyService.getFacultyById(1L));
 
         verify(facultyRepository, times(1)).findById(1L);
         verify(facultyRepository, never()).save(faculty);
@@ -167,5 +168,14 @@ class FacultyServiceImplTest {
     void shouldReturnFalseIfFacultyWithIdNotExist() {
         when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
         assertFalse(facultyService.isFacultyWithIdExist(1L));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionIfFacultyNotExistOnDelete() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> facultyService.deleteFacultyById(1L));
+
+        verify(facultyRepository, times(1)).findById(1L);
+        verify(facultyRepository, never()).deleteById(1L);
     }
 }

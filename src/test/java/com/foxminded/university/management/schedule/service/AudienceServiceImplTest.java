@@ -1,9 +1,10 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.repository.AudienceRepository;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,7 +74,7 @@ class AudienceServiceImplTest {
         audienceService.deleteAudienceById(1L);
 
         verify(audienceRepository, times(1)).deleteById(1L);
-        verify(audienceRepository, times(2)).findById(1L);
+        verify(audienceRepository, times(3)).findById(1L);
     }
 
     @Test
@@ -99,7 +100,7 @@ class AudienceServiceImplTest {
 
         when(audienceRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(ServiceException.class, () -> audienceService.saveAudience(expected));
+        assertThrows(UniqueConstraintException.class, () -> audienceService.saveAudience(expected));
 
         verify(audienceRepository, times(1)).saveAndFlush(expected);
     }
@@ -110,7 +111,7 @@ class AudienceServiceImplTest {
 
         when(audienceRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(ServiceException.class, () -> audienceService.saveAudience(expected));
+        assertThrows(UniqueConstraintException.class, () -> audienceService.saveAudience(expected));
 
         verify(audienceRepository, times(1)).saveAndFlush(expected);
     }
@@ -119,7 +120,7 @@ class AudienceServiceImplTest {
     void shouldThrowExceptionIfAudienceWithInputIdNotFound() {
         when(audienceRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> audienceService.getAudienceById(1L));
+        assertThrows(EntityNotFoundException.class, () -> audienceService.getAudienceById(1L));
 
         verify(audienceRepository, times(1)).findById(1L);
         verify(audienceRepository, never()).save(audience);
@@ -187,5 +188,14 @@ class AudienceServiceImplTest {
     void shouldReturnFalseIfAudienceWithIdNotExist() {
         when(audienceRepository.findById(1L)).thenReturn(Optional.empty());
         assertFalse(audienceService.isAudienceWithIdExist(1L));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionIfAudienceNotExistOnDelete() {
+        when(audienceRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> audienceService.deleteAudienceById(1L));
+
+        verify(audienceRepository, times(1)).findById(1L);
+        verify(audienceRepository, never()).deleteById(1L);
     }
 }

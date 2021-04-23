@@ -1,6 +1,5 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
@@ -9,6 +8,7 @@ import com.foxminded.university.management.schedule.repository.AudienceRepositor
 import com.foxminded.university.management.schedule.repository.LectureRepository;
 import com.foxminded.university.management.schedule.repository.LessonRepository;
 import com.foxminded.university.management.schedule.repository.TeacherRepository;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.LectureServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -103,7 +103,7 @@ class LectureServiceImplTest {
         lectureService.deleteLectureById(1L);
 
         verify(lectureRepository, times(1)).deleteById(1L);
-        verify(lectureRepository, times(2)).findById(1L);
+        verify(lectureRepository, times(3)).findById(1L);
     }
 
     @Test
@@ -143,7 +143,7 @@ class LectureServiceImplTest {
     void shouldThrowExceptionIfLectureWithInputIdNotFound() {
         when(lectureRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> lectureService.getLectureById(1L));
+        assertThrows(EntityNotFoundException.class, () -> lectureService.getLectureById(1L));
 
         verify(lectureRepository, times(1)).findById(1L);
         verify(lectureRepository, never()).save(lecture);
@@ -157,7 +157,7 @@ class LectureServiceImplTest {
         when(lectureRepository.findById(1L)).thenReturn(Optional.of(expected));
         when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> lectureService.saveLecture(expected));
+        assertThrows(EntityNotFoundException.class, () -> lectureService.saveLecture(expected));
 
         verify(teacherRepository, times(1)).findById(1L);
         verify(lectureRepository, never()).save(expected);
@@ -173,7 +173,7 @@ class LectureServiceImplTest {
         when(audienceRepository.findById(1L)).thenReturn(Optional.of(audience));
         when(lessonRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> lectureService.saveLecture(expected));
+        assertThrows(EntityNotFoundException.class, () -> lectureService.saveLecture(expected));
 
         verify(teacherRepository, times(1)).findById(1L);
         verify(audienceRepository, times(1)).findById(1L);
@@ -190,7 +190,7 @@ class LectureServiceImplTest {
         when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
         when(audienceRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> lectureService.saveLecture(expected));
+        assertThrows(EntityNotFoundException.class, () -> lectureService.saveLecture(expected));
 
         verify(teacherRepository, times(1)).findById(1L);
         verify(audienceRepository, times(1)).findById(1L);
@@ -208,5 +208,14 @@ class LectureServiceImplTest {
     void shouldReturnFalseIfLectureWithIdNotExist() {
         when(lectureRepository.findById(1L)).thenReturn(Optional.empty());
         assertFalse(lectureService.isLectureWithIdExist(1L));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionIfgLectureNotExistOnDelete() {
+        when(lectureRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> lectureService.deleteLectureById(1L));
+
+        verify(lectureRepository, times(1)).findById(1L);
+        verify(lectureRepository, never()).deleteById(1L);
     }
 }

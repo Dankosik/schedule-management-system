@@ -1,11 +1,12 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.service.FacultyService;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,7 +32,7 @@ public class FacultyServiceImpl implements FacultyService {
         try {
             return facultyRepository.saveAndFlush(faculty);
         } catch (DataIntegrityViolationException e) {
-            throw new ServiceException("Faculty with name: " + faculty.getName() + " is already exist");
+            throw new UniqueConstraintException("Faculty with name: " + faculty.getName() + " is already exist");
         }
     }
 
@@ -42,7 +43,7 @@ public class FacultyServiceImpl implements FacultyService {
         if (isFacultyPresent) {
             return facultyRepository.findById(id).get();
         }
-        throw new ServiceException("Faculty with id: " + id + " is not found");
+        throw new EntityNotFoundException("Faculty with id: " + id + " is not found");
     }
 
     @Override
@@ -52,7 +53,13 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public void deleteFacultyById(Long id) {
-        facultyRepository.deleteById(getFacultyById(id).getId());
+        boolean isFacultyPresent = facultyRepository.findById(id).isPresent();
+        LOGGER.debug("Faculty is present: {}", isFacultyPresent);
+        if (isFacultyPresent) {
+            facultyRepository.deleteById(getFacultyById(id).getId());
+        } else {
+            throw new EntityNotFoundException("Faculty with id: " + id + " is not found");
+        }
     }
 
     @Override

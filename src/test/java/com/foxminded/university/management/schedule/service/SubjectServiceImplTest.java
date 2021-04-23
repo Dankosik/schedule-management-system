@@ -1,10 +1,11 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.repository.SubjectRepository;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,7 +80,7 @@ class SubjectServiceImplTest {
         subjectService.deleteSubjectById(1L);
 
         verify(subjectRepository, times(1)).deleteById(1L);
-        verify(subjectRepository, times(2)).findById(1L);
+        verify(subjectRepository, times(3)).findById(1L);
     }
 
     @Test
@@ -105,7 +106,7 @@ class SubjectServiceImplTest {
         Subject expected = new Subject("Math", null);
         when(subjectRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
+        assertThrows(UniqueConstraintException.class, () -> subjectService.saveSubject(expected));
 
         verify(subjectRepository, times(1)).saveAndFlush(expected);
     }
@@ -115,7 +116,7 @@ class SubjectServiceImplTest {
         Subject expected = new Subject(1L, "Math", null);
         when(subjectRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(ServiceException.class, () -> subjectService.saveSubject(expected));
+        assertThrows(UniqueConstraintException.class, () -> subjectService.saveSubject(expected));
 
         verify(subjectRepository, times(1)).saveAndFlush(expected);
     }
@@ -124,7 +125,7 @@ class SubjectServiceImplTest {
     void shouldThrowExceptionIfSubjectWithInputIdNotFound() {
         when(subjectRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> subjectService.getSubjectById(1L));
+        assertThrows(EntityNotFoundException.class, () -> subjectService.getSubjectById(1L));
 
         verify(subjectRepository, times(1)).findById(1L);
         verify(subjectRepository, never()).save(subject);
@@ -214,5 +215,14 @@ class SubjectServiceImplTest {
     void shouldReturnFalseIfSubjectWithIdNotExist() {
         when(subjectRepository.findById(1L)).thenReturn(Optional.empty());
         assertFalse(subjectService.isSubjectWithIdExist(1L));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionIfSubjectNotExistOnDelete() {
+        when(subjectRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> subjectService.deleteSubjectById(1L));
+
+        verify(subjectRepository, times(1)).findById(1L);
+        verify(subjectRepository, never()).deleteById(1L);
     }
 }

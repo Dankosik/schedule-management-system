@@ -1,11 +1,11 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.repository.TeacherRepository;
 import com.foxminded.university.management.schedule.service.TeacherService;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class TeacherServiceImpl implements TeacherService {
         if (isFacultyPresent || teacher.getFaculty().getId() == null) {
             return teacherRepository.save(teacher);
         }
-        throw new ServiceException("Teacher's faculty with id: " + teacher.getFaculty().getId() + " is not exists");
+        throw new EntityNotFoundException("Teacher's faculty with id: " + teacher.getFaculty().getId() + " is not exists");
     }
 
     @Override
@@ -44,7 +44,7 @@ public class TeacherServiceImpl implements TeacherService {
         if (isTeacherPresent) {
             return teacherRepository.findById(id).get();
         }
-        throw new ServiceException("Teacher with id: " + id + " is not found");
+        throw new EntityNotFoundException("Teacher with id: " + id + " is not found");
     }
 
     @Override
@@ -54,7 +54,13 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public void deleteTeacherById(Long id) {
-        teacherRepository.deleteById(getTeacherById(id).getId());
+        boolean isTeacherPresent = teacherRepository.findById(id).isPresent();
+        LOGGER.debug("Teacher is present: {}", isTeacherPresent);
+        if (isTeacherPresent) {
+            teacherRepository.deleteById(getTeacherById(id).getId());
+        } else {
+            throw new EntityNotFoundException("Teacher with id: " + id + " is not found");
+        }
     }
 
     @Override

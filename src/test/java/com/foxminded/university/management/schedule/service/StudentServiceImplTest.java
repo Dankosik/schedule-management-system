@@ -1,10 +1,10 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.repository.GroupRepository;
 import com.foxminded.university.management.schedule.repository.StudentRepository;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,7 +77,7 @@ class StudentServiceImplTest {
         studentService.deleteStudentById(1L);
 
         verify(studentRepository, times(1)).deleteById(1L);
-        verify(studentRepository, times(2)).findById(1L);
+        verify(studentRepository, times(3)).findById(1L);
     }
 
     @Test
@@ -104,7 +104,7 @@ class StudentServiceImplTest {
     void shouldThrowExceptionIfStudentWithInputIdNotFound() {
         when(studentRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> studentService.getStudentById(1L));
+        assertThrows(EntityNotFoundException.class, () -> studentService.getStudentById(1L));
 
         verify(studentRepository, times(1)).findById(1L);
         verify(studentRepository, never()).save(student);
@@ -117,7 +117,7 @@ class StudentServiceImplTest {
         when(studentRepository.findById(1L)).thenReturn(Optional.of(expected));
         when(groupRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> studentService.saveStudent(expected));
+        assertThrows(EntityNotFoundException.class, () -> studentService.saveStudent(expected));
 
         verify(groupRepository, times(1)).findById(1L);
         verify(studentRepository, never()).save(expected);
@@ -134,5 +134,14 @@ class StudentServiceImplTest {
     void shouldReturnFalseIfStudentWithIdNotExist() {
         when(studentRepository.findById(1L)).thenReturn(Optional.empty());
         assertFalse(studentService.isStudentWithIdExist(1L));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionIfStudentNotExistOnDelete() {
+        when(studentRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> studentService.deleteStudentById(1L));
+
+        verify(studentRepository, times(1)).findById(1L);
+        verify(studentRepository, never()).deleteById(1L);
     }
 }

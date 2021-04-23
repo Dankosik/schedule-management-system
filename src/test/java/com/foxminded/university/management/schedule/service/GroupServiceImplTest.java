@@ -1,12 +1,13 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
 import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.repository.GroupRepository;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -82,7 +83,7 @@ class GroupServiceImplTest {
         groupService.deleteGroupById(1L);
 
         verify(groupRepository, times(1)).deleteById(1L);
-        verify(groupRepository, times(2)).findById(1L);
+        verify(groupRepository, times(3)).findById(1L);
     }
 
     @Test
@@ -112,7 +113,7 @@ class GroupServiceImplTest {
         when(facultyRepository.findById(1L)).thenReturn(Optional.of(new Faculty(1L, "FAIT", null, null)));
         when(groupRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
+        assertThrows(UniqueConstraintException.class, () -> groupService.saveGroup(expected));
 
         verify(groupRepository, times(1)).saveAndFlush(expected);
         verify(facultyRepository, times(1)).findById(1L);
@@ -125,7 +126,7 @@ class GroupServiceImplTest {
         when(facultyRepository.findById(1L)).thenReturn(Optional.of(new Faculty("FAIT", null, null)));
         when(groupRepository.saveAndFlush(expected)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
+        assertThrows(UniqueConstraintException.class, () -> groupService.saveGroup(expected));
 
         verify(facultyRepository, times(1)).findById(1L);
     }
@@ -134,7 +135,7 @@ class GroupServiceImplTest {
     void shouldThrowExceptionIfGroupWithInputIdNotFound() {
         when(groupRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> groupService.getGroupById(1L));
+        assertThrows(EntityNotFoundException.class, () -> groupService.getGroupById(1L));
 
         verify(groupRepository, times(1)).findById(1L);
         verify(groupRepository, never()).save(group);
@@ -147,7 +148,7 @@ class GroupServiceImplTest {
         when(groupRepository.findById(1L)).thenReturn(Optional.of(expected));
         when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> groupService.saveGroup(expected));
+        assertThrows(EntityNotFoundException.class, () -> groupService.saveGroup(expected));
 
         verify(facultyRepository, times(1)).findById(1L);
         verify(groupRepository, never()).save(expected);
@@ -244,5 +245,14 @@ class GroupServiceImplTest {
     void shouldReturnFalseIfFacultyWithIdNotExist() {
         when(groupRepository.findById(1L)).thenReturn(Optional.empty());
         assertFalse(groupService.isGroupWithIdExist(1L));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionIfgGroupNotExistOnDelete() {
+        when(groupRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> groupService.deleteGroupById(1L));
+
+        verify(groupRepository, times(1)).findById(1L);
+        verify(groupRepository, never()).deleteById(1L);
     }
 }

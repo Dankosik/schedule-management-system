@@ -1,10 +1,11 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.repository.AudienceRepository;
 import com.foxminded.university.management.schedule.service.AudienceService;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,7 +31,7 @@ public class AudienceServiceImpl implements AudienceService {
         try {
             return audienceRepository.saveAndFlush(audience);
         } catch (DataIntegrityViolationException e) {
-            throw new ServiceException("Audience with number: " + audience.getNumber() + " is already exists");
+            throw new UniqueConstraintException("Audience with number: " + audience.getNumber() + " is already exists");
         }
     }
 
@@ -41,7 +42,7 @@ public class AudienceServiceImpl implements AudienceService {
         if (isAudiencePresent) {
             return audienceRepository.findById(id).get();
         }
-        throw new ServiceException("Audience with id: " + id + " is not found");
+        throw new EntityNotFoundException("Audience with id: " + id + " is not found");
     }
 
     @Override
@@ -51,7 +52,13 @@ public class AudienceServiceImpl implements AudienceService {
 
     @Override
     public void deleteAudienceById(Long id) {
-        audienceRepository.deleteById(getAudienceById(id).getId());
+        boolean isAudiencePresent = audienceRepository.findById(id).isPresent();
+        LOGGER.debug("Audience is present: {}", isAudiencePresent);
+        if (isAudiencePresent) {
+            audienceRepository.deleteById(getAudienceById(id).getId());
+        } else {
+            throw new EntityNotFoundException("Audience with id: " + id + " is not found");
+        }
     }
 
     @Override

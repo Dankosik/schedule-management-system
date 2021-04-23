@@ -1,11 +1,11 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Teacher;
 import com.foxminded.university.management.schedule.repository.FacultyRepository;
 import com.foxminded.university.management.schedule.repository.TeacherRepository;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,7 +81,7 @@ class TeacherServiceImplTest {
         teacherService.deleteTeacherById(1L);
 
         verify(teacherRepository, times(1)).deleteById(1L);
-        verify(teacherRepository, times(2)).findById(1L);
+        verify(teacherRepository, times(3)).findById(1L);
     }
 
     @Test
@@ -105,7 +105,7 @@ class TeacherServiceImplTest {
     void shouldThrowExceptionIfStudentWithInputIdNotFound() {
         when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> teacherService.getTeacherById(1L));
+        assertThrows(EntityNotFoundException.class, () -> teacherService.getTeacherById(1L));
 
         verify(teacherRepository, times(1)).findById(1L);
         verify(teacherRepository, never()).save(teacher);
@@ -118,7 +118,7 @@ class TeacherServiceImplTest {
         when(teacherRepository.findById(1L)).thenReturn(Optional.of(expected));
         when(facultyRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(ServiceException.class, () -> teacherService.saveTeacher(expected));
+        assertThrows(EntityNotFoundException.class, () -> teacherService.saveTeacher(expected));
 
         verify(facultyRepository, times(1)).findById(1L);
         verify(teacherRepository, never()).save(expected);
@@ -182,5 +182,14 @@ class TeacherServiceImplTest {
     void shouldReturnFalseIfTeacherWithIdNotExist() {
         when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
         assertFalse(teacherService.isTeacherWithIdExist(1L));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionIfTeacherNotExistOnDelete() {
+        when(teacherRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> teacherService.deleteTeacherById(1L));
+
+        verify(teacherRepository, times(1)).findById(1L);
+        verify(teacherRepository, never()).deleteById(1L);
     }
 }

@@ -1,11 +1,12 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
 import com.foxminded.university.management.schedule.repository.SubjectRepository;
 import com.foxminded.university.management.schedule.service.SubjectService;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
+import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,18 +31,18 @@ public class SubjectServiceImpl implements SubjectService {
         try {
             return subjectRepository.saveAndFlush(subject);
         } catch (DataIntegrityViolationException e) {
-            throw new ServiceException("Subject with name: " + subject.getName() + " is already exist");
+            throw new UniqueConstraintException("Subject with name: " + subject.getName() + " is already exist");
         }
     }
 
     @Override
     public Subject getSubjectById(Long id) {
         boolean isSubjectPresent = subjectRepository.findById(id).isPresent();
-        LOGGER.debug("Audience is present: {}", isSubjectPresent);
+        LOGGER.debug("Subject is present: {}", isSubjectPresent);
         if (isSubjectPresent) {
             return subjectRepository.findById(id).get();
         }
-        throw new ServiceException("Subject with id: " + id + " is not found");
+        throw new EntityNotFoundException("Subject with id: " + id + " is not found");
     }
 
     @Override
@@ -51,7 +52,13 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public void deleteSubjectById(Long id) {
-        subjectRepository.deleteById(getSubjectById(id).getId());
+        boolean isSubjectPresent = subjectRepository.findById(id).isPresent();
+        LOGGER.debug("Subject is present: {}", isSubjectPresent);
+        if (isSubjectPresent) {
+            subjectRepository.deleteById(getSubjectById(id).getId());
+        } else {
+            throw new EntityNotFoundException("Subject with id: " + id + " is not found");
+        }
     }
 
     @Override

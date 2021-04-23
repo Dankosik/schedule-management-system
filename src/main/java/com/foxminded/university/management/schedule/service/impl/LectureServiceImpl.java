@@ -1,12 +1,12 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.repository.AudienceRepository;
 import com.foxminded.university.management.schedule.repository.LectureRepository;
 import com.foxminded.university.management.schedule.repository.LessonRepository;
 import com.foxminded.university.management.schedule.repository.TeacherRepository;
 import com.foxminded.university.management.schedule.service.LectureService;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,17 +38,17 @@ public class LectureServiceImpl implements LectureService {
         boolean isTeacherPresent = teacherRepository.findById(lecture.getTeacher().getId()).isPresent();
         LOGGER.debug("Teacher is present: {}", isTeacherPresent);
         if (!isTeacherPresent)
-            throw new ServiceException("Lecture teacher with id: " + lecture.getTeacher().getId() + " is not exist");
+            throw new EntityNotFoundException("Lecture teacher with id: " + lecture.getTeacher().getId() + " is not exist");
 
         boolean isAudiencePresent = audienceRepository.findById(lecture.getAudience().getId()).isPresent();
         LOGGER.debug("Audience is present: {}", isAudiencePresent);
         if (!isAudiencePresent)
-            throw new ServiceException("Lecture audience with id: " + lecture.getAudience().getId() + " is not exist");
+            throw new EntityNotFoundException("Lecture audience with id: " + lecture.getAudience().getId() + " is not exist");
 
         boolean isLessonPresent = lessonRepository.findById(lecture.getLesson().getId()).isPresent();
         LOGGER.debug("Audience is present: {}", isLessonPresent);
         if (!isLessonPresent)
-            throw new ServiceException("Lecture lesson with id: " + lecture.getLesson().getId() + " is not exist");
+            throw new EntityNotFoundException("Lecture lesson with id: " + lecture.getLesson().getId() + " is not exist");
 
         return lectureRepository.save(lecture);
     }
@@ -60,7 +60,7 @@ public class LectureServiceImpl implements LectureService {
         if (isLecturePresent) {
             return lectureRepository.findById(id).get();
         }
-        throw new ServiceException("Lecture with id: " + id + " is not found");
+        throw new EntityNotFoundException("Lecture with id: " + id + " is not found");
     }
 
     @Override
@@ -70,7 +70,13 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public void deleteLectureById(Long id) {
-        lectureRepository.deleteById(getLectureById(id).getId());
+        boolean isLecturePresent = lectureRepository.findById(id).isPresent();
+        LOGGER.debug("Lecture is present: {}", isLecturePresent);
+        if (isLecturePresent) {
+            lectureRepository.deleteById(getLectureById(id).getId());
+        } else {
+            throw new EntityNotFoundException("Lecture with id: " + id + " is not found");
+        }
     }
 
     @Override

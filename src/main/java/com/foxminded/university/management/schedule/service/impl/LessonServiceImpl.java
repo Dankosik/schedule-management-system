@@ -1,11 +1,11 @@
 package com.foxminded.university.management.schedule.service.impl;
 
-import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.repository.LessonRepository;
 import com.foxminded.university.management.schedule.repository.SubjectRepository;
 import com.foxminded.university.management.schedule.service.LessonService;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class LessonServiceImpl implements LessonService {
         boolean isSubjectPresent = subjectRepository.findById(lesson.getSubject().getId()).isPresent();
         LOGGER.debug("Subject is present: {}", isSubjectPresent);
         if (!isSubjectPresent)
-            throw new ServiceException("Lesson subject with id: " + lesson.getSubject().getId() + " is not exist");
+            throw new EntityNotFoundException("Lesson subject with id: " + lesson.getSubject().getId() + " is not exist");
         return lessonRepository.save(lesson);
     }
 
@@ -45,7 +45,7 @@ public class LessonServiceImpl implements LessonService {
         if (isLessonPresent) {
             return lessonRepository.findById(id).get();
         }
-        throw new ServiceException("Lesson with id: " + id + " is not found");
+        throw new EntityNotFoundException("Lesson with id: " + id + " is not found");
     }
 
     @Override
@@ -55,7 +55,13 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public void deleteLessonById(Long id) {
-        lessonRepository.deleteById(getLessonById(id).getId());
+        boolean isLessonPresent = lessonRepository.findById(id).isPresent();
+        LOGGER.debug("Lesson is present: {}", isLessonPresent);
+        if (isLessonPresent) {
+            lessonRepository.deleteById(getLessonById(id).getId());
+        } else {
+            throw new EntityNotFoundException("Lesson with id: " + id + " is not found");
+        }
     }
 
     @Override
