@@ -55,7 +55,7 @@ class TeacherRestControllerTest {
     }
 
     @Test
-    public void getTeacherById() throws Exception {
+    public void shouldReturnTeacherById() throws Exception {
         Faculty faculty = new Faculty();
         faculty.setName("FAIT");
         faculty.setId(1L);
@@ -78,7 +78,7 @@ class TeacherRestControllerTest {
     }
 
     @Test
-    public void getAllTeachers() throws Exception {
+    public void shouldReturnAllTeachers() throws Exception {
         Faculty faculty = new Faculty();
         faculty.setName("FAIT");
         faculty.setId(1L);

@@ -37,7 +37,7 @@ class SubjectRestControllerTest {
     private SubjectServiceImpl subjectService;
 
     @Test
-    public void getSubjectById() throws Exception {
+    public void shouldReturnSubjectById() throws Exception {
         Subject subject = new Subject(1L, "Math", Collections.emptyList());
 
         when(subjectService.getSubjectById(1L)).thenReturn(subject);
@@ -57,7 +57,7 @@ class SubjectRestControllerTest {
     }
 
     @Test
-    public void getAllSubjects() throws Exception {
+    public void shouldReturnAllSubjects() throws Exception {
         List<Subject> subjects = Arrays.asList(new Subject(1L, "Math", Collections.emptyList()),
                 new Subject(2L, "Programming", Collections.emptyList()),
                 new Subject(3L, "Art", Collections.emptyList()));

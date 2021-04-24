@@ -37,7 +37,7 @@ class FacultyRestControllerTest {
     private FacultyServiceImpl facultyService;
 
     @Test
-    public void getFacultyById() throws Exception {
+    public void shouldReturnFacultyById() throws Exception {
         Faculty faculty = new Faculty(1L, "FAIT", Collections.emptyList(), Collections.emptyList());
 
         when(facultyService.getFacultyById(1L)).thenReturn(faculty);
@@ -57,7 +57,7 @@ class FacultyRestControllerTest {
     }
 
     @Test
-    public void getAllFaculties() throws Exception {
+    public void shouldReturnAllFaculties() throws Exception {
         List<Faculty> faculties = Arrays.asList(new Faculty(1L, "FAIT", Collections.emptyList(), Collections.emptyList()),
                 new Faculty(2L, "QEWQ", Collections.emptyList(), Collections.emptyList()));
 

@@ -58,7 +58,7 @@ class LectureRestControllerTest {
     }
 
     @Test
-    public void getLectureById() throws Exception {
+    public void shouldReturnLectureById() throws Exception {
         Group group = new Group();
         group.setId(1L);
         group.setName("AB-01");
@@ -88,7 +88,7 @@ class LectureRestControllerTest {
     }
 
     @Test
-    public void getAllLectures() throws Exception {
+    public void shouldReturnAllLectures() throws Exception {
         Group group = new Group();
         group.setId(1L);
         group.setName("AB-01");

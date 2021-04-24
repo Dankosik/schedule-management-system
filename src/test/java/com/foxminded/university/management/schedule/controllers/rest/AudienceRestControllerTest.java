@@ -37,7 +37,7 @@ class AudienceRestControllerTest {
     private AudienceServiceImpl audienceService;
 
     @Test
-    public void getAudienceById() throws Exception {
+    public void shouldReturnAudienceById() throws Exception {
         Audience audience = new Audience(1L, 1, 1, Collections.emptyList());
 
         when(audienceService.getAudienceById(1L)).thenReturn(audience);
@@ -60,7 +60,7 @@ class AudienceRestControllerTest {
     }
 
     @Test
-    public void getAllAudiences() throws Exception {
+    public void shouldReturnAllAudiences() throws Exception {
         List<Audience> audiences = Arrays.asList(new Audience(1L, 1, 1, Collections.emptyList()),
                 new Audience(2L, 2, 2, Collections.emptyList()),
                 new Audience(3L, 3, 3, Collections.emptyList()));

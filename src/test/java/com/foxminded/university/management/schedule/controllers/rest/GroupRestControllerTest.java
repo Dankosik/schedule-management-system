@@ -55,7 +55,7 @@ class GroupRestControllerTest {
     }
 
     @Test
-    public void getGroupById() throws Exception {
+    public void shouldReturnGroupById() throws Exception {
         Faculty faculty = new Faculty();
         faculty.setName("FAIT");
         faculty.setId(1L);
@@ -78,7 +78,7 @@ class GroupRestControllerTest {
     }
 
     @Test
-    public void getAllGroups() throws Exception {
+    public void shouldReturnAllGroups() throws Exception {
         Faculty faculty = new Faculty();
         faculty.setName("FAIT");
         faculty.setId(1L);

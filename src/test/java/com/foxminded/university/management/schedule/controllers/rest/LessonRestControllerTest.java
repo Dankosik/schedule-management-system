@@ -58,7 +58,7 @@ class LessonRestControllerTest {
     }
 
     @Test
-    public void getLessonById() throws Exception {
+    public void shouldReturnLessonById() throws Exception {
         Subject subject = new Subject();
         subject.setName("Math");
         subject.setId(1L);
@@ -82,7 +82,7 @@ class LessonRestControllerTest {
     }
 
     @Test
-    public void getAllLessons() throws Exception {
+    public void shouldReturnAllLessons() throws Exception {
         Subject subject = new Subject();
         subject.setName("Math");
         subject.setId(1L);

@@ -64,7 +64,7 @@ class StudentRestControllerTest {
     }
 
     @Test
-    public void getStudentById() throws Exception {
+    public void shouldReturnStudentById() throws Exception {
         Student student = new Student(1L, "Mary", "Taylor", "Garcia", 1, group);
 
         when(studentService.getStudentById(1L)).thenReturn(student);
@@ -84,7 +84,7 @@ class StudentRestControllerTest {
     }
 
     @Test
-    public void getAllStudents() throws Exception {
+    public void shouldReturnAllStudents() throws Exception {
         List<Student> students = Arrays.asList(
                 new Student(1L, "Mary", "Taylor", "Garcia", 1, group),
                 new Student(2L, "Linda", "Jones", "Martinez", 1, group),
