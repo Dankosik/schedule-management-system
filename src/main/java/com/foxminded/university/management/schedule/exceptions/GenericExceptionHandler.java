@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.foxminded.university.management.schedule.controllers.rest.errors.ErrorRequestBuilder;
+import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableLectureNumberException;
+import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.exceptions.UniqueConstraintException;
 import org.springframework.http.HttpStatus;
@@ -69,6 +71,22 @@ public class GenericExceptionHandler {
     protected ResponseEntity<Object> handleUniqueConstraintException(UniqueConstraintException ex) {
         ErrorRequestBuilder errorRequestBuilder =
                 new ErrorRequestBuilder(new Date(), HttpStatus.CONFLICT, ex.getMessage(), HttpStatus.CONFLICT.value());
+
+        return new ResponseEntity<>(errorRequestBuilder, errorRequestBuilder.getError());
+    }
+
+    @ExceptionHandler(value = {UnacceptableUriException.class})
+    protected ResponseEntity<Object> handleUnacceptableUriException(UnacceptableUriException ex) {
+        ErrorRequestBuilder errorRequestBuilder =
+                new ErrorRequestBuilder(new Date(), HttpStatus.BAD_REQUEST, ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+
+        return new ResponseEntity<>(errorRequestBuilder, errorRequestBuilder.getError());
+    }
+
+    @ExceptionHandler(value = {UnacceptableLectureNumberException.class})
+    protected ResponseEntity<Object> handleUnacceptableLectureNumberException(UnacceptableLectureNumberException ex) {
+        ErrorRequestBuilder errorRequestBuilder =
+                new ErrorRequestBuilder(new Date(), HttpStatus.BAD_REQUEST, ex.getMessage(), HttpStatus.BAD_REQUEST.value());
 
         return new ResponseEntity<>(errorRequestBuilder, errorRequestBuilder.getError());
     }
