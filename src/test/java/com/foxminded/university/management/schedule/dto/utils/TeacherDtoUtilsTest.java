@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -22,35 +22,8 @@ class TeacherDtoUtilsTest {
     private FacultyServiceImpl facultyService;
 
     @Test
-    void shouldReturnTrueIfSuchFacultyFromTeacherAddDtoExist() {
-        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
-        assertTrue(TeacherDtoUtils.isSuchFacultyFromTeacherDtoExist(new TeacherAddDto("John", "Jackson",
-                "Jackson", new FacultyUpdateDto(1L, "FAIT"))));
-    }
-
-    @Test
-    void shouldReturnFalseIfSuchFacultyFromTeacherAddDtoNotExist() {
-        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
-        assertFalse(TeacherDtoUtils.isSuchFacultyFromTeacherDtoExist(new TeacherAddDto("John", "Jackson",
-                "Jackson", new FacultyUpdateDto(1L, "FAIAST"))));
-    }
-
-    @Test
-    void shouldReturnTrueIfSuchFacultyFromTeacherUpdateDtoExist() {
-        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
-        assertTrue(TeacherDtoUtils.isSuchFacultyFromTeacherDtoExist(new TeacherUpdateDto(1L, "John", "Jackson",
-                "Jackson", new FacultyUpdateDto(1L, "FAIT"))));
-    }
-
-    @Test
-    void shouldReturnFalseIfSuchFacultyFromTeacherUpdateDtoNotExist() {
-        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
-        assertFalse(TeacherDtoUtils.isSuchFacultyFromTeacherDtoExist(new TeacherUpdateDto(1L, "John", "Jackson",
-                "Jackson", new FacultyUpdateDto(1L, "ASDASD"))));
-    }
-
-    @Test
     void shouldReturnTeacherFromTeacherUpdateDto() {
+        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
         Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson",
                 new Faculty(1L, "FAIT", null, null), null);
         TeacherAddDto teacherAddDto = new TeacherAddDto("John", "Jackson",
@@ -60,6 +33,7 @@ class TeacherDtoUtilsTest {
 
     @Test
     void shouldReturnTeacherFromTeacherAddDto() {
+        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
         Teacher expected = new Teacher(1L, "John", "Jackson", "Jackson",
                 new Faculty(1L, "FAIT", null, null), null);
         TeacherUpdateDto teacherUpdateDto = new TeacherUpdateDto(1L, "John", "Jackson",

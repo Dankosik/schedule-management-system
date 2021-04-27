@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.dto.utils;
 import com.foxminded.university.management.schedule.dto.group.GroupDto;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -15,13 +16,18 @@ public class GroupDtoUtils {
         GroupDtoUtils.facultyService = facultyService;
     }
 
-    public static boolean isSuchFacultyFromGroupDtoExist(GroupDto groupDto) {
+    private static boolean isSuchFacultyFromGroupDtoExist(GroupDto groupDto) {
         Faculty faculty = facultyService.getFacultyById(groupDto.getFaculty().getId());
         String facultyDtoDtoName = groupDto.getFaculty().getName();
         return faculty.getName().equals(facultyDtoDtoName);
     }
 
     public static Group mapGroupDtoOnGroup(GroupDto groupDto) {
+        boolean facultyFromGroupDtoExist = isSuchFacultyFromGroupDtoExist(groupDto);
+        if (!facultyFromGroupDtoExist) {
+            throw new EntityNotFoundException("Such faculty doses not exist");
+        }
+
         Group group = new Group();
         copyFacultyFromGroupDtoToGroup(groupDto, group);
         BeanUtils.copyProperties(groupDto, group);

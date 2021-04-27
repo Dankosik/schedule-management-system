@@ -1,9 +1,11 @@
 package com.foxminded.university.management.schedule.dto.utils;
 
+import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableLectureNumberException;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto;
 import com.foxminded.university.management.schedule.dto.lecture.LectureDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
 import com.foxminded.university.management.schedule.models.*;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
@@ -29,7 +31,7 @@ public class LectureDtoUtils {
         LectureDtoUtils.audienceService = audienceService;
     }
 
-    public static boolean isSuchLessonFromLectureDtoExist(LectureDto lectureDto) {
+    private static boolean isSuchLessonFromLectureDtoExist(LectureDto lectureDto) {
         Lesson lesson = lessonService.getLessonById(lectureDto.getLesson().getId());
         Integer lessonDtoNumber = lectureDto.getLesson().getNumber();
         Time lessonDtoStarTime = lectureDto.getLesson().getStartTime();
@@ -42,7 +44,7 @@ public class LectureDtoUtils {
                 lesson.getSubject().getId().equals(mappedLessonDtoSubject.getId());
     }
 
-    public static boolean isSuchGroupFromLectureDtoExist(LectureDto lectureDto) {
+    private static boolean isSuchGroupFromLectureDtoExist(LectureDto lectureDto) {
         Group group = groupService.getGroupById(lectureDto.getGroup().getId());
         String groupDtoName = lectureDto.getGroup().getName();
         FacultyUpdateDto groupDtoFaculty = lectureDto.getGroup().getFaculty();
@@ -56,7 +58,7 @@ public class LectureDtoUtils {
                 group.getFaculty().getId().equals(mappedGroupDtoFaculty.getId());
     }
 
-    public static boolean isSuchTeacherFromLectureDtoExist(LectureDto lectureDto) {
+    private static boolean isSuchTeacherFromLectureDtoExist(LectureDto lectureDto) {
         Teacher teacher = teacherService.getTeacherById(lectureDto.getTeacher().getId());
         String teacherDtoFirstName = lectureDto.getTeacher().getFirstName();
         String teacherDtoMiddleName = lectureDto.getTeacher().getMiddleName();
@@ -69,7 +71,7 @@ public class LectureDtoUtils {
                 teacher.getFaculty().getId().equals(mappedTeacherDtoFaculty.getId());
     }
 
-    public static boolean isSuchAudienceFromLectureDtoExist(LectureDto lectureDto) {
+    private static boolean isSuchAudienceFromLectureDtoExist(LectureDto lectureDto) {
         Audience audience = audienceService.getAudienceById(lectureDto.getAudience().getId());
         Integer audienceDtoNumber = lectureDto.getAudience().getNumber();
         Integer audienceDtoCapacity = lectureDto.getAudience().getCapacity();
@@ -77,6 +79,12 @@ public class LectureDtoUtils {
     }
 
     public static Lecture mapLectureDtoOnLecture(LectureDto lectureDto) {
+        if (!lectureDto.getNumber().equals(lectureDto.getLesson().getNumber())) {
+            throw new UnacceptableLectureNumberException("Lecture number [" + lectureDto.getNumber() +
+                    "] and lesson number [" + lectureDto.getLesson().getNumber() + "] should be equal");
+        }
+        throwEntityNotFondExceptionIfLectureEntitiesNotExist(lectureDto);
+
         Lecture lecture = new Lecture();
 
         copyAudienceFromLectureDtoToLecture(lectureDto, lecture);
@@ -89,6 +97,28 @@ public class LectureDtoUtils {
 
         BeanUtils.copyProperties(lectureDto, lecture);
         return lecture;
+    }
+
+    private static void throwEntityNotFondExceptionIfLectureEntitiesNotExist(LectureDto lectureDto) {
+        boolean suchLessonFromLectureDtoExist = isSuchLessonFromLectureDtoExist(lectureDto);
+        if (!suchLessonFromLectureDtoExist) {
+            throw new EntityNotFoundException("Such lesson does not exist");
+        }
+
+        boolean suchTeacherFromLectureDtoExist = isSuchTeacherFromLectureDtoExist(lectureDto);
+        if (!suchTeacherFromLectureDtoExist) {
+            throw new EntityNotFoundException("Such teacher does not exist");
+        }
+
+        boolean suchAudienceFromLectureDtoExist = isSuchAudienceFromLectureDtoExist(lectureDto);
+        if (!suchAudienceFromLectureDtoExist) {
+            throw new EntityNotFoundException("Such audience does not exist");
+        }
+
+        boolean suchGroupFromLectureDtoExist = isSuchGroupFromLectureDtoExist(lectureDto);
+        if (!suchGroupFromLectureDtoExist) {
+            throw new EntityNotFoundException("Such group does not exist");
+        }
     }
 
     private static void copyTeacherFromLectureDtoToLecture(LectureDto lectureDto, Lecture lecture) {

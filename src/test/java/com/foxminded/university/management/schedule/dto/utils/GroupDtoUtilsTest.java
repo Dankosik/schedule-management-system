@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -22,31 +22,8 @@ class GroupDtoUtilsTest {
     private FacultyServiceImpl facultyService;
 
     @Test
-    void shouldReturnTrueIfSuchFacultyFromGroupAddDtoExist() {
-        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
-        assertTrue(GroupDtoUtils.isSuchFacultyFromGroupDtoExist(new GroupAddDto("AB-01", new FacultyUpdateDto(1L, "FAIT"))));
-    }
-
-    @Test
-    void shouldReturnFalseIfSuchFacultyFromGroupAddDtoNotExist() {
-        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "QEWQ", null, null));
-        assertFalse(GroupDtoUtils.isSuchFacultyFromGroupDtoExist(new GroupAddDto("AB-01", new FacultyUpdateDto(1L, "FAIT"))));
-    }
-
-    @Test
-    void shouldReturnTrueIfSuchFacultyFromGroupUpdateDtoExist() {
-        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
-        assertTrue(GroupDtoUtils.isSuchFacultyFromGroupDtoExist(new GroupUpdateDto(1L, "AB-01", new FacultyUpdateDto(1L, "FAIT"))));
-    }
-
-    @Test
-    void shouldReturnFalseIfSuchFacultyFromGroupUpdateDtoNotExist() {
-        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "QEWQ", null, null));
-        assertFalse(GroupDtoUtils.isSuchFacultyFromGroupDtoExist(new GroupUpdateDto(1L, "AB-01", new FacultyUpdateDto(1L, "FAIT"))));
-    }
-
-    @Test
     void shouldReturnGroupFromGroupUpdateDto() {
+        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
         Group expected = new Group(1L, "AB-01", new Faculty(1L, "FAIT", null, null), null, null);
         GroupUpdateDto groupUpdateDto = new GroupUpdateDto(1L, "AB-01", new FacultyUpdateDto(1L, "FAIT"));
         assertEquals(expected, GroupDtoUtils.mapGroupDtoOnGroup(groupUpdateDto));
@@ -54,6 +31,7 @@ class GroupDtoUtilsTest {
 
     @Test
     void shouldReturnGroupFromGroupAddDto() {
+        when(facultyService.getFacultyById(1L)).thenReturn(new Faculty(1L, "FAIT", null, null));
         Group expected = new Group(1L, "AB-01", new Faculty(1L, "FAIT", null, null), null, null);
         GroupAddDto groupAddDto = new GroupAddDto("AB-01", new FacultyUpdateDto(1L, "FAIT"));
         assertEquals(expected, GroupDtoUtils.mapGroupDtoOnGroup(groupAddDto));

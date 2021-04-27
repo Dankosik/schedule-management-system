@@ -16,7 +16,7 @@ import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -26,39 +26,8 @@ class LessonDtoUtilsTest {
     private SubjectServiceImpl subjectService;
 
     @Test
-    void shouldReturnTrueIfSuchSubjectFromLessonAddDtoExist() {
-        when(subjectService.getSubjectById(1L)).thenReturn(new Subject(1L, "Math", null));
-        assertTrue(LessonDtoUtils.isSuchSubjectFromLessonDtoExist(
-                new LessonAddDto(1, Time.valueOf(LocalTime.of(8, 30, 0)),
-                        Duration.ofMinutes(90), new SubjectUpdateDto(1L, "Math"))));
-    }
-
-    @Test
-    void shouldReturnFalseIfSuchSubjectFromLessonAddDtoNotExist() {
-        when(subjectService.getSubjectById(1L)).thenReturn(new Subject(1L, "Math", null));
-        assertFalse(LessonDtoUtils.isSuchSubjectFromLessonDtoExist(
-                new LessonAddDto(1, Time.valueOf(LocalTime.of(8, 30, 0)),
-                        Duration.ofMinutes(90), new SubjectUpdateDto(1L, "Art"))));
-    }
-
-    @Test
-    void shouldReturnTrueIfSuchSubjectFromLessonUpdateDtoExist() {
-        when(subjectService.getSubjectById(1L)).thenReturn(new Subject(1L, "Math", null));
-        assertTrue(LessonDtoUtils.isSuchSubjectFromLessonDtoExist(
-                new LessonUpdateDto(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)),
-                        Duration.ofMinutes(90), new SubjectUpdateDto(1L, "Math"))));
-    }
-
-    @Test
-    void shouldReturnFalseIfSuchSubjectFromLessonUpdateDtoNotExist() {
-        when(subjectService.getSubjectById(1L)).thenReturn(new Subject(1L, "Math", null));
-        assertFalse(LessonDtoUtils.isSuchSubjectFromLessonDtoExist(
-                new LessonUpdateDto(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)),
-                        Duration.ofMinutes(90), new SubjectUpdateDto(1L, "Art"))));
-    }
-
-    @Test
     void shouldReturnLessonFromLessonUpdateDto() {
+        when(subjectService.getSubjectById(1L)).thenReturn(new Subject(1L, "Math", null));
         Lesson expected = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)),
                 Duration.ofMinutes(90), new Subject(1L, "Math", null), null);
         LessonUpdateDto lessonUpdateDto = new LessonUpdateDto(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)),
@@ -68,6 +37,7 @@ class LessonDtoUtilsTest {
 
     @Test
     void shouldReturnGroupFromGroupAddDto() {
+        when(subjectService.getSubjectById(1L)).thenReturn(new Subject(1L, "Math", null));
         Lesson expected = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)),
                 Duration.ofMinutes(90), new Subject(1L, "Math", null), null);
         LessonAddDto lessonAddDto = new LessonAddDto(1, Time.valueOf(LocalTime.of(8, 30, 0)),

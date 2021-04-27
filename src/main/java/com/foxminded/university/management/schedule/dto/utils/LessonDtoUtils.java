@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.dto.utils;
 import com.foxminded.university.management.schedule.dto.lesson.LessonDto;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,11 @@ public class LessonDtoUtils {
     }
 
     public static Lesson mapLessonDtoOnLesson(LessonDto lessonDto) {
+        boolean suchSubjectFromLessonDtoExist = isSuchSubjectFromLessonDtoExist(lessonDto);
+        if (!suchSubjectFromLessonDtoExist) {
+            throw new EntityNotFoundException("Such subject does not exist");
+        }
+
         Lesson lesson = new Lesson();
 
         copySubjectFromLessonsDtoToLesson(lessonDto, lesson);
@@ -30,7 +36,7 @@ public class LessonDtoUtils {
         lesson.setSubject(subject);
     }
 
-    public static boolean isSuchSubjectFromLessonDtoExist(LessonDto lessonDto) {
+    private static boolean isSuchSubjectFromLessonDtoExist(LessonDto lessonDto) {
         Subject subject = subjectService.getSubjectById(lessonDto.getSubject().getId());
         String subjectDtoName = lessonDto.getSubject().getName();
         return subject.getName().equals(subjectDtoName);
