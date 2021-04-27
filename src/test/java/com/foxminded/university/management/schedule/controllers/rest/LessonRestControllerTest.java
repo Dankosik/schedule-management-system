@@ -3,11 +3,10 @@ package com.foxminded.university.management.schedule.controllers.rest;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.foxminded.university.management.schedule.dto.lesson.LessonAddDto;
-import com.foxminded.university.management.schedule.dto.lesson.LessonUpdateDto;
-import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.LessonDtoUtils;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +34,12 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = LessonRestController.class)
@@ -180,7 +182,7 @@ class LessonRestControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
 
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         verify(lessonService, times(1)).deleteLessonById(1L);
     }
@@ -222,52 +224,15 @@ class LessonRestControllerTest {
                 Duration.ofMinutes(90), subject, null);
 
         when(subjectService.isSubjectWithIdExist(1L)).thenReturn(false);
+        when(subjectService.getSubjectById(1L)).thenThrow(EntityNotFoundException.class);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/lessons/1")
+        mockMvc.perform(put("/api/v1/lessons/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\",\"subject\":{\"id\":1,\"name\":\"Math\"}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Subject with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(lessonService, never()).saveLesson(lesson);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfLessonsSubjectNotExistOnUpdateLesson() throws Exception {
-        Subject subject = new Subject();
-        subject.setName("Math");
-        subject.setId(1L);
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)),
-                Duration.ofMinutes(90), subject, null);
-
-        when(subjectService.isSubjectWithIdExist(1L)).thenReturn(true);
-        when(subjectService.getSubjectById(1L)).thenReturn(subject);
-        LessonUpdateDto lessonUpdateDto = new LessonUpdateDto(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)),
-                Duration.ofMinutes(90), new SubjectUpdateDto(1L, "Math"));
-        try (MockedStatic<LessonDtoUtils> lessonDtoUtilsMockedStatic = mockStatic(LessonDtoUtils.class)) {
-            lessonDtoUtilsMockedStatic.when(() -> LessonDtoUtils.isSuchSubjectFromLessonDtoExist(lessonUpdateDto)).thenReturn(false);
-
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .put("/api/v1/lessons/1")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .content("{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\",\"subject\":{\"id\":1,\"name\":\"Math\"}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such subject does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-            verify(lessonService, never()).saveLesson(lesson);
-        }
     }
 
     @Test
@@ -279,19 +244,13 @@ class LessonRestControllerTest {
                 Duration.ofMinutes(90), subject, null);
 
         when(subjectService.isSubjectWithIdExist(1L)).thenReturn(false);
+        when(subjectService.getSubjectById(1L)).thenThrow(EntityNotFoundException.class);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/lessons")
+        mockMvc.perform(post("/api/v1/lessons")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\",\"subject\":{\"id\":1,\"name\":\"Math\"}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Subject with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(lessonService, never()).saveLesson(lesson);
     }
@@ -307,22 +266,15 @@ class LessonRestControllerTest {
         when(subjectService.isSubjectWithIdExist(1L)).thenReturn(true);
         when(subjectService.getSubjectById(1L)).thenReturn(subject);
 
-        LessonAddDto lessonAddDto = new LessonAddDto(1, Time.valueOf(LocalTime.of(8, 30, 0)),
-                Duration.ofMinutes(90), new SubjectUpdateDto(1L, "Math"));
         try (MockedStatic<LessonDtoUtils> lessonDtoUtilsMockedStatic = mockStatic(LessonDtoUtils.class)) {
-            lessonDtoUtilsMockedStatic.when(() -> LessonDtoUtils.isSuchSubjectFromLessonDtoExist(lessonAddDto)).thenReturn(false);
+            lessonDtoUtilsMockedStatic.when(() -> LessonDtoUtils.mapLessonDtoOnLesson(any(LessonAddDto.class)))
+                    .thenThrow(EntityNotFoundException.class);
 
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post("/api/v1/lessons")
+            mockMvc.perform(post("/api/v1/lessons")
                     .accept(MediaType.APPLICATION_JSON)
                     .content("{\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\",\"subject\":{\"id\":1,\"name\":\"Math\"}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such subject does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
             verify(lessonService, never()).saveLesson(lesson);
         }

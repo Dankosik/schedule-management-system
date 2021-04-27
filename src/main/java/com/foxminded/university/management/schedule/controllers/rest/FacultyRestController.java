@@ -1,13 +1,12 @@
 package com.foxminded.university.management.schedule.controllers.rest;
 
-import com.foxminded.university.management.schedule.controllers.rest.utils.RestUtils;
+import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.dto.faculty.BaseFacultyDto;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyAddDto;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto;
 import com.foxminded.university.management.schedule.models.Faculty;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/faculties")
 public class FacultyRestController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FacultyRestController.class);
     private final FacultyServiceImpl facultyService;
 
     public FacultyRestController(FacultyServiceImpl facultyService) {
@@ -40,9 +38,9 @@ public class FacultyRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteFaculty(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteFaculty(@PathVariable("id") Long id) {
         facultyService.deleteFacultyById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping
@@ -54,18 +52,16 @@ public class FacultyRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateAudience(@Valid @RequestBody FacultyUpdateDto facultyUpdateDto, @PathVariable("id") Long id) {
+    public ResponseEntity<Faculty> updateAudience(@Valid @RequestBody FacultyUpdateDto facultyUpdateDto, @PathVariable("id") Long id) {
         Faculty faculty = new Faculty();
         BeanUtils.copyProperties(facultyUpdateDto, faculty);
 
         if (!id.equals(facultyUpdateDto.getId())) {
-            return RestUtils.buildErrorResponseEntity("URI id: " + id + " and request id: " +
-                    facultyUpdateDto.getId() + " should be the same", HttpStatus.BAD_REQUEST);
+            throw new UnacceptableUriException("URI id: " + id + " and request id: " +
+                    facultyUpdateDto.getId() + " should be the same");
         }
-
         if (!facultyService.isFacultyWithIdExist(id)) {
-            LOGGER.warn("Faculty with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Faculty with id: " + id + " is not found", HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException("Faculty with id: " + id + " is not found");
         }
 
         facultyService.saveFaculty(faculty);

@@ -1,13 +1,12 @@
 package com.foxminded.university.management.schedule.controllers.rest;
 
-import com.foxminded.university.management.schedule.controllers.rest.utils.RestUtils;
+import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.dto.subject.BaseSubjectDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectAddDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/subjects")
 public class SubjectRestController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SubjectRestController.class);
     private final SubjectServiceImpl subjectService;
 
     public SubjectRestController(SubjectServiceImpl subjectService) {
@@ -40,9 +38,9 @@ public class SubjectRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteSubject(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteSubject(@PathVariable("id") Long id) {
         subjectService.deleteSubjectById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping
@@ -54,18 +52,16 @@ public class SubjectRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateSubject(@Valid @RequestBody SubjectUpdateDto subjectUpdateDto, @PathVariable("id") Long id) {
+    public ResponseEntity<Subject> updateSubject(@Valid @RequestBody SubjectUpdateDto subjectUpdateDto, @PathVariable("id") Long id) {
         Subject subject = new Subject();
         BeanUtils.copyProperties(subjectUpdateDto, subject);
 
         if (!id.equals(subjectUpdateDto.getId())) {
-            return RestUtils.buildErrorResponseEntity("URI id: " + id + " and request id: " +
-                    subjectUpdateDto.getId() + " should be the same", HttpStatus.BAD_REQUEST);
+            throw new UnacceptableUriException("URI id: " + id + " and request id: " +
+                    subjectUpdateDto.getId() + " should be the same");
         }
-
         if (!subjectService.isSubjectWithIdExist(id)) {
-            LOGGER.warn("Subject with id: {} is not found", id);
-            return RestUtils.buildErrorResponseEntity("Subject with id: " + id + " is not found", HttpStatus.NOT_FOUND);
+            throw new EntityNotFoundException("Subject with id: " + id + " is not found");
         }
 
         subjectService.saveSubject(subject);

@@ -1,8 +1,10 @@
 package com.foxminded.university.management.schedule.controllers.rest;
 
+import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.dto.lecture.LectureUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.LectureDtoUtils;
 import com.foxminded.university.management.schedule.models.*;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,9 +31,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = LectureRestController.class)
@@ -71,8 +75,7 @@ class LectureRestControllerTest {
 
         when(lectureService.getLectureById(1L)).thenReturn(lecture);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/lectures/1")
+        RequestBuilder requestBuilder = get("/api/v1/lectures/1")
                 .accept(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
@@ -104,8 +107,7 @@ class LectureRestControllerTest {
 
         when(lectureService.getAllLectures()).thenReturn(lectures);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/v1/lectures")
+        RequestBuilder requestBuilder = get("/api/v1/lectures")
                 .accept(MediaType.APPLICATION_JSON);
 
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
@@ -214,8 +216,7 @@ class LectureRestControllerTest {
         when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
         when(lessonService.getLessonById(1L)).thenReturn(lesson);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/lectures/1")
+        RequestBuilder requestBuilder = put("/api/v1/lectures/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -230,8 +231,6 @@ class LectureRestControllerTest {
         MockHttpServletResponse response = result.getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-
-        verify(lessonService, times(1)).isLessonWithIdExist(1L);
     }
 
     @Test
@@ -247,7 +246,7 @@ class LectureRestControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
 
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         verify(lectureService, times(1)).deleteLectureById(1L);
     }
@@ -291,8 +290,7 @@ class LectureRestControllerTest {
         when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
         when(lessonService.getLessonById(1L)).thenReturn(lesson);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/lectures/1")
+        RequestBuilder requestBuilder = put("/api/v1/lectures/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -340,7 +338,7 @@ class LectureRestControllerTest {
                 Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
 
         when(audienceService.isAudienceWithIdExist(1L)).thenReturn(false);
-        when(audienceService.getAudienceById(1L)).thenReturn(audience);
+        when(audienceService.getAudienceById(1L)).thenThrow(EntityNotFoundException.class);
 
         when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
         when(teacherService.getTeacherById(1L)).thenReturn(teacher);
@@ -351,8 +349,7 @@ class LectureRestControllerTest {
         when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
         when(lessonService.getLessonById(1L)).thenReturn(lesson);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/lectures/1")
+        mockMvc.perform(put("/api/v1/lectures/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -360,14 +357,8 @@ class LectureRestControllerTest {
                         "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
                         "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
                         "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Audience with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(lessonService, never()).saveLesson(lesson);
     }
@@ -403,7 +394,7 @@ class LectureRestControllerTest {
         when(audienceService.getAudienceById(1L)).thenReturn(audience);
 
         when(teacherService.isTeacherWithIdExist(1L)).thenReturn(false);
-        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
+        when(teacherService.getTeacherById(1L)).thenThrow(EntityNotFoundException.class);
 
         when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
         when(groupService.getGroupById(1L)).thenReturn(group);
@@ -411,8 +402,7 @@ class LectureRestControllerTest {
         when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
         when(lessonService.getLessonById(1L)).thenReturn(lesson);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/lectures/1")
+        mockMvc.perform(put("/api/v1/lectures/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -420,15 +410,8 @@ class LectureRestControllerTest {
                         "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
                         "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
                         "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Teacher with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
         verify(lessonService, never()).saveLesson(lesson);
     }
 
@@ -466,13 +449,12 @@ class LectureRestControllerTest {
         when(teacherService.getTeacherById(1L)).thenReturn(teacher);
 
         when(groupService.isGroupWithIdExist(1L)).thenReturn(false);
-        when(groupService.getGroupById(1L)).thenReturn(group);
+        when(groupService.getGroupById(1L)).thenThrow(EntityNotFoundException.class);
 
         when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
         when(lessonService.getLessonById(1L)).thenReturn(lesson);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/lectures/1")
+        mockMvc.perform(put("/api/v1/lectures/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -480,14 +462,178 @@ class LectureRestControllerTest {
                         "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
                         "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
                         "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
+
+        verify(lessonService, never()).saveLesson(lesson);
+    }
+
+    @Test
+    public void shouldReturnErrorResponseIfLecturesGroupNotFoundOnAddLecture() throws Exception {
+        Group group = new Group();
+        group.setId(1L);
+        group.setName("AB-01");
+        Faculty faculty = new Faculty();
+        faculty.setId(1L);
+        faculty.setName("FAIT");
+        group.setFaculty(faculty);
+
+        Audience audience = new Audience(1L, 1, 1, null);
+
+        Subject subject = new Subject();
+        subject.setId(1L);
+        subject.setName("Math");
+
+        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
+
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
+
+        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                audience, group, lesson, teacher);
+
+        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
+        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
+                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
+
+        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
+        when(audienceService.getAudienceById(1L)).thenReturn(audience);
+
+        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
+        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
+
+        when(groupService.isGroupWithIdExist(1L)).thenReturn(false);
+        when(groupService.getGroupById(1L)).thenThrow(EntityNotFoundException.class);
+
+        when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
+        when(lessonService.getLessonById(1L)).thenReturn(lesson);
+
+        mockMvc.perform(post("/api/v1/lectures")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
+                        "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
+                        "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
+                        "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
+                        "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
+                        "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
+
+        verify(lessonService, never()).saveLesson(lesson);
+    }
+
+    @Test
+    public void shouldReturnErrorResponseIfLecturesLessonNotFoundOnAddLecture() throws Exception {
+        Group group = new Group();
+        group.setId(1L);
+        group.setName("AB-01");
+        Faculty faculty = new Faculty();
+        faculty.setId(1L);
+        faculty.setName("FAIT");
+        group.setFaculty(faculty);
+
+        Audience audience = new Audience(1L, 1, 1, null);
+
+        Subject subject = new Subject();
+        subject.setId(1L);
+        subject.setName("Math");
+
+        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
+
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
+
+        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                audience, group, lesson, teacher);
+
+        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
+        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
+                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
+
+        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
+        when(audienceService.getAudienceById(1L)).thenReturn(audience);
+
+        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
+        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
+
+        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
+        when(groupService.getGroupById(1L)).thenReturn(group);
+
+        when(lessonService.isLessonWithIdExist(1L)).thenReturn(false);
+        when(lessonService.getLessonById(1L)).thenThrow(EntityNotFoundException.class);
+
+        mockMvc.perform(post("/api/v1/lectures")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
+                        "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
+                        "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
+                        "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
+                        "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
+                        "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
+
+        verify(lessonService, never()).saveLesson(lesson);
+    }
+
+    @Test
+    public void shouldReturnErrorResponseIfLectureTeacherNotFoundOnAddLecture() throws Exception {
+        Group group = new Group();
+        group.setId(1L);
+        group.setName("AB-01");
+        Faculty faculty = new Faculty();
+        faculty.setId(1L);
+        faculty.setName("FAIT");
+        group.setFaculty(faculty);
+
+        Audience audience = new Audience(1L, 1, 1, null);
+
+        Subject subject = new Subject();
+        subject.setId(1L);
+        subject.setName("Math");
+
+        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
+
+        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
+
+        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
+                audience, group, lesson, teacher);
+
+        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
+        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
+                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
+
+        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
+        when(audienceService.getAudienceById(1L)).thenReturn(audience);
+
+        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(false);
+        when(teacherService.getTeacherById(1L)).thenThrow(EntityNotFoundException.class);
+
+        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
+        when(groupService.getGroupById(1L)).thenReturn(group);
+
+        when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
+        when(lessonService.getLessonById(1L)).thenReturn(lesson);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/v1/lectures")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
+                        "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
+                        "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
+                        "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
+                        "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
+                        "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Group with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+        mockMvc.perform(post("/api/v1/lectures")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
+                        "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
+                        "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
+                        "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
+                        "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
+                        "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(lessonService, never()).saveLesson(lesson);
     }
@@ -529,10 +675,9 @@ class LectureRestControllerTest {
         when(groupService.getGroupById(1L)).thenReturn(group);
 
         when(lessonService.isLessonWithIdExist(1L)).thenReturn(false);
-        when(lessonService.getLessonById(1L)).thenReturn(lesson);
+        when(lessonService.getLessonById(1L)).thenThrow(EntityNotFoundException.class);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/lectures/1")
+        mockMvc.perform(put("/api/v1/lectures/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -540,14 +685,8 @@ class LectureRestControllerTest {
                         "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
                         "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
                         "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Lesson with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(lessonService, never()).saveLesson(lesson);
     }
@@ -592,11 +731,10 @@ class LectureRestControllerTest {
         when(lessonService.getLessonById(1L)).thenReturn(lesson);
 
         try (MockedStatic<LectureDtoUtils> lectureDtoUtilsMockedStatic = mockStatic(LectureDtoUtils.class)) {
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchAudienceFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(false);
+            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.mapLectureDtoOnLecture(any(LectureUpdateDto.class)))
+                    .thenThrow(EntityNotFoundException.class);
 
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .put("/api/v1/lectures/1")
+            mockMvc.perform(put("/api/v1/lectures/1")
                     .accept(MediaType.APPLICATION_JSON)
                     .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                             "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -604,222 +742,8 @@ class LectureRestControllerTest {
                             "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
                             "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
                             "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such audience does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-            verify(lessonService, never()).saveLesson(lesson);
-        }
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfLecturesLessonNotExistOnUpdateLecture() throws Exception {
-        Group group = new Group();
-        group.setId(1L);
-        group.setName("AB-01");
-        Faculty faculty = new Faculty();
-        faculty.setId(1L);
-        faculty.setName("FAIT");
-        group.setFaculty(faculty);
-
-        Audience audience = new Audience(1L, 1, 1, null);
-
-        Subject subject = new Subject();
-        subject.setId(1L);
-        subject.setName("Math");
-
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
-
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
-
-        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
-                audience, group, lesson, teacher);
-
-        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
-        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
-                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
-
-        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
-        when(audienceService.getAudienceById(1L)).thenReturn(audience);
-
-        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
-        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
-
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-        when(groupService.getGroupById(1L)).thenReturn(group);
-
-        when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
-        when(lessonService.getLessonById(1L)).thenReturn(lesson);
-        try (MockedStatic<LectureDtoUtils> lectureDtoUtilsMockedStatic = mockStatic(LectureDtoUtils.class)) {
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchAudienceFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchTeacherFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchGroupFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchLessonFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(false);
-
-
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .put("/api/v1/lectures/1")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
-                            "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
-                            "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
-                            "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
-                            "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
-                            "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such lesson does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-        }
-        verify(lessonService, never()).saveLesson(lesson);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfLecturesGroupNotExistOnUpdateLecture() throws Exception {
-        Group group = new Group();
-        group.setId(1L);
-        group.setName("AB-01");
-        Faculty faculty = new Faculty();
-        faculty.setId(1L);
-        faculty.setName("FAIT");
-        group.setFaculty(faculty);
-
-        Audience audience = new Audience(1L, 1, 1, null);
-
-        Subject subject = new Subject();
-        subject.setId(1L);
-        subject.setName("Math");
-
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
-
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
-
-        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
-                audience, group, lesson, teacher);
-
-        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
-        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
-                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
-
-        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
-        when(audienceService.getAudienceById(1L)).thenReturn(audience);
-
-        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
-        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
-
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-        when(groupService.getGroupById(1L)).thenReturn(group);
-
-        when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
-        when(lessonService.getLessonById(1L)).thenReturn(lesson);
-
-        try (MockedStatic<LectureDtoUtils> lectureDtoUtilsMockedStatic = mockStatic(LectureDtoUtils.class)) {
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchAudienceFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchTeacherFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchGroupFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(false);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchLessonFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .put("/api/v1/lectures/1")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
-                            "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
-                            "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
-                            "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
-                            "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
-                            "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such group does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-            verify(lessonService, never()).saveLesson(lesson);
-        }
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfLecturesTeacherNotExistOnUpdateLecture() throws Exception {
-        Group group = new Group();
-        group.setId(1L);
-        group.setName("AB-01");
-        Faculty faculty = new Faculty();
-        faculty.setId(1L);
-        faculty.setName("FAIT");
-        group.setFaculty(faculty);
-
-        Audience audience = new Audience(1L, 1, 1, null);
-
-        Subject subject = new Subject();
-        subject.setId(1L);
-        subject.setName("Math");
-
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
-
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
-
-        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
-                audience, group, lesson, teacher);
-
-        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
-        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
-                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
-
-        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
-        when(audienceService.getAudienceById(1L)).thenReturn(audience);
-
-        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
-        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
-
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-        when(groupService.getGroupById(1L)).thenReturn(group);
-
-        when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
-        when(lessonService.getLessonById(1L)).thenReturn(lesson);
-
-        try (MockedStatic<LectureDtoUtils> lectureDtoUtilsMockedStatic = mockStatic(LectureDtoUtils.class)) {
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchAudienceFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchTeacherFromLectureDtoExist(any(LectureUpdateDto.class))).
-                    thenReturn(false);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchGroupFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-            lectureDtoUtilsMockedStatic.when(() -> LectureDtoUtils.isSuchLessonFromLectureDtoExist(any(LectureUpdateDto.class)))
-                    .thenReturn(true);
-
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .put("/api/v1/lectures/1")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
-                            "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
-                            "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
-                            "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
-                            "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
-                            "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such teacher does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
             verify(lessonService, never()).saveLesson(lesson);
         }
@@ -853,7 +777,7 @@ class LectureRestControllerTest {
                 Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
 
         when(audienceService.isAudienceWithIdExist(1L)).thenReturn(false);
-        when(audienceService.getAudienceById(1L)).thenReturn(audience);
+        when(audienceService.getAudienceById(1L)).thenThrow(EntityNotFoundException.class);
 
         when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
         when(teacherService.getTeacherById(1L)).thenReturn(teacher);
@@ -864,8 +788,7 @@ class LectureRestControllerTest {
         when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
         when(lessonService.getLessonById(1L)).thenReturn(lesson);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/lectures")
+        mockMvc.perform(post("/api/v1/lectures")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -873,197 +796,12 @@ class LectureRestControllerTest {
                         "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
                         "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
                         "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Audience with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(lessonService, never()).saveLesson(lesson);
     }
 
-    @Test
-    public void shouldReturnErrorResponseIfLecturesGroupNotFoundOnAddLecture() throws Exception {
-        Group group = new Group();
-        group.setId(1L);
-        group.setName("AB-01");
-        Faculty faculty = new Faculty();
-        faculty.setId(1L);
-        faculty.setName("FAIT");
-        group.setFaculty(faculty);
-
-        Audience audience = new Audience(1L, 1, 1, null);
-
-        Subject subject = new Subject();
-        subject.setId(1L);
-        subject.setName("Math");
-
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
-
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
-
-        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
-                audience, group, lesson, teacher);
-
-        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
-        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
-                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
-
-        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
-        when(audienceService.getAudienceById(1L)).thenReturn(audience);
-
-        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
-        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
-
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(false);
-        when(groupService.getGroupById(1L)).thenReturn(group);
-
-        when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
-        when(lessonService.getLessonById(1L)).thenReturn(lesson);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/lectures")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
-                        "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
-                        "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
-                        "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
-                        "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
-                        "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Group with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(lessonService, never()).saveLesson(lesson);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfLecturesLessonNotFoundOnAddLecture() throws Exception {
-        Group group = new Group();
-        group.setId(1L);
-        group.setName("AB-01");
-        Faculty faculty = new Faculty();
-        faculty.setId(1L);
-        faculty.setName("FAIT");
-        group.setFaculty(faculty);
-
-        Audience audience = new Audience(1L, 1, 1, null);
-
-        Subject subject = new Subject();
-        subject.setId(1L);
-        subject.setName("Math");
-
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
-
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
-
-        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
-                audience, group, lesson, teacher);
-
-        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
-        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
-                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
-
-        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
-        when(audienceService.getAudienceById(1L)).thenReturn(audience);
-
-        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(true);
-        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
-
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-        when(groupService.getGroupById(1L)).thenReturn(group);
-
-        when(lessonService.isLessonWithIdExist(1L)).thenReturn(false);
-        when(lessonService.getLessonById(1L)).thenReturn(lesson);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/lectures")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
-                        "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
-                        "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
-                        "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
-                        "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
-                        "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Lesson with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(lessonService, never()).saveLesson(lesson);
-    }
-
-    @Test
-    public void shouldReturnErrorResponseIfLecturesTeacherNotFoundOnAddLecture() throws Exception {
-        Group group = new Group();
-        group.setId(1L);
-        group.setName("AB-01");
-        Faculty faculty = new Faculty();
-        faculty.setId(1L);
-        faculty.setName("FAIT");
-        group.setFaculty(faculty);
-
-        Audience audience = new Audience(1L, 1, 1, null);
-
-        Subject subject = new Subject();
-        subject.setId(1L);
-        subject.setName("Math");
-
-        Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)), Duration.ofMinutes(90), subject, null);
-
-        Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
-
-        Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
-                audience, group, lesson, teacher);
-
-        when(lectureService.isLectureWithIdExist(1L)).thenReturn(true);
-        when(lectureService.saveLecture(lecture)).thenReturn(new Lecture(1L, 1,
-                Date.valueOf(LocalDate.of(2021, 1, 1)), audience, group, lesson, teacher));
-
-        when(audienceService.isAudienceWithIdExist(1L)).thenReturn(true);
-        when(audienceService.getAudienceById(1L)).thenReturn(audience);
-
-        when(teacherService.isTeacherWithIdExist(1L)).thenReturn(false);
-        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
-
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-        when(groupService.getGroupById(1L)).thenReturn(group);
-
-        when(lessonService.isLessonWithIdExist(1L)).thenReturn(true);
-        when(lessonService.getLessonById(1L)).thenReturn(lesson);
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/lectures")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
-                        "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
-                        "\"lesson\":{\"id\":1,\"number\":1,\"startTime\":\"08:30:00\",\"duration\":\"PT1H30M\"," +
-                        "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
-                        "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
-                        "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Teacher with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-        verify(lessonService, never()).saveLesson(lesson);
-    }
 
     @Test
     public void shouldReturnErrorResponseURIAndIdNotSameOnUpdateLecture() throws Exception {
@@ -1088,8 +826,7 @@ class LectureRestControllerTest {
         Lecture lecture = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2021, 1, 1)),
                 audience, group, lesson, teacher);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/lectures/2")
+        mockMvc.perform(put("/api/v1/lectures/2")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"number\":1,\"date\":\"2021-01-01\",\"audience\":{\"number\":1,\"capacity\":1,\"id\":1}," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}," +
@@ -1097,14 +834,8 @@ class LectureRestControllerTest {
                         "\"subject\":{\"id\":1,\"name\":\"Math\"}}," +
                         "\"teacher\":{ \"firstName\":\"John\",\"lastName\":\"Jackson\",\"middleName\":\"Jackson\",\"id\":1," +
                         "\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"BAD_REQUEST\",\"message\":\"URI id: 2 and request id: 1 should be the same\",\"status\":400}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(UnacceptableUriException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(lectureService, never()).saveLecture(lecture);
     }

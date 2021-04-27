@@ -2,12 +2,11 @@ package com.foxminded.university.management.schedule.controllers.rest;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto;
-import com.foxminded.university.management.schedule.dto.teacher.TeacherAddDto;
 import com.foxminded.university.management.schedule.dto.teacher.TeacherUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.TeacherDtoUtils;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,9 +31,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = TeacherRestController.class)
@@ -171,7 +173,7 @@ class TeacherRestControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
 
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         verify(teacherService, times(1)).deleteTeacherById(1L);
     }
@@ -210,20 +212,13 @@ class TeacherRestControllerTest {
         faculty.setId(1L);
         Teacher teacher = new Teacher(1L, "Mary", "Taylor", "Garcia", faculty, null);
 
-        when(facultyService.isFacultyWithIdExist(1L)).thenReturn(false);
+        when(facultyService.getFacultyById(1L)).thenThrow(EntityNotFoundException.class);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/teachers/1")
+        mockMvc.perform(put("/api/v1/teachers/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"firstName\":\"Mary\",\"lastName\":\"Taylor\",\"middleName\":\"Garcia\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Faculty with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(teacherService, never()).saveTeacher(teacher);
     }
@@ -237,79 +232,36 @@ class TeacherRestControllerTest {
 
         when(facultyService.isFacultyWithIdExist(1L)).thenReturn(true);
         when(facultyService.getFacultyById(1L)).thenReturn(faculty);
-        TeacherUpdateDto teacherUpdateDto = new TeacherUpdateDto(1L, "Mary", "Taylor", "Garcia", new FacultyUpdateDto(1L, "FAIT"));
         try (MockedStatic<TeacherDtoUtils> teacherDtoUtilsMockedStatic = mockStatic(TeacherDtoUtils.class)) {
-            teacherDtoUtilsMockedStatic.when(() -> TeacherDtoUtils.isSuchFacultyFromTeacherDtoExist(teacherUpdateDto)).thenReturn(false);
+            teacherDtoUtilsMockedStatic.when(() -> TeacherDtoUtils.mapTeacherDtoOnTeacher(any(TeacherUpdateDto.class)))
+                    .thenThrow(EntityNotFoundException.class);
 
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .put("/api/v1/teachers/1")
+            mockMvc.perform(put("/api/v1/teachers/1")
                     .accept(MediaType.APPLICATION_JSON)
                     .content("{\"id\":1,\"firstName\":\"Mary\",\"lastName\":\"Taylor\",\"middleName\":\"Garcia\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such faculty does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
             verify(teacherService, never()).saveTeacher(teacher);
         }
     }
 
     @Test
-    public void shouldReturnErrorResponseIfStudentsGroupNotFoundOnAddTeacher() throws Exception {
+    public void shouldReturnErrorResponseIfTeacherFacultyNotFoundOnAddTeacher() throws Exception {
         Faculty faculty = new Faculty();
         faculty.setName("FAIT");
         faculty.setId(1L);
         Teacher teacher = new Teacher(1L, "Mary", "Taylor", "Garcia", faculty, null);
 
-        when(facultyService.isFacultyWithIdExist(1L)).thenReturn(false);
+        when(facultyService.getFacultyById(1L)).thenThrow(EntityNotFoundException.class);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/teachers")
+        mockMvc.perform(post("/api/v1/teachers")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"firstName\":\"Mary\",\"lastName\":\"Taylor\",\"middleName\":\"Garcia\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Faculty with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(teacherService, never()).saveTeacher(teacher);
-    }
-
-
-    @Test
-    public void shouldReturnErrorResponseIfStudentsGroupNotExistOnAddTeacher() throws Exception {
-        Faculty faculty = new Faculty();
-        faculty.setName("FAIT");
-        faculty.setId(1L);
-        Teacher teacher = new Teacher("Mary", "Taylor", "Garcia", faculty, null);
-
-        when(facultyService.isFacultyWithIdExist(1L)).thenReturn(true);
-        when(facultyService.getFacultyById(1L)).thenReturn(faculty);
-        TeacherAddDto teacherAddDto = new TeacherAddDto("Mary", "Taylor", "Garcia", new FacultyUpdateDto(1L, "FAIT"));
-        try (MockedStatic<TeacherDtoUtils> teacherDtoUtilsMockedStatic = mockStatic(TeacherDtoUtils.class)) {
-            teacherDtoUtilsMockedStatic.when(() -> TeacherDtoUtils.isSuchFacultyFromTeacherDtoExist(teacherAddDto)).thenReturn(false);
-
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post("/api/v1/teachers")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .content("{\"firstName\":\"Mary\",\"lastName\":\"Taylor\",\"middleName\":\"Garcia\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such faculty does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-            verify(teacherService, never()).saveTeacher(teacher);
-        }
     }
 
     @Test

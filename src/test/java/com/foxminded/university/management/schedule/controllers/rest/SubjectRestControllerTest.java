@@ -135,7 +135,7 @@ class SubjectRestControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
 
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         verify(subjectService, times(1)).deleteSubjectById(1L);
     }

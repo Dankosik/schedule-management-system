@@ -134,7 +134,7 @@ class FacultyRestControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
 
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         verify(facultyService, times(1)).deleteFacultyById(1L);
     }

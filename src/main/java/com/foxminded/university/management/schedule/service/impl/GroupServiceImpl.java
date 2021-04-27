@@ -33,9 +33,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group saveGroup(Group group) {
         boolean isFacultyPresent = facultyRepository.findById(group.getFaculty().getId()).isPresent();
-        LOGGER.debug("Audience is present: {}", isFacultyPresent);
+        LOGGER.debug("Faculty is present: {}", isFacultyPresent);
         if (!isFacultyPresent)
-            throw new EntityNotFoundException("Group's faculty with id: " + group.getFaculty().getId() + " is not exist");
+            throw new EntityNotFoundException("Group faculty with id: " + group.getFaculty().getId() + " is not exist");
         try {
             return groupRepository.saveAndFlush(group);
         } catch (DataIntegrityViolationException e) {

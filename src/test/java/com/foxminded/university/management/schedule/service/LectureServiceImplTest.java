@@ -1,13 +1,7 @@
 package com.foxminded.university.management.schedule.service;
 
-import com.foxminded.university.management.schedule.models.Audience;
-import com.foxminded.university.management.schedule.models.Lecture;
-import com.foxminded.university.management.schedule.models.Lesson;
-import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.repository.AudienceRepository;
-import com.foxminded.university.management.schedule.repository.LectureRepository;
-import com.foxminded.university.management.schedule.repository.LessonRepository;
-import com.foxminded.university.management.schedule.repository.TeacherRepository;
+import com.foxminded.university.management.schedule.models.*;
+import com.foxminded.university.management.schedule.repository.*;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.LectureServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -33,17 +27,18 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {LectureServiceImpl.class})
 class LectureServiceImplTest {
+    private final Group group = new Group(1L, "AB-01", new Faculty(1L, "FAIT", null, null), null, null);
     private final Lesson lesson = new Lesson(1L, 1, Time.valueOf(LocalTime.of(8, 30, 0)),
             Duration.ofMinutes(90), null, null);
     private final Audience audience = new Audience(1L, 202, 45, null);
     private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", null, null);
     private final Lecture lecture = new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-            audience, null, lesson, teacher);
+            audience, group, lesson, teacher);
     private final List<Lecture> lectures = List.of(lecture,
             new Lecture(2L, 2, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                    audience, null, lesson, teacher),
+                    audience, group, lesson, teacher),
             new Lecture(3L, 3, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                    audience, null, lesson, teacher));
+                    audience, group, lesson, teacher));
     @Autowired
     private LectureServiceImpl lectureService;
     @MockBean
@@ -54,17 +49,17 @@ class LectureServiceImplTest {
     private TeacherRepository teacherRepository;
     @MockBean
     private AudienceRepository audienceRepository;
+    @MockBean
+    private GroupRepository groupRepository;
 
     @Test
     void shouldSaveLecture() {
         when(lectureRepository.save(lecture)).thenReturn(new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                audience, null, lesson, teacher));
-        when(teacherRepository.findById(1L))
-                .thenReturn(Optional.of(teacher));
-        when(audienceRepository.findById(1L))
-                .thenReturn(Optional.of(audience));
-        when(lessonRepository.findById(1L))
-                .thenReturn(Optional.of(lesson));
+                audience, group, lesson, teacher));
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(audienceRepository.findById(1L)).thenReturn(Optional.of(audience));
+        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(group));
         Lecture actual = lectureService.saveLecture(lecture);
 
         assertEquals(lecture, actual);
@@ -118,14 +113,15 @@ class LectureServiceImplTest {
                 .thenReturn(Optional.of(lesson));
 
         when(lectureRepository.save(new Lecture(1, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                audience, null, lesson, teacher))).thenReturn(lecture);
+                audience, group, lesson, teacher))).thenReturn(lecture);
         when(lectureRepository.save(new Lecture(2, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                audience, null, lesson, teacher))).thenReturn(lectures.get(1));
+                audience, group, lesson, teacher))).thenReturn(lectures.get(1));
         when(lectureRepository.save(new Lecture(3, Date.valueOf(LocalDate.of(2020, 1, 1)),
-                audience, null, lesson, teacher))).thenReturn(lectures.get(2));
+                audience, group, lesson, teacher))).thenReturn(lectures.get(2));
         when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
         when(audienceRepository.findById(1L)).thenReturn(Optional.of(audience));
         when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(group));
 
         List<Lecture> actual = lectureService.saveAllLectures(lectures);
 
@@ -194,6 +190,26 @@ class LectureServiceImplTest {
 
         verify(teacherRepository, times(1)).findById(1L);
         verify(audienceRepository, times(1)).findById(1L);
+        verify(lectureRepository, never()).save(expected);
+    }
+
+    @Test
+    void shouldThrowExceptionIfLectureGroupNotFound() {
+        Lecture expected = new Lecture(1L, 1, Date.valueOf(LocalDate.of(2020, 1, 1)),
+                audience, group, lesson, teacher);
+
+        when(lectureRepository.findById(1L)).thenReturn(Optional.of(expected));
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(audienceRepository.findById(1L)).thenReturn(Optional.of(audience));
+        when(lessonRepository.findById(1L)).thenReturn(Optional.of(lesson));
+        when(groupRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> lectureService.saveLecture(expected));
+
+        verify(teacherRepository, times(1)).findById(1L);
+        verify(audienceRepository, times(1)).findById(1L);
+        verify(groupRepository, times(1)).findById(1L);
+        verify(lessonRepository, times(1)).findById(1L);
         verify(lectureRepository, never()).save(expected);
     }
 

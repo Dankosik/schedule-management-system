@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto;
 import com.foxminded.university.management.schedule.dto.group.GroupUpdateDto;
 import com.foxminded.university.management.schedule.dto.student.StudentAddDto;
-import com.foxminded.university.management.schedule.dto.student.StudentUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.StudentDtoUtils;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
+import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
 import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,9 +33,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = StudentRestController.class)
@@ -170,7 +173,7 @@ class StudentRestControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
 
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         verify(studentService, times(1)).deleteStudentById(1L);
     }
@@ -204,58 +207,24 @@ class StudentRestControllerTest {
     public void shouldReturnErrorResponseIfStudentsGroupNotFoundOnUpdateStudent() throws Exception {
         Student student = new Student(1L, "Mary", "Taylor", "Garcia", 1, group);
 
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(false);
+        when(groupService.getGroupById(1L)).thenThrow(EntityNotFoundException.class);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/v1/students/1")
+        mockMvc.perform(put("/api/v1/students/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("{\"id\":1,\"firstName\":\"Mary\",\"lastName\":\"Taylor\",\"middleName\":\"Garcia\",\"courseNumber\":1," +
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Group with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(studentService, never()).saveStudent(student);
     }
 
-    @Test
-    public void shouldReturnErrorResponseIfStudentsGroupNotExistOnUpdateStudent() throws Exception {
-        Student student = new Student(1L, "Mary", "Taylor", "Garcia", 1, group);
-
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-        when(groupService.getGroupById(1L)).thenReturn(group);
-        StudentUpdateDto studentUpdateDto = new StudentUpdateDto(1L, "Mary", "Taylor", "Garcia",
-                1, new GroupUpdateDto(1L, "AB-01", new FacultyUpdateDto(1L, "FAIT")));
-        try (MockedStatic<StudentDtoUtils> lessonDtoUtilsMockedStatic = mockStatic(StudentDtoUtils.class)) {
-            lessonDtoUtilsMockedStatic.when(() -> StudentDtoUtils.isSuchGroupFromStudentDtoExist(studentUpdateDto)).thenReturn(false);
-
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .put("/api/v1/students/1")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .content("{\"id\":1,\"firstName\":\"Mary\",\"lastName\":\"Taylor\",\"middleName\":\"Garcia\",\"courseNumber\":1," +
-                            "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such group does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
-            verify(studentService, never()).saveStudent(student);
-        }
-    }
 
     @Test
     public void shouldReturnErrorResponseIfStudentsGroupNotFoundOnAddStudent() throws Exception {
         Student student = new Student("Mary", "Taylor", "Garcia", 1, group);
 
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(false);
+        when(groupService.getGroupById(1L)).thenThrow(EntityNotFoundException.class);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/students")
@@ -264,12 +233,12 @@ class StudentRestControllerTest {
                         "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-        String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Group with id: 1 is not found\",\"status\":404}";
-
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+        mockMvc.perform(post("/api/v1/students")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"firstName\":\"Mary\",\"lastName\":\"Taylor\",\"middleName\":\"Garcia\",\"courseNumber\":1," +
+                        "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
         verify(studentService, never()).saveStudent(student);
     }
@@ -278,25 +247,20 @@ class StudentRestControllerTest {
     public void shouldReturnErrorResponseIfStudentsGroupNotExistOnAddStudent() throws Exception {
         Student student = new Student("Mary", "Taylor", "Garcia", 1, group);
 
-        when(groupService.isGroupWithIdExist(1L)).thenReturn(true);
-        when(groupService.getGroupById(1L)).thenReturn(group);
+        when(groupService.isGroupWithIdExist(1L)).thenReturn(false);
+        when(groupService.getGroupById(1L)).thenThrow(EntityNotFoundException.class);
         StudentAddDto studentAddDto = new StudentAddDto("Mary", "Taylor", "Garcia",
                 1, new GroupUpdateDto(1L, "AB-01", new FacultyUpdateDto(1L, "FAIT")));
-        try (MockedStatic<StudentDtoUtils> lessonDtoUtilsMockedStatic = mockStatic(StudentDtoUtils.class)) {
-            lessonDtoUtilsMockedStatic.when(() -> StudentDtoUtils.isSuchGroupFromStudentDtoExist(studentAddDto)).thenReturn(false);
+        try (MockedStatic<StudentDtoUtils> studentDtoUtilsMockedStatic = mockStatic(StudentDtoUtils.class)) {
+            studentDtoUtilsMockedStatic.when(() -> StudentDtoUtils.mapStudentDtoOnStudent(any(StudentAddDto.class)))
+                    .thenThrow(EntityNotFoundException.class);
 
-            RequestBuilder requestBuilder = MockMvcRequestBuilders
-                    .post("/api/v1/students")
+            mockMvc.perform(post("/api/v1/students")
                     .accept(MediaType.APPLICATION_JSON)
                     .content("{\"firstName\":\"Mary\",\"lastName\":\"Taylor\",\"middleName\":\"Garcia\",\"courseNumber\":1," +
                             "\"group\":{\"id\":1,\"name\":\"AB-01\",\"faculty\":{\"name\":\"FAIT\",\"id\":1}}}")
-                    .contentType(MediaType.APPLICATION_JSON);
-            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-            String expected = "{\"error\":\"NOT_FOUND\",\"message\":\"Such group does not exist\",\"status\":404}";
-
-            JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-            assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(a -> assertEquals(EntityNotFoundException.class, Objects.requireNonNull(a.getResolvedException()).getClass()));
 
             verify(studentService, never()).saveStudent(student);
         }

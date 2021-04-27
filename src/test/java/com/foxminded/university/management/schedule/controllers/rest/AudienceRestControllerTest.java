@@ -136,7 +136,7 @@ class AudienceRestControllerTest {
 
         MockHttpServletResponse response = result.getResponse();
 
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         verify(audienceService, times(1)).deleteAudienceById(1L);
     }
