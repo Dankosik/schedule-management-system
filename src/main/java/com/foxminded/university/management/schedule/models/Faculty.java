@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.foxminded.university.management.schedule.models.validators.FacultyName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -14,9 +15,13 @@ import java.util.Objects;
 @Table(name = "faculties")
 @JsonPropertyOrder({"name"})
 public class Faculty {
+    @Schema(description = "Unique identifier of the Faculty.",
+            example = "1", required = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Schema(description = "Name of the faculty.",
+            example = "FAIT", required = true)
     @FacultyName
     private String name;
     @JsonIgnore

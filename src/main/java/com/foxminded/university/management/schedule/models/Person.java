@@ -2,16 +2,23 @@ package com.foxminded.university.management.schedule.models;
 
 
 import com.foxminded.university.management.schedule.models.validators.HumanName;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
 public abstract class Person {
+    @Schema(description = "First name of the person.",
+            example = "John", required = true)
     @HumanName
     private String firstName;
+    @Schema(description = "Last name of the person.",
+            example = "Williams", required = true)
     @HumanName
     private String lastName;
+    @Schema(description = "Middle name name of the person.",
+            example = "Williams", required = true)
     @HumanName
     private String middleName;
 

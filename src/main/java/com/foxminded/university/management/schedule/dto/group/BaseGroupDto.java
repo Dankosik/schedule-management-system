@@ -3,11 +3,16 @@ package com.foxminded.university.management.schedule.dto.group;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Student;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
 public class BaseGroupDto {
+    @Schema(description = "Unique identifier of the Group.",
+            example = "1", required = true)
     private Long id;
+    @Schema(description = "Name of the group.",
+            example = "AB-01", required = true)
     private String name;
     private Faculty faculty;
     private List<Student> students;

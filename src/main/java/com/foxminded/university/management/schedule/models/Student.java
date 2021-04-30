@@ -1,6 +1,7 @@
 package com.foxminded.university.management.schedule.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -10,11 +11,15 @@ import java.util.Objects;
 @Entity
 @Table(name = "students")
 public class Student extends Person {
+    @Schema(description = "Unique identifier of the Student.",
+            example = "1", required = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Min(value = 1, message = "Must be at least 1")
     @Max(value = 4, message = "Must be no more than 4")
+    @Schema(description = "Course number of the student.",
+            example = "2", required = true)
     private Integer courseNumber;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")

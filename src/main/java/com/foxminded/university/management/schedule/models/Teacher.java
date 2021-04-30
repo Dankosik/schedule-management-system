@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "teachers")
 public class Teacher extends Person {
+    @Schema(description = "Unique identifier of the Teacher.",
+            example = "1", required = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

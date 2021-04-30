@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foxminded.university.management.schedule.models.validators.SubjectName;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,9 +11,13 @@ import java.util.Objects;
 @Entity
 @Table(name = "subjects")
 public class Subject {
+    @Schema(description = "Unique identifier of the Subject.",
+            example = "1", required = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Schema(description = "Name of the subject.",
+            example = "Math", required = true)
     @SubjectName
     private String name;
     @JsonIgnore

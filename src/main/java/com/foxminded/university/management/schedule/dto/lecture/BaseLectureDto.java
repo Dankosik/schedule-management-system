@@ -5,12 +5,19 @@ import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Teacher;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.sql.Date;
 
 public class BaseLectureDto {
+    @Schema(description = "Unique identifier of the Lecture.",
+            example = "1", required = true)
     private Long id;
+    @Schema(description = "Number of the lecture.",
+            example = "2", required = true)
     private Integer number;
+    @Schema(description = "Date of the lecture.",
+            example = "2021-01-03", required = true)
     private Date date;
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Audience audience;

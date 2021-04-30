@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.foxminded.university.management.schedule.models.validators.GroupName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -13,9 +14,13 @@ import java.util.Objects;
 @Entity
 @Table(name = "groups")
 public class Group {
+    @Schema(description = "Unique identifier of the Group.",
+            example = "1", required = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Schema(description = "Name of the group.",
+            example = "AB-01", required = true)
     @GroupName
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -7,12 +7,17 @@ import com.foxminded.university.management.schedule.dto.group.GroupUpdateDto;
 import com.foxminded.university.management.schedule.dto.lesson.LessonUpdateDto;
 import com.foxminded.university.management.schedule.dto.teacher.TeacherUpdateDto;
 import com.foxminded.university.management.schedule.models.validators.CurrentYear;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 public class LectureAddDto implements LectureDto {
+    @Schema(description = "Number of the lecture.",
+            example = "2", required = true)
     private Integer number;
+    @Schema(description = "Date of the lecture.",
+            example = "2021-01-03", required = true)
     @CurrentYear
     private Date date;
     @NotNull

@@ -3,6 +3,7 @@ package com.foxminded.university.management.schedule.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foxminded.university.management.schedule.models.validators.DurationConstraint;
 import com.foxminded.university.management.schedule.models.validators.StartTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -16,15 +17,23 @@ import java.util.Objects;
 @Entity
 @Table(name = "lessons")
 public class Lesson {
+    @Schema(description = "Unique identifier of the Lesson.",
+            example = "1", required = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Schema(description = "Number of the lesson.",
+            example = "2", required = true)
     @NotNull
     @Min(value = 1, message = "Must be at least 1")
     @Max(value = 8, message = "Must be no more than 8")
     private Integer number;
+    @Schema(description = "Start time of the lesson.",
+            example = "13:30:00", required = true)
     @StartTime
     private Time startTime;
+    @Schema(description = "Duration of the lesson.",
+            example = "PT1H30M", required = true)
     @DurationConstraint
     private Duration duration;
     @ManyToOne

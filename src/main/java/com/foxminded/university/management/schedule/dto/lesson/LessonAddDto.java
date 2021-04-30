@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
 import com.foxminded.university.management.schedule.models.validators.DurationConstraint;
 import com.foxminded.university.management.schedule.models.validators.StartTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -13,12 +14,18 @@ import java.sql.Time;
 import java.time.Duration;
 
 public class LessonAddDto implements LessonDto {
+    @Schema(description = "Number of the lesson.",
+            example = "2", required = true)
     @NotNull
     @Min(value = 1, message = "Must be at least 1")
     @Max(value = 8, message = "Must be no more than 8")
     private Integer number;
+    @Schema(description = "Start time of the lesson.",
+            example = "13:30:00", required = true)
     @StartTime
     private Time startTime;
+    @Schema(description = "Duration of the lesson.",
+            example = "PT1H30M", required = true)
     @DurationConstraint
     private Duration duration;
     @NotNull

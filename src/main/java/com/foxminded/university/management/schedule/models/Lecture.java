@@ -2,6 +2,7 @@ package com.foxminded.university.management.schedule.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.foxminded.university.management.schedule.models.validators.CurrentYear;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -10,10 +11,16 @@ import java.util.Objects;
 @Entity
 @Table(name = "lectures")
 public class Lecture {
+    @Schema(description = "Unique identifier of the Lecture.",
+            example = "1", required = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Schema(description = "Number of the lecture.",
+            example = "2", required = true)
     private Integer number;
+    @Schema(description = "Date of the lecture.",
+            example = "2021-01-03", required = true)
     @CurrentYear
     private Date date;
     @ManyToOne(fetch = FetchType.LAZY)

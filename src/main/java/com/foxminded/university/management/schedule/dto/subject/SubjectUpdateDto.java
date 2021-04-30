@@ -3,12 +3,17 @@ package com.foxminded.university.management.schedule.dto.subject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.foxminded.university.management.schedule.models.validators.SubjectName;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 
 public class SubjectUpdateDto {
+    @Schema(description = "Unique identifier of the Subject.",
+            example = "1", required = true)
     @NotNull
     private Long id;
+    @Schema(description = "Name of the subject.",
+            example = "Math", required = true)
     @SubjectName
     private String name;
 

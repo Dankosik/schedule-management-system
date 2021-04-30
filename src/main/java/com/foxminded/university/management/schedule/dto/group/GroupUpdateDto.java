@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto;
 import com.foxminded.university.management.schedule.models.validators.GroupName;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
 
 public class GroupUpdateDto implements GroupDto {
+    @Schema(description = "Unique identifier of the Group.",
+            example = "1", required = true)
     @NotNull
     private Long id;
+    @Schema(description = "Name of the group.",
+            example = "AB-01", required = true)
     @GroupName
     private String name;
     @NotNull
