@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers.rest;
 
+import com.foxminded.university.management.schedule.controllers.rest.documentation.GroupRestControllerDocumentation;
 import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.dto.group.BaseGroupDto;
 import com.foxminded.university.management.schedule.dto.group.GroupAddDto;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/groups")
-public class GroupRestController {
+public class GroupRestController implements GroupRestControllerDocumentation {
     private final GroupServiceImpl groupService;
 
     public GroupRestController(GroupServiceImpl groupService) {

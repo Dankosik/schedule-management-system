@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers.rest;
 
+import com.foxminded.university.management.schedule.controllers.rest.documentation.FacultyRestControllerDocumentation;
 import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.dto.faculty.BaseFacultyDto;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyAddDto;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/faculties")
-public class FacultyRestController {
+public class FacultyRestController implements FacultyRestControllerDocumentation {
     private final FacultyServiceImpl facultyService;
 
     public FacultyRestController(FacultyServiceImpl facultyService) {
@@ -52,7 +53,7 @@ public class FacultyRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Faculty> updateAudience(@Valid @RequestBody FacultyUpdateDto facultyUpdateDto, @PathVariable("id") Long id) {
+    public ResponseEntity<Faculty> updateFaculty(@Valid @RequestBody FacultyUpdateDto facultyUpdateDto, @PathVariable("id") Long id) {
         Faculty faculty = new Faculty();
         BeanUtils.copyProperties(facultyUpdateDto, faculty);
 

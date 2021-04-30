@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers.rest;
 
+import com.foxminded.university.management.schedule.controllers.rest.documentation.TeacherRestControllerDocumentation;
 import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.dto.teacher.BaseTeacherDto;
 import com.foxminded.university.management.schedule.dto.teacher.TeacherAddDto;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/teachers")
-public class TeacherRestController {
+public class TeacherRestController implements TeacherRestControllerDocumentation {
     private final TeacherServiceImpl teacherService;
 
     public TeacherRestController(TeacherServiceImpl teacherService) {

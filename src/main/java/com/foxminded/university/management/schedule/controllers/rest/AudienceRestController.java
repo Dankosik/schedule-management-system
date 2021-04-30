@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers.rest;
 
+import com.foxminded.university.management.schedule.controllers.rest.documentation.AudienceRestControllerDocumentation;
 import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.dto.audience.AudienceAddDto;
 import com.foxminded.university.management.schedule.dto.audience.AudienceUpdateDto;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/audiences")
-public class AudienceRestController {
+public class AudienceRestController implements AudienceRestControllerDocumentation {
     private final AudienceServiceImpl audienceService;
 
     public AudienceRestController(AudienceServiceImpl audienceService) {

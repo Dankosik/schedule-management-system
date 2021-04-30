@@ -1,5 +1,6 @@
 package com.foxminded.university.management.schedule.controllers.rest;
 
+import com.foxminded.university.management.schedule.controllers.rest.documentation.SubjectRestControllerDocumentation;
 import com.foxminded.university.management.schedule.controllers.rest.exceptions.UnacceptableUriException;
 import com.foxminded.university.management.schedule.dto.subject.BaseSubjectDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectAddDto;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/subjects")
-public class SubjectRestController {
+public class SubjectRestController implements SubjectRestControllerDocumentation {
     private final SubjectServiceImpl subjectService;
 
     public SubjectRestController(SubjectServiceImpl subjectService) {

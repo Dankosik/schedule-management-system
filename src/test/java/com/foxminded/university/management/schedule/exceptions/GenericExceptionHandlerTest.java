@@ -33,7 +33,7 @@ class GenericExceptionHandlerTest {
     @Test
     void handleUnrecognizedPropertyException() {
         UnrecognizedPropertyException unrecognizedPropertyException = new UnrecognizedPropertyException(jsonParser, null, jsonLocation, null, "name", null);
-        ResponseEntity<Object> actual = genericExceptionHandler.handleUnrecognizedPropertyException(unrecognizedPropertyException);
+        ResponseEntity<ErrorRequestBuilder> actual = genericExceptionHandler.handleUnrecognizedPropertyException(unrecognizedPropertyException);
         ResponseEntity<Object> expected = new ResponseEntity<>(new ErrorRequestBuilder(new Date(), HttpStatus.BAD_REQUEST,
                 "JSON parse error: Unrecognized field [name]", HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
         assertEquals(expected.getStatusCode(), actual.getStatusCode());
@@ -45,7 +45,7 @@ class GenericExceptionHandlerTest {
     @Test
     void handleUnrecognizedPropertyExceptionEmptyString() {
         UnrecognizedPropertyException unrecognizedPropertyException = new UnrecognizedPropertyException(jsonParser, null, jsonLocation, null, "", null);
-        ResponseEntity<Object> actual = genericExceptionHandler.handleUnrecognizedPropertyException(unrecognizedPropertyException);
+        ResponseEntity<ErrorRequestBuilder> actual = genericExceptionHandler.handleUnrecognizedPropertyException(unrecognizedPropertyException);
         ResponseEntity<Object> expected = new ResponseEntity<>(new ErrorRequestBuilder(new Date(), HttpStatus.BAD_REQUEST,
                 "JSON parse error: Unrecognized field []", HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
         assertEquals(expected.getStatusCode(), actual.getStatusCode());
@@ -57,7 +57,7 @@ class GenericExceptionHandlerTest {
     @Test
     void handleEntityNotFoundException() {
         EntityNotFoundException entityNotFoundException = new EntityNotFoundException("Subject with id: 1 is not found");
-        ResponseEntity<Object> actual = genericExceptionHandler.handleEntityNotFoundException(entityNotFoundException);
+        ResponseEntity<ErrorRequestBuilder> actual = genericExceptionHandler.handleEntityNotFoundException(entityNotFoundException);
         ResponseEntity<Object> expected = new ResponseEntity<>(new ErrorRequestBuilder(new Date(), HttpStatus.NOT_FOUND,
                 "Subject with id: 1 is not found", HttpStatus.NOT_FOUND.value()), HttpStatus.NOT_FOUND);
         assertEquals(expected.getStatusCode(), actual.getStatusCode());
@@ -69,7 +69,7 @@ class GenericExceptionHandlerTest {
     @Test
     void handleUniqueConstraintException() {
         UniqueConstraintException uniqueConstraintException = new UniqueConstraintException("Audience with number: 1 is already exists");
-        ResponseEntity<Object> actual = genericExceptionHandler.handleUniqueConstraintException(uniqueConstraintException);
+        ResponseEntity<ErrorRequestBuilder> actual = genericExceptionHandler.handleUniqueConstraintException(uniqueConstraintException);
         ResponseEntity<Object> expected = new ResponseEntity<>(new ErrorRequestBuilder(new Date(), HttpStatus.CONFLICT,
                 "Audience with number: 1 is already exists", HttpStatus.CONFLICT.value()), HttpStatus.CONFLICT);
         assertEquals(expected.getStatusCode(), actual.getStatusCode());

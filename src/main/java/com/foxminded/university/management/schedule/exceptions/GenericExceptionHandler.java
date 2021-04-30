@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GenericExceptionHandler {
     @ExceptionHandler(value = {UnrecognizedPropertyException.class})
-    protected ResponseEntity<Object> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex) {
+    protected ResponseEntity<ErrorRequestBuilder> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex) {
         final String message = "JSON parse error: Unrecognized field " + "[" + ex.getPropertyName() + "]";
 
         ErrorRequestBuilder errorRequestBuilder =
@@ -30,7 +30,7 @@ public class GenericExceptionHandler {
     }
 
     @ExceptionHandler(value = {MismatchedInputException.class})
-    protected ResponseEntity<Object> handleMismatchedInputException(MismatchedInputException ex) {
+    protected ResponseEntity<ErrorRequestBuilder> handleMismatchedInputException(MismatchedInputException ex) {
         String fieldErrorPath = getFieldErrorPath(ex);
         String exceptionMessage = ex.getOriginalMessage();
         if (exceptionMessage.startsWith("Cannot deserialize value of type")) {
@@ -60,7 +60,7 @@ public class GenericExceptionHandler {
     }
 
     @ExceptionHandler(value = {EntityNotFoundException.class})
-    protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+    protected ResponseEntity<ErrorRequestBuilder> handleEntityNotFoundException(EntityNotFoundException ex) {
         ErrorRequestBuilder errorRequestBuilder =
                 new ErrorRequestBuilder(new Date(), HttpStatus.NOT_FOUND, ex.getMessage(), HttpStatus.NOT_FOUND.value());
 
@@ -68,7 +68,7 @@ public class GenericExceptionHandler {
     }
 
     @ExceptionHandler(value = {UniqueConstraintException.class})
-    protected ResponseEntity<Object> handleUniqueConstraintException(UniqueConstraintException ex) {
+    protected ResponseEntity<ErrorRequestBuilder> handleUniqueConstraintException(UniqueConstraintException ex) {
         ErrorRequestBuilder errorRequestBuilder =
                 new ErrorRequestBuilder(new Date(), HttpStatus.CONFLICT, ex.getMessage(), HttpStatus.CONFLICT.value());
 
@@ -76,7 +76,7 @@ public class GenericExceptionHandler {
     }
 
     @ExceptionHandler(value = {UnacceptableUriException.class})
-    protected ResponseEntity<Object> handleUnacceptableUriException(UnacceptableUriException ex) {
+    protected ResponseEntity<ErrorRequestBuilder> handleUnacceptableUriException(UnacceptableUriException ex) {
         ErrorRequestBuilder errorRequestBuilder =
                 new ErrorRequestBuilder(new Date(), HttpStatus.BAD_REQUEST, ex.getMessage(), HttpStatus.BAD_REQUEST.value());
 
@@ -84,9 +84,9 @@ public class GenericExceptionHandler {
     }
 
     @ExceptionHandler(value = {UnacceptableLectureNumberException.class})
-    protected ResponseEntity<Object> handleUnacceptableLectureNumberException(UnacceptableLectureNumberException ex) {
+    protected ResponseEntity<ErrorRequestBuilder> handleUnacceptableLectureNumberException(UnacceptableLectureNumberException ex) {
         ErrorRequestBuilder errorRequestBuilder =
-                new ErrorRequestBuilder(new Date(), HttpStatus.BAD_REQUEST, ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+                new ErrorRequestBuilder(new Date(), HttpStatus.CONFLICT, ex.getMessage(), HttpStatus.CONFLICT.value());
 
         return new ResponseEntity<>(errorRequestBuilder, errorRequestBuilder.getError());
     }
