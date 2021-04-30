@@ -1,6 +1,11 @@
 package com.foxminded.university.management.schedule.security;
 
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.OAuthFlow;
+import io.swagger.v3.oas.annotations.security.OAuthFlows;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
@@ -17,11 +22,14 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
+@SecurityScheme(type = SecuritySchemeType.OAUTH2, name = "bearer key", in = SecuritySchemeIn.HEADER, bearerFormat = "JWT",
+        scheme = "bearer", flows = @OAuthFlows(
+        implicit = @OAuthFlow(
+                authorizationUrl = "http://localhost:8080/auth/realms/schedule-management-system/protocol/openid-connect/auth", scopes = {})))
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSpringBootConfigResolver.class)
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
         SimpleAuthorityMapper grantedAuthorityMapper = new SimpleAuthorityMapper();
@@ -56,5 +64,4 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable();
     }
-
 }
