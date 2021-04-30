@@ -1,14 +1,23 @@
 package com.foxminded.university.management.schedule.controllers.rest.errors;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 import java.util.Objects;
 
 public class ErrorRequestBuilder {
+    @Schema(description = "Error",
+            example = "CONFLICT", required = true)
     private final HttpStatus error;
+    @Schema(description = "Message",
+            example = "Audience with number 2 is already exist", required = true)
     private final String message;
+    @Schema(description = "Timestamp",
+            example = "2021-04-30T05:22:10.479+00:00", required = true)
     private Date timestamp;
+    @Schema(description = "Status",
+            example = "409", required = true)
     private int status;
 
     public ErrorRequestBuilder(HttpStatus status, String message) {
