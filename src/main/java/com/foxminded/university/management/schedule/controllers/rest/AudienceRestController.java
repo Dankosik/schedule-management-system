@@ -6,8 +6,8 @@ import com.foxminded.university.management.schedule.dto.audience.AudienceAddDto;
 import com.foxminded.university.management.schedule.dto.audience.AudienceUpdateDto;
 import com.foxminded.university.management.schedule.dto.audience.BaseAudienceDto;
 import com.foxminded.university.management.schedule.models.Audience;
+import com.foxminded.university.management.schedule.service.AudienceService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/audiences")
 public class AudienceRestController implements AudienceRestControllerDocumentation {
-    private final AudienceServiceImpl audienceService;
+    private final AudienceService audienceService;
 
-    public AudienceRestController(AudienceServiceImpl audienceService) {
+    public AudienceRestController(AudienceService audienceService) {
         this.audienceService = audienceService;
     }
 

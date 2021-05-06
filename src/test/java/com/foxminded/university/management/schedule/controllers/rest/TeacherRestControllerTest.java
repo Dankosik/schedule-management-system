@@ -6,9 +6,9 @@ import com.foxminded.university.management.schedule.dto.teacher.TeacherUpdateDto
 import com.foxminded.university.management.schedule.dto.utils.TeacherDtoUtils;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.service.FacultyService;
+import com.foxminded.university.management.schedule.service.TeacherService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,9 +45,9 @@ class TeacherRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private TeacherServiceImpl teacherService;
+    private TeacherService teacherService;
     @MockBean
-    private FacultyServiceImpl facultyService;
+    private FacultyService facultyService;
     @Mock
     private TeacherDtoUtils teacherDtoUtils;
 

@@ -5,11 +5,11 @@ import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto
 import com.foxminded.university.management.schedule.dto.lecture.LectureDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
 import com.foxminded.university.management.schedule.models.*;
+import com.foxminded.university.management.schedule.service.AudienceService;
+import com.foxminded.university.management.schedule.service.GroupService;
+import com.foxminded.university.management.schedule.service.LessonService;
+import com.foxminded.university.management.schedule.service.TeacherService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +18,13 @@ import java.time.Duration;
 
 @Component
 public class LectureDtoUtils {
-    private static LessonServiceImpl lessonService;
-    private static GroupServiceImpl groupService;
-    private static TeacherServiceImpl teacherService;
-    private static AudienceServiceImpl audienceService;
+    private static LessonService lessonService;
+    private static GroupService groupService;
+    private static TeacherService teacherService;
+    private static AudienceService audienceService;
 
-    public LectureDtoUtils(LessonServiceImpl lessonService, GroupServiceImpl groupService, TeacherServiceImpl teacherService,
-                           AudienceServiceImpl audienceService) {
+    public LectureDtoUtils(LessonService lessonService, GroupService groupService, TeacherService teacherService,
+                           AudienceService audienceService) {
         LectureDtoUtils.lessonService = lessonService;
         LectureDtoUtils.groupService = groupService;
         LectureDtoUtils.teacherService = teacherService;

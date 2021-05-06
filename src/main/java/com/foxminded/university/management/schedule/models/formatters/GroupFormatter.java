@@ -1,7 +1,7 @@
 package com.foxminded.university.management.schedule.models.formatters;
 
 import com.foxminded.university.management.schedule.models.Group;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
+import com.foxminded.university.management.schedule.service.GroupService;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
 
@@ -10,9 +10,9 @@ import java.util.Locale;
 
 @Component
 public class GroupFormatter implements Formatter<Group> {
-    private final GroupServiceImpl groupService;
+    private final GroupService groupService;
 
-    public GroupFormatter(GroupServiceImpl groupService) {
+    public GroupFormatter(GroupService groupService) {
         this.groupService = groupService;
     }
 

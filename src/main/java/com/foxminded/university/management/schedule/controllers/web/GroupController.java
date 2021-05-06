@@ -3,7 +3,7 @@ package com.foxminded.university.management.schedule.controllers.web;
 import com.foxminded.university.management.schedule.controllers.web.utils.StringUtils;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.*;
-import com.foxminded.university.management.schedule.service.impl.*;
+import com.foxminded.university.management.schedule.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,15 +18,15 @@ import java.util.List;
 
 @Controller
 public class GroupController {
-    private final GroupServiceImpl groupService;
-    private final LessonServiceImpl lessonService;
-    private final SubjectServiceImpl subjectService;
-    private final AudienceServiceImpl audienceService;
-    private final TeacherServiceImpl teacherService;
-    private final FacultyServiceImpl facultyService;
+    private final GroupService groupService;
+    private final LessonService lessonService;
+    private final SubjectService subjectService;
+    private final AudienceService audienceService;
+    private final TeacherService teacherService;
+    private final FacultyService facultyService;
 
-    public GroupController(GroupServiceImpl groupService, LessonServiceImpl lessonService, SubjectServiceImpl subjectService,
-                           AudienceServiceImpl audienceService, TeacherServiceImpl teacherService, FacultyServiceImpl facultyService) {
+    public GroupController(GroupService groupService, LessonService lessonService, SubjectService subjectService,
+                           AudienceService audienceService, TeacherService teacherService, FacultyService facultyService) {
         this.groupService = groupService;
         this.lessonService = lessonService;
         this.subjectService = subjectService;

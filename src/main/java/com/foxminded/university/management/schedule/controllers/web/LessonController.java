@@ -2,8 +2,8 @@ package com.foxminded.university.management.schedule.controllers.web;
 
 import com.foxminded.university.management.schedule.controllers.web.utils.StringUtils;
 import com.foxminded.university.management.schedule.models.Lesson;
-import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
+import com.foxminded.university.management.schedule.service.LessonService;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,10 +18,10 @@ import java.util.List;
 
 @Controller
 public class LessonController {
-    private final LessonServiceImpl lessonService;
-    private final SubjectServiceImpl subjectService;
+    private final LessonService lessonService;
+    private final SubjectService subjectService;
 
-    public LessonController(LessonServiceImpl lessonService, SubjectServiceImpl subjectService) {
+    public LessonController(LessonService lessonService, SubjectService subjectService) {
         this.lessonService = lessonService;
         this.subjectService = subjectService;
     }

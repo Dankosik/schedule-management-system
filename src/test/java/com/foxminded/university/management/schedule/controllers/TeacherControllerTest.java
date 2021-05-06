@@ -3,7 +3,7 @@ package com.foxminded.university.management.schedule.controllers;
 import com.foxminded.university.management.schedule.controllers.web.TeacherController;
 import com.foxminded.university.management.schedule.controllers.web.utils.DurationFormatter;
 import com.foxminded.university.management.schedule.models.*;
-import com.foxminded.university.management.schedule.service.impl.*;
+import com.foxminded.university.management.schedule.service.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +33,17 @@ class TeacherControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private FacultyServiceImpl facultyService;
+    private FacultyService facultyService;
     @MockBean
-    private AudienceServiceImpl audienceService;
+    private AudienceService audienceService;
     @MockBean
-    private LessonServiceImpl lessonService;
+    private LessonService lessonService;
     @MockBean
-    private TeacherServiceImpl teacherService;
+    private TeacherService teacherService;
     @MockBean
-    private SubjectServiceImpl subjectService;
+    private SubjectService subjectService;
     @MockBean
-    private GroupServiceImpl groupService;
+    private GroupService groupService;
     @MockBean
     private DurationFormatter durationFormatter;
     @MockBean

@@ -1,7 +1,7 @@
 package com.foxminded.university.management.schedule.application_runners;
 
+import com.foxminded.university.management.schedule.service.*;
 import com.foxminded.university.management.schedule.service.data.generation.impl.*;
-import com.foxminded.university.management.schedule.service.impl.*;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 @Profile("!test")
 @Component
 public class DataCombiner implements ApplicationRunner {
-    private final AudienceServiceImpl audienceService;
-    private final FacultyServiceImpl facultyService;
-    private final GroupServiceImpl groupService;
-    private final LessonServiceImpl lessonService;
-    private final LectureServiceImpl lectureService;
-    private final StudentServiceImpl studentService;
-    private final SubjectServiceImpl subjectService;
-    private final TeacherServiceImpl teacherService;
+    private final AudienceService audienceService;
+    private final FacultyService facultyService;
+    private final GroupService groupService;
+    private final LessonService lessonService;
+    private final LectureService lectureService;
+    private final StudentService studentService;
+    private final SubjectService subjectService;
+    private final TeacherService teacherService;
     private final AudienceDataGenerator audienceDataGenerator;
     private final FacultyDataGenerator facultyDataGenerator;
     private final GroupDataGenerator groupDataGenerator;
@@ -27,9 +27,9 @@ public class DataCombiner implements ApplicationRunner {
     private final LessonDataGenerator lessonDataGenerator;
     private final LectureDataGenerator lectureDataGenerator;
 
-    public DataCombiner(AudienceServiceImpl audienceService, FacultyServiceImpl facultyService,
-                        GroupServiceImpl groupService, LessonServiceImpl lessonService, LectureServiceImpl lectureService,
-                        StudentServiceImpl studentService, SubjectServiceImpl subjectService, TeacherServiceImpl teacherService,
+    public DataCombiner(AudienceService audienceService, FacultyService facultyService,
+                        GroupService groupService, LessonService lessonService, LectureService lectureService,
+                        StudentService studentService, SubjectService subjectService, TeacherService teacherService,
                         AudienceDataGenerator audienceDataGenerator, FacultyDataGenerator facultyDataGenerator,
                         GroupDataGenerator groupDataGenerator, SubjectDataGenerator subjectDataGenerator,
                         StudentDataGenerator studentDataGenerator, TeacherDataGenerator teacherDataGenerator,

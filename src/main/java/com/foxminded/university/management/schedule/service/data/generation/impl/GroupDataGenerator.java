@@ -1,9 +1,9 @@
 package com.foxminded.university.management.schedule.service.data.generation.impl;
 
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.service.FacultyService;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
 import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
-import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import static com.foxminded.university.management.schedule.service.data.generati
 
 @Service
 public class GroupDataGenerator implements DataGenerator<Group> {
-    private final FacultyServiceImpl facultyService;
+    private final FacultyService facultyService;
 
-    public GroupDataGenerator(FacultyServiceImpl facultyService) {
+    public GroupDataGenerator(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 

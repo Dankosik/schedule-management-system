@@ -7,8 +7,8 @@ import com.foxminded.university.management.schedule.dto.group.GroupAddDto;
 import com.foxminded.university.management.schedule.dto.group.GroupUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.GroupDtoUtils;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.service.GroupService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/groups")
 public class GroupRestController implements GroupRestControllerDocumentation {
-    private final GroupServiceImpl groupService;
+    private final GroupService groupService;
 
-    public GroupRestController(GroupServiceImpl groupService) {
+    public GroupRestController(GroupService groupService) {
         this.groupService = groupService;
     }
 

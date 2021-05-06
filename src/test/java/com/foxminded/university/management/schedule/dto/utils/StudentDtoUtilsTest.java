@@ -7,7 +7,7 @@ import com.foxminded.university.management.schedule.dto.student.StudentUpdateDto
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
+import com.foxminded.university.management.schedule.service.GroupService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = {StudentDtoUtils.class})
 class StudentDtoUtilsTest {
     @MockBean
-    private GroupServiceImpl groupService;
+    private GroupService groupService;
 
     @Test
     void shouldReturnStudentFromStudentUpdateDto() {

@@ -6,9 +6,9 @@ import com.foxminded.university.management.schedule.dto.lesson.LessonAddDto;
 import com.foxminded.university.management.schedule.dto.utils.LessonDtoUtils;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.LessonService;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,9 +48,9 @@ class LessonRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private SubjectServiceImpl subjectService;
+    private SubjectService subjectService;
     @MockBean
-    private LessonServiceImpl lessonService;
+    private LessonService lessonService;
     @Mock
     private LessonDtoUtils lessonDtoUtils;
 

@@ -1,10 +1,10 @@
 package com.foxminded.university.management.schedule.service.data.generation.impl;
 
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.service.FacultyService;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
 import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import com.foxminded.university.management.schedule.service.data.generation.utils.ReceivingIdUtils;
-import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class TeacherDataGenerator implements DataGenerator<Teacher> {
-    private final FacultyServiceImpl facultyService;
+    private final FacultyService facultyService;
     private final List<String> firstNames =
             List.of("John", "Liam", "Mason", "Jacob", "William", "Ethan", "Michael", "Daniel", "Edward", "Mark",
                     "Mary", "Patricia", "Linda", "Barbara", "Elizabeth", "Jennifer", "Maria", "Susan", "Lisa", "Carol");
@@ -20,7 +20,7 @@ public class TeacherDataGenerator implements DataGenerator<Teacher> {
             List.of("Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor",
                     "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson");
 
-    public TeacherDataGenerator(FacultyServiceImpl facultyService) {
+    public TeacherDataGenerator(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 

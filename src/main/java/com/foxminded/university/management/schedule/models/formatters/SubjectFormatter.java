@@ -1,7 +1,7 @@
 package com.foxminded.university.management.schedule.models.formatters;
 
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import org.springframework.format.Formatter;
 import org.springframework.stereotype.Component;
 
@@ -10,9 +10,9 @@ import java.util.Locale;
 
 @Component
 public class SubjectFormatter implements Formatter<Subject> {
-    private final SubjectServiceImpl subjectService;
+    private final SubjectService subjectService;
 
-    public SubjectFormatter(SubjectServiceImpl subjectService) {
+    public SubjectFormatter(SubjectService subjectService) {
         this.subjectService = subjectService;
     }
 

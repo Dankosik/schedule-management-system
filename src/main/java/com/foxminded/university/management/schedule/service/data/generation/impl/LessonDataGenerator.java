@@ -1,10 +1,10 @@
 package com.foxminded.university.management.schedule.service.data.generation.impl;
 
 import com.foxminded.university.management.schedule.models.Lesson;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
 import com.foxminded.university.management.schedule.service.data.generation.utils.RandomUtils;
 import com.foxminded.university.management.schedule.service.data.generation.utils.ReceivingIdUtils;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 public class LessonDataGenerator implements DataGenerator<Lesson> {
-    private final SubjectServiceImpl subjectService;
+    private final SubjectService subjectService;
     private final List<Time> startTimes = List.of(
             Time.valueOf(LocalTime.of(8, 30, 0)),
             Time.valueOf(LocalTime.of(10, 10, 0)),
@@ -23,7 +23,7 @@ public class LessonDataGenerator implements DataGenerator<Lesson> {
             Time.valueOf(LocalTime.of(13, 30, 0)),
             Time.valueOf(LocalTime.of(16, 10, 0)));
 
-    public LessonDataGenerator(SubjectServiceImpl subjectService) {
+    public LessonDataGenerator(SubjectService subjectService) {
         this.subjectService = subjectService;
     }
 

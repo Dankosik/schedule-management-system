@@ -5,7 +5,7 @@ import com.foxminded.university.management.schedule.dto.lesson.LessonUpdateDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = {LessonDtoUtils.class})
 class LessonDtoUtilsTest {
     @MockBean
-    private SubjectServiceImpl subjectService;
+    private SubjectService subjectService;
 
     @Test
     void shouldReturnLessonFromLessonUpdateDto() {
