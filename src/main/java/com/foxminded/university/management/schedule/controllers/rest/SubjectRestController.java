@@ -6,8 +6,8 @@ import com.foxminded.university.management.schedule.dto.subject.BaseSubjectDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectAddDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
 import com.foxminded.university.management.schedule.models.Subject;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/subjects")
 public class SubjectRestController implements SubjectRestControllerDocumentation {
-    private final SubjectServiceImpl subjectService;
+    private final SubjectService subjectService;
 
-    public SubjectRestController(SubjectServiceImpl subjectService) {
+    public SubjectRestController(SubjectService subjectService) {
         this.subjectService = subjectService;
     }
 

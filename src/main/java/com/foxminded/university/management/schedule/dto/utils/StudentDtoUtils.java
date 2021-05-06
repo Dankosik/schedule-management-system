@@ -5,16 +5,16 @@ import com.foxminded.university.management.schedule.dto.student.StudentDto;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
+import com.foxminded.university.management.schedule.service.GroupService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StudentDtoUtils {
-    private static GroupServiceImpl groupService;
+    private static GroupService groupService;
 
-    public StudentDtoUtils(GroupServiceImpl groupService) {
+    public StudentDtoUtils(GroupService groupService) {
         StudentDtoUtils.groupService = groupService;
     }
 

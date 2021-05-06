@@ -3,7 +3,7 @@ package com.foxminded.university.management.schedule.controllers;
 import com.foxminded.university.management.schedule.controllers.web.SubjectController;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ class SubjectControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private SubjectServiceImpl subjectService;
+    private SubjectService subjectService;
     @MockBean
     private BindingResult bindingResult;
 

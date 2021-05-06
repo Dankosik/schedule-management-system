@@ -3,7 +3,7 @@ package com.foxminded.university.management.schedule.controllers.rest;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -34,7 +34,7 @@ class SubjectRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private SubjectServiceImpl subjectService;
+    private SubjectService subjectService;
 
     @Test
     public void shouldReturnSubjectById() throws Exception {

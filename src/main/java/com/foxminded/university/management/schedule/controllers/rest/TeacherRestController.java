@@ -7,8 +7,8 @@ import com.foxminded.university.management.schedule.dto.teacher.TeacherAddDto;
 import com.foxminded.university.management.schedule.dto.teacher.TeacherUpdateDto;
 import com.foxminded.university.management.schedule.dto.utils.TeacherDtoUtils;
 import com.foxminded.university.management.schedule.models.Teacher;
+import com.foxminded.university.management.schedule.service.TeacherService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/teachers")
 public class TeacherRestController implements TeacherRestControllerDocumentation {
-    private final TeacherServiceImpl teacherService;
+    private final TeacherService teacherService;
 
-    public TeacherRestController(TeacherServiceImpl teacherService) {
+    public TeacherRestController(TeacherService teacherService) {
         this.teacherService = teacherService;
     }
 

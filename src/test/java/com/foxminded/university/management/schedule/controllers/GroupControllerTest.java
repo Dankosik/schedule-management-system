@@ -4,7 +4,7 @@ import com.foxminded.university.management.schedule.controllers.web.GroupControl
 import com.foxminded.university.management.schedule.controllers.web.utils.DurationFormatter;
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.*;
-import com.foxminded.university.management.schedule.service.impl.*;
+import com.foxminded.university.management.schedule.service.*;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,17 +36,17 @@ class GroupControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private AudienceServiceImpl audienceService;
+    private AudienceService audienceService;
     @MockBean
-    private LessonServiceImpl lessonService;
+    private LessonService lessonService;
     @MockBean
-    private TeacherServiceImpl teacherService;
+    private TeacherService teacherService;
     @MockBean
-    private SubjectServiceImpl subjectService;
+    private SubjectService subjectService;
     @MockBean
-    private GroupServiceImpl groupService;
+    private GroupService groupService;
     @MockBean
-    private FacultyServiceImpl facultyService;
+    private FacultyService facultyService;
     @MockBean
     private DurationFormatter durationFormatter;
     @MockBean

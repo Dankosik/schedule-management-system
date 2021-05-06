@@ -2,7 +2,7 @@ package com.foxminded.university.management.schedule.controllers.web;
 
 import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Subject;
-import com.foxminded.university.management.schedule.service.impl.SubjectServiceImpl;
+import com.foxminded.university.management.schedule.service.SubjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,9 +16,9 @@ import javax.validation.Valid;
 
 @Controller
 public class SubjectController {
-    private final SubjectServiceImpl subjectService;
+    private final SubjectService subjectService;
 
-    public SubjectController(SubjectServiceImpl subjectService) {
+    public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
     }
 

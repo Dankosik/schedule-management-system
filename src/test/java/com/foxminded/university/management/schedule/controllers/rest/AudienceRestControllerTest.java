@@ -3,7 +3,7 @@ package com.foxminded.university.management.schedule.controllers.rest;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.foxminded.university.management.schedule.models.Audience;
-import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
+import com.foxminded.university.management.schedule.service.AudienceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -34,7 +34,7 @@ class AudienceRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private AudienceServiceImpl audienceService;
+    private AudienceService audienceService;
 
     @Test
     public void shouldReturnAudienceById() throws Exception {

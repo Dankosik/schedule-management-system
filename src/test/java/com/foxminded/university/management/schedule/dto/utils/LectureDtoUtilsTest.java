@@ -9,10 +9,10 @@ import com.foxminded.university.management.schedule.dto.lesson.LessonUpdateDto;
 import com.foxminded.university.management.schedule.dto.subject.SubjectUpdateDto;
 import com.foxminded.university.management.schedule.dto.teacher.TeacherUpdateDto;
 import com.foxminded.university.management.schedule.models.*;
-import com.foxminded.university.management.schedule.service.impl.AudienceServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.LessonServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.TeacherServiceImpl;
+import com.foxminded.university.management.schedule.service.AudienceService;
+import com.foxminded.university.management.schedule.service.GroupService;
+import com.foxminded.university.management.schedule.service.LessonService;
+import com.foxminded.university.management.schedule.service.TeacherService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,13 +38,13 @@ class LectureDtoUtilsTest {
     private final Teacher teacher = new Teacher(1L, "John", "Jackson", "Jackson", faculty, null);
     private final Group group = new Group(1L, "AB-01", faculty, null, null);
     @MockBean
-    private LessonServiceImpl lessonService;
+    private LessonService lessonService;
     @MockBean
-    private GroupServiceImpl groupService;
+    private GroupService groupService;
     @MockBean
-    private TeacherServiceImpl teacherService;
+    private TeacherService teacherService;
     @MockBean
-    private AudienceServiceImpl audienceService;
+    private AudienceService audienceService;
 
     @Test
     void shouldReturnLectureFromLectureUpdateDto() {

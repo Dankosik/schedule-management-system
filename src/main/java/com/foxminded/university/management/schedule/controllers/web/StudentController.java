@@ -1,8 +1,8 @@
 package com.foxminded.university.management.schedule.controllers.web;
 
 import com.foxminded.university.management.schedule.models.Student;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
+import com.foxminded.university.management.schedule.service.GroupService;
+import com.foxminded.university.management.schedule.service.StudentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,10 +17,10 @@ import java.util.List;
 
 @Controller
 public class StudentController {
-    private final StudentServiceImpl studentService;
-    private final GroupServiceImpl groupService;
+    private final StudentService studentService;
+    private final GroupService groupService;
 
-    public StudentController(StudentServiceImpl studentService, GroupServiceImpl groupService) {
+    public StudentController(StudentService studentService, GroupService groupService) {
         this.studentService = studentService;
         this.groupService = groupService;
     }

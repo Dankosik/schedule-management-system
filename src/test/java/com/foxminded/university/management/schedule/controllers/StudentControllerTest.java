@@ -3,8 +3,8 @@ package com.foxminded.university.management.schedule.controllers;
 import com.foxminded.university.management.schedule.controllers.web.StudentController;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Student;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.StudentServiceImpl;
+import com.foxminded.university.management.schedule.service.GroupService;
+import com.foxminded.university.management.schedule.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +28,9 @@ class StudentControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private StudentServiceImpl studentService;
+    private StudentService studentService;
     @MockBean
-    private GroupServiceImpl groupService;
+    private GroupService groupService;
     @MockBean
     private BindingResult bindingResult;
 

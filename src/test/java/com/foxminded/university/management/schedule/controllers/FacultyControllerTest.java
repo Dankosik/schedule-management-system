@@ -5,7 +5,7 @@ import com.foxminded.university.management.schedule.exceptions.ServiceException;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
 import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
+import com.foxminded.university.management.schedule.service.FacultyService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +31,7 @@ class FacultyControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private FacultyServiceImpl facultyService;
+    private FacultyService facultyService;
     @MockBean
     private BindingResult bindingResult;
 

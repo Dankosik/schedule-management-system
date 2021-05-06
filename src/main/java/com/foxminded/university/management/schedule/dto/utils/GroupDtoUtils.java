@@ -3,16 +3,16 @@ package com.foxminded.university.management.schedule.dto.utils;
 import com.foxminded.university.management.schedule.dto.group.GroupDto;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.service.FacultyService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GroupDtoUtils {
-    private static FacultyServiceImpl facultyService;
+    private static FacultyService facultyService;
 
-    public GroupDtoUtils(FacultyServiceImpl facultyService) {
+    public GroupDtoUtils(FacultyService facultyService) {
         GroupDtoUtils.facultyService = facultyService;
     }
 

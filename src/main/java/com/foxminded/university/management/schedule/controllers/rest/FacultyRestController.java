@@ -6,8 +6,8 @@ import com.foxminded.university.management.schedule.dto.faculty.BaseFacultyDto;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyAddDto;
 import com.foxminded.university.management.schedule.dto.faculty.FacultyUpdateDto;
 import com.foxminded.university.management.schedule.models.Faculty;
+import com.foxminded.university.management.schedule.service.FacultyService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/faculties")
 public class FacultyRestController implements FacultyRestControllerDocumentation {
-    private final FacultyServiceImpl facultyService;
+    private final FacultyService facultyService;
 
-    public FacultyRestController(FacultyServiceImpl facultyService) {
+    public FacultyRestController(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 

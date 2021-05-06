@@ -6,7 +6,7 @@ import com.foxminded.university.management.schedule.models.Audience;
 import com.foxminded.university.management.schedule.models.Lecture;
 import com.foxminded.university.management.schedule.models.Lesson;
 import com.foxminded.university.management.schedule.models.Teacher;
-import com.foxminded.university.management.schedule.service.impl.*;
+import com.foxminded.university.management.schedule.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,14 +21,14 @@ import java.util.List;
 
 @Controller
 public class AudienceController {
-    private final AudienceServiceImpl audienceService;
-    private final LessonServiceImpl lessonService;
-    private final SubjectServiceImpl subjectService;
-    private final TeacherServiceImpl teacherService;
-    private final GroupServiceImpl groupService;
+    private final AudienceService audienceService;
+    private final LessonService lessonService;
+    private final SubjectService subjectService;
+    private final TeacherService teacherService;
+    private final GroupService groupService;
 
-    public AudienceController(AudienceServiceImpl audienceService, LessonServiceImpl lessonService, SubjectServiceImpl subjectService,
-                              TeacherServiceImpl teacherService, GroupServiceImpl groupService) {
+    public AudienceController(AudienceService audienceService, LessonService lessonService,
+                              SubjectService subjectService, TeacherService teacherService, GroupService groupService) {
         this.audienceService = audienceService;
         this.lessonService = lessonService;
         this.subjectService = subjectService;

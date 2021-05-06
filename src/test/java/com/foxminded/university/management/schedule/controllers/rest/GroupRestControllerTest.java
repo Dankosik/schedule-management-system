@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.foxminded.university.management.schedule.dto.utils.GroupDtoUtils;
 import com.foxminded.university.management.schedule.models.Faculty;
 import com.foxminded.university.management.schedule.models.Group;
+import com.foxminded.university.management.schedule.service.FacultyService;
+import com.foxminded.university.management.schedule.service.GroupService;
 import com.foxminded.university.management.schedule.service.exceptions.EntityNotFoundException;
-import com.foxminded.university.management.schedule.service.impl.FacultyServiceImpl;
-import com.foxminded.university.management.schedule.service.impl.GroupServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,9 +43,9 @@ class GroupRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private GroupServiceImpl groupService;
+    private GroupService groupService;
     @MockBean
-    private FacultyServiceImpl facultyService;
+    private FacultyService facultyService;
     @Mock
     private GroupDtoUtils groupDtoUtils;
 
