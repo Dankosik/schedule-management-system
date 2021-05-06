@@ -1,7 +1,8 @@
 package com.foxminded.university.management.schedule.application_runners;
 
+import com.foxminded.university.management.schedule.models.*;
 import com.foxminded.university.management.schedule.service.*;
-import com.foxminded.university.management.schedule.service.data.generation.impl.*;
+import com.foxminded.university.management.schedule.service.data.generation.DataGenerator;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -18,22 +19,22 @@ public class DataCombiner implements ApplicationRunner {
     private final StudentService studentService;
     private final SubjectService subjectService;
     private final TeacherService teacherService;
-    private final AudienceDataGenerator audienceDataGenerator;
-    private final FacultyDataGenerator facultyDataGenerator;
-    private final GroupDataGenerator groupDataGenerator;
-    private final SubjectDataGenerator subjectDataGenerator;
-    private final StudentDataGenerator studentDataGenerator;
-    private final TeacherDataGenerator teacherDataGenerator;
-    private final LessonDataGenerator lessonDataGenerator;
-    private final LectureDataGenerator lectureDataGenerator;
+    private final DataGenerator<Audience> audienceDataGenerator;
+    private final DataGenerator<Faculty> facultyDataGenerator;
+    private final DataGenerator<Group> groupDataGenerator;
+    private final DataGenerator<Subject> subjectDataGenerator;
+    private final DataGenerator<Student> studentDataGenerator;
+    private final DataGenerator<Teacher> teacherDataGenerator;
+    private final DataGenerator<Lesson> lessonDataGenerator;
+    private final DataGenerator<Lecture> lectureDataGenerator;
 
     public DataCombiner(AudienceService audienceService, FacultyService facultyService,
                         GroupService groupService, LessonService lessonService, LectureService lectureService,
                         StudentService studentService, SubjectService subjectService, TeacherService teacherService,
-                        AudienceDataGenerator audienceDataGenerator, FacultyDataGenerator facultyDataGenerator,
-                        GroupDataGenerator groupDataGenerator, SubjectDataGenerator subjectDataGenerator,
-                        StudentDataGenerator studentDataGenerator, TeacherDataGenerator teacherDataGenerator,
-                        LessonDataGenerator lessonDataGenerator, LectureDataGenerator lectureDataGenerator) {
+                        DataGenerator<Audience> audienceDataGenerator, DataGenerator<Faculty> facultyDataGenerator,
+                        DataGenerator<Group> groupDataGenerator, DataGenerator<Subject> subjectDataGenerator,
+                        DataGenerator<Student> studentDataGenerator, DataGenerator<Teacher> teacherDataGenerator,
+                        DataGenerator<Lesson> lessonDataGenerator, DataGenerator<Lecture> lectureDataGenerator) {
 
         this.audienceService = audienceService;
         this.facultyService = facultyService;
